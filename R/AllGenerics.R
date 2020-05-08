@@ -389,7 +389,7 @@
 #' @section
 .oplsComponentCv=function(X, Y, cv.set, nc,  mod.cv){
 
-    out=lapply(1:length(cv.set), function(k){
+    out=lapply(seq_along(cv.set), function(k){
 
         #browser()
         idc=cv.set[[k]]
@@ -592,7 +592,7 @@
     )
 
     model_summary$PC_pred=1
-    model_summary$PC_orth=1:nrow(model_summary)
+    model_summary$PC_orth=seq_len(nrow(model_summary))
 
     mm <- melt(model_summary, id.vars = c("PC_orth", "PC_pred"))
     mm$PC <- paste0(mm$PC_pred, '+', mm$PC_orth)

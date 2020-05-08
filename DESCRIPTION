@@ -9,7 +9,7 @@ Description: More about what it does (maybe more than one line)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: abind, ggplot2, methods, Rcpp (>= 1.0.4.6), RcppEigen, reshape, scales, stats
+Imports: abind, ggplot2, graphics, methods, pROC, Rcpp (>= 1.0.4.6), RcppEigen, reshape, scales, stats, utils
 LinkingTo: 
     Rcpp,
     RcppEigen
