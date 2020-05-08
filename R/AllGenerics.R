@@ -7,7 +7,7 @@
 # check Y for regression or DA
 .checkYclassNas = function(Y) {
 
-    if (!class(Y) %in% c("matrix", "data.frame")) {
+    if (any(!is(Y) %in% c("matrix", "data.frame"))) {
         Y = matrix(Y, nrow = length(Y), ncol = 1)
     } else {
         Y = as.matrix(Y)
@@ -46,7 +46,7 @@
 #' @section
 .checkXclassNas = function(X) {
 
-    if (!class(X) %in% c("matrix") | !is.numeric(X[1, 1])) {
+    if (!is.matrix(X) | !is.numeric(X[1, 1])) {
         stop("Input X must be matrix of class numeric")
     }
 
@@ -375,4 +375,256 @@
     return(list(model_summary, g))
 
 }
+
+
+
+#' @title Performs OPLS modelling for each CV set and collates output
+#' @param X num matrix X: preproc NMR data
+#' @param Y num matrix Y: outcome, dummy matrix in case of categorical outcome
+#' @param cv.set list of k elements containing vector of X and Y row-indices representing training set for cv round k
+#' @param nc int, max number of orthogonal components to fit
+#' @param  mod.cv cv parameters
+#' @return Named list of collated OPLS data for respective component
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @section
+.oplsComponentCv=function(X, Y, cv.set, nc,  mod.cv){
+
+    out=lapply(1:length(cv.set), function(k){
+
+        #browser()
+        idc=cv.set[[k]]
+        if(nc==1){
+            Xcs <- .scaleMatRcpp(X, idc-1, center=TRUE, scale_type = 1)[[1]] # subtract 1 since Rcpp indexing starts at zero
+        }else{
+            Xcs=mod.cv[[k]]$x_res
+        }
+
+        Y_scale <- .scaleMatRcpp(Y, idc-1, center=TRUE, scale_type = 1)
+        Ycs <- Y_scale[[1]] # subtract 1 since Rcpp indexing starts at zero
+        opls_filt <- .nipOplsRcpp(X = Xcs[idc, ], Y = cbind(Ycs[idc, ]))
+        pred_comp <- .nipPlsCompRcpp(X = opls_filt$X_res, Y = cbind(Ycs[idc, ]))
+
+        opls_pred=.oplsPredRcpp(opls_mod = opls_filt, pred_mod=pred_comp,  Xnew=Xcs[-idc, ])
+
+
+        # create list opls_mod:
+        # with w_xo, p_xo, (matrix with columns, rows equating to the number of orthogonal components, resp) and
+        # w_xp, p_xp, p_yp (a single one for predictive component)
+
+
+
+        #browser()
+        if(nc==1){
+
+            mod.cv=list(
+                # w_xo = matrix(NA, nrow=ncol(X), ncol=1),
+                # p_xo = matrix(NA, nrow=1, ncol=ncol(X)),
+
+                t_xo = matrix(NA, nrow=nrow(Y), ncol=1),
+
+                # w_xp = matrix(NA, nrow=ncol(X), ncol=1),
+                # p_xp = matrix(NA, nrow=1, ncol=ncol(X)),
+                # p_yp = matrix(NA, nrow=ncol(Y), ncol=1),
+
+                t_xp = matrix(NA, nrow=nrow(Y), ncol=1),
+
+                y_pred_train = matrix(NA, nrow=nrow(Y), ncol=ncol(Y)),
+                y_pred_test = matrix(NA, nrow=nrow(Y), ncol=ncol(Y)),
+
+                x_res = matrix(NA, nrow=nrow(Y), ncol=ncol(Xcs)),
+
+                r2x_pred_comp_cv = array()
+
+            )
+
+            # mod.cv$w_xo[,nc]=opls_filt$w_o
+            # mod.cv$p_xo[nc,]=opls_filt$p_o
+
+            # mod.cv$t_xo[idc, nc]=opls_filt$t_o
+            mod.cv$t_xo[-idc, nc]=opls_pred$t_xo_new
+
+            # mod.cv$w_xp[,nc]=pred_comp$w_x
+            # mod.cv$p_xp[nc,]=pred_comp$p_x
+
+            #mod.cv$t_xp[idc,nc]=pred_comp$t_p
+            mod.cv$t_xp[-idc,nc]=opls_pred$t_pred # cv scores
+
+            #mod.cv$p_py[idc,nc]=pred_comp$p_y
+            #mod.cv$p_py[,nc]=opls_pred$y_pred
+
+            mod.cv$y_pred_train[idc,]=pred_comp$y_pred
+            mod.cv$y_pred_test[-idc,]=opls_pred$y_pred #t(apply(opls_pred$y_pred, 1, function(x, me= Y_scale$mean, ssd=Y_scale$sd) { (x+me) * ssd}))
+
+            mod.cv$x_res[idc,] = opls_filt$X_res
+            mod.cv$x_res[-idc,] = opls_pred$Xres
+
+            mod.cv$r2x_pred_comp_cv = .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x)
+
+            return(mod.cv)
+
+        }else{
+
+            # mod.cv$w_xo=cbind(mod.cv$w_xo, opls_filt$w_o)
+            # mod.cv$p_xo=rbind(mod.cv$p_xo, opls_filt$p_o)
+            #
+            mod.cv[[k]]$t_xo=cbind(mod.cv[[k]]$t_xo, matrix(NA, nrow=nrow(Y), ncol=1))
+            # mod.cv$t_xo[idc, nc]=opls_filt$t_o
+            mod.cv[[k]]$t_xo[-idc, nc]=opls_pred$t_xo_new
+            #
+            #
+            # mod.cv$w_xp[,nc]=pred_comp$w_p
+            # mod.cv$p_xp[nc,]=pred_comp$p_p
+
+            #mod.cv$t_xp[idc,nc]=pred_comp$t_p
+            #browser()
+            mod.cv[[k]]$t_xp=matrix(NA, nrow=nrow(Y), ncol=1) # predictive component will alwas be overwritten (set to NA, since MC methods will generated non-equal indies in each round)
+            mod.cv[[k]]$t_xp[-idc,1]=opls_pred$t_pred
+
+            #mod.cv$p_py[idc,nc]=pred_comp$p_y
+            #mod.cv$p_py[-idc,nc]=opls_pred$y_pred
+
+            y_pred_add=matrix(NA, nrow=nrow(Y), ncol=ncol(Y))
+            y_pred_add[-idc,]=opls_pred$y_pred #t(apply(opls_pred$y_pred, 1, function(x, me= Y_scale$mean, ssd=Y_scale$sd) { (x+me) * ssd}))
+            mod.cv[[k]]$y_pred_test=y_pred_add
+
+            y_pred_add1=matrix(NA, nrow=nrow(Y), ncol=ncol(Y))
+            y_pred_add1[idc,]=pred_comp$y_pred
+            mod.cv[[k]]$y_pred_train=y_pred_add1
+
+
+            mod.cv[[k]]$x_res[idc,] = opls_filt$X_res
+            mod.cv[[k]]$x_res[-idc,] = opls_pred$Xres
+
+            mod.cv[[k]]$r2x_pred_comp_cv = .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x)
+
+            return(mod.cv[[k]])
+        }
+
+    })
+
+    return(out)
+
+}
+
+
+#' @title Extract data structures from output of function .oplsComponentCv
+#' @param cv_obj named list, output of .oplsComponentCv (for resp OPLS component)
+#' @param feat char, feature name in output of tt (names(tt))
+#' @return num array or matrix of resp component feature
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @importFrom abind abind
+#' @importFrom stats sd
+#' @section
+.extMeanCvFeat=function(cv_obj, feat='t_xp'){
+
+    if(!feat %in% names(cv_obj[[1]])) stop('Feature name not in feature list')
+    inter=lapply(cv_obj, '[[', feat)
+    if(is.matrix(inter[[1]]) && ncol(inter[[1]])>1){
+        f_mat=abind(inter, along=3);
+        fout=apply(f_mat, c(1,2), function(x){
+            le=length(which(!is.na(x)))
+            sum(x, na.rm=TRUE)/le
+        })
+    }else{
+        # single col
+        f_mat=do.call(cbind, inter);
+        fout=apply(f_mat, 1, function(x){
+            idx=which(!is.na(x))
+            c(summary(x[idx]), 'sd'=sd(x[idx]), 'frac'=length(idx)/ncol(f_mat))
+            #sum(x, na.rm=T)/le
+        })
+        #fout=t(fout)
+    }
+    return(fout)
+
+}
+
+#
+#
+# .q2 <- function(Y, Yhat, ytss=NULL) {
+#
+#
+#   press <- sum(as.vector((Y - Yhat)^2), na.rm=T) / ncol(Y)
+#
+#   if(is.null(ytss)){  ytss <- sum(as.vector(Y^2), na.rm=T) / ncol(Y) }
+#
+#   1-(press / ytss)
+#
+# }
+#
+
+
+#' @title R2 and Q2
+#' @param Y num matrix Y: OPLS outcome, dummy matrix in case it is categorical
+#' @param Yhat num matrix, predicted Y
+#' @param ytss num, total sum of squares of Y
+#' @return R2=1-(PRESS/TSS)
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @section
+.r2 <- function(Y, Yhat, ytss) {
+
+
+    press <- sum(as.vector((Y - Yhat)^2), na.rm=TRUE) / ncol(Y)
+
+    if(is.null(ytss)){  ytss <- sum(as.vector(Y^2), na.rm=TRUE) / ncol(Y) }
+
+    1-(press / ytss)
+
+}
+
+
+
+#' @title Summarise component indices
+#' @param type char, OPLS type: DA (discriminant analysis) or R (regression)
+#' @param r2x_comp num array, r2x value for each component
+#' @param r2_comp num array, r2y value for each component
+#' @param q2_comp num array, q2 value for each component
+#' @param aucs num array, aucs value for each component (defined only for DA)
+#' @return list: 1. data.fram, summary table 2. ggplot2, viz of summary tbl
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @importFrom scales breaks_pretty
+.orthModelCompSummary=function(type, r2x_comp, r2_comp, q2_comp, aucs, cv){
+
+
+    switch(type,
+           'DA' = {model_summary <- data.frame(PC_pred=1, PC_orth=seq(q2_comp), R2X = round(r2x_comp, 2), R2Y = round(r2_comp, 2), Q2 = round(q2_comp, 2), AUROC = round(aucs, 2))},
+           'R' =  {model_summary <- data.frame(PC_pred=1, PC_orth=seq(q2_comp), R2X = round(r2x_comp, 2), R2Y = round(r2_comp, 2), Q2 = round(q2_comp, 2))},
+    )
+
+    model_summary$PC_pred=1
+    model_summary$PC_orth=1:nrow(model_summary)
+
+    mm <- melt(model_summary, id.vars = c("PC_orth", "PC_pred"))
+    mm$PC <- paste0(mm$PC_pred, '+', mm$PC_orth)
+
+    mm$alpha1 <- 1
+    mm$alpha1[mm$PC_orth==max(mm$PC_orth)] <- 0.7
+
+    g <- ggplot(mm, aes_string("PC", " value", fill = "variable")) +
+        geom_bar(stat = "identity", position = "dodge", colour = NA, aes(alpha = mm$alpha1)) +
+        scale_y_continuous(limits = c(min(c(0, max(model_summary$Q2-0.02, -0.05))), 1), breaks = breaks_pretty(), expand = c(0,0)) +
+        #scale_x_discrete(labels = paste("1+", 1:nc, sep = "") ) +
+        scale_fill_manual(values = c(R2X = "lightgreen", R2Y = "lightblue", Q2 = "red", AUROC = "black"), labels = c(expression(R^2 * X), expression(R^{2} * Y), expression(Q^2), expression(AUROC[cv])), name = "") +
+        scale_alpha(guide = FALSE, limits = c(0, 1)) +
+        labs(x = "Predictive + Orthogonal Component(s)",
+             y = "",
+             title = paste("O-PLS-", type, "  - Component Summary", sep = ""),
+             caption=paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ', ratio test/training set=', round(cv$split, 2), ')')) +
+        theme_bw() +
+        theme(
+            legend.text.align = 0,
+            panel.grid.major.x = element_blank(),
+            panel.grid.major.y = element_line(color = "black", size = 0.15),
+            panel.grid.minor = element_blank(),
+            panel.border = element_blank(),
+            axis.line.x = element_line(color = "black", size = 0.55),
+            axis.line.y = element_blank(),
+            axis.ticks = element_blank(),
+            legend.key = element_rect(colour = "white"),
+            text = element_text(family = "Helvetica"))
+
+    return(list(model_summary, g))
+
+}
+
 

@@ -1,0 +1,19 @@
+---
+title: "Import NMR data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Import NMR data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(metabom8)
+```
