@@ -12,10 +12,10 @@
 #' @details Models are fully statistically validated, currently only k-fold cross validation (CV) and class-balanced k-fold cross validation is implemented. Further extensions, e.g. Monte-Carlo CV, are work in progress. Although the algorithm accepts three and more levels as Y, model interpretation is more straightforward for pairwise group comparisons.
 #' @references Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
 #' @references Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
-#' @return This function returns an \emph{OPLS_MetaboMate} S4 object.
+#' @return This function returns an \code{\link{OplsMate}} S4 object.
 ## #' @seealso \code{\link{OPLS_MetaboMate-class}} \code{\link{dmodx}} \code{\link{plotscores}} \code{\link{plotload}} \code{\link{specload}}
 #' @author Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-#' @example
+#' @examples
 #' data(iris)
 #' smod=opls(X=iris[,seq_len(4)], Y=iris$Species)
 #' @importFrom graphics plot
@@ -86,8 +86,8 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
 
     msd_y<-.sdMatRcpp(y_check[[1]]);
     msd_x<-.sdMatRcpp(X); # returns list with elements mean and sd
-    XcsTot<-.scaleMatRcpp(X, 0:(nrow(X)-1), center=TRUE, scale_type = scale)[[1]]
-    YcsTot<-.scaleMatRcpp(y_check[[1]], 0:(nrow(y_check[[1]])-1), center=TRUE, scale_type = scale)[[1]]
+    XcsTot<-.scaleMatRcpp(X, 0:(nrow(X)-1), center=TRUE, scale_type = sc_num)[[1]]
+    YcsTot<-.scaleMatRcpp(y_check[[1]], 0:(nrow(y_check[[1]])-1), center=TRUE, scale_type = sc_num)[[1]]
 
     tssx<-.tssRcpp(XcsTot)
     tssy<-.tssRcpp(YcsTot)/ncol(YcsTot)
@@ -107,9 +107,9 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
     }
     # extract cv stats
     preds_test<-.extMeanCvFeat(tt, 'y_pred_test')
-    r2_comp_cvr<-.extMeanCvFeat(cv_obj = tt, feat = 'r2x_pred_comp_cv')
-    r2x_comp_cvr[nc]<-r2_comp_cvr[4,1]
-    q2_comp[nc] <-.r2(YcsTot, preds_test[4,])
+    #r2_comp_cvr<-.extMeanCvFeat(cv_obj = tt, feat = 'r2x_pred_comp_cv')
+    #r2x_comp_cvr[nc]<-r2_comp_cvr[4,1]
+    q2_comp[nc] <-.r2(YcsTot, preds_test[4,], tssy)
     if (type == "DA") {
       if (ncol(YcsTot) == 1) {
         mod <- roc(response = Y, predictor = preds_test[4,], quiet = TRUE)
@@ -133,7 +133,8 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
         p_orth<-rbind(p_orth, opls_filt$p_o)
       }
       pred_comp <- .nipPlsCompRcpp(X = opls_filt$X_res, Y = YcsTot)
-      r2_comp[nc-1]<-.r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x)
+      r2x_comp[nc-1]<-.r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, tssx)
+      r2x_comp[nc-1]<-.r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, tssx)
     }
     if (enough == TRUE) {
       message(paste0("An O-PLS-", type, " model with 1 predictive and ", nc - 1, " orthogonal components was fitted."))
@@ -147,7 +148,7 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
 
   xfilt_obsolete <- .nipOplsRcpp(X = opls_filt$X_res, Y = YcsTot)
   pred_comp_obsolete <- .nipPlsCompRcpp(X = xfilt_obsolete$X_res, Y = YcsTot)
-  r2x_comp[nc-1]=.r2(xfilt_obsolete$X_res, pred_comp_obsolete$t_x %*% pred_comp_obsolete$p_x)
+  r2x_comp[nc-1]=.r2(xfilt_obsolete$X_res, pred_comp_obsolete$t_x %*% pred_comp_obsolete$p_x, tssx)
   m_summary=.orthModelCompSummary(type, r2x_comp, r2_comp, q2_comp, aucs)
   if (plotting == TRUE) { plot(m_summary[[2]]) }
 

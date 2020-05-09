@@ -387,7 +387,7 @@
 #' @return Named list of collated OPLS data for respective component
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
-.oplsComponentCv=function(X, Y, cv.set, nc,  mod.cv){
+.oplsComponentCv=function(X, Y, cv.set, nc,  mod.cv, tssx, tssy){
 
     out=lapply(seq_along(cv.set), function(k){
 
@@ -433,7 +433,7 @@
 
                 x_res = matrix(NA, nrow=nrow(Y), ncol=ncol(Xcs)),
 
-                r2x_pred_comp_cv = array()
+                #r2x_pred_comp_cv = array()
 
             )
 
@@ -458,7 +458,7 @@
             mod.cv$x_res[idc,] = opls_filt$X_res
             mod.cv$x_res[-idc,] = opls_pred$Xres
 
-            mod.cv$r2x_pred_comp_cv = .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x)
+           # mod.cv$r2x_pred_comp_cv = .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, tssx)
 
             return(mod.cv)
 
@@ -495,7 +495,7 @@
             mod.cv[[k]]$x_res[idc,] = opls_filt$X_res
             mod.cv[[k]]$x_res[-idc,] = opls_pred$Xres
 
-            mod.cv[[k]]$r2x_pred_comp_cv = .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x)
+            #mod.cv[[k]]$r2x_pred_comp_cv = .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, tssx)
 
             return(mod.cv[[k]])
         }

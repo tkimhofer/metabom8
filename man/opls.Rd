@@ -33,13 +33,17 @@ opls(
 \item{plotting}{Logical value (TRUE or FALSE) indicating if model parameters (R2X, Q2, etc) should be visualised once the model is trained.}
 }
 \value{
-This function returns an \emph{OPLS_MetaboMate} S4 object.
+This function returns an \code{\link{OplsMate}} S4 object.
 }
 \description{
 This function is used to fit  Orthogonal-Partial Least Squares (O-PLS) models for regression (R) or discriminant analysis (DA). In the latter case the outcome can have two or more levels.
 }
 \details{
 Models are fully statistically validated, currently only k-fold cross validation (CV) and class-balanced k-fold cross validation is implemented. Further extensions, e.g. Monte-Carlo CV, are work in progress. Although the algorithm accepts three and more levels as Y, model interpretation is more straightforward for pairwise group comparisons.
+}
+\examples{
+data(iris)
+smod=opls(X=iris[,seq_len(4)], Y=iris$Species)
 }
 \references{
 Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
