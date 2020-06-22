@@ -200,7 +200,11 @@ checkFiles1d <- function(datapath, procs_exp=1, n_max=10, filter=T) {
   if(length(f_acqus) > n_max) { f_procs=f_procs[1:n_max]; message('Reached n_max - not all spectra read-in.') }
   if(length(f_procs) == 0 ) { message('No spectrum found'); return(NULL) }
 
-  if(n_max < length(f_proc2s) ) { f_proc2s=f_proc2s[1:n_max]; message('Reached n_max - not all spectra read-in.') }
+  if(n_max < length(f_procs) ) {
+    f_procs=f_procs[1:n_max];
+    f_acqus=f_acqus[1:n_max];
+    f_f1=f_f1[1:n_max];
+    message('Reached n_max - not all spectra read-in.') }
   if(length(f_procs) == 0) { message('No spectrum found'); return(NULL) }
 
   p_intact=gsub('/acqus$', '', f_acqus)
