@@ -104,7 +104,7 @@ extract_pars1d <- function( f_list ) {
 
     out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_procs, value=T, fixed = F), fixed = F), '=')
     d_procs_val=gsub('^ ', '', sapply(out, '[[', 2))
-    names(d_procs_val) = paste0('pf2_', sapply(out, '[[', 1))
+    names(d_procs_val) = paste0('p_', sapply(out, '[[', 1))
 
     # acqus
     f_acqu=paste0(fil, .Platform$file.sep, 'acqus')
@@ -115,7 +115,7 @@ extract_pars1d <- function( f_list ) {
 
     out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_acqu, value=T, fixed = F), fixed = F), '=')
     d_acqu_val=gsub('^ ', '', sapply(out, '[[', 2))
-    names(d_acqu_val) = paste0('af2_', sapply(out, '[[', 1))
+    names(d_acqu_val) = paste0('a_', sapply(out, '[[', 1))
 
     # change date
     idx=grep('date', names(d_acqu_val), ignore.case = T)
