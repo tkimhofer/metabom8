@@ -29,13 +29,13 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
 
 
   # chem shift
-  ppm_ref <- chem_shift(swidth=pars$af2_SW[1], offset=pars$pf2_OFFSET[1], si=pars$pf2_SI[1])
+  ppm_ref <- chem_shift(swidth=pars$a_SW[1], offset=pars$p_OFFSET[1], si=pars$p_SI[1])
 
   # read in binary file and
   out <- sapply(1:length(f_list[[1]]), function(s, ppref=ppm_ref){
 
     # chem shift
-    csF2_ppm <- chem_shift(swidth=pars$af2_SW[s], offset=pars$pf2_OFFSET[s], si=pars$pf2_SI[s])
+    csF2_ppm <- chem_shift(swidth=pars$a_SW[s], offset=pars$p_OFFSET[s], si=pars$p_SI[s])
     #csF1_hz <- chem_shift(swidth=pars$af1_SW_h[s], offset=pars$pf1_OFFSET[s]*pars$pf1_SF[s], si=pars$pf1_SI[s])
 
     byteorda=c('little'=0, 'big'=1)
@@ -44,12 +44,12 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
 
     spec <- readBin(paste0(f_list[[1]][s], .Platform$file.sep, 'pdata', .Platform$file.sep, procs_exp, .Platform$file.sep, '1r'),
                     what = "int",
-                    n = pars$pf2_FTSIZE[s],
+                    n = pars$p_FTSIZE[s],
                     size = 4,
                     signed = T,
-                    endian = names(byteorda)[match(pars$af2_BYTORDA[s], byteorda)]
+                    endian = names(byteorda)[match(pars$a_BYTORDA[s], byteorda)]
     ) # this is spectra
-    spec <- ( spec * (2^pars$af2_NC[s]) )
+    spec <- ( spec * (2^pars$a_NC[s]) )
     nspec <- length(spec)
 
     f_spec=approxfun(x=csF2_ppm, y=spec)
