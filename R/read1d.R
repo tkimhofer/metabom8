@@ -75,7 +75,7 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
   }
 
   rownames(out)=rnam
-
+  rownames(meta)=rnam
 
   assign("X", out, envir = .GlobalEnv)
   assign("ppm", ppm_ref, envir = .GlobalEnv)
@@ -188,9 +188,9 @@ checkFiles1d <- function(datapath, procs_exp=1, n_max=10, filter=T) {
   if(!any(idx_a | idx_p | idx_f1)){
     if (filter == T) {
       message('File system seesm to be corrupt for some experiments - filtering for intact file systems.')
-      f_acqus <- f_acqus[idx.a]
-      f_procs <- f_procs[idx.p]
-      f_1r <- f_1r[idx.r]
+      f_acqus <- f_acqus[idx_a]
+      f_procs <- f_procs[idx_p]
+      f_1r <- f_1r[idx_r]
     }else{
       message('File system seesm to be corrupt for some experiments. Consider function argument \`filter=TRUE\`')
       return(NULL)
