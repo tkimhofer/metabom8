@@ -4,18 +4,12 @@
 \alias{.cvSetsMethod}
 \title{Create Cross Validation (CV) row-indices for Y}
 \usage{
-.cvSetsMethod(
-  Y,
-  type = c("R", "DA"),
-  method = "k-fold_stratified",
-  k = 7,
-  split = 2/3
-)
+.cvSetsMethod(Y, type, method = "k-fold_stratified", k = 7, split = 2/3)
 }
 \arguments{
-\item{Y}{matrix, CV row indices to be generated for}
+\item{Y}{matrix, if multi-column, only the first column will be used}
 
-\item{type}{char Regression (R) or disciminant analysis (DA)}
+\item{type}{char Regression (R) or disciminant analysis (DA), combined with '-mY' indicating multi-column Y}
 
 \item{method}{Type of cross validation: k-fold or Monte Carlo-Cross Validation (MCCV), sampling can be performed group-blind (\code{'k-fold'}, \code{'MC'}) or group-stratified (\code{'k-fold_stratified'}, \code{'MC_balanced'}).}
 

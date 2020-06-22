@@ -1,11 +1,10 @@
 Package: metabom8
 Type: Package
-Title: What the Package Does (Title Case)
+Title: All you need for NMR-based metabolic profling 
 Version: 0.1.0
 Authors@R: person("Torben", "Kimhofer", email = "torben.kimhofer@murdoch.edu.au", 
   role = c("aut", "cre"))
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: From data read-in to metabolite identification, this R package does it all!
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

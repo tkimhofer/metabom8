@@ -9,7 +9,7 @@
 \arguments{
 \item{k}{int k parameter}
 
-\item{Y}{matrix (observations times variables)}
+\item{Y}{matrix (observations times variables) with ncol(Y)=1, always (column reduction for multicolumn Y  in parent function: .cvSetsMethod)!}
 
 \item{split}{Ratio of the number of samples in training and test set}
 }

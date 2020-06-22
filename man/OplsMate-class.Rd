@@ -7,6 +7,10 @@
 \description{
 An S4 class to represent an OPLS model constructed with MetaboMate
 }
+\section{}{
+NA
+}
+
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }

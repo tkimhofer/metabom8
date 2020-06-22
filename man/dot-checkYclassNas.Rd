@@ -13,7 +13,7 @@
 List of i) Y matrix, ii) Y levels (empty if numeric Y), iii) Y type (R or DA)
 }
 \description{
-This function checks for missing values in Y (NA, NAN, infinite) and establishes analysis type accroding to the class of the input data Y: regression (R) or discriminant analysis (DA).
+This function checks for missing values in Y (NA, NAN, infinite) and establishes analysis type accroding to the class of the input data Y: regression (R) or discriminant analysis (DA). It also converts Y to a matrix.
 }
 \section{}{
 NA

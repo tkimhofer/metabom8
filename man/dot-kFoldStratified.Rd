@@ -7,15 +7,15 @@
 .kFoldStratified(k, stratified)
 }
 \arguments{
-\item{k}{int k parameter}
+\item{k}{int CV parameter k}
 
-\item{stratified}{list with 3 elements: 1) type char: R for regression (Y is numeric) or DA for discriminant analysis (Y treated as categorical), 2) Y matrix (observations times variables) and 3) quantile function probabilities for stratification of numberic Y}
+\item{stratified}{list with 3 elements: 1) char: R for regression (Y is numeric), DA for discriminant analysis (Y treated as categorical), prefix '-mY' indicates multi-column Y (see Y) 2) Y matrix (observations times variables), always with ncol = 1 (stratified CV generation for multi-Y to be implemented) and 3) quantile function probabilities for stratification of numberic Y}
 }
 \value{
 list of Y row-indices for each fold
 }
 \description{
-This function ccreates a list of indices that represent k fold subsets for CV, stratified by the first column in Y
+This function creates a list of indices that represent k fold subsets for CV, stratified by the first column in Y. If type is regression, then Y will be categorised accroding to quantile function using probabilities igven in the thrid element of stratified list (see parameter).
 }
 \section{}{
 NA

@@ -2,7 +2,7 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.mcBalanced}
 \alias{.mcBalanced}
-\title{k-fold Monte Carlo Cross Validation (MCCV) subsets}
+\title{Monte Carlo Cross Validation (MCCV) generation of training sets indices}
 \usage{
 .mcBalanced(k, split, stratified)
 }
@@ -11,7 +11,7 @@
 
 \item{split}{Fraction of samples used to generate training set for class/group-balanced Monte Carlo (MC) CV}
 
-\item{stratified}{list with 3 elements: 1) type char: R for regression (Y is numeric) or DA for discriminant analysis (Y treated as categorical), 2) Y matrix (observations times variables) and 3) quantile function probabilities for stratification of numberic Y}
+\item{stratified}{list with 3 elements: 1) char: R for regression (Y is numeric), DA for discriminant analysis (Y treated as categorical), prefix '-mY' indicates multi-column Y (see Y) 2) Y matrix (observations times variables), always with ncol = 1 (stratified CV generation for multi-Y to be implemented) and 3) quantile function probabilities for stratification of numberic Y}
 }
 \value{
 list of Y row-indices for each fold
