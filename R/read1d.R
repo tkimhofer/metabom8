@@ -190,7 +190,7 @@ checkFiles1d <- function(datapath, procs_exp=1, n_max=10, filter=T) {
       message('File system seesm to be corrupt for some experiments - filtering for intact file systems.')
       f_acqus <- f_acqus[idx_a]
       f_procs <- f_procs[idx_p]
-      f_1r <- f_1r[idx_r]
+      f_1r <- f_1r[idx_f1]
     }else{
       message('File system seesm to be corrupt for some experiments. Consider function argument \`filter=TRUE\`')
       return(NULL)

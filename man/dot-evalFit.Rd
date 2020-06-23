@@ -4,14 +4,14 @@
 \alias{.evalFit}
 \title{Criteria to evaluate number of components}
 \usage{
-.evalFit(type, q2s, aucs, pc_max)
+.evalFit(type, q2s, aucs_te, pc_max)
 }
 \arguments{
-\item{type}{char, 'R' for regression or 'DA' for discriminant analysis}
+\item{type}{char, 'R' for regression or 'DA' for discriminant analysis, with prefix '-mY' if mutli-column Y}
 
 \item{q2s}{num array with Q2 entries of principal components}
 
-\item{aucs}{num array with AUROC entries of principal components}
+\item{aucs_te}{num array with AUROC entries of principal components}
 
 \item{pc_max}{maximum number of components}
 }
@@ -21,7 +21,7 @@ bool: FALSE if another component should be fitted, TRUE if the current component
 \description{
 The number of component is decided based on indices tthat estimate a models generalisation criteria: Q2 for regression and AUROC (calculated with predictive Y in the innter CV) for discriminant analytis.
 }
-\section{}{
+\section{evalFit(type, q2_comp, aucs_tr aucs_te, maxPCo)}{
 NA
 }
 

@@ -4,12 +4,12 @@
 \alias{.orthModelCompSummary}
 \title{Summarise model indices using tabular and graphic modes}
 \usage{
-.orthModelCompSummary(type, r2x_comp, r2_comp, q2_comp, aucs, cv)
+.orthModelCompSummary(type, r2x_comp, r2_comp, q2_comp, aucs_tr, aucs_te, cv)
 
-.orthModelCompSummary(type, r2x_comp, r2_comp, q2_comp, aucs, cv)
+.orthModelCompSummary(type, r2x_comp, r2_comp, q2_comp, aucs_tr, aucs_te, cv)
 }
 \arguments{
-\item{type}{char, OPLS type: DA (discriminant analysis) or R (regression)}
+\item{type}{char, OPLS type: DA (discriminant analysis) or R (regression), with prefix '-mY' if mutli-column Y}
 
 \item{r2x_comp}{num array, r2x value for each component}
 
@@ -17,9 +17,9 @@
 
 \item{q2_comp}{num array, q2 value for each component}
 
-\item{aucs}{num array, aucs value for each component (defined only for DA)}
-
 \item{cv}{list of cross-validion paramters (see opls function)}
+
+\item{aucs}{num array, aucs value for each component (defined only for DA)}
 }
 \value{
 List of two: 1. summary data.frame and 2. ggplot2 figure

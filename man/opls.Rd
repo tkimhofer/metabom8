@@ -26,7 +26,7 @@ opls(
 
 \item{scale}{Desired scaling method (currently only no or unit variance scaling (UV) implemented).}
 
-\item{cv}{Named list of cross-validation paramters to derive the optimal number of components: method, one of 'k-fold', 'k-fold_stratified', 'MC', 'MC_stratified' (see Details), split: fraction of observations used for model training, k: k-fold paramter, ie., the number of cross-validation sets. The latter depends on the number of observations in X but typically takes a value between 3 and 9.}
+\item{cv}{Named list of cross-validation paramters to derive the optimal number of components: method, one of 'k-fold', 'k-fold_stratified', 'MC', 'MC_balanced' (see Details), split: fraction of observations used for model training, k: k-fold paramter, ie., the number of cross-validation sets. The latter depends on the number of observations in X but typically takes a value between 3 and 9.}
 
 \item{maxPCo}{The maximum number of orthogonal components (in case stop criteria fail).}
 
