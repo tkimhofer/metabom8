@@ -75,7 +75,7 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
   }
 
   rownames(out)=rnam
-  rownames(meta)=rnam
+  rownames(pars)=rnam
 
   assign("X", out, envir = .GlobalEnv)
   assign("ppm", ppm_ref, envir = .GlobalEnv)
