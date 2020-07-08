@@ -8,7 +8,25 @@ Description: From data read-in to metabolite identification, this R package does
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: abind, ggplot2, graphics, methods, pROC, Rcpp (>= 1.0.4.6), RcppEigen, reshape, scales, stats, utils
+Imports: 
+    abind, 
+    colorRamps,
+    ellipse,
+    ggplot2, 
+    ggrepel,
+    graphics, 
+    methods, 
+    pcaMethods,
+    pROC, 
+    ptw,
+    RColorBrewer,
+    Rcpp (>= 1.0.4.6), 
+    RcppEigen, 
+    reshape2, 
+    scales, 
+    signal,
+    stats, 
+    utils
 LinkingTo: 
     Rcpp,
     RcppEigen

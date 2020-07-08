@@ -226,17 +226,18 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
     'tssy'= tssy
   )
 
-  mod_opls <- new("OplsMate",
+
+  mod_opls <- new("OPLS_metabom8",
                   type = type,
                   t_pred = pred_comp$t_x,
                   p_pred = pred_comp$p_x,
                   w_pred = pred_comp$w_x,
                   betas_pred = drop(pred_comp$b),
                   Qpc = pred_comp$w_y,
-                  t_cv = pred_comp$t_cv,
+                  t_pred_cv = pred_comp$t_cv,
                   t_orth_cv = pred_comp$t_o_cv,
                   t_orth = t_orth,
-                  w_orth = p_orth,
+                  p_orth = p_orth,
                   nPC = nc - 1,
                   summary = m_summary[[1]],
                   X_orth = Xorth,

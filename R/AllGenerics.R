@@ -263,7 +263,7 @@
     if (grepl('mY', type)) {Y <- as.matrix(Y[,1], ncol = 1)} # reduce Y to first column
     if (!method %in% c("k-fold", "k-fold_stratified", "MC", "MC_balanced")) { stop(paste0("Check method argument, valid methods are: k-fold, k-fold_stratified, MC, MC_balanced"))}
     if (k%%1 ==0) {k<-as.integer(k)}
-    if (grepl("MC", method) & split >= 1) { message("Paramter mc.split can only take values < 1 (ratio training samples / test samples)")}
+    if (grepl("MC", method) && split >= 1) { message("Paramter mc.split can only take values < 1 (ratio training samples / test samples)")}
 
     switch(method,
            `k-fold_stratified` = { sets_list<-.kFoldStratified(k, stratified=list(type, Y, probs=c(0, 0.33, 0.66, 1)))},
@@ -305,47 +305,47 @@
 
 
 
-#' @title Summarise model indices using tabular and graphic modes
-#' @param type char: regression (\code{R}) or discriminant analysis (\code{DA})
-#' @param r2x_comp num array: r2x
-#' @param r2_comp num array: r2y
-#' @param q2_comp num array: q2
-#' @param  aucs num array: auroc
-#' @param  cv list of cross-validion paramters (see opls function)
-#' @return List of two: 1. summary data.frame and 2. ggplot2 figure
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @section
-.orthModelCompSummary = function(type, r2x_comp, r2_comp, q2_comp, aucs, cv) {
-
-
-    switch(type, DA = {
-        model_summary <- data.frame(PC_pred = 1, PC_orth = seq(q2_comp), R2X = round(r2x_comp, 2), R2Y = round(r2_comp, 2), Q2 = round(q2_comp, 2), AUROC = round(aucs, 2))
-    }, R = {
-        model_summary <- data.frame(PC_pred = 1, PC_orth = seq(q2_comp), R2X = round(r2x_comp, 2), R2Y = round(r2_comp, 2), Q2 = round(q2_comp, 2))
-    }, )
-
-    model_summary$PC_pred = 1
-    model_summary$PC_orth = seq_len(nrow(model_summary))
-
-    mm <- melt(model_summary, id.vars = c("PC_orth", "PC_pred"))
-    mm$PC <- paste0(mm$PC_pred, "+", mm$PC_orth)
-
-    mm$alpha1 <- 1
-    mm$alpha1[mm$PC_orth == max(mm$PC_orth)] <- 0.7
-
-    g <- ggplot(mm, aes_string("PC", " value", fill = "variable")) + geom_bar(stat = "identity", position = "dodge", colour = NA, aes_string(alpha = "alpha1")) + scale_y_continuous(limits = c(min(c(0,
-        max(model_summary$Q2 - 0.02, -0.05))), 1), breaks = breaks_pretty(), expand = c(0, 0)) + scale_fill_manual(values = c(R2X = "lightgreen", R2Y = "lightblue", Q2 = "red",
-        AUROC = "black"), labels = c(expression(R^2 * X), expression(R^{
-        2
-    } * Y), expression(Q^2), expression(AUROC["cv"])), name = "") + scale_alpha(guide = FALSE, limits = c(0, 1)) + labs(x = "Predictive + Orthogonal Component(s)", y = "", title = paste("O-PLS-",
-        type, "  - Component Summary", sep = ""), caption = paste0("\nCross validation: ", cv$method, " (k=", cv$k, ", ratio test/training set=", round(cv$split, 2), ")")) + theme_bw() +
-        theme(legend.text.align = 0, panel.grid.major.x = element_blank(), panel.grid.major.y = element_line(color = "black", size = 0.15), panel.grid.minor = element_blank(),
-            panel.border = element_blank(), axis.line.x = element_line(color = "black", size = 0.55), axis.line.y = element_blank(), axis.ticks = element_blank(), legend.key = element_rect(colour = "white"),
-            text = element_text(family = "Helvetica"))
-
-    return(list(model_summary, g))
-
-}
+# #' @title Summarise model indices using tabular and graphic modes
+# #' @param type char: regression (\code{R}) or discriminant analysis (\code{DA})
+# #' @param r2x_comp num array: r2x
+# #' @param r2_comp num array: r2y
+# #' @param q2_comp num array: q2
+# #' @param  aucs num array: auroc
+# #' @param  cv list of cross-validion paramters (see opls function)
+# #' @return List of two: 1. summary data.frame and 2. ggplot2 figure
+# #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+# #' @section
+# .orthModelCompSummary = function(type, r2x_comp, r2_comp, q2_comp, aucs, cv) {
+#
+#
+#     switch(type, DA = {
+#         model_summary <- data.frame(PC_pred = 1, PC_orth = seq(q2_comp), R2X = round(r2x_comp, 2), R2Y = round(r2_comp, 2), Q2 = round(q2_comp, 2), AUROC = round(aucs, 2))
+#     }, R = {
+#         model_summary <- data.frame(PC_pred = 1, PC_orth = seq(q2_comp), R2X = round(r2x_comp, 2), R2Y = round(r2_comp, 2), Q2 = round(q2_comp, 2))
+#     }, )
+#
+#     model_summary$PC_pred = 1
+#     model_summary$PC_orth = seq_len(nrow(model_summary))
+#
+#     mm <- melt(model_summary, id.vars = c("PC_orth", "PC_pred"))
+#     mm$PC <- paste0(mm$PC_pred, "+", mm$PC_orth)
+#
+#     mm$alpha1 <- 1
+#     mm$alpha1[mm$PC_orth == max(mm$PC_orth)] <- 0.7
+#
+#     g <- ggplot(mm, aes_string("PC", " value", fill = "variable")) + geom_bar(stat = "identity", position = "dodge", colour = NA, aes_string(alpha = "alpha1")) + scale_y_continuous(limits = c(min(c(0,
+#         max(model_summary$Q2 - 0.02, -0.05))), 1), breaks = breaks_pretty(), expand = c(0, 0)) + scale_fill_manual(values = c(R2X = "lightgreen", R2Y = "lightblue", Q2 = "red",
+#         AUROC = "black"), labels = c(expression(R^2 * X), expression(R^{
+#         2
+#     } * Y), expression(Q^2), expression(AUROC["cv"])), name = "") + scale_alpha(guide = FALSE, limits = c(0, 1)) + labs(x = "Predictive + Orthogonal Component(s)", y = "", title = paste("O-PLS-",
+#         type, "  - Component Summary", sep = ""), caption = paste0("\nCross validation: ", cv$method, " (k=", cv$k, ", ratio test/training set=", round(cv$split, 2), ")")) + theme_bw() +
+#         theme(legend.text.align = 0, panel.grid.major.x = element_blank(), panel.grid.major.y = element_line(color = "black", size = 0.15), panel.grid.minor = element_blank(),
+#             panel.border = element_blank(), axis.line.x = element_line(color = "black", size = 0.55), axis.line.y = element_blank(), axis.ticks = element_blank(), legend.key = element_rect(colour = "white"),
+#             text = element_text(family = "Helvetica"))
+#
+#     return(list(model_summary, g))
+#
+# }
 
 
 
@@ -485,7 +485,7 @@
 #' @param cv_obj named list, output of .oplsComponentCv (for resp OPLS component)
 #' @param feat char, feature name in output of tt (names(tt))
 #' @param cv_type char indicating cross validation type (k-fold, k-fold_stratified, MC, MC_balanced)
-#' @param mY logical for multicolumn Y
+#' @param model_type char indicating single or multi-column Y (grep mY)
 #' @return num array or matrix of resp component feature. For MCCV and single-column (multi-column) Y this is a 2D (3D) matrix where D1: mean, sd, or length, D2: nrow(Y) and D3: ncol(Y). For k-fold CV single-column (multi-column) Y output is 1D (2D) with D1: nrow(Y) and D2: ncol(Y)
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom abind abind
@@ -583,10 +583,13 @@
 #' @param r2x_comp num array, r2x value for each component
 #' @param r2_comp num array, r2y value for each component
 #' @param q2_comp num array, q2 value for each component
-#' @param aucs num array, aucs value for each component (defined only for DA)
-#' @return list: 1. data.fram, summary table 2. ggplot2, viz of summary tbl
+#' @param aucs_tr num array, cv training set aucs value for each component (defined only for DA)
+#' @param aucs_te num array, cv test set aucs value for each component (defined only for DA)
+#' @param cv list, see cv argument in function opls
+#' @return list: 1. data.frame, summary table 2. ggplot2, viz of summary tbl
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom scales breaks_pretty
+#' @section
 .orthModelCompSummary=function(type, r2x_comp, r2_comp, q2_comp, aucs_tr, aucs_te, cv){
     type=strsplit(type, '-')[[1]][1]
 
@@ -634,5 +637,357 @@
     return(list(model_summary, g))
 
 }
+
+
+#' Check dimension, NA and infinity
+#' @param X NMR matrix with spectra represented in rows.
+#' @param ppm ppm vector.
+#' @return  Logical indicating if X and ppm match and absence of NA and inf in ppm
+#' @section
+.check_X_ppm <- function(X, ppm){
+
+    if( any( is.na(ppm) | is.infinite(ppm) ) ) return(FALSE)
+
+    if( ncol(X) != length(ppm) ) return(FALSE)
+
+    return(TRUE)
+
+}
+
+#' Find indices in ppm vector for respective chemical shift range
+#' @export
+#' @param range num, range chemical shift (in ppm vector)
+#' @param ppm num, ppm vector
+#' @export
+#' @aliases get.idx
+#' @author Torben Kimhofer \email{tkimhofer@@gmail.com}
+get.idx <- function(range = c(1, 5), ppm) {
+    range <- sort(range, decreasing = T)
+    which(ppm <= range[1] & ppm >= range[2])
+}
+
+
+
+#' Min-max scaling
+#' @export
+#' @param x Numeric vector to be scaled.
+#' @return Scaled x vector.
+#' @details Data are scaled to range between zero and one:
+#' \deqn{X_{scaled}=\frac{x-x_{min}}{x_{max}-x_{min}}}
+#' @usage minmax(x)
+#' @author Torben Kimhofer \email{torben.kimhofer@@gmail.com}
+minmax <- function(x) {
+    (x - min(x))/(max(x) - min(x))
+}
+
+#' Calculating full width at half max
+#' @export
+#' @param X NMR matrix with rows representing spectra.
+#' @param ppm ppm vector with its length equals to \code{nrow(X)}.
+#' @param shift Signal shift to calculate line width
+#' @description Calculating full width at half maximum (FWHM, aka line width). This function simply returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in \code{shift}.
+#' @return Array of line widths in ppm. To convert from ppm to Hertz (Hz), multiply values with the spectrometer frequency (column \code{a_SF01} in \code{meta} data frame).
+#' @seealso \code{\link{readBruker}}
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @section
+lw <- function(X, ppm, shift = c(-0.01, 0.01)) {
+    idx <- get.idx(shift, ppm)
+    fwhm <- apply(X[, idx], 1, function(x, pp = ppm[idx]) {
+        x <- x + abs(min(x))  # no negative values
+        baseline <- min(x)
+        height <- max(x) - baseline
+        hw <- baseline + (0.5 * height)
+        f <- approxfun(pp, x)
+        x_new <- seq(-0.01, 0.01, by = 1e-05)
+        y_new <- f(x_new)
+        diff(x_new[range(which(y_new > hw))])
+    })
+    return(fwhm)
+}
+
+
+#' Estimation of noise level of 1D proton spectrum
+#' @export
+#' @param NMR Input matrix with rows representing spectra.
+#' @param ppm ppm vector with its length equals to \code{ncol(X)}.
+#' @param where Signal free region across all NMR spectra (see Details).
+#' @details Estimation of noise level in NMR spectra. This is useful for quality control checks (e.g., before and after spectral normalisation). Noise estimation requires a signal-free ppm region across all spectra, usually this is at the extreme ends or the spectrum. This function requires a minimum number of 50 data points to robustly estimate noise levels.
+#' @return Returned is a vector of noise levels for each spectrum.
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @importFrom ptw asysm
+#' @section
+noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
+    # set ppm range where noise should be estimated, i.e., no signals
+    idx <- get.idx(where, ppm)
+    if (length(idx) < 50) {
+        stop("No or too few data points for noise estimation!")
+    }
+    noise <- apply(NMR[, idx], 1, function(x) {
+        x_driftcorrected <- x - asysm(x, lambda = 1e+10)
+        noi <- (max(x_driftcorrected) - min(x_driftcorrected))
+        return(noi)
+    })
+    return(noise)
+}
+
+
+
+#' @title Prep data.frame for plotting functions
+#' @importFrom ptw asysm
+#' @section
+.viz_df_helper=function(obj, pc, an, type='p'){
+
+    if (missing(an)) an <- list("NA")
+
+    if(length(an)>3){message('an is a list of maximum three elements, see documentation for more infos.')}
+
+    an=an[!sapply(an, is.null)]
+
+    # create df for ggplot
+    if(is.null(names(an))){
+        names(an)=paste0('Var', seq(length(an)))
+    }
+
+    idx_dup = duplicated(names(an))
+    names(an)[idx_dup]=paste0(names(an)[idx_dup], seq(length(which(idx_dup))))
+
+
+    idx=is.na(names(an))
+    if(any(idx)){
+        names(an)[idx]=paste0('Var', seq(length(idx)))
+    }
+
+
+    if(type=='p'){
+
+        # extract data from obj
+        switch(class(obj)[1],
+               "PCA_metabom8"={
+                   melted <- data.frame(PC1=obj@p[,pc[1]],
+                                        PC2=obj@p[,pc[2]],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('p', pc[1], sep=''), paste('p', pc[2], sep=''))
+               },
+               "OPLS_metabom8"={
+                   melted <- data.frame(PC1=obj@p_pred[1,],
+                                        PC2=obj@p_orth[pc[2],],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('p', '_pred', sep=''), paste('p_o', pc[2], sep=''))
+               },
+
+               "OPLS_MetaboMate"={
+                   melted <- data.frame(PC1=obj@p_pred[1,],
+                                        PC2=obj@p_orth[pc[2],],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('p', '_pred', sep=''), paste('p_o', pc[2], sep=''))
+               },
+               "PCA_MetaboMate"={
+                   melted <- data.frame(PC1=obj@p[,pc[1]],
+                                        PC2=obj@p[,pc[2]],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('p', pc[1], sep=''), paste('p', pc[2], sep=''))
+               })
+
+
+    }
+
+
+
+    if(type=='t'){
+        # extract data from obj
+        switch(class(obj)[1],
+               "PCA_metabom8"={
+                   melted <- data.frame(PC1=obj@t[,pc[1]],
+                                        PC2=obj@t[,pc[2]],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('t', pc[1], sep=''), paste('t', pc[2], sep=''))
+               },
+               "OPLS_metabom8"={
+                   melted <- data.frame(PC1=obj@t_pred[,1],
+                                        PC2=obj@t_orth[,pc[2]],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('t', '_pred', sep=''), paste('t_o', pc[2], sep=''))
+               },
+
+               "OPLS_MetaboMate"={
+                   melted <- data.frame(PC1=obj@t_pred[,1],
+                                        PC2=obj@t_orth[,pc[2]],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('t', '_pred', sep=''), paste('t_o', pc[2], sep=''))
+               },
+               "PCA_MetaboMate"={
+                   melted <- data.frame(PC1=obj@t[,pc[1]],
+                                        PC2=obj@t[,pc[2]],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('t', pc[1], sep=''), paste('t', pc[2], sep=''))
+               })
+
+    }
+
+
+    if(type=='t_cv'){
+        # extract data from obj
+        switch(class(obj)[1],
+               "PCA_metabom8"={
+                   melted <- data.frame(PC1=obj@t[,pc[1]],
+                                        PC2=obj@t[,pc[2]],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('t', pc[1], sep=''), paste('t', pc[2], sep=''))
+               },
+               "OPLS_metabom8"={
+                   melted <- data.frame(PC1=obj@t_pred_cv[,1],
+                                        PC2=obj@t_orth_cv[,pc[2]],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('t', '_pred', sep=''), paste('t_o', pc[2], sep=''))
+               },
+
+               "OPLS_MetaboMate"={
+                   melted <- data.frame(PC1=obj@t_cv[,1],
+                                        PC2=obj@t_orth_cv[,pc[2]],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('t', '_pred', sep=''), paste('t_o', pc[2], sep=''))
+               },
+               "PCA_MetaboMate"={
+                   melted <- data.frame(PC1=obj@t[,pc[1]],
+                                        PC2=obj@t[,pc[2]],
+                                        row.names = NULL)
+                   colnames(melted)[1:2]=c(paste('t', pc[1], sep=''), paste('t', pc[2], sep=''))
+               })
+
+    }
+
+    # add annotation data
+    an_full=lapply(an, function(x, le_m=nrow(melted)){
+        #browser()
+        le_x=length(x)
+        if(le_x==1){return(rep(x, le_m))}
+        if(le_x==le_m){return(x)}
+        if(le_x >1 & le_x < le_m){stop('Check list elements of an argument for length discrepancies.')}
+    })
+
+    an_df=as.data.frame(an_full, row.names = NULL)
+    colnames(an_df)=names(an)
+    melted=cbind(melted, an_df)
+
+    return(list(df=melted, an_le=ncol(an_df)))
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

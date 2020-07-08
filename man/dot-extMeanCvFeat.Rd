@@ -13,7 +13,7 @@
 
 \item{cv_type}{char indicating cross validation type (k-fold, k-fold_stratified, MC, MC_balanced)}
 
-\item{mY}{logical for multicolumn Y}
+\item{model_type}{char indicating single or multi-column Y (grep mY)}
 }
 \value{
 num array or matrix of resp component feature. For MCCV and single-column (multi-column) Y this is a 2D (3D) matrix where D1: mean, sd, or length, D2: nrow(Y) and D3: ncol(Y). For k-fold CV single-column (multi-column) Y output is 1D (2D) with D1: nrow(Y) and D2: ncol(Y)

@@ -4,38 +4,49 @@
 #' @param procs_exp num, Topspin processing experiment ID
 #' @param n_max int, Maximum number of spectra to read-in
 #' @param filter lobic, filter for intact file systems (TRUE is recommended)
-#' @author Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-#' @importFrom base list.files readBin seq gsub
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+# @importFrom base list.files readBin seq gsub
 #' @importFrom stats approxfun
 #' @section
 
 # read Bruker 1d new
 read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
 
+  if(grepl('^~', path, fixed=F)){
+    getwd()
+    path=gsub('^~',path.expand("~"), path)
+  }
+
+
   # check file system intact
-  f_list=checkFiles1d(path, procs_exp, n_max, filter)
+  f_list=.checkFiles1d(path, procs_exp, n_max, filter)
 
   # extract parameters from acqus and procs (for f1 and f2)
-  pars <- t(extract_pars1d ( f_list ))
+
+  pars <- t(.extract_pars1d ( f_list, procs_exp))
+
+  if(!is.null(pars)){
+    pars <- t(pars)
+  }
+
 
   # convert to numeric where possible
   dtype_num<-apply(pars, 2, function(x){
     !any(is.na(suppressWarnings(as.numeric(x))))
   })
 
-  pars<-data.frame(pars)
+  pars<-as.data.frame(pars)
   pars[,dtype_num]<-apply(pars[,dtype_num], 2, as.numeric)
   rownames(pars)<-f_list[[2]]
 
-
   # chem shift
-  ppm_ref <- chem_shift(swidth=pars$a_SW[1], offset=pars$p_OFFSET[1], si=pars$p_SI[1])
+  ppm_ref <- .chemShift(swidth=pars$a_SW[1], offset=pars$p_OFFSET[1], si=pars$p_SI[1])
 
   # read in binary file and
   out <- sapply(1:length(f_list[[1]]), function(s, ppref=ppm_ref){
 
     # chem shift
-    csF2_ppm <- chem_shift(swidth=pars$a_SW[s], offset=pars$p_OFFSET[s], si=pars$p_SI[s])
+    csF2_ppm <- .chemShift(swidth=pars$a_SW[s], offset=pars$p_OFFSET[s], si=pars$p_SI[s])
     #csF1_hz <- chem_shift(swidth=pars$af1_SW_h[s], offset=pars$pf1_OFFSET[s]*pars$pf1_SF[s], si=pars$pf1_SI[s])
 
     byteorda=c('little'=0, 'big'=1)
@@ -58,24 +69,18 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
     return(spec_inter)
 
   })
+
   out=t(out)
   colnames(out)=ppm_ref
 
-  rnames=do.call(rbind, strsplit(f_list[[1]], .Platform$file.sep))
-  rnames.idx=which(apply(rnames, 2, function(x){
-    length(unique(x))>1
-  }))
+  fnam=strsplit(f_list[[1]], .Platform$file.sep)
+  idx_rm=min(sapply(fnam, length))
+  fnam=sapply(fnam, function(x, st=idx_rm){
+    paste(x[idx_rm:length(x)], collapse=.Platform$file.sep)
+  })
 
-  if(length(rnames.idx) > 1 ){
-    rnam=apply(rnames[, rnames.idx], 1, function(x){
-      paste(x, collapse=.Platform$file.sep)
-    })
-  }else{
-    rnam=rnames[, rnames.idx]
-  }
-
-  rownames(out)=rnam
-  rownames(pars)=rnam
+  rownames(out)=fnam
+  rownames(pars)=fnam
 
   assign("X", out, envir = .GlobalEnv)
   assign("ppm", ppm_ref, envir = .GlobalEnv)
@@ -89,14 +94,15 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
 
 #' @title Read Bruker NMR paramter files - helper function read1d
 #' @param f_list list, intact files system for NMR experiments. See fct checkFiles1d
-#' @author Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+#' @param procs_exp num or char, which processing experiment should be extracted
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+# @importFrom base sapply
 #' @section
-extract_pars1d <- function( f_list ) {
+.extract_pars1d <- function( f_list, procs_exp ) {
 
 
-  out=sapply(f_list[[1]], function(fil){
-
-    f_procs=paste0(fil, .Platform$file.sep, 'pdata/1/procs')
+  out=lapply(f_list[[1]], function(fil){
+    f_procs=paste0(fil, .Platform$file.sep, 'pdata', .Platform$file.sep, procs_exp, .Platform$file.sep, 'procs')
     # extract procs information for t2
     fhand <- file(f_procs, open = "r")
     f_procs <- readLines(fhand, n = -1, warn = FALSE)
@@ -127,32 +133,50 @@ extract_pars1d <- function( f_list ) {
 
   })
 
+  out_le = sapply(out, length)
+
+  if( length(unique(out_le)) > 1 ){
+
+    cnam=unique(unlist(sapply(out, names)))
+    out_df=matrix(NA, nrow = 1, ncol=length(cnam))
+
+    out=as.data.frame(t(sapply(out, function(x, odf=out_df, cc=cnam){
+      odf[1, match(names(x), cnam)]=x
+      return(odf)
+    })))
+    colnames(out)=cnam
+  }
+
 
   return(out)
 
 }
 
-#' @title Calc chemical shift axis points - helper function read1d
-#' @param swidth num, sweep width extracted from procs file. See fct extract_pars1d
-#' @author Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-#' @section
-chem_shift <- function(swidth, offset, si){
-
-  dppm <- swidth/(si - 1) # ho
-  cshift <- seq(offset, (offset - swidth), by = -dppm)
-
-  return(cshift)
-
-}
+# chem shift defined in read2d.R
+# #' @title Calc chemical shift axis points - helper function read1d
+# #' @param swidth num vector, sweep width extracted from procs file. See fct extract_pars1d
+# #' @param offset num vector, offset value extracted from acqus file. See fct extract_pars1d
+# #' @param si num, number of data points. See fct extract_pars1d
+# #' @author Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+# #' @section
+# .chem_shift <- function(swidth, offset, si){
+#
+#   dppm <- swidth/(si - 1) # ho
+#   cshift <- seq(offset, (offset - swidth), by = -dppm)
+#
+#   return(cshift)
+#
+# }
+#
 
 #' @title Check for intact file systems - helper function read1d
 #' @param datapath char, File directory containing spectra
 #' @param procs_exp num, Topspin processing experiment ID
 #' @param n_max int, Maximum number of spectra to read-in
 #' @param filter lobic, filter for intact file systems (TRUE is recommended)
-#' @author Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
-checkFiles1d <- function(datapath, procs_exp=1, n_max=10, filter=T) {
+.checkFiles1d <- function(datapath, procs_exp=1, n_max=10, filter=T) {
 
   datapath=gsub(paste0(.Platform$file.sep, '$'), '', datapath)
 
@@ -170,8 +194,8 @@ checkFiles1d <- function(datapath, procs_exp=1, n_max=10, filter=T) {
 
   # searches for 1r files
   f_1r <- list.files(path = datapath, pattern ="^1r$",
-                        all.files = FALSE, full.names = TRUE, recursive = TRUE,
-                        ignore.case = TRUE)
+                     all.files = FALSE, full.names = TRUE, recursive = TRUE,
+                     ignore.case = TRUE)
 
 
   # check file systems
@@ -185,7 +209,7 @@ checkFiles1d <- function(datapath, procs_exp=1, n_max=10, filter=T) {
   idx_p <- id_p %in% id_a & id_p %in% id_f1
   idx_f1 <- id_f1 %in% id_p & id_f1 %in% id_a
 
-  if(!any(idx_a | idx_p | idx_f1)){
+  if(any(!idx_a | !idx_p | !idx_f1)){
     if (filter == T) {
       message('File system seesm to be corrupt for some experiments - filtering for intact file systems.')
       f_acqus <- f_acqus[idx_a]
@@ -197,7 +221,8 @@ checkFiles1d <- function(datapath, procs_exp=1, n_max=10, filter=T) {
     }
   }
 
-  if(length(f_acqus) > n_max) { f_procs=f_procs[1:n_max]; message('Reached n_max - not all spectra read-in.') }
+  if(length( unique(c(length(f_acqus), length(f_procs), length(f_1r)))) != 1) {stop('Somethings wrong after filtering!')}
+  # if(length(f_acqus) > n_max) { f_procs=f_procs[1:n_max]; message('Reached n_max - not all spectra read-in.') }
   if(length(f_procs) == 0 ) { message('No spectrum found'); return(NULL) }
 
   if(n_max < length(f_procs) ) {
@@ -212,3 +237,14 @@ checkFiles1d <- function(datapath, procs_exp=1, n_max=10, filter=T) {
 
   return(list(path=p_intact, exp_no=exp_no))
 }
+
+
+.chemShift <- function(swidth, offset, si){
+
+  dppm <- swidth/(si - 1) # ho
+  cshift <- seq(offset, (offset - swidth), by = -dppm)
+
+  return(cshift)
+
+}
+

@@ -2,10 +2,8 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.orthModelCompSummary}
 \alias{.orthModelCompSummary}
-\title{Summarise model indices using tabular and graphic modes}
+\title{Summarise component indices}
 \usage{
-.orthModelCompSummary(type, r2x_comp, r2_comp, q2_comp, aucs_tr, aucs_te, cv)
-
 .orthModelCompSummary(type, r2x_comp, r2_comp, q2_comp, aucs_tr, aucs_te, cv)
 }
 \arguments{
@@ -17,18 +15,16 @@
 
 \item{q2_comp}{num array, q2 value for each component}
 
-\item{cv}{list of cross-validion paramters (see opls function)}
+\item{aucs_tr}{num array, cv training set aucs value for each component (defined only for DA)}
 
-\item{aucs}{num array, aucs value for each component (defined only for DA)}
+\item{aucs_te}{num array, cv test set aucs value for each component (defined only for DA)}
+
+\item{cv}{list, see cv argument in function opls}
 }
 \value{
-List of two: 1. summary data.frame and 2. ggplot2 figure
-
-list: 1. data.fram, summary table 2. ggplot2, viz of summary tbl
+list: 1. data.frame, summary table 2. ggplot2, viz of summary tbl
 }
 \description{
-Summarise model indices using tabular and graphic modes
-
 Summarise component indices
 }
 \section{}{
@@ -36,7 +32,5 @@ NA
 }
 
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
