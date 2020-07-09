@@ -21,11 +21,6 @@ Plotting function OplsMAte object
 NA
 }
 
-\examples{
-data(iris)
-smod=opls(X=iris[,seq_len(4)], Y=iris$Species=='setosa')
-plot(smod, 'scores_cv')
-}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }

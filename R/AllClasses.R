@@ -49,10 +49,12 @@ setClass("OPLS_metabom8", representation(
 #' @param y string, describing plot type: scores, scores_cv
 #' @return graphics output
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @examples
-#' data(iris)
-#' smod=opls(X=iris[,seq_len(4)], Y=iris$Species=='setosa')
-#' plot(smod, 'scores_cv')
+# @examples
+# \dontrun{
+# data(iris)
+# smod=opls(X=iris[,seq_len(4)], Y=iris$Species=='setosa')
+# plot(smod, 'scores_cv')
+# }
 #' @section
 
 setMethod("plot", "OPLS_metabom8",
@@ -94,10 +96,12 @@ setClass("PCA_metabom8", representation(
 # @param y string, describing plot type: scores, scores_cv
 #' @return ggplot2 output
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @examples
-#' data(iris)
-#' mod=pca(X=iris[,seq_len(4)], Y=iris$Species=='setosa')
-#' plot(mod)
+# @examples
+# data(iris)
+# mod=pca(X=iris[,seq_len(4)], Y=iris$Species=='setosa')
+# \dontrun{
+# plot(mod)
+# }
 #' @section
 
 setMethod("plot", "PCA_metabom8",

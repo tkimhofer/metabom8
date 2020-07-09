@@ -4,7 +4,7 @@
 \alias{.viz_df_helper}
 \title{Prep data.frame for plotting functions}
 \usage{
-.viz_df_helper(obj, pc, an)
+.viz_df_helper(obj, pc, an, type = "p")
 }
 \description{
 Prep data.frame for plotting functions

@@ -737,7 +737,187 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 #' @section
 .viz_df_helper=function(obj, pc, an, type='p'){
 
-    if (missing(an)) an <- list("NA")
+
+    #browser()
+
+    an=.check_an_viz(an, obj)
+    # #browser()
+    # if (missing(an)) {
+    #     if(class(obj)[1]=='OPLS_metabom8') {an <- list(Y=obj@Y$ori)} else{ an <- list(NA)}
+    #     }
+    #
+    # if(length(an)>3){message('an is a list of maximum three elements, see documentation for more infos.')}
+    #
+    # an=an[!sapply(an, is.null)]
+    #
+    # # create df for ggplot
+    # if(is.null(names(an))){
+    #     names(an)=paste0('Var', seq(length(an)))
+    # }
+    #
+    # idx_dup = duplicated(names(an))
+    # names(an)[idx_dup]=paste0(names(an)[idx_dup], seq(length(which(idx_dup))))
+    #
+    #
+    # idx=is.na(names(an))
+    # if(any(idx)){
+    #     names(an)[idx]=paste0('Var', seq(length(idx)))
+    # }
+
+    # get orth comp
+    idx_orth=grepl('o', pc)
+    if(any(idx_orth)){
+        pc1=as.numeric(gsub('o', '', pc))
+        if(any(is.na(pc1)) || any(is.infinite(pc1)) || any(pc1[idx_orth] > nrow(obj@p_orth))){stop('Check pc argument and see help section.')}
+    }
+
+    com=list()
+
+
+    if(type=='p'){
+        # extract data from obj
+        switch(class(obj)[1],
+               "PCA_metabom8"={
+                   for(i in 1:length(pc)){
+                       com[[i]]=obj@p[pc1[1],]
+                   }
+               },
+               "OPLS_metabom8"={
+                   for(i in 1:length(pc)){
+                       if( grepl('o', pc[1]) ){ com[[i]]=obj@p_orth[pc1[1],]}else{com[[i]]=obj@p_pred[1,]}
+                   }
+               }
+        )
+
+        melted=as.data.frame(com)
+        colnames(melted)=paste0('pc_', pc)
+
+    }
+
+
+
+    if(type=='t'){
+        # extract data from obj
+        switch(class(obj)[1],
+               "PCA_metabom8"={
+
+                   for(i in 1:length(pc)){
+                       com[[i]]=obj@t[,pc[1]]
+                   }
+               },
+               "OPLS_metabom8"={
+                   for(i in 1:length(pc)){
+                       if( grepl('o', pc[1]) ){ com[[i]]=obj@t_orth[,pc1[1]]}else{com[[i]]=obj@t_pred[,1]}
+                   }
+
+               }
+        )
+        melted=as.data.frame(com)
+        colnames(melted)=paste0('pc_', pc)
+    }
+
+
+    if(type=='t_cv'){
+        # extract data from obj
+        switch(class(obj)[1],
+               "PCA_metabom8"={
+                   stop('t_cv not defined in PCA context')
+               },
+               "OPLS_metabom8"={
+                   for(i in 1:length(pc)){
+                       if( grepl('o', pc[i]) ){ com[[i]]=obj@t_orth_cv[,pc1[1]]}else{com[[i]]=obj@t_pred_cv[,1]}
+                   }
+               }
+        )
+        melted=as.data.frame(com)
+        colnames(melted)=paste0('pc_', pc)
+    }
+
+    #browser()
+    # add annotation data
+    an_full=lapply(an, function(x, le_m=nrow(melted)){
+        #browser()
+        le_x=length(x)
+        if(le_x==1){return(rep(x, le_m))}
+        if(le_x==le_m){return(x)}
+        if(le_x >1 & le_x < le_m){stop('Check list elements of an argument for length discrepancies.')}
+    })
+
+    an_df=as.data.frame(an_full, row.names = NULL)
+    colnames(an_df)=names(an)
+    melted=cbind(melted, an_df)
+    #browser()
+    return(list(df=melted, an_le=ncol(an_df)))
+
+}
+
+
+
+check_pc_model <- function(pc, mod, le=1, type='p') {
+
+    if(is.na(pc) || is.infinite(pc) || length(pc)>le) stop('Check pc argument.')
+
+    if(class(mod)[1]=='PCA_metabom8'){
+        if(!is.numeric(pc)){stop('PC value is not numeric.')}
+        if(max(pc)>nrow(mod@p)){stop('PC value exceeds number of principal components.')}
+    }
+
+    if(class(mod)[1]=='OPLS_metabom8'){
+
+
+        idx_orth=grepl('o', pc)
+        if(any(idx_orth)){
+            pc1=as.numeric(gsub('o', '', pc))
+            if(any(is.na(pc1)) || any(is.infinite(pc1)) || any(pc1[idx_orth] > nrow(mod@o_orth))){stop('Check pc argument and see help section.')}
+
+        }else{
+            ddl=data.frame(x=mod@p_pred[1,], id=colnames(mod@X))
+        }
+
+
+    }
+
+}
+
+
+
+
+
+.load_backscaled_nmr=function(mod, pc, idx){
+    p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
+    # backscaling p
+    p_bs <- p_mod$df[,1] * mod@X_sd
+    p_abs <- minmax(abs(p_mod$df[,1]))
+    df <- data.frame(p_bs, p_abs, ppm)
+    df <- df[idx, ]
+
+    return(df)
+}
+
+
+
+
+
+
+
+
+.load_stat_reconstr_nmr=function(mod, pc, X, idx){
+    t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
+    cc <- cor(t_mod$df[,1], X)[1, ]
+    cv <- cor(t_mod$df[,1], X)[1, ]
+    df <- data.frame(cor = abs(cc), cov = cv, ppm = ppm)
+    df <- df[idx, ]
+
+    return(df)
+}
+
+
+
+.check_an_viz=function(an, obj){
+    #browser()
+    if (missing(an)) {
+        if(class(obj)[1]=='OPLS_metabom8') {an <- list(Y=obj@Y$ori)} else{ an <- list('All samples')}
+    }
 
     if(length(an)>3){message('an is a list of maximum three elements, see documentation for more infos.')}
 
@@ -757,142 +937,9 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
         names(an)[idx]=paste0('Var', seq(length(idx)))
     }
 
-
-    if(type=='p'){
-
-        # extract data from obj
-        switch(class(obj)[1],
-               "PCA_metabom8"={
-                   melted <- data.frame(PC1=obj@p[,pc[1]],
-                                        PC2=obj@p[,pc[2]],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('p', pc[1], sep=''), paste('p', pc[2], sep=''))
-               },
-               "OPLS_metabom8"={
-                   melted <- data.frame(PC1=obj@p_pred[1,],
-                                        PC2=obj@p_orth[pc[2],],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('p', '_pred', sep=''), paste('p_o', pc[2], sep=''))
-               },
-
-               "OPLS_MetaboMate"={
-                   melted <- data.frame(PC1=obj@p_pred[1,],
-                                        PC2=obj@p_orth[pc[2],],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('p', '_pred', sep=''), paste('p_o', pc[2], sep=''))
-               },
-               "PCA_MetaboMate"={
-                   melted <- data.frame(PC1=obj@p[,pc[1]],
-                                        PC2=obj@p[,pc[2]],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('p', pc[1], sep=''), paste('p', pc[2], sep=''))
-               })
-
-
-    }
-
-
-
-    if(type=='t'){
-        # extract data from obj
-        switch(class(obj)[1],
-               "PCA_metabom8"={
-                   melted <- data.frame(PC1=obj@t[,pc[1]],
-                                        PC2=obj@t[,pc[2]],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('t', pc[1], sep=''), paste('t', pc[2], sep=''))
-               },
-               "OPLS_metabom8"={
-                   melted <- data.frame(PC1=obj@t_pred[,1],
-                                        PC2=obj@t_orth[,pc[2]],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('t', '_pred', sep=''), paste('t_o', pc[2], sep=''))
-               },
-
-               "OPLS_MetaboMate"={
-                   melted <- data.frame(PC1=obj@t_pred[,1],
-                                        PC2=obj@t_orth[,pc[2]],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('t', '_pred', sep=''), paste('t_o', pc[2], sep=''))
-               },
-               "PCA_MetaboMate"={
-                   melted <- data.frame(PC1=obj@t[,pc[1]],
-                                        PC2=obj@t[,pc[2]],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('t', pc[1], sep=''), paste('t', pc[2], sep=''))
-               })
-
-    }
-
-
-    if(type=='t_cv'){
-        # extract data from obj
-        switch(class(obj)[1],
-               "PCA_metabom8"={
-                   melted <- data.frame(PC1=obj@t[,pc[1]],
-                                        PC2=obj@t[,pc[2]],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('t', pc[1], sep=''), paste('t', pc[2], sep=''))
-               },
-               "OPLS_metabom8"={
-                   melted <- data.frame(PC1=obj@t_pred_cv[,1],
-                                        PC2=obj@t_orth_cv[,pc[2]],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('t', '_pred', sep=''), paste('t_o', pc[2], sep=''))
-               },
-
-               "OPLS_MetaboMate"={
-                   melted <- data.frame(PC1=obj@t_cv[,1],
-                                        PC2=obj@t_orth_cv[,pc[2]],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('t', '_pred', sep=''), paste('t_o', pc[2], sep=''))
-               },
-               "PCA_MetaboMate"={
-                   melted <- data.frame(PC1=obj@t[,pc[1]],
-                                        PC2=obj@t[,pc[2]],
-                                        row.names = NULL)
-                   colnames(melted)[1:2]=c(paste('t', pc[1], sep=''), paste('t', pc[2], sep=''))
-               })
-
-    }
-
-    # add annotation data
-    an_full=lapply(an, function(x, le_m=nrow(melted)){
-        #browser()
-        le_x=length(x)
-        if(le_x==1){return(rep(x, le_m))}
-        if(le_x==le_m){return(x)}
-        if(le_x >1 & le_x < le_m){stop('Check list elements of an argument for length discrepancies.')}
-    })
-
-    an_df=as.data.frame(an_full, row.names = NULL)
-    colnames(an_df)=names(an)
-    melted=cbind(melted, an_df)
-
-    return(list(df=melted, an_le=ncol(an_df)))
+    return(an)
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

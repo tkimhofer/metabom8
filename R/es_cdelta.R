@@ -3,10 +3,8 @@
 #' @description Non-parametric effect size estimate used to quantify the degree to which one population's variable distribution lies to the right or left of a reference group distribution.
 #' @param ref num, reference group
 #' @param comp num, comparator group
-#' @details Models are fully statistically validated, currently only k-fold cross validation (CV) and class-balanced k-fold cross validation is implemented. Further extensions, e.g. Monte-Carlo CV, are work in progress. Although the algorithm accepts three and more levels as Y, model interpretation is more straightforward for pairwise group comparisons.
-#' @references Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
-#' @references Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
-#' @return This function returns an OplsMate object (S4).
+#' @references Cliff, N (1993), Dominance statistics: Ordinal analyses to answer ordinal quetsions \emph{Psychological Bulletin}, 114.(3), 494-509.<https://doi.org/10.1037%2F0033-2909.114.3.494>
+#' @return This function returns Cliff's delta effect size ranging from -1 to 1
 ## #' @seealso \code{\link{OPLS_MetaboMate-class}} \code{\link{dmodx}} \code{\link{plotscores}} \code{\link{plotload}} \code{\link{specload}}
 #' @examples
 #' # define two distrubutions
@@ -16,10 +14,8 @@
 #' # Cliff's delta
 #'  es_cdelta(comp, ref)
 #'  es_cdelta(ref, comp)
-#'
 #' @author Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 #' @importFrom base sapply length
-
 es_cdelta = function(ref, comp){
 
   ind_ref=is.na(ref) | is.infinite(ref)

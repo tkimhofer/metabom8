@@ -5,25 +5,18 @@
 \title{Overlay PCA or OPLS loadings with spectra}
 \usage{
 specload(
-  model,
-  X,
-  ppm,
+  mod,
   shift = c(0, 10),
   an,
   alp = 0.3,
   size = 0.5,
   pc = 1,
-  type = c("Statistical reconstruction", "Backscaled"),
-  title = ""
+  type = "Backscaled",
+  title = "",
+  r_scale = F
 )
 }
 \arguments{
-\item{model}{PCA or OPLS model generated via \emph{MetaboMate} package functions.}
-
-\item{X}{Input matrix with rows representing spectra}
-
-\item{ppm}{ppm variable}
-
 \item{shift}{ppm region to visualise.}
 
 \item{an}{List with one to three elements specifying facetting, colour and linetype (see Details).}
@@ -37,6 +30,12 @@ specload(
 \item{type}{Type of loadings visualisation, either \code{'Statistical reconstruction'} or \code{'Backscaled'} (see Details).}
 
 \item{title}{Plot title.}
+
+\item{model}{PCA or OPLS model generated via \emph{MetaboMate} package functions.}
+
+\item{X}{Input matrix with rows representing spectra}
+
+\item{ppm}{ppm variable}
 
 \item{...}{Additional parameters passe on to ggplot's facet function.}
 }

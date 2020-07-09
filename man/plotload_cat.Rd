@@ -4,14 +4,7 @@
 \alias{plotload_cat}
 \title{Plot PCA or O-PLS loadings}
 \usage{
-plotload_cat(
-  obj,
-  pc = c(1, 2),
-  an = list(colour = "black", shape = "20", labels = NULL),
-  title = "PCA Loadings",
-  legend = T,
-  ...
-)
+plotload_cat(obj, pc, an, title = NULL, legend = T, ...)
 }
 \arguments{
 \item{obj}{PCA or OPLS object from packages metabom8 or MetaboMate}

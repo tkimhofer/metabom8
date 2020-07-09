@@ -10,8 +10,8 @@
 #' @importFrom ellipse ellipse
 #' @importFrom stats cov
 .hotellingsT2=function(x, y){
-  SD <- cov(cbind(x, y))
-  el <- ellipse(SD, centre = colMeans(cbind(x, y)), level = 0.95)
+  SD <- cov(cbind(x, y), use='complete.obs')
+  el <- ellipse(SD, centre = colMeans(cbind(x, y), na.rm = T), level = 0.95)
   colnames(el) <- c("V1", "V2")
   xlim <- c(min((c(el[, 1], x))), max((c(el[, 1], x))))
   xlim <- xlim + c(diff(range(xlim)) * -0.05, diff(range(xlim)) *

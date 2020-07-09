@@ -12,13 +12,10 @@ es_cdelta(ref, comp)
 \item{comp}{num, comparator group}
 }
 \value{
-This function returns an OplsMate object (S4).
+This function returns Cliff's delta effect size ranging from -1 to 1
 }
 \description{
 Non-parametric effect size estimate used to quantify the degree to which one population's variable distribution lies to the right or left of a reference group distribution.
-}
-\details{
-Models are fully statistically validated, currently only k-fold cross validation (CV) and class-balanced k-fold cross validation is implemented. Further extensions, e.g. Monte-Carlo CV, are work in progress. Although the algorithm accepts three and more levels as Y, model interpretation is more straightforward for pairwise group comparisons.
 }
 \examples{
 # define two distrubutions
@@ -28,12 +25,9 @@ comp=rnorm(100, mean=2, sd=1)
 # Cliff's delta
  es_cdelta(comp, ref)
  es_cdelta(ref, comp)
-
 }
 \references{
-Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
-
-Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
+Cliff, N (1993), Dominance statistics: Ordinal analyses to answer ordinal quetsions \emph{Psychological Bulletin}, 114.(3), 494-509.\url{https://doi.org/10.1037\%2F0033-2909.114.3.494}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}

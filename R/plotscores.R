@@ -4,18 +4,18 @@
 #' @aliases plotscores
 #' @description Function for plotting PCA, PLS or OPLS model scores.
 #' @param model PCA, PLS or OPLS model of the package \emph{metabom8} or \emph{MetaboMate}.
-#' @param pc Model (principal) components to be plotted on abscissa and ordinate (see Details).
-#' @param an Scatter colour, shape and label specification (see Details).
-#' @param title Plot title.
-#' @param qc row indices of QC samples (can be left NA). If specified, QC samples will be highlighted in the plot.
-#' @param legend Position of the plot legend, set to NA if legend should be outside of the plotting area.
-#' @param cv.scores Logical value (TRUE or FALSE) indicating if cross-validated scores should be plotted for the predictive component(s) (only for PLS and O-PLS).
+#' @param pc num vector (n=2), indicating which omponents to be plotted on abscissa and ordinate. If not specified: PCA components 1 vs 2, OPLS: predictive vs 1st orth component.
+#' @param an list of 3 elements: 1st: scatter colour, 2nd: shape and 3rd: label specification (see Details).
+#' @param title cher, plot title.
+#' @param qc int vector, row indices of QC samples (can be left NA). If specified, QC samples will be highlighted in the plot.
+#' @param legend str, position of the plot legend, set to NA if legend should be outside of the plotting area.
+#' @param cv.scores logical, indicating if cross-validated scores should be plotted for the predictive component(s) (only for PLS and O-PLS).
 #' @param ... Additional values passed on to \code{\link[ggplot2]{scale_colour_gradientn}}.
 #' @details Scores colouring is specified with the argument \code{an}, which is a list of three elements. The first list element specifies the colour (class factor required for categorical variables), the second list element specifies a point labeling (class character or factor) and the third list element specifies point shape. The Hotelling's \out{T<sup>2</sup>} ellipse is automatically included and calculated for the dimensions selected by the \code{pc} argument.
 #' @references Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
 #' @references Hotelling, H. (1931) The generalization of Student’s ratio. \emph{Ann. Math. Stat.}, 2, 360-378.
 #' @return This function returns a \emph{ggplot2} plot object.
-#' @author Torben Kimhofer \email{tkimhofer@@gmail.com}
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom stats cov
 #' @importFrom ellipse ellipse
 #' @importFrom RColorBrewer brewer.pal
@@ -29,13 +29,17 @@
 #' @section
 
 
-plotscores1 <- function(obj, pc = c(1, 2), an, title = "", qc, legend = "in", cv.scores = T, ...) {
+plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv.scores = T, ...) {
 
-  #if (missing(qc)) an <- list("NA")
+  if(missing(pc)){
+    if(grepl('PCA', class(obj))){pc=c(1,2)}
+    if(grepl('OPLS', class(obj))){pc=c('1','o1')}
+  }
 
   if(cv.scores==T){etype='t_cv'} else{etype='t'}
   res=.viz_df_helper(obj, pc, an, type=etype)
   sc=res$df
+
 
   type='categorical'
   if(is.numeric(sc[,3])){type='continuous'}
@@ -47,20 +51,6 @@ plotscores1 <- function(obj, pc = c(1, 2), an, title = "", qc, legend = "in", cv
   # Calculate Hotellings T2 elipse
   df=.hotellingsT2(x=sc[,1], y=sc[,2])
 
-
-  #browser()
-
-
-  # y.labb <- diff(range(ylim)) * 0.015
-  # x.labb <- diff(range(xlim)) * 0.015
-  #
-  #
-  # df1 <- sc
-  # df1[, 1] <- df1[, 1] + x.labb
-  # df1[, 2] <- df1[, 2] + y.labb
-
-  #browser()
-
   g <- ggplot() +
     geom_polygon(data = df, aes_string(x = "V1", y = "V2"), fill = NA, alpha = 0.4, colour='black', linetype=3) +
     geom_hline(yintercept = 0, colour = "gray70") +
@@ -70,6 +60,7 @@ plotscores1 <- function(obj, pc = c(1, 2), an, title = "", qc, legend = "in", cv
 
 
   if(res$an_le==1){
+
 
     switch(type,
            'categorical' = {
@@ -159,7 +150,7 @@ plotscores1 <- function(obj, pc = c(1, 2), an, title = "", qc, legend = "in", cv
              comp <- "orthogonal component"
            }
            if (cv.scores == F) {
-             if (obj@type == "DA") {
+             if (grepl('DA', obj@type)) {
 
                g <- g +
                  scale_x_continuous(name = expression(t[pred])) +
@@ -177,7 +168,7 @@ plotscores1 <- function(obj, pc = c(1, 2), an, title = "", qc, legend = "in", cv
                  theme(plot.title = element_text(size = 10))
              }
            } else {
-             if (obj@type == "DA") {
+             if (grepl('DA', obj@type)) {
                g <- g +
                  scale_x_continuous(name = expression(t[pred][","][cv])) +
                  scale_y_continuous(name = expression(t[orth][","][cv])) +
@@ -201,7 +192,7 @@ plotscores1 <- function(obj, pc = c(1, 2), an, title = "", qc, legend = "in", cv
              comp <- "orthogonal component"
            }
            if (cv.scores == F) {
-             if (obj@type == "DA") {
+             if (grepl('DA', obj@type)) {
 
                g <- g +
                  scale_x_continuous(name = expression(t['pred,cv'])) +
@@ -219,7 +210,7 @@ plotscores1 <- function(obj, pc = c(1, 2), an, title = "", qc, legend = "in", cv
                  theme(plot.title = element_text(size = 10))
              }
            } else {
-             if (obj@type == "DA") {
+             if (grepl('DA', obj@type)) { # in case of DA-mY for multi0column Y
                g <- g +
                  scale_x_continuous(name = expression(t[pred][","][cv])) +
                  scale_y_continuous(name = expression(t[orth][","][cv])) +
@@ -228,6 +219,7 @@ plotscores1 <- function(obj, pc = c(1, 2), an, title = "", qc, legend = "in", cv
                  theme(plot.title = element_text(size = 10))
 
              } else {
+               #browser()
                g <- g +
                  scale_x_continuous(name = expression(t[pred][","][cv])) +
                  scale_y_continuous(name = expression(t[orth][","][cv])) +

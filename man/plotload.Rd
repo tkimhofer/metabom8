@@ -5,22 +5,15 @@
 \title{Plotting PCA or OPLS loadings}
 \usage{
 plotload(
-  model,
-  X,
-  ppm,
+  mod,
   shift = c(0, 10),
   pc = 1,
-  type = c("Statistical reconstruction", "Backscaled"),
-  title = ""
+  type = "Backscaled",
+  title = NULL,
+  r_scale = F
 )
 }
 \arguments{
-\item{model}{PCA or OPLS model generated via \emph{MetaboMate} package functions.}
-
-\item{X}{Input matrix with rows representing spectra}
-
-\item{ppm}{ppm variable}
-
 \item{shift}{ppm region to visualise.}
 
 \item{pc}{index of principal component to visualise, set to 1 if input model is OPLS}
@@ -28,6 +21,12 @@ plotload(
 \item{type}{Type of loadings visualisation, either \code{'Statistical reconstruction'} or \code{'Backscaled'} (see Details).}
 
 \item{title}{Plot title.}
+
+\item{model}{PCA or OPLS model generated via \emph{MetaboMate} package functions.}
+
+\item{X}{Input matrix with rows representing spectra}
+
+\item{ppm}{ppm variable}
 }
 \description{
 Plotting PCA or OPLS loadings

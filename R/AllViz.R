@@ -149,95 +149,113 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
 #' @importFrom stats as.formula
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
-specload <- function(model, X, ppm, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, type = c("Statistical reconstruction", "Backscaled"), title = "") {
-  if (class(model) == "PCA_MetaboMate") {
-    type <- c("Statistical reconstruction")
-    if (nrow(model@p) != ncol(X)) {
-      stop("Model loadings do not fit to X matrix.")
-    }
-    if (nrow(model@p) != length(ppm)) {
-      stop("Model loadings do not fit to ppm vector.")
-    }
-  } else {
-    if (ncol(model@p_pred) != ncol(X)) {
-      stop("Model loadings do not fit to X matrix.")
-    }
-    if (ncol(model@p_pred) != length(ppm)) {
-      stop("Model loadings do not fit to ppm vector.")
-    }
-  }
-  if (is.numeric(an[[1]])) {
-    stop("Facet level is numeric!")
-  }
-  if (length(an) < 3) {
-    if (length(an) == 1) {
-      an[[2]] <- "black"
-      an[[3]] <- "1"
-    } else {
-      an[[3]] <- "1"
-    }
-  }
-  names(an) <- c("facet", "col", "ltype")
-  idx <- get.idx(shift, ppm)
-  if (length(idx) == 0) {
-    stop("Shift area not in ppm variable.")
-  }
-  if (grepl("Stat|struct|ical", type, ignore.case = T)) {
+specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, type = "Backscaled", title = "", r_scale=F) {
+
+  if(!class(mod)[1] %in% c('OPLS_metabom8', 'PCA_metabom8')) {stop('Need metabom8 PCA or OPLS object.')}
+
+  # calc loadings
+  if (grepl("st|recon", type, ignore.case = T)) {
     type <- "Statistical reconstruction"
   } else {
     type <- "Backscaled"
   }
-  ########## define overalay
+
+  X=mod@X
+  ppm=as.numeric(colnames(mod@X))
+
+
+  idx <- get.idx(shift, ppm)
+  if (length(idx) < 3) {
+    stop("Shift area not in ppm variable.")
+  }
+
+
+
+  idx <- get.idx(shift, ppm)
+
+
   if (type == "Statistical reconstruction") {
-    switch(class(model)[1], PCA_MetaboMate = {
-      t <- model@t[, pc]
-    }, OPLS_MetaboMate = {
-      t <- model@t_pred[, pc]
-    })
-    cols <- cor(t, X)[1, ]
-    raCol <- c(0, max(abs(cols)))
-    y <- cov(t, X)[1, ]
+
+    # extrat data
+    t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
+
+    df_l <- .load_stat_reconstr_nmr(mod, pc, X, idx)
+    if(r_scale) {raCol =  c(0, 1)}else{  raCol <- c(0, max(abs(df$cor))) }
+
+    y <- df_l$cov
+    cols <- df_l$cor
+
   }
   if (type == "Backscaled") {
-    # backscaling p
-    y <- model@p_pred[pc, ] * model@Xscale
-    cols <- minmax(abs(model@w_pred[pc, ]))
-    raCol <- c(0, 1)
+    # extract data
+    p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
+
+    # backscaling
+    df_l=.load_backscaled_nmr(mod, pc, idx)
+
+    y <- df_l$p_bs
+    cols <- abs(df_l[,1])
+
   }
+
+
+
+
   #####################
-  #le.arg <- length(an)
-  idx <- get.idx(shift, ppm)
+  # plot specs
+
   specs <- X[, idx]
   limY <- range(specs)
+
   colnames(specs) <- paste("ppm", ppm[idx], sep = "_")
-  df <- data.frame(ID = 1:nrow(specs), do.call(cbind.data.frame, an), specs)
+
+  an=.check_an_viz(an, mod)
+
+  df <- data.frame(ID = seq(nrow(specs)), do.call(cbind.data.frame, an), specs, row.names = NULL)
   df <- melt(df, id.vars = c("ID", names(an)))
   df$variable <- as.numeric(gsub("^\\.", "-", gsub("ppm_", "", df$variable)))
-  # colnames(df)[4:6]=c('Group', 'ppm', 'Intensity')
-  df$load <- NA
-  # reduce to idx
-  cols <- abs(cols[idx])
-  y <- y[idx]
+  colnames(df)[match(names(an)[1], colnames(df))]='facet'
+
+
+  # scale loadings to appear in spectral range
+
+  # scale colour line to dimensions of spectrum intensity
   cv1 <- (minmax(y) * (limY[2]/3)) + limY[2] * 0.67
   if (max(cv1) > limY[2]) {
     cv1 <- cv1 - abs(max(cv1 - limY[2]))
   }
-  fac.lev <- unique(an[[1]])
+
+  fac_lev <- unique(an[[1]])
   # define loadings
-  df1 <- data.frame(alp, ID = nrow(X) + 1, facet = fac.lev[1], Group = "load", ppm = ppm[idx], Intensity = cv1, load = cols)
-  for (i in 2:length(fac.lev)) {
-    df1 <- rbind(df1, data.frame(alp, ID = nrow(X) + i, facet = fac.lev[i], Group = "load", ppm = ppm[idx], Intensity = cv1, load = cols))
+  df1 <- data.frame(alp, ID = nrow(X) + 1, facet = fac_lev[1], Group = "load", ppm = ppm[idx], Intensity = cv1, load = cols)
+
+  # add loadings for each facet level
+  if(length(fac_lev)>1){
+    for (i in 2:length(fac_lev)) {
+      df1 <- rbind(df1, data.frame(alp, ID = nrow(X) + i, facet = fac_lev[i], Group = "load", ppm = ppm[idx], Intensity = cv1, load = cols))
+    }
   }
-  g <- ggplot() + geom_line(data = df1, aes_string("ppm", "Intensity", color = "load", group = "ID"), size = 0.8) + geom_line(data = df, aes_string("variable",
-                                                                                                                                                    "value", group = "ID"), alpha = alp, size = 0.1) + scale_x_reverse(breaks = round(seq(shift[1], shift[2], by = abs(diff(shift))/20), 3)) +
-    scale_y_continuous(limits = limY) + ggtitle(title) + xlab(expression(delta ~ {
-    }^1 * H ~ "(ppm)")) + ylab("Intensity (AU)") + facet_grid(facet ~ .) + theme_bw() + theme(axis.text = element_text(colour = "black"), axis.text.x = element_text(angle = 45,
-                                                                                                                                                                     hjust = 1))
+
+  g <- ggplot() +
+    geom_line(data = df1, aes_string("ppm", "Intensity", color = "load", group = "ID"), size = 0.8) +
+    geom_line(data = df, aes_string("variable", "value", group = "ID"), alpha = alp, size = 0.1) +
+    facet_grid(facet ~ .)+
+    scale_x_reverse(breaks = round(seq(shift[1], shift[2], by = abs(diff(shift))/20), 3)) +
+    scale_y_continuous(limits = limY) +
+    ggtitle(title) +
+    xlab(expression(delta ~ {}^1 * H ~ "(ppm)")) +
+    ylab("Intensity (AU)") + facet_grid(facet ~ .) +
+    theme_bw() +
+    theme(axis.text = element_text(colour = "black"), axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
   if (type == "Statistical reconstruction") {
     g <- g + scale_colour_gradientn(colors = matlab.like2(10), name = "cor(t,x)", limits = raCol)
   } else {
-    g <- g + scale_colour_gradientn(colors = matlab.like2(10), name = expression(abs ~ w[pred * "," ~ sc]), limits = raCol)
+    g <- g + scale_colour_gradientn(colors = matlab.like2(10), name = expression(abs ~ w[pred * "," ~ sc]))
   }
+
   return(g)
 }
 
@@ -262,56 +280,55 @@ specload <- function(model, X, ppm, shift = c(0, 10), an, alp = 0.3, size = 0.5,
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
 
-plotload <- function(model, X, ppm, shift = c(0, 10), pc = 1, type = c("Statistical reconstruction", "Backscaled"), title = "") {
-  if (grepl("stat|recon", type, ignore.case = T)) {
+plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title = NULL, r_scale=F) {
+
+  if(!class(mod)[1] %in% c('OPLS_metabom8', 'PCA_metabom8')) {stop('Need metabom8 PCA or OPLS object.')}
+
+  if (grepl("st|recon", type, ignore.case = T)) {
     type <- "Statistical reconstruction"
   } else {
     type <- "Backscaled"
   }
-  # # why is this in here?
-  if (class(model)[1] == "PCA_MetaboMate") {
-    # type=c('Statistical reconstruction')
-    if (nrow(model@p) != ncol(X)) {
-      stop("Model loadings do not fit to X matrix.")
-    }
-    if (nrow(model@p) != length(ppm)) {
-      stop("Model loadings do not fit to ppm vector.")
-    }
-  } else {
-    if (ncol(model@p_pred) != ncol(X)) {
-      stop("Model loadings do not fit to X matrix.")
-    }
-    if (ncol(model@p_pred) != length(ppm)) {
-      stop("Model loadings do not fit to ppm vector.")
-    }
-  }
+
+  X=mod@X
+  ppm=as.numeric(colnames(mod@X))
+
   idx <- get.idx(shift, ppm)
+
+
   if (type == "Statistical reconstruction") {
-    switch(class(model)[1], PCA_MetaboMate = {
-      t <- model@t[, pc]
-    }, OPLS_MetaboMate = {
-      t <- model@t_pred[, pc]
-    })
-    cc <- cor(t, X)[1, ]
-    raCol <- c(0, max(abs(cc)))
-    cv <- cov(t, X)[1, ]
-    df <- data.frame(cor = abs(cc[idx]), cov = cv[idx], ppm = ppm[idx])
-    g <- ggplot(df, aes_string("ppm", "cov", colour = "cor")) + geom_line() + scale_x_reverse(breaks = breaks_pretty(n = 15)) + scale_color_gradientn(colors = matlab.like2(10),
-                                                                                                                                                      limits = raCol, name = "cor(t,x)") + ggtitle(title) + xlab(expression(delta ~ {
-                                                                                                                                                      }^1 * H ~ (ppm))) + ylab("cov(t,x)") + theme_bw()
+
+    # extrat data
+    t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
+
+    df <- .load_stat_reconstr_nmr(mod, pc, X, idx)
+
+    if(r_scale) {raCol =  c(0, 1)}else{  raCol <- c(0, max(abs(df$cor))) }
+
+    g <- ggplot(df, aes_string("ppm", "cov", colour = "cor")) +
+      geom_line() +
+      scale_x_reverse(breaks = breaks_pretty(n = 15)) +
+      scale_color_gradientn(colors = matlab.like2(10),
+                            limits = raCol,
+                            name = "r") +
+      labs(title=title, x=expression(delta ~ {}^1 * H ~ (ppm)), y="cov(t,x)",
+           caption = paste(gsub('_metabom8','', class(mod)[1]), '-', mod@type, 'component', pc)) +
+      theme_bw()
   }
   if (type == "Backscaled") {
-    # backscaling p
-    p <- model@p_pred[pc, ] * model@Xscale
-    w <- minmax(abs(model@w_pred[pc, ]))
-    raCol <- range(w)
-    df <- data.frame(t_bs = p, w = abs(w), ppm)
-    df <- df[idx, ]
-    g <- ggplot(df, aes_string("ppm", "t_bs", colour = "w")) + geom_line() + scale_x_reverse(breaks = breaks_pretty(n = 15)) +
-      scale_color_gradientn(colors = matlab.like2(10),limits = raCol, name = expression(abs ~ w[pred * "," ~ sc])) +
-      ggtitle(title) +
-      xlab(expression(delta ~ {}^1* H ~ (ppm))) +
-      ylab(expression(p[pred] ~ sigma[x])) +
+    # extract data
+    p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
+
+    # backscaling
+    df=.load_backscaled_nmr(mod, pc, idx)
+
+    g <- ggplot(df, aes_string("ppm", "p_bs", colour = "p_abs")) +
+      geom_line() +
+      scale_x_reverse(breaks = breaks_pretty(n = 15)) +
+      scale_color_gradientn(colors = matlab.like2(10),
+                            name = expression('|p'['sc']*'|')) +
+      labs(title=title, x=expression(delta ~ {}^1* H ~ (ppm)), y=expression(p*'*'*sigma[x]),
+           caption = paste(gsub('_metabom8','', class(mod)[1]), '-', mod@type, 'component', pc)) +
       theme_bw()
   }
   return(g)
@@ -321,7 +338,7 @@ plotload <- function(model, X, ppm, shift = c(0, 10), pc = 1, type = c("Statisti
 
 #' Calculating distance to the model in X space
 #' @export
-#' @param model OPLS model of type \code{OPLS_MetaboMate}.
+#' @param mod OPLS model of type \code{OPLS_metabom8}.
 #' @param plot Logical indicating if results should be visualised.
 #' @return The projection distance of each observation in the model (\code{DModX}).
 #' @references Bylesjö M., \emph{et al.} (2002) OPLS discriminant analysis: combining the strengths of PLS-DA and SIMCA classification. \emph{Journal of Chemometrics}, 20, 341-51.
@@ -334,31 +351,36 @@ plotload <- function(model, X, ppm, shift = c(0, 10), pc = 1, type = c("Statisti
 #' @section
 # E=residual Matrix N=number of samples K=number of variables A=number of model components A0= (1 if mean centred, 0 otherwise)
 
-dmodx <- function(model, plot = T) {
-  if (class(model) != "OPLS_MetaboMate") {
-    stop("Please provide a OPLS_MetaboMate object.")
+dmodx <- function(mod, plot = T) {
+  if (class(mod) != "OPLS_MetaboMate") {
+    stop("Please provide a OPLS_metabom8 object.")
   }
-  E <- model@E
+  E <- mod@X_res
   N <- nrow(E)
   K <- ncol(E)
-  A <- ncol(model@t_pred)  # in case of OPLS-DA (alwasy one predictive component)
-  if (as.logical(model@Parameters$Value[model@Parameters$Paramter == "Center"]) == T) {
-    A0 <- 1
-  } else {
-    A0 <- 0
-  }
+  A <- ncol(mod@t_pred)  # in case of OPLS-DA (alwasy one predictive component)
+  if (mod@Parameters$center) {  A0 <- 1 } else { A0 <- 0 }
   # loop over all observations in residual matrix, calc SS residuals / observations and normalise by TSS
   ss_res <- apply(E, 1, function(x) sum(x^2))
   dmodX <- sqrt(ss_res/(K - A))/sqrt(sum(ss_res)/((N - A - A0) * (K - A)))
   tt <- t.test(dmodX, alternative = "less")
   ci95 <- tt$conf.int[2] + 2 * sd(dmodX)
-  df <- data.frame(col = model@t_cv, ID = 1:length(dmodX), DmodX = dmodX, passedT.test = dmodX < tt$conf.int[2] + 2 * sd(dmodX))
+  df <- data.frame(col = mod@t_pred_cv[,1], ID = 1:length(dmodX), DmodX = dmodX, passedT.test = dmodX < tt$conf.int[2] + 2 * sd(dmodX))
   if (plot == T) {
-    g <- ggplot(data = df) + geom_segment(aes_string(x = "ID", xend = "ID", y = "min(dmodX)-0.1", yend = "DmodX"), colour = "gray60", size = 0.1) +
-      geom_point(aes_string(x = "ID", y = "DmodX", colour = "col")) + scale_colour_gradientn(colours = matlab.like2(10), name = expression(t[pred])) +
-      scale_y_continuous(limits = c(min(dmodX) - 0.1, max(c(dmodX, ci95)) + 0.2), name = "DModX", expand = c(0, 0)) + geom_hline(yintercept = ci95,
-                                                                                                                                 linetype = 2, colour = "black") + xlab("Sample index") + theme_bw() + theme(panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank(),
-                                                                                                                                                                                                             panel.grid.minor.y = element_blank(), axis.text = element_text(colour = "black"))
+    df$Y=mod@Y$ori
+    g <- ggplot(data = df) +
+      geom_segment(aes_string(x = "ID", xend = "ID", y = "min(dmodX)-0.1", yend = "DmodX"), colour = "gray60", size = 0.1) +
+      geom_point(aes_string(x = "ID", y = "DmodX", colour = "Y")) +
+      #scale_colour_gradientn(colours = matlab.like2(10), name = expression(t[pred])) +
+      scale_y_continuous(limits = c(min(dmodX) - 0.1, max(c(dmodX, ci95)) + 0.2), name = "DModX", expand = c(0, 0)) +
+      geom_hline(yintercept = ci95,  linetype = 2, colour = "black") + xlab("Sample index") + theme_bw() +
+      theme(panel.grid.minor.x = element_blank(), panel.grid.major.x = element_blank(),
+            panel.grid.minor.y = element_blank(), axis.text = element_text(colour = "black"))+
+      labs(caption = 'Dashed line indicates uppler limit of 95% CI')
+    if(mod@type == 'R'){
+     g<- g +
+       scale_colour_gradientn(colours = matlab.like2(10), name = expression(t[pred]))
+    }
     plot(g)
   }
   return(df[, -1])
@@ -378,13 +400,27 @@ dmodx <- function(model, plot = T) {
 #' @return data.frame containing H.T2 ellipse cooredinates
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom ellipse ellipse
-#' @importFrom ggplot2 aes geom_hline geom_vline geom_point labs scale_x_continuous scale_y_continuous theme_bw geom_label_repel guides
+#' @importFrom ggplot2 aes_string geom_hline geom_vline geom_point labs scale_x_continuous scale_y_continuous theme_bw geom_label_repel guides theme
 #' @importFrom stats cov
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
 
 ## loadiings function
-plotload_cat=function(obj, pc=c(1,2), an=list(colour='black', shape='20', labels=NULL), title="PCA Loadings", legend=T, ...){
+plotload_cat=function(obj, pc, an, title=NULL, legend=T, ...){
+
+  if(missing(pc)){
+    if(grepl('PCA', class(obj))){pc=c(1,2)}
+    if(grepl('PLS', class(obj))){pc=c(1,1)}
+  }
+
+
+  if (missing(an)) {
+    #browser()
+    if(class(obj)[1]=='OPLS_metabom8') {if(ncol(obj@X)<150) an <- list('All', 'All', colnames(obj@X))}
+    if(class(obj)[1]=='PCA_metabom8') {if(ncol(obj@X)<150) an <- list('All', 'All', colnames(obj@X))}
+  }
+
+
 
   res=.viz_df_helper(obj, pc, an, type='p')
 
@@ -412,13 +448,18 @@ plotload_cat=function(obj, pc=c(1,2), an=list(colour='black', shape='20', labels
   }
 
   if(res$an_le==3){
-    d+geom_label_repel( aes_string(label=names(Curriculum)[2]))+
+    d=ggplot(data=melted, aes_string(x= colnames(melted)[1], y= colnames(melted)[2], colour=colnames(melted)[3], shape=colnames(melted)[4]))+
+      geom_hline(yintercept = 0, colour = "gray70") +
+      geom_vline(xintercept = 0, colour = "gray70") +
+      geom_point(...)+
+      labs(shape=names(an)[2], colour=names(an)[1], title = title, x=paste(colnames(melted)[1], sep="" ), y=paste(colnames(melted)[2], sep="" ))+
+      geom_label_repel( aes_string(label=colnames(melted)[5]))+
       theme_bw()
-  }
+    }
 
 
   if(legend==F){
-    d=d+guides(colour=FALSE)
+    d=d+guides(colour=FALSE)+theme(panel.grid.minor = element_blank())
   }
 
 

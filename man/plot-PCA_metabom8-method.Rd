@@ -19,11 +19,6 @@ Plotting function PCA
 NA
 }
 
-\examples{
-data(iris)
-mod=pca(X=iris[,seq_len(4)], Y=iris$Species=='setosa')
-plot(mod)
-}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
