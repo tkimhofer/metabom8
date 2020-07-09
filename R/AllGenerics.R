@@ -687,7 +687,6 @@ minmax <- function(x) {
 #' @param shift Signal shift to calculate line width
 #' @description Calculating full width at half maximum (FWHM, aka line width). This function simply returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in \code{shift}.
 #' @return Array of line widths in ppm. To convert from ppm to Hertz (Hz), multiply values with the spectrometer frequency (column \code{a_SF01} in \code{meta} data frame).
-#' @seealso \code{\link{readBruker}}
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
 lw <- function(X, ppm, shift = c(-0.01, 0.01)) {
@@ -706,7 +705,7 @@ lw <- function(X, ppm, shift = c(-0.01, 0.01)) {
 }
 
 
-#' Estimation of noise level of 1D proton spectrum
+#' @title Estimation of noise level of 1D proton spectrum
 #' @export
 #' @param NMR Input matrix with rows representing spectra.
 #' @param ppm ppm vector with its length equals to \code{ncol(X)}.
@@ -732,9 +731,9 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 
-#' @title Prep data.frame for plotting functions
-#' @importFrom ptw asysm
-#' @section
+# @title Prep data.frame for plotting functions
+# @importFrom ptw asysm
+# @section
 .viz_df_helper=function(obj, pc, an, type='p'){
 
 
@@ -853,7 +852,7 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 
-check_pc_model <- function(pc, mod, le=1, type='p') {
+.check_pc_model <- function(pc, mod, le=1, type='p') {
 
     if(is.na(pc) || is.infinite(pc) || length(pc)>le) stop('Check pc argument.')
 

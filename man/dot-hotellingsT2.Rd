@@ -4,14 +4,14 @@
 \alias{.hotellingsT2}
 \title{Hotelling's T2 ellipse in 2D}
 \usage{
-.hotellingsT2(x, y)
+.hotellingsT2(x, y, alpha = 0.95)
 }
 \arguments{
 \item{x}{num vector descrbing dimension 1}
 
 \item{y, }{num vector descrbing dimension 2}
 
-\item{p}{num, probability level}
+\item{alpha}{num, probability level}
 }
 \value{
 data.frame containing H.T2 ellipse cooredinates

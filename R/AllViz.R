@@ -128,9 +128,7 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
 
 #' Overlay PCA or OPLS loadings with spectra
 #' @export
-#' @param model PCA or OPLS model generated via \emph{MetaboMate} package functions.
-#' @param X Input matrix with rows representing spectra
-#' @param ppm ppm variable
+#' @param mod PCA or OPLS model generated via \emph{MetaboMate} package functions.
 #' @param shift ppm region to visualise.
 #' @param pc index of principal component to visualise, set to 1 if input model is OPLS
 #' @param type Type of loadings visualisation, either \code{'Statistical reconstruction'} or \code{'Backscaled'} (see Details).
@@ -138,7 +136,7 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
 #' @param alp Alpha value for spectral lines.
 #' @param title Plot title.
 #' @param size plot line width.
-#' @param ... Additional parameters passe on to ggplot's facet function.
+#' @param r_scale logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)
 #' @description  Plotting overlayed NMR spectra. This function is based on ggplot2, a high-level plotting R package. For high ppm ranges computation time is relatively, so the range of input argument \code{shift} should be as small as possible. List argument \code{an} must have the first element define, even if it is only a single value. If colour and line width is specified, then at least one list elements of \code{an} must have the same length as \code{X}.
 #' @details OPLS: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical reconstruction.
 # @seealso \code{\link{plotload}} \code{\link{specOverlay}} \code{\link[=OPLS_MetaboMate-class]{OPLS_MetaboMate}} \code{\link{opls}} \code{\link[=PCA_MetaboMate-class]{PCA_MetaboMate}} \code{\link{pca}}
@@ -263,13 +261,12 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
 
 #' Plotting PCA or OPLS loadings
 #' @export
-#' @param model PCA or OPLS model generated via \emph{MetaboMate} package functions.
-#' @param X Input matrix with rows representing spectra
-#' @param ppm ppm variable
+#' @param mod PCA or OPLS model generated via \emph{MetaboMate} package functions.
 #' @param shift ppm region to visualise.
 #' @param pc index of principal component to visualise, set to 1 if input model is OPLS
 #' @param type Type of loadings visualisation, either \code{'Statistical reconstruction'} or \code{'Backscaled'} (see Details).
 #' @param title Plot title.
+#' @param r_scale logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)
 #' @details OPLS: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical recostruction.
 #' @author Torben Kimhofer \email{tkimhofer@@gmail.com}
 #' @references Cloarec, O., \emph{et al.} (2005). Evaluation of the Orthogonal Projection on Latent Structure Model Limitations Caused by Chemical Shift Variability and Improved Visualization of Biomarker Changes in 1H NMR Spectroscopic Metabonomic Studies. \emph{Analytical Chemistry} 77.2, 517-26.
@@ -396,6 +393,7 @@ dmodx <- function(mod, plot = T) {
 #' @param an list, three elements describing colour, point shape and point labels (all is aes context)
 #' @param title Plot title
 #' @param legend logical, indicating if legend should be included (legend takes up too much space when high number of categorical varaibles)
+#' @param ... Optional arguments passed to \code{geom_point()}
 #' @references Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
 #' @return data.frame containing H.T2 ellipse cooredinates
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}

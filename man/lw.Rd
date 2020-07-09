@@ -23,9 +23,6 @@ Calculating full width at half maximum (FWHM, aka line width). This function sim
 NA
 }
 
-\seealso{
-\code{\link{readBruker}}
-}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }

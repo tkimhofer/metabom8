@@ -21,7 +21,7 @@ plotscores(obj, pc, an, title = "", qc, legend = "in", cv.scores = T, ...)
 
 \item{...}{Additional values passed on to \code{\link[ggplot2]{scale_colour_gradientn}}.}
 
-\item{model}{PCA, PLS or OPLS model of the package \emph{metabom8} or \emph{MetaboMate}.}
+\item{mod}{PCA, PLS or OPLS model of the package \emph{metabom8} or \emph{MetaboMate}.}
 }
 \value{
 This function returns a \emph{ggplot2} plot object.

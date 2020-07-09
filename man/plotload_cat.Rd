@@ -16,6 +16,8 @@ plotload_cat(obj, pc, an, title = NULL, legend = T, ...)
 \item{title}{Plot title}
 
 \item{legend}{logical, indicating if legend should be included (legend takes up too much space when high number of categorical varaibles)}
+
+\item{...}{Optional arguments passed to \code{geom_point()}}
 }
 \value{
 data.frame containing H.T2 ellipse cooredinates

@@ -4,6 +4,7 @@
 #' @description Visualise variable importances in OPLS context, p value is generated with Kruskal Walis rank sum test, effect size measure is Cliff's delta.
 #' @param mod OPLS model generated with \code{metabom8}.
 #' @param pc num or char, indicating OPLS component to visualise (1 for predictive component, prefix 'o' for orthogonal components, e.g., pc="o1" for first orthogonal component)
+#' @param p_adj str, p value adjustment method, see \code{?p.adjust}
 #' @return gglot2 obj
 #' @seealso \code{\link{opls}}
 #' @importFrom ggplot2 ggplot aes_string geom_point scale_colour_gradientn geom_label_repel theme_bw theme element_blank element_text geom_segment scale_x_continuous

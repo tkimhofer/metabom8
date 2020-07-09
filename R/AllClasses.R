@@ -44,27 +44,27 @@ setClass("OPLS_metabom8", representation(
 
 
 
-#' @title Plotting function OplsMAte object
-#' @param x OplsMAte object
-#' @param y string, describing plot type: scores, scores_cv
-#' @return graphics output
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-# @examples
+# @title Plotting function OplsMAte object
+# @param x OplsMAte object
+# @param y string, describing plot type: scores, scores_cv
+# @return graphics output
+# @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#@examples
 # \dontrun{
 # data(iris)
 # smod=opls(X=iris[,seq_len(4)], Y=iris$Species=='setosa')
 # plot(smod, 'scores_cv')
 # }
-#' @section
-
-setMethod("plot", "OPLS_metabom8",
-          function(x, y)
-          {
-          if(missing(y)) y='scores'
-          if(y=='scores')plot(x@t_pred, x@t_orth, col=factor(x@Y$ori))
-          if(y=='scores_cv') plot(x@t_cv, x@t_orth_cv, col=factor(x@Y$or))
-          }
-)
+# @section
+#
+# setMethod("plot", "OPLS_metabom8",
+#           function(x, y)
+#           {
+#           if(missing(y)) y='scores'
+#           if(y=='scores')plot(x@t_pred, x@t_orth, col=factor(x@Y$ori))
+#           if(y=='scores_cv') plot(x@t_cv, x@t_orth_cv, col=factor(x@Y$or))
+#           }
+# )
 
 
 #' @title An S4 class to represent an OPLS model constructed with MetaboMate
@@ -91,23 +91,23 @@ setClass("PCA_metabom8", representation(
 )
 
 
-#' @title Plotting function PCA
-#' @param x PCA_metabom8 object
+# @title Plotting function PCA
+# @param x PCA_metabom8 object
 # @param y string, describing plot type: scores, scores_cv
-#' @return ggplot2 output
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+# @return ggplot2 output
+# @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 # @examples
 # data(iris)
 # mod=pca(X=iris[,seq_len(4)], Y=iris$Species=='setosa')
 # \dontrun{
 # plot(mod)
 # }
-#' @section
+# @section
 
-setMethod("plot", "PCA_metabom8",
-
-          function(x, an, pc, title='', qc=NA, legend='in', cv.scores=T, ...){
-            plotscores(model=x, pc, an, title, qc, legend, cv.scores, ...)
-          }
-)
+# setMethod("plot", "PCA_metabom8",
+#
+#           function(x, an, pc, title='', qc=NA, legend='in', cv.scores=T, ...){
+#             plotscores(model=x, pc, an, title, qc, legend, cv.scores, ...)
+#           }
+# )
 

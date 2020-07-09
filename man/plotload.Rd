@@ -14,6 +14,8 @@ plotload(
 )
 }
 \arguments{
+\item{mod}{PCA or OPLS model generated via \emph{MetaboMate} package functions.}
+
 \item{shift}{ppm region to visualise.}
 
 \item{pc}{index of principal component to visualise, set to 1 if input model is OPLS}
@@ -22,11 +24,7 @@ plotload(
 
 \item{title}{Plot title.}
 
-\item{model}{PCA or OPLS model generated via \emph{MetaboMate} package functions.}
-
-\item{X}{Input matrix with rows representing spectra}
-
-\item{ppm}{ppm variable}
+\item{r_scale}{logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)}
 }
 \description{
 Plotting PCA or OPLS loadings

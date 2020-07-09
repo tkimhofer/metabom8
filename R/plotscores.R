@@ -3,7 +3,7 @@
 #' @export
 #' @aliases plotscores
 #' @description Function for plotting PCA, PLS or OPLS model scores.
-#' @param model PCA, PLS or OPLS model of the package \emph{metabom8} or \emph{MetaboMate}.
+#' @param mod PCA, PLS or OPLS model of the package \emph{metabom8} or \emph{MetaboMate}.
 #' @param pc num vector (n=2), indicating which omponents to be plotted on abscissa and ordinate. If not specified: PCA components 1 vs 2, OPLS: predictive vs 1st orth component.
 #' @param an list of 3 elements: 1st: scatter colour, 2nd: shape and 3rd: label specification (see Details).
 #' @param title cher, plot title.

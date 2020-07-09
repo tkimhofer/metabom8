@@ -17,6 +17,8 @@ specload(
 )
 }
 \arguments{
+\item{mod}{PCA or OPLS model generated via \emph{MetaboMate} package functions.}
+
 \item{shift}{ppm region to visualise.}
 
 \item{an}{List with one to three elements specifying facetting, colour and linetype (see Details).}
@@ -31,13 +33,7 @@ specload(
 
 \item{title}{Plot title.}
 
-\item{model}{PCA or OPLS model generated via \emph{MetaboMate} package functions.}
-
-\item{X}{Input matrix with rows representing spectra}
-
-\item{ppm}{ppm variable}
-
-\item{...}{Additional parameters passe on to ggplot's facet function.}
+\item{r_scale}{logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)}
 }
 \description{
 Plotting overlayed NMR spectra. This function is based on ggplot2, a high-level plotting R package. For high ppm ranges computation time is relatively, so the range of input argument \code{shift} should be as small as possible. List argument \code{an} must have the first element define, even if it is only a single value. If colour and line width is specified, then at least one list elements of \code{an} must have the same length as \code{X}.
