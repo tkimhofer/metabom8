@@ -882,7 +882,7 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 
-.load_backscaled_nmr=function(mod, pc, idx){
+.load_backscaled_nmr=function(mod, pc, idx, ppm){
     p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
     # backscaling p
     p_bs <- p_mod$df[,1] * mod@X_sd
@@ -900,7 +900,7 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 
-.load_stat_reconstr_nmr=function(mod, pc, X, idx){
+.load_stat_reconstr_nmr=function(mod, pc, X, idx, ppm){
     t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
     cc <- cor(t_mod$df[,1], X)[1, ]
     cv <- cor(t_mod$df[,1], X)[1, ]

@@ -177,7 +177,7 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
     # extrat data
     t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
 
-    df_l <- .load_stat_reconstr_nmr(mod, pc, X, idx)
+    df_l <- .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
     if(r_scale) {raCol =  c(0, 1)}else{  raCol <- c(0, max(abs(df$cor))) }
 
     y <- df_l$cov
@@ -189,7 +189,7 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
     p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
 
     # backscaling
-    df_l=.load_backscaled_nmr(mod, pc, idx)
+    df_l=.load_backscaled_nmr(mod, pc, idx, ppm)
 
     y <- df_l$p_bs
     cols <- abs(df_l[,1])
@@ -298,7 +298,7 @@ plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title =
     # extrat data
     t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
 
-    df <- .load_stat_reconstr_nmr(mod, pc, X, idx)
+    df <- .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
 
     if(r_scale) {raCol =  c(0, 1)}else{  raCol <- c(0, max(abs(df$cor))) }
 
@@ -317,7 +317,7 @@ plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title =
     p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
 
     # backscaling
-    df=.load_backscaled_nmr(mod, pc, idx)
+    df=.load_backscaled_nmr(mod, pc, idx, ppm)
 
     g <- ggplot(df, aes_string("ppm", "p_bs", colour = "p_abs")) +
       geom_line() +

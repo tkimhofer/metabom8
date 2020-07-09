@@ -57,6 +57,7 @@ importFrom("utils", "combn")
 importFrom(stats,var)
 importFrom(stats,quantile)
 importFrom(utils,methods)
+importFrom("stats", "kruskal.test", "p.adjust", "t.test")
 
 exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp, evalCpp)

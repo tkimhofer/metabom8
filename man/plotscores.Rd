@@ -7,6 +7,8 @@
 plotscores(obj, pc, an, title = "", qc, legend = "in", cv.scores = T, ...)
 }
 \arguments{
+\item{obj}{PCA, PLS or OPLS model of the package \emph{metabom8} or \emph{MetaboMate}.}
+
 \item{pc}{num vector (n=2), indicating which omponents to be plotted on abscissa and ordinate. If not specified: PCA components 1 vs 2, OPLS: predictive vs 1st orth component.}
 
 \item{an}{list of 3 elements: 1st: scatter colour, 2nd: shape and 3rd: label specification (see Details).}
@@ -20,8 +22,6 @@ plotscores(obj, pc, an, title = "", qc, legend = "in", cv.scores = T, ...)
 \item{cv.scores}{logical, indicating if cross-validated scores should be plotted for the predictive component(s) (only for PLS and O-PLS).}
 
 \item{...}{Additional values passed on to \code{\link[ggplot2]{scale_colour_gradientn}}.}
-
-\item{mod}{PCA, PLS or OPLS model of the package \emph{metabom8} or \emph{MetaboMate}.}
 }
 \value{
 This function returns a \emph{ggplot2} plot object.
