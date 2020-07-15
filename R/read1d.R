@@ -9,6 +9,11 @@
 #' @importFrom stats approxfun
 #' @section
 
+# path='/Users/TKimhofer/Desktop/COVID_plasma_DIRE_IVDR02_PN_170620/'
+# procs_exp = '1'
+# n_max = 2
+# filter = T
+
 # read Bruker 1d new
 read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
 
@@ -25,7 +30,20 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
 
   pars <- t(.extract_pars1d ( f_list, procs_exp))
 
-  if(!is.null(pars)){
+  if(is.list(pars)){
+    le=unique(sapply(pars, length))
+    if(length(le)==1){
+      pars=do.call(rbind, pars)
+    }else{
+      unam<-names(unlist(pars))
+      pars<-do.call(rbind, lapply(pars, '[', unam))
+      colnames(pars)<-unam
+    }
+
+  }
+
+
+  if(nrow(pars)!=length(f_list[[1]])){
     pars <- t(pars)
   }
 
@@ -205,21 +223,32 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
   id_f1 <- gsub(paste("^", datapath, "/|/pdata/1/1r$", sep = ""), "", f_1r)
   # ensure that all three files are present
 
-  idx_a <- id_a %in% id_p & id_a %in% id_f1
-  idx_p <- id_p %in% id_a & id_p %in% id_f1
-  idx_f1 <- id_f1 %in% id_p & id_f1 %in% id_a
+  idx_a <- which(id_a %in% id_p & id_a %in% id_f1)
+  idx_p <- which(id_p %in% id_a & id_p %in% id_f1)
+  idx_f1 <- which(id_f1 %in% id_p & id_f1 %in% id_a)
 
-  if(any(!idx_a | !idx_p | !idx_f1)){
+  if(length(idx_a)!=length(id_a) | length(idx_p)!=length(id_p)| length(idx_f1)!=length(id_f1)){
     if (filter == T) {
-      message('File system seesm to be corrupt for some experiments - filtering for intact file systems.')
-      f_acqus <- f_acqus[idx_a]
-      f_procs <- f_procs[idx_p]
-      f_1r <- f_1r[idx_f1]
+      message('Filtering experiment processing folders.')
+      f_acqus <- f_acqus[idx_a]; id_a=id_a[idx_a]
+      f_procs <- f_procs[idx_p]; id_p=id_p[idx_p]
+      f_1r <- f_1r[idx_f1]; id_f1=id_f1[idx_f1]
     }else{
       message('File system seesm to be corrupt for some experiments. Consider function argument \`filter=TRUE\`')
       return(NULL)
     }
   }
+
+
+  # test if these can all be matched
+  idm_a=match(id_p, id_a)
+  idm_f1=match(id_p, id_f1)
+
+  if(any( is.na(idm_a) | is.na(idm_f1)) | any( diff(idm_a)>1 | diff(idm_f1)>1 )){
+    stop('check matching of this functions')
+  }
+
+
 
   if(length( unique(c(length(f_acqus), length(f_procs), length(f_1r)))) != 1) {stop('Somethings wrong after filtering!')}
   # if(length(f_acqus) > n_max) { f_procs=f_procs[1:n_max]; message('Reached n_max - not all spectra read-in.') }
@@ -228,7 +257,8 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
   if(n_max < length(f_procs) ) {
     f_procs=f_procs[1:n_max];
     f_acqus=f_acqus[1:n_max];
-    f_f1=f_f1[1:n_max];
+    f_1r=f_1r[1:n_max];
+
     message('Reached n_max - not all spectra read-in.') }
   if(length(f_procs) == 0) { message('No spectrum found'); return(NULL) }
 
