@@ -32,19 +32,19 @@
 # Rcpp::sourceCpp('/Volumes/Torben_1 1/Rproj/MetaboMate/src/sd_mat_rcpp.cpp')
 # Rcpp::sourceCpp('/Volumes/Torben_1 1/Rproj/MetaboMate/src/nip_opls_mlevcomp.cpp')
 # source('/Volumes/Torben_1 1/Rproj/MetaboMate/R/opls_component_cv.R')
-
+#
 # data(iris)
 # X=as.matrix(iris[,1:4])
 # Y=cbind(as.character(iris[,5]))
-# idx=which(Y %in% c('versicolor',  'virginica' ))
-# X=X[idx,]
-# Y=Y[idx,]
-#
+# # idx=which(Y %in% c('versicolor',  'virginica' ))
+# # X=X[idx,]
+# # Y=Y[idx,]
+# #
 # center = T
 # scale = "UV"
 # plotting = T
 # maxPCo = 5
-# cv=list(method='MC_balanced', split=2/3, k=10)
+# cv=list(method='k-fold', split=2/3, k=nrow(X))
 
 # load('/Volumes/Torben_1 1/Rproj/KMeyer/NMR_cleanSpectra.Rdata')
 # idx=which(!is.na(an$HBP30))
@@ -69,7 +69,7 @@
 # test=opls_rcpp(X, Y, t_pred = 1, center = T, scale = "UV", plotting = T, maxPCo = 5, cv=list(method='k-fold_stratified', split=2/3, k=20))
 
 
-opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='MC_balanced', k=7, split=2/3), maxPCo = 5, plotting = TRUE) {
+opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='k-fold_stratified', k=7, split=2/3), maxPCo = 5, plotting = TRUE) {
 
   {
 
@@ -97,6 +97,8 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
   }
 
   cv$cv_sets<-.cvSetsMethod(Y=y_check[[1]], type = type, method = cv$method, k = cv$k,  split=cv$split)
+  cv$k <- length(cv$cv_sets)
+
 
   r2_comp <- r2x_comp <- q2_comp <- aucs_tr <- aucs_te <- array()
   nc <- 1
@@ -104,12 +106,16 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
 
   while (overfitted == FALSE) {
 
-    if(nc == 1){ tt<-.oplsComponentCv(X, Y=y_check[[1]], cv$cv_sets, nc,  mod.cv=NULL) }else{
-      tt<-.oplsComponentCv(X=NA, Y=y_check[[1]], cv$cv_sets, nc,  mod.cv=tt)}
+    if(nc == 1){ tt<-.oplsComponentCv(X, Y=y_check[[1]], cv$cv_sets, nc,  mod.cv=NULL)
+    }else{
+      tt<-.oplsComponentCv(X=NA, Y=y_check[[1]], cv$cv_sets, nc,  mod.cv=tt)
+      }
 
     # extract cv stats -> if Y is multi-column, fct .extrMeanCVFeat function is likely not working
     preds_test<-.extMeanCvFeat(cv_obj = tt, feat = 'y_pred_test', cv_type = cv$method, model_type=type)
     preds_train<-.extMeanCvFeat(tt, feat = 'y_pred_train', cv_type = cv$method, model_type=type)
+
+
 
     # distinguish between MULTI-Y/SINGLE-Y, as well as MCCV vs k-fold
 
@@ -138,7 +144,9 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
                  if (grepl('mY', type)) {                         # multi Y regression using MCCV
                    r2_comp[nc] <- .r2(YcsTot, preds_test[1,,], NULL)
                    q2_comp[nc] <- .r2(YcsTot, preds_test[1,,], tssy)
-                 }else{                                           # single Y regression using MCCV
+                 }else{
+
+                   # single Y regression using MCCV
                    r2_comp[nc] <- .r2(YcsTot, preds_test[1,], NULL)
                    q2_comp[nc] <- .r2(YcsTot, preds_test[1,], tssy)
                  }
@@ -148,9 +156,9 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
              if( grepl('DA', type) ) {
                if ( grepl('mY', type) ) {
                  colnames(preds_test)=colnames(y_check[[1]])
-                 mod <- multiclass.roc(response = Y, predictor = preds_test)
+                 mod <- multiclass.roc(response = Y, predictor = apply(preds_test, 2, as.numeric))
                  aucs_te[nc] <- mod$auc
-                 preds_te = preds_train[1,,]
+                 preds_te = preds_train[1,,] # this extracts mean values
                  colnames(preds_te)=colnames(y_check[[1]])
                  mod <- multiclass.roc(response = Y, predictor = preds_te, quiet = TRUE)
                  aucs_tr[nc] <- mod$auc
@@ -162,11 +170,12 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
                }
              }else{
                if (grepl('MC', type)) {
-                 r2_comp[nc] <- .r2(YcsTot, preds_test[1,,], NULL)
+                 r2_comp[nc] <- .r2(YcsTot, preds_train[1,,], NULL)
+                 browser()
                  q2_comp[nc] <- .r2(YcsTot, preds_test[4,], tssy)
                }else{
-                 r2_comp[nc] <- .r2(YcsTot, preds_test[1,,], NULL)
-                 q2_comp[nc] <- .r2(YcsTot, preds_test[4,], tssy)
+                 r2_comp[nc] <- .r2(YcsTot, preds_train[1,], NULL)
+                 q2_comp[nc] <- .r2(YcsTot, preds_test[,1], tssy)
                }
              }
            }
@@ -188,16 +197,18 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
     if (overfitted == TRUE) {
       message(paste0("An O-PLS-", type, " model with 1 predictive and ", nc - 1, " orthogonal components was fitted."))
       if(grepl('MC', cv$method)){
+        # this means output will be mean, sd and %cv
       if(grepl('mY', type)){
         pred_comp$t_cv <- t(t(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type=type)[1,,]))
         pred_comp$t_o_cv <- t(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type=type)[1,,-nc]))
       }else{
+        #extract mean value
         pred_comp$t_cv <- t(t(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type=type)[1,]))
         pred_comp$t_o_cv <- t(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type=type)[1,]))
       }
       }else{
         pred_comp$t_cv<-matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type=type), ncol=1)
-        pred_comp$t_o_cv<-matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type=type)[nc-1, ]), ncol=(nc-1))
+        pred_comp$t_o_cv<-matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type=type)[,nc-1]), ncol=(nc-1))
       }
      # pred_comp$t_cv<-t(t(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type=type)[1,,]))
       pred_comp$t_o<-t_orth
@@ -206,6 +217,7 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
     }
     nc <- nc + 1
   }
+
   #browser()
   # xfilt_obsolete <- .nipOplsRcpp(X = opls_filt$X_res, Y = YcsTot)
   m_summary=.orthModelCompSummary(type = type, r2x_comp = c(r2x_comp, NA), r2_comp = r2_comp, q2_comp = q2_comp, aucs_te = aucs_te, aucs_tr=aucs_tr, cv = cv)
@@ -226,7 +238,6 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
     'tssy'= tssy
   )
 
-
   mod_opls <- new("OPLS_metabom8",
                   type = type,
                   t_pred = pred_comp$t_x,
@@ -243,12 +254,12 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
                   X_orth = Xorth,
                   Y_res = Y_res,
                   X_res = E,
-                  X_mean =  msd_x[[1]],
-                  X_sd = msd_x[[2]],
-                  Y_mean = msd_y[[1]],
-                  Y_sd = msd_y[[2]],
+                  X_mean =  msd_x[[2]],
+                  X_sd = msd_x[[1]],
+                  Y_mean = msd_y[[2]],
+                  Y_sd = msd_y[[1]],
                   Parameters = pars,
-                  X = X,
+                  X_scaled = XcsTot,
                   Y = list(ori=Y, dummy=y_check[[1]])
                   )
 

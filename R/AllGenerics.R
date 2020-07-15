@@ -136,8 +136,11 @@
 #' @return list of Y row-indices for each fold
 #' @section
 .kFold = function(k, Y){
-    if(k > nrow(Y)) (k<-nrow(Y))
-    if (nrow(Y)/k < 2) {sets <- seq_len(nrow(Y))} else { # LOO-CV
+    #browser()
+    if(k > nrow(Y) || k < 2 || is.na(k) || is.infinite(k)) {message('Check cross-validation k paramter - using LOO-CV.'); k<-nrow(Y)}
+    #browser()
+
+    if (nrow(Y)/k < 2) {message('Cross-validation paramter k too low - using LOO-CV.');  sets <-sample(rep_len(seq_len(k), nrow(Y)))} else { # LOO-CV
         sets <-sample(rep_len(seq_len(k), nrow(Y)))
     }
     sets_list <- lapply(seq_len(k), function(i, idc = sets) {which(idc != i)})
@@ -170,7 +173,7 @@
         message(paste0("Skewed frequencies of Y classes- results are strongly biased towards higher represented classes (check Y). Use k-fold CV (non-stratified)."))
         return(NULL)}
     levs = names(ct)
-    if (min(ct) <= k || min(ct)/k < 2) {
+    if (min(ct) <= k || min(ct)/k < 2 || is.na(k) || is.infinite(k) || k<2) {
         message(paste0("Setting CV k-fold parameter to ", min(ct) ,". Number of observations in group ", names(which.min(ct)), " is too low (n=", min(ct), ") for k=", k, "."))
         k = min(ct)
     }
@@ -201,8 +204,8 @@
 #' @section
 .mc = function(k, Y, split){
     if (!is.integer(k)) {k=ceiling(k); warning(paste0("The k-fold parameter should be an integer. I'm rounding to k=", k))}
-    if(k==0 || k > 1e6) {stop('Check MC-CV k fold paramter!')}
-    if (split == 1 || split == 0) {stop("The MC-CV split parameter can't take a value of zero or one. Anything from 0.6 to 0.8 works best usually.")}
+    if(k==0 || k > 1e6 || is.na(k) || is.infinite(k))  {stop('Check MC-CV k fold paramter!')}
+    if (split >= 1 || split <= 0 || is.na(split) || is.infinite(split)) {stop("Check MC-CV split parameter - anything from 0.6 to 0.8 works best usually.")}
     if (split > 0.9 || split < 0.3) {message("What an unusual choice of the MC-CV split parameter (anything from 0.5 to 0.9 works best usually).")}
     sets_list <- lapply(seq_len(k), function(i, le = nrow(Y)) {sample(seq_len(le), le * split, replace = TRUE)})
     return(sets_list)
@@ -220,8 +223,8 @@
 #' @section
 .mcBalanced = function(k, split, stratified){
     if (!is.integer(k)) {k=ceiling(k); warning(paste0("The k-fold parameter should be an integer. I'm rounding to k=", k))}
-    if(k==0 || k > 1e6) {stop('Check MC-CV k fold paramter!')}
-    if (split == 1 || split == 0) {stop("The MC-CV split parameter can't take a value of zero or one. Anything from 0.6 to 0.8 works best usually.")}
+    if(k<=2 || k > 1e6 || is.na(k) || is.infinite(k)) {stop('Check MC-CV k fold paramter!')}
+    if (split >= 1 || split <= 0 || is.na(split) || is.infinite(split)) {stop("Check MC-CV split parameter - anything from 0.6 to 0.8 works best usually.")}
     if (split > 0.9 || split < 0.3) {message("What an unusual choice of the MC-CV split parameter (anything from 0.5 to 0.9 works best usually).")}
     if (grepl('R', stratified[[1]])) { Yori = stratified[[2]]; Y = cbind(cut(Yori[, 1], breaks = as.numeric(quantile(Yori[, 1], stratified[[3]])), include.lowest = TRUE))}else{
         Y=stratified[[2]][,1]
@@ -358,8 +361,12 @@
 #' @return Named list of collated OPLS data for respective component
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
+
+
+# TODO: add scaling and centering
 .oplsComponentCv=function(X, Y, cv.set, nc,  mod.cv){
 
+    #browser()
     out=lapply(seq_along(cv.set), function(k){
 
         #browser()
@@ -434,17 +441,18 @@
 
            # mod.cv$r2x_pred_comp_cv = .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, tssx)
 
+            #browser()
             return(mod.cv)
 
         }else{
 
+            #browser()
             # mod.cv$w_xo=cbind(mod.cv$w_xo, opls_filt$w_o)
             # mod.cv$p_xo=rbind(mod.cv$p_xo, opls_filt$p_o)
             #
             mod.cv[[k]]$t_xo=cbind(mod.cv[[k]]$t_xo, matrix(NA, nrow=nrow(Y), ncol=1))
             # mod.cv$t_xo[idc, nc]=opls_filt$t_o
             mod.cv[[k]]$t_xo[-idc, nc]=opls_pred$t_xo_new
-            #
             #
             # mod.cv$w_xp[,nc]=pred_comp$w_p
             # mod.cv$p_xp[nc,]=pred_comp$p_p
@@ -475,9 +483,7 @@
         }
 
     })
-
     return(out)
-
 }
 
 
@@ -517,22 +523,22 @@
             })
         }
     }else{
-        if(grepl('mY', model_type)){
+        if(grepl('mY', model_type) | !grepl('mY', model_type) ){
             f_mat=abind(inter, along=3);
             fout=apply(f_mat, c(1,2), function(x){
                 idx=which(!is.na(x))
                 x[idx]
             })
-        }else{
-            # vector
-            f_mat=do.call(cbind, inter);
-            fout=apply(f_mat, 1, function(x){
-                #browser()
-                idx=which(!is.na(x))
-                #if(length(idx)>1) browser(); #stop('Something\'s fishy with .extMeanCVFeat')
-                x[idx]
-            })
         }
+        # else{
+        #     # vector
+        #     f_mat=abind(inter, along=3);
+        #     f_mat=do.call(cbind, inter);
+        #     fout=apply(f_mat, 1, function(x){
+        #         idx=which(!is.na(x))
+        #         x[idx]
+        #     })
+        # }
     }
 
     return(fout)
@@ -736,9 +742,6 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 # @section
 .viz_df_helper=function(obj, pc, an, type='p'){
 
-
-    #browser()
-
     an=.check_an_viz(an, obj)
     # #browser()
     # if (missing(an)) {
@@ -778,12 +781,12 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
         switch(class(obj)[1],
                "PCA_metabom8"={
                    for(i in 1:length(pc)){
-                       com[[i]]=obj@p[pc1[1],]
+                       com[[i]]=obj@p[pc1[i],]
                    }
                },
                "OPLS_metabom8"={
                    for(i in 1:length(pc)){
-                       if( grepl('o', pc[1]) ){ com[[i]]=obj@p_orth[pc1[1],]}else{com[[i]]=obj@p_pred[1,]}
+                       if( grepl('o', pc[i]) ){ com[[i]]=obj@p_orth[pc1[1],]}else{com[[i]]=obj@p_pred[1,]}
                    }
                }
         )
@@ -799,14 +802,13 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
         # extract data from obj
         switch(class(obj)[1],
                "PCA_metabom8"={
-
                    for(i in 1:length(pc)){
-                       com[[i]]=obj@t[,pc[1]]
+                       com[[i]]=obj@t[,pc[i]]
                    }
                },
                "OPLS_metabom8"={
                    for(i in 1:length(pc)){
-                       if( grepl('o', pc[1]) ){ com[[i]]=obj@t_orth[,pc1[1]]}else{com[[i]]=obj@t_pred[,1]}
+                       if( grepl('o', pc[i]) ){ com[[i]]=obj@t_orth[,pc1[1]]}else{com[[i]]=obj@t_pred[,1]}
                    }
 
                }
@@ -945,16 +947,90 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 
+.permYmod=function(Xs, Y, cv, type, nc_o){
 
 
 
+    browser()
+    # remove orthogonal component(s)
+    for(i in seq(nc_o)){
+        if(nc_o == 1){ tt<-.oplsComponentCv(Xs, Y=Y, cv$cv_sets, nc_o[i],  mod.cv=NULL)
+        }else{
+            tt<-.oplsComponentCv(X=NA, Y=Y, cv$cv_sets, nc_o[i],  mod.cv=tt)
+        }
+    }
 
+    # extract cv stats -> if Y is multi-column, fct .extrMeanCVFeat function is likely not working
+    preds_test<-.extMeanCvFeat(cv_obj = tt, feat = 'y_pred_test', cv_type = cv$method, model_type=type)
+    preds_train<-.extMeanCvFeat(tt, feat = 'y_pred_train', cv_type = cv$method, model_type=type)
 
+    r2_comp <- q2_comp <- aucs_tr <- aucs_te <- array()
+    nc=1
 
+    tssy<-.tssRcpp(Y)/ncol(Y)
 
+    # calculate R2 and auroc for cv compounds
+    switch(strsplit(cv$method, '_')[[1]][1],
+           'MC'={
+               if( grepl('DA', type) ) {
+                   if ( grepl('mY', type) ) {                           # multi Y DA using MCCV
+                       pred_mean=preds_test[1,,]
+                       colnames(pred_mean)=colnames(Y)
+                       mod <- multiclass.roc(response = factor(Y), predictor = pred_mean)
+                       aucs_te[nc] <- mod$auc
+                       pred_tr_mean=preds_train[1,,]
+                       colnames(pred_tr_mean)=colnames(Y)
+                       mod <- multiclass.roc(response = factor(Y), predictor = pred_tr_mean)
+                       aucs_tr[nc] <- mod$auc
+                   }else{                                             # single Y DA using MCCV
+                       # need the same decision boundary
+                       mod <- roc(response = Y, predictor = preds_test[1,], quiet = TRUE)
+                       aucs_te[nc] <- mod$auc
+                       mod <- roc(response = Y, predictor = preds_train[1,], quiet = TRUE)
+                       aucs_tr[nc] <- mod$auc
+                   }
+               } else{
+                   if (grepl('mY', type)) {                         # multi Y regression using MCCV
+                       r2_comp[nc] <- .r2(Y, preds_test[1,,], NULL)
+                       q2_comp[nc] <- .r2(Y, preds_test[1,,], tssy)
+                   }else{                                           # single Y regression using MCCV
+                       r2_comp[nc] <- .r2(Y, preds_test[1,], NULL)
+                       q2_comp[nc] <- .r2(Y, preds_test[1,], tssy)
+                   }
+               }
+           },
+           'k-fold'={
+               if( grepl('DA', type) ) {
+                   if ( grepl('mY', type) ) {
+                       colnames(preds_test)=colnames(Y)
+                       mod <- multiclass.roc(response = Y, predictor = apply(preds_test, 2, as.numeric))
+                       aucs_te[nc] <- mod$auc
+                       preds_te = preds_train[1,,] # this extracts mean values
+                       colnames(preds_te)=colnames(Y)
+                       mod <- multiclass.roc(response = Y, predictor = preds_te, quiet = TRUE)
+                       aucs_tr[nc] <- mod$auc
+                   }else{
+                       mod <- roc(response = Y, predictor = preds_test, quiet = TRUE)
+                       aucs_te[nc] <- mod$auc
+                       mod <- roc(response = Y, predictor = preds_train[1,], quiet = TRUE)
+                       aucs_tr[nc] <- mod$auc
+                   }
+               }else{
 
+                   if (grepl('MC', type)) {
+                       r2_comp[nc] <- .r2(Y, preds_test[1,,], NULL)
+                       q2_comp[nc] <- .r2(Y, preds_test[4,], tssy)
+                   }else{
+                       r2_comp[nc] <- .r2(Y, preds_test[1,,], NULL)
+                       q2_comp[nc] <- .r2(Y, preds_test[4,], tssy)
+                   }
+               }
+           }
+    )
 
+    return(list( r2_comp, q2_comp, aucs_tr, aucs_te))
 
+}
 
 
 

@@ -5,7 +5,8 @@
 #' @param mod OPLS model generated with \code{metabom8}.
 #' @param pc num or char, indicating OPLS component to visualise (1 for predictive component, prefix 'o' for orthogonal components, e.g., pc="o1" for first orthogonal component)
 #' @param p_adj str, p value adjustment method, see \code{?p.adjust}
-#' @return gglot2 obj
+#' @param invert_es logical, swap reference distribution for calculation of effect size estimate Cliff's delta
+#' @return dataframe of effect size estimate (Cd), model loadings of OPLS predictive component (p_pred), p value (adjusted, if specified)
 #' @seealso \code{\link{opls}}
 #' @importFrom ggplot2 ggplot aes_string geom_point scale_colour_gradientn geom_label_repel theme_bw theme element_blank element_text geom_segment scale_x_continuous
 #' @importFrom colorRamps matlab.like2
@@ -16,8 +17,10 @@
 
 
 
-eruption <- function(mod, pc=1, p_adj='BH'){
+eruption <- function(mod, pc=1, p_adj='BH', invert_es=F){
 
+
+  #browser()
   if(is.na(p_adj) || is.infinite(p_adj) || length(p_adj)>1) {p_adj='none'}
 
   if(length(unique(mod@Y$ori))>2) { stop('Eruption plot defined for two-level outcome.') }
@@ -31,18 +34,16 @@ eruption <- function(mod, pc=1, p_adj='BH'){
 
   if(grepl('o', pc)){
     pc1=as.numeric(gsub('o', '', pc))
-    if(is.na(pc1) || is.infinite(pc1) || pc>nrow(mod@o_orth)){stop('Check pc argument and help section.')}
+    if(is.na(pc1) || is.infinite(pc1) || pc1>nrow(mod@p_orth)){ stop('Check pc argument and help section.') }
     ddl=data.frame(x=mod@p_orth[pc1,], id=colnames(mod@X))
   }else{
     ddl=data.frame(x=mod@p_pred[1,], id=colnames(mod@X))
   }
 
-
-
-
-
-  uni= t(apply(mod@X, 2, function(x, idx=which(Y==Y[1])){
-    c(es_cdelta(x[idx],  x[-idx]), kruskal.test(x, Y)$p.value)
+  Y=mod@Y$ori
+  if(invert_es){comp=unique(Y)[2]}else{ comp=unique(Y)[1]}
+  uni= t(apply(mod@X, 2, function(x, idx=which(Y==comp), y=Y){
+    c(es_cdelta(x[idx],  x[-idx]), kruskal.test(x, y)$p.value)
   }))
 
   ddl=cbind(ddl, uni)
@@ -77,6 +78,7 @@ eruption <- function(mod, pc=1, p_adj='BH'){
   } else{
     gl2 <- gl2 + labs(colour= '| log10( p value ) |' )
   }
+
 
   return(gl2)
 

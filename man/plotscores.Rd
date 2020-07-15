@@ -4,7 +4,7 @@
 \alias{plotscores}
 \title{Plotting PCA or OPLS model scores}
 \usage{
-plotscores(obj, pc, an, title = "", qc, legend = "in", cv.scores = T, ...)
+plotscores(obj, pc, an, title = "", qc, legend = "in", cv = T, ...)
 }
 \arguments{
 \item{obj}{PCA, PLS or OPLS model of the package \emph{metabom8} or \emph{MetaboMate}.}
@@ -19,7 +19,7 @@ plotscores(obj, pc, an, title = "", qc, legend = "in", cv.scores = T, ...)
 
 \item{legend}{str, position of the plot legend, set to NA if legend should be outside of the plotting area.}
 
-\item{cv.scores}{logical, indicating if cross-validated scores should be plotted for the predictive component(s) (only for PLS and O-PLS).}
+\item{cv}{logical, indicating if cross-validated (cv) scores should be plotted (only for PLS and O-PLS).}
 
 \item{...}{Additional values passed on to \code{\link[ggplot2]{scale_colour_gradientn}}.}
 }

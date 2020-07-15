@@ -9,7 +9,7 @@
 #' @param title cher, plot title.
 #' @param qc int vector, row indices of QC samples (can be left NA). If specified, QC samples will be highlighted in the plot.
 #' @param legend str, position of the plot legend, set to NA if legend should be outside of the plotting area.
-#' @param cv.scores logical, indicating if cross-validated scores should be plotted for the predictive component(s) (only for PLS and O-PLS).
+#' @param cv logical, indicating if cross-validated (cv) scores should be plotted (only for PLS and O-PLS).
 #' @param ... Additional values passed on to \code{\link[ggplot2]{scale_colour_gradientn}}.
 #' @details Scores colouring is specified with the argument \code{an}, which is a list of three elements. The first list element specifies the colour (class factor required for categorical variables), the second list element specifies a point labeling (class character or factor) and the third list element specifies point shape. The Hotelling's \out{T<sup>2</sup>} ellipse is automatically included and calculated for the dimensions selected by the \code{pc} argument.
 #' @references Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
@@ -19,7 +19,7 @@
 #' @importFrom stats cov
 #' @importFrom ellipse ellipse
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom ggplot2 ggplot aes geom_polygon geom_hline geom_vline geom_point scale_colour_manual ggtitle labs theme labs scale_colour_gradientn scale_x_continuous unit
+#' @importFrom ggplot2 ggplot aes geom_polygon geom_hline geom_vline scale_colour_manual ggtitle labs theme labs scale_colour_gradientn scale_x_continuous unit geom_point guides
 #' @importFrom colorRamps matlab.like2
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom graphics plot
@@ -29,20 +29,19 @@
 #' @section
 
 
-plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv.scores = T, ...) {
+plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) {
 
   if(missing(pc)){
-    if(grepl('PCA', class(obj))){pc=c(1,2)}
-    if(grepl('OPLS', class(obj))){pc=c('1','o1')}
+    if(grepl('PCA', class(obj)[1])){pc=c(1,2)}
+    if(grepl('OPLS', class(obj)[1])){pc=c('1','o1')}
   }
 
-  if(cv.scores==T){etype='t_cv'} else{etype='t'}
+  if( cv==T & grepl('OPLS', class(obj)[1]) ){etype='t_cv'} else{etype='t'};
   res=.viz_df_helper(obj, pc, an, type=etype)
   sc=res$df
 
-
   type='categorical'
-  if(is.numeric(sc[,3])){type='continuous'}
+  if(ncol(sc)>2 && is.numeric(sc[,3])){type='continuous'}
 
 
   if( is.null(res$an_le) || is.na(res$an_le) ) {stop('Check helper function .viz_df_helper')}
@@ -56,7 +55,7 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv.scores = T
     geom_hline(yintercept = 0, colour = "gray70") +
     geom_vline(xintercept = 0, colour = "gray70")+
     theme_bw()+
-    labs(caption = expression('Ellipse: Hotelling\'s T'^2~'(95%)'))
+    labs(caption = expression('Dashed line: Hotelling\'s T'^2~'ellipse ('*alpha*'=0.95)'))
 
 
   if(res$an_le==1){
@@ -129,42 +128,39 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv.scores = T
   if (!missing(qc) && all(!is.na(qc)) && is.numeric(qc)) {
     df_qc <- data.frame(x = sc[qc,1], y = sc[qc,1])
     g <- g +
-      geom_point(data = df.qc, aes_string("x", "y"), alpha = 0.7, colour = "black")
+      geom_point(data = df_qc, aes_string("x", "y"), alpha = 0.7, colour = "black")
   }
 
 
 
 
   ###### AXIS LABELLING
-
-  switch(class(obj),
+  switch(class(obj)[1],
          'PCA_MetaboMate' = {
            g <- g +
              scale_x_continuous(name = paste("PC ", pc[1], " (", round(obj@R2[pc[1]] * 100, 1), " %)", sep = "")) +
              scale_y_continuous(name = paste("PC ",pc[2], " (", round(obj@R2[pc[2]] * 100, 1), " %)", sep = ""))
          },
          'OPLS_MetaboMate' = {
+
            if (ncol(obj@t_orth) > 1) {
              comp <- "orthogonal components"
            } else {
              comp <- "orthogonal component"
            }
-           if (cv.scores == F) {
+           if (etype!='t_cv') {
              if (grepl('DA', obj@type)) {
-
                g <- g +
                  scale_x_continuous(name = expression(t[pred])) +
                  scale_y_continuous(name = expression(t[orth])) +
-                 ggtitle(paste("OPLS-DA ", obj@nPC, " ", comp, " (R2X=", round(obj@summary$R2X[obj@nPC], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC], 2), ", Q2=",
+                 ggtitle(paste("OPLS-DA: 1+", obj@nPC, " ", 'comp.', " (R2X=", round(obj@summary$R2X[obj@nPC], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC], 2), ", Q2=",
                                round(obj@summary$Q2[obj@nPC], 2), ", CV-AUROC=", round(obj@summary$AUROC[obj@nPC], 2), ")", sep = "")) +
                  theme(plot.title = element_text(size = 10))
-
-
              } else {
                g <- g +
                  scale_x_continuous(name = expression(t[pred])) +
                  scale_y_continuous(name = expression(t[orth])) +
-                 ggtitle(paste("OPLS-R ",obj@nPC, " ", comp, " (R2X=", round(obj@summary$R2X[obj@nPC], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC], 2), ", Q2=", round(obj@summary$Q2[obj@nPC], 2), ")", sep = "")) +
+                 ggtitle(paste("OPLS-R: 1+ ",obj@nPC, " ", 'comp.', " (R2X=", round(obj@summary$R2X[obj@nPC], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC], 2), ", Q2=", round(obj@summary$Q2[obj@nPC], 2), ")", sep = "")) +
                  theme(plot.title = element_text(size = 10))
              }
            } else {
@@ -172,14 +168,13 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv.scores = T
                g <- g +
                  scale_x_continuous(name = expression(t[pred][","][cv])) +
                  scale_y_continuous(name = expression(t[orth][","][cv])) +
-                 ggtitle(paste("OPLS - ", obj@nPC, " ", comp, " (R2X=", round(obj@summary$R2X[obj@nPC], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC], 2), ", Q2=", round(obj@summary$Q2[obj@nPC], 2), ", AUROC=", round(obj@summary$AUROC[obj@nPC], 2), ")", sep = "")) +
+                 ggtitle(paste("OPLS-DA: 1+", obj@nPC, " ", 'comp.', " (R2X=", round(obj@summary$R2X[obj@nPC], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC], 2), ", Q2=", round(obj@summary$Q2[obj@nPC], 2), ", AUROC=", round(obj@summary$AUROC[obj@nPC], 2), ")", sep = "")) +
                  theme(plot.title = element_text(size = 10))
-
              } else {
                g <- g +
                  scale_x_continuous(name = expression(t[pred][","][cv])) +
                  scale_y_continuous(name = expression(t[orth][","][cv])) +
-                 ggtitle(paste("OPLS - ", obj@nPC, " ", comp, " (R2X=", round(obj@summary$R2X[obj@nPC], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC], 2), ", Q2=", round(obj@summary$Q2[obj@nPC], 2), ")", sep = "")) +
+                 ggtitle(paste("OPLS-R: 1+", obj@nPC, " ", 'comp.', " (R2X=", round(obj@summary$R2X[obj@nPC], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC], 2), ", Q2=", round(obj@summary$Q2[obj@nPC], 2), ")", sep = "")) +
                  theme(plot.title = element_text(size = 10))
              }
            }
@@ -191,22 +186,19 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv.scores = T
            } else {
              comp <- "orthogonal component"
            }
-           if (cv.scores == F) {
+           if (etype!='t_cv') {
              if (grepl('DA', obj@type)) {
-
                g <- g +
-                 scale_x_continuous(name = expression(t['pred,cv'])) +
-                 scale_y_continuous(name = expression(t['orth,cv'])) +
-                 ggtitle(paste("OPLS-DA: ", obj@nPC-1, " ", comp, " (R2X=", round(obj@summary$R2X[obj@nPC-1], 2), ", AUROC=", round(obj@summary$AUROC[obj@nPC-1], 2),
+                 scale_x_continuous(name = expression(t['pred'])) +
+                 scale_y_continuous(name = expression(t['orth'])) +
+                 ggtitle(paste("OPLS-DA: 1+", obj@nPC-1, " ", 'comp.', " (R2X=", round(obj@summary$R2X[obj@nPC-1], 2), ", AUROC=", round(obj@summary$AUROC[obj@nPC-1], 2),
                                ", CV-AUROC=", round(obj@summary$AUROC_CV[obj@nPC-1], 2), ")", sep = "")) +
                  theme(plot.title = element_text(size = 10))
-
-
              } else {
                g <- g +
                  scale_x_continuous(name = expression(t[pred])) +
                  scale_y_continuous(name = expression(t[orth])) +
-                 ggtitle(paste("OPLS-R ",obj@nPC-1, " ", comp, " (R2X=", round(obj@summary$R2X[obj@nPC-1], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC-1], 2), ", Q2=", round(obj@summary$Q2[obj@nPC-1], 2), ")", sep = "")) +
+                 ggtitle(paste("OPLS-R: 1+",obj@nPC-1, " ", 'comp.', " (R2X=", round(obj@summary$R2X[obj@nPC-1], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC-1], 2), ", Q2=", round(obj@summary$Q2[obj@nPC-1], 2), ")", sep = "")) +
                  theme(plot.title = element_text(size = 10))
              }
            } else {
@@ -214,29 +206,23 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv.scores = T
                g <- g +
                  scale_x_continuous(name = expression(t[pred][","][cv])) +
                  scale_y_continuous(name = expression(t[orth][","][cv])) +
-                 ggtitle(paste("OPLS-DA: ", obj@nPC-1, " ", comp, " (R2X=", round(obj@summary$R2X[obj@nPC-1], 2), ", AUROC=", round(obj@summary$AUROC[obj@nPC-1], 2),
+                 ggtitle(paste("OPLS-DA: 1+", obj@nPC-1, " ", 'comp.', " (R2X=", round(obj@summary$R2X[obj@nPC-1], 2), ", AUROC=", round(obj@summary$AUROC[obj@nPC-1], 2),
                                ", CV-AUROC=", round(obj@summary$AUROC_CV[obj@nPC-1], 2), ")", sep = "")) +
                  theme(plot.title = element_text(size = 10))
-
              } else {
-               #browser()
                g <- g +
                  scale_x_continuous(name = expression(t[pred][","][cv])) +
                  scale_y_continuous(name = expression(t[orth][","][cv])) +
-                 ggtitle(paste("OPLS-R ",obj@nPC-1, " ", comp, " (R2X=", round(obj@summary$R2X[obj@nPC-1], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC-1], 2), ", Q2=", round(obj@summary$Q2[obj@nPC-1], 2), ")", sep = "")) +
+                 ggtitle(paste("OPLS-R:1 + ",obj@nPC-1, " ", 'comp.', " (R2X=", round(obj@summary$R2X[obj@nPC-1], 2), ", R2Y=", round(obj@summary$R2Y[obj@nPC-1], 2), ", Q2=", round(obj@summary$Q2[obj@nPC-1], 2), ")", sep = "")) +
                  theme(plot.title = element_text(size = 10))
              }
            }
          },
-
-
-
-
-
-
-
-
-
+         'PCA_metabom8' = {
+           g <- g +
+             scale_x_continuous(name = paste("PC ", pc[1], " (", round(obj@Parameters$R2[pc[1]] * 100, 1), " %)", sep = "")) +
+             scale_y_continuous(name = paste("PC ",pc[2], " (", round(obj@Parameters$R2[pc[2]] * 100, 1), " %)", sep = ""))
+         }
          )
   if (legend == "in") {
     g <- g + theme(legend.position = c(1.01, 1.02), legend.justification = c(1, 1))

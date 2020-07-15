@@ -10,7 +10,7 @@ opls(
   t_pred = 1,
   center = TRUE,
   scale = "UV",
-  cv = list(method = "MC_balanced", k = 7, split = 2/3),
+  cv = list(method = "k-fold_stratified", k = 7, split = 2/3),
   maxPCo = 5,
   plotting = TRUE
 )

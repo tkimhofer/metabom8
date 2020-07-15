@@ -36,7 +36,7 @@ setClass("OPLS_metabom8", representation(
 
   Parameters = "list",
 
-  X = "matrix",
+  X_scaled = "matrix",
   Y = "list"
   )
   )

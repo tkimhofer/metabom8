@@ -19,7 +19,7 @@
 #' @seealso \code{\link{opls}}
 #' @export
 predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
-  if (class(opls_model)[1] != "OPLS_MetaboMate") {
+  if (class(opls_model)[1] != "OPLS_metabom8") {
     cat("Error: Model input does not belong to class OPLS_Torben!\n")
     return(NULL)
   }
@@ -31,13 +31,13 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
   }
 
   if(!is.null(idx_scale)){ # use provided scaling vector
-    X=scale_rcpp(X, idx_scale, center = opls_model@Parameters$center, scale_type = opls_model@Parameters$scale)
+    X=.scaleMatRcpp(X, idx_scale-1, center = opls_model@Parameters$center, scale_type = opls_model@Parameters$scale)
     #X=MetaboMate:::center_scale(ds, idx_scale, center = cent_scale$center, scale = cent_scale$scale )
   }else{ # use model paramters for scaling
 
     if(all(!is.null(opls_model@X_mean)) && all(!is.null(opls_model@X_sd))){
-      X=t(sapply(seq(ncol(X)), function(i){
-        (X[,1] - opls_model@X_mean[i]) / opls_model@X_sd[i]
+      X=(sapply(seq(ncol(X)), function(i){
+        (X[,i] - opls_model@X_mean[i]) / opls_model@X_sd[i]
       } ) )
     }
 
@@ -46,20 +46,22 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
   # center and scale X<-scale(newdata, center=opls_model@Xcenter, scale=opls_model@Xscale) iteratively remove all orthogonal components from
   # prediction data set
   e_new_orth <- X
-  t_orth <- matrix(NA, nrow = nrow(X), ncol = opls_model@nPC)
-  for (i in 1:opls_model@nPC) {
-    t_orth[, i] <- e_new_orth %*% t(t(opls_model@w_orth[i, ]))/drop(crossprod(t(t(opls_model@w_orth[i, ]))))
+  t_orth <- matrix(NA, nrow = nrow(X), ncol = opls_model@nPC-1)
+  for (i in 1:(opls_model@nPC-1)) {
+    t_orth[, i] <- e_new_orth %*% t(t(opls_model@p_orth[i, ]))/drop(crossprod(t(t(opls_model@p_orth[i, ]))))
     e_new_orth <- e_new_orth - (cbind(t_orth[, i]) %*% t(opls_model@p_orth[i, ]))
   }
-  if (opls_model@nPC > 1) {
+  # summarise orth component in case nc_orth > 2
+  if ((opls_model@nPC-1) > 1) {
     pc.orth <- pca(t_orth, pc = 1, method = "ppca", scale = "UV")
     t_orth_pca <- pc.orth@t[, 1]
   } else {
     t_orth_pca <- NULL
   }
+
   # calc predictive component score predictions and residuals
-  t_pred <- e_new_orth %*% t(opls_model@w_pred)
-  E_h <- e_new_orth - (t_pred %*% opls_model@p_pred)
+  t_pred <- e_new_orth %*% t(opls_model@p_pred)
+  #E_h <- e_new_orth - (t_pred %*% opls_model@p_pred)
   betas <- opls_model@betas_pred
   q_h <- opls_model@Qpc
   res <- matrix(NA, nrow = nrow(X), ncol = ncol(opls_model@t_pred))
@@ -68,7 +70,8 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
     res[, i] <- apply(opts, 1, sum)
   }
   totalPrediction <- apply(res, 1, sum)  # sum over all components
-  Y_predicted <- (totalPrediction * opls_model@Yscale) + opls_model@Ycenter
+
+  Y_predicted <- (totalPrediction * opls_model@Y_sd) + opls_model@Y_mean
   if (opls_model@type == "DA") {
     levs <- opls_model@Yout
     Y_predicted <- levs$Original[apply(sapply(levs$Numeric, function(x, y = Y_predicted) {

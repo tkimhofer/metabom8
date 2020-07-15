@@ -4,7 +4,7 @@
 \alias{eruption}
 \title{Eruption plot}
 \usage{
-eruption(mod, pc = 1, p_adj = "BH")
+eruption(mod, pc = 1, p_adj = "BH", invert_es = F)
 }
 \arguments{
 \item{mod}{OPLS model generated with \code{metabom8}.}
@@ -12,9 +12,11 @@ eruption(mod, pc = 1, p_adj = "BH")
 \item{pc}{num or char, indicating OPLS component to visualise (1 for predictive component, prefix 'o' for orthogonal components, e.g., pc="o1" for first orthogonal component)}
 
 \item{p_adj}{str, p value adjustment method, see \code{?p.adjust}}
+
+\item{invert_es}{logical, swap reference distribution for calculation of effect size estimate Cliff's delta}
 }
 \value{
-gglot2 obj
+dataframe of effect size estimate (Cd), model loadings of OPLS predictive component (p_pred), p value (adjusted, if specified)
 }
 \description{
 Visualise variable importances in OPLS context, p value is generated with Kruskal Walis rank sum test, effect size measure is Cliff's delta.
