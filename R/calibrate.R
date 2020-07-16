@@ -13,6 +13,8 @@
 
 calibrate <- function(X, ppm, type = "glucose") {
 
+  rnam=rownames(X)
+  cnam=colnames(X)
   # if (class(type[1]) == "numeric") {
   #   idx <- get.idx(c(type[1:2]), ppm)
   #   zero.ppm <- which.min(abs(ppm[idx] - type[3]))
@@ -65,5 +67,7 @@ calibrate <- function(X, ppm, type = "glucose") {
     }
   #}
 
+  rownames(X)=rnam
+  colnames(X)=cnam
   return(X)
 }
