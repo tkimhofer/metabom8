@@ -23,18 +23,18 @@ pqn <- function(X, iref = NULL, TArea = F, add_DilF = NULL, bin=list(ppm=NULL, w
       if(!.check_X_ppm(X, ppm)) stop('Non-matching dimensions X matrix and ppm vector or missing values in ppm.')
     }
 
-    X <- binning(X, ppm, unlist(bin))
+    X1 <- binning(X, ppm, unlist(bin))
   }
   # apply total area normalisation
   if (TArea == T) {
-    X <- t(apply(X, 1, function(x) x/sum(x, na.rm = T) * 100))
+    X1 <- t(apply(X1, 1, function(x) x/sum(x, na.rm = T) * 100))
   }
 
   le.ref <- length(iref)
 
   if(is.null(iref)){
 
-    ref <- apply(X, 2, median, na.rm=TRUE)
+    ref <- apply(X1, 2, median, na.rm=TRUE)
 
   }else{
 
@@ -43,15 +43,15 @@ pqn <- function(X, iref = NULL, TArea = F, add_DilF = NULL, bin=list(ppm=NULL, w
     if( any(is.na(iref) | is.infinite(iref)) ) stop('Index vector iref contains NAs.')
 
     if (le.ref == 1 ) {
-      ref <- X[iref, ]
+      ref <- X1[iref, ]
     }else{
-      ref <- apply(X[iref, ], 2, median, na.rm=TRUE)
+      ref <- apply(X1[iref, ], 2, median, na.rm=TRUE)
     }
   }
 
   ref[ref == 0] <- 1e-04
 
-  dil_F <- 1/apply(X, 1, function(x) median(x/ref, na.rm = T))
+  dil_F <- 1/apply(X1, 1, function(x) median(x/ref, na.rm = T))
   X_pqn <- t(apply(rbind(1:nrow(X)), 2, function(i) {
     X[i, ] * dil_F[i]
   }))
