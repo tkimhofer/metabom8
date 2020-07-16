@@ -771,7 +771,7 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
     if(any(idx_orth)){
         pc1=as.numeric(gsub('o', '', pc))
         if(any(is.na(pc1)) || any(is.infinite(pc1)) || any(pc1[idx_orth] > nrow(obj@p_orth))){stop('Check pc argument and see help section.')}
-    }
+    }else{pc1=pc}
 
     com=list()
 
@@ -781,7 +781,7 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
         switch(class(obj)[1],
                "PCA_metabom8"={
                    for(i in 1:length(pc)){
-                       com[[i]]=obj@p[pc1[i],]
+                       com[[i]]=obj@p[,pc[i]]
                    }
                },
                "OPLS_metabom8"={

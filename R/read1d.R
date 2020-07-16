@@ -42,7 +42,6 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
 
   }
 
-
   if(nrow(pars)!=length(f_list[[1]])){
     pars <- t(pars)
   }
@@ -92,7 +91,7 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
   colnames(out)=ppm_ref
 
   fnam=strsplit(f_list[[1]], .Platform$file.sep)
-  idx_rm=min(sapply(fnam, length))
+  idx_rm=min(sapply(fnam, length))-1
   fnam=sapply(fnam, function(x, st=idx_rm){
     paste(x[idx_rm:length(x)], collapse=.Platform$file.sep)
   })

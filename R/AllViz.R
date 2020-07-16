@@ -21,7 +21,7 @@ spec <- function(x, ppm, shift = c(0, 9.5), add = F, ...) {
   if (add == T) {
     points(ppm[idx], x[idx], type = "l", ...)
   } else {
-    plot(ppm[idx], x[idx], type = "l", xlim = rev(range(ppm[idx])), xlab = "ppm", ylab = "Intensity", ...)
+    plot(ppm[idx], as.numeric(x[idx]), type = "l", xlim = rev(range(ppm[idx])), xlab = "ppm", ylab = "Intensity", ...)
   }
 }
 
@@ -40,7 +40,6 @@ spec <- function(x, ppm, shift = c(0, 9.5), add = F, ...) {
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
 matspec <- function(X, ppm, shift = c(0, 9.5), add = F, ...) {
-
   if(is.null(ppm)){ppm=as.numeric(colnames(X)); } else{
     if(!.check_X_ppm(X, ppm)) stop('Non-matching dimensions X matrix and ppm vector or missing values in ppm.')
   }
