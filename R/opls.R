@@ -259,6 +259,7 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
                   Y_mean = msd_y[[2]],
                   Y_sd = msd_y[[1]],
                   Parameters = pars,
+                  X = X,
                   X_scaled = XcsTot,
                   Y = list(ori=Y, dummy=y_check[[1]])
                   )

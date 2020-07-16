@@ -174,7 +174,8 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
   if (type == "Statistical reconstruction") {
 
     # extrat data
-    t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
+    #t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
+
 
     df_l <- .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
     if(r_scale) {raCol =  c(0, 1)}else{  raCol <- c(0, max(abs(df$cor))) }
@@ -185,7 +186,7 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
   }
   if (type == "Backscaled") {
     # extract data
-    p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
+    #p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
 
     # backscaling
     df_l=.load_backscaled_nmr(mod, pc, idx, ppm)
@@ -194,8 +195,6 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
     cols <- abs(df_l[,1])
 
   }
-
-
 
 
   #####################
@@ -293,9 +292,8 @@ plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title =
 
 
   if (type == "Statistical reconstruction") {
-
     # extrat data
-    t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
+    #p_mod <- .viz_df_helper(mod, pc, an=NA, type='p')
 
     df <- .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
 
@@ -313,7 +311,7 @@ plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title =
   }
   if (type == "Backscaled") {
     # extract data
-    p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
+    #p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
 
     # backscaling
     df=.load_backscaled_nmr(mod, pc, idx, ppm)

@@ -905,7 +905,7 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 .load_stat_reconstr_nmr=function(mod, pc, X, idx, ppm){
     t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
     cc <- cor(t_mod$df[,1], X)[1, ]
-    cv <- cor(t_mod$df[,1], X)[1, ]
+    cv <- cov(t_mod$df[,1], X)[1, ]
     df <- data.frame(cor = abs(cc), cov = cv, ppm = ppm)
     df <- df[idx, ]
 
