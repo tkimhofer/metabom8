@@ -765,7 +765,6 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
     # if(any(idx)){
     #     names(an)[idx]=paste0('Var', seq(length(idx)))
     # }
-
     # get orth comp
     idx_orth=grepl('o', pc)
     if(any(idx_orth)){

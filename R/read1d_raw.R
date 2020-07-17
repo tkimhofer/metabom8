@@ -12,11 +12,11 @@
 #' @importFrom stats approxfun
 #' @section
 
-# path='/Volumes/ANPC_ext1/COVID_plasma_DIRE_150720/'
-# datapath=path
-# procs_exp = '1'
-# n_max = 20000
-# filter = T
+path='/Volumes/Torben_1 1/Epi_data/Airwave/AIRWAVE_Urine_Rack07_RCM_081014/'
+datapath=path
+procs_exp = '1'
+n_max = 20
+filter = T
 
 # read Bruker 1d new
 read1d_raw <- function(path,  n_max=1000, filter=T){
@@ -86,22 +86,26 @@ read1d_raw <- function(path,  n_max=1000, filter=T){
     spec <- ( spec * (2^pars$a_NC[s]) )
     nspec <- length(spec)
 
+    plot(spec, type='l')
     # apply processing (line broadening, apodisation)
 
-    # zero-filling
-    # add =  2^32 - length(spec)
-    spec_zf=c(spec, rep(0, length(spec)))
-
     # lb
-    spec_lb=.em(spec_zf, lb=1.3, pars$a_SW_h[s])
+    spec_lb=.em(spec, lb=0.3, pars$a_SW_h[s])
 
-    # plot(spec_lb[1000:30000], type='l')
-    # points(spec[1000:30000], type='l', col='cyan')
+    plot(spec_lb, type='l')
+
+
+    # plot(spec_lb[300:30000], type='l')
+    # points(spec[300:30000], type='l', col='cyan')
     #
     # plot(spec[1000:60000], type='l', col='cyan')
 
 
+    # zero-filling
+    # add =  2^32 - length(spec)
+    spec_zf=c(spec_lb, rep(0, length(spec)))
 
+    plot(spec_zf, type='l')
     # transformation
     sp=fft(spec_lb)
 
@@ -113,6 +117,12 @@ read1d_raw <- function(path,  n_max=1000, filter=T){
 
     plot(sp_pow, type='l')
     plot(sp_ab, type='l')
+
+    # pahsing
+
+
+
+
 
     f_spec=approxfun(x=csF2_ppm, y=spec)
     spec_inter=f_spec(ppref)

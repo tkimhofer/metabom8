@@ -18,11 +18,25 @@
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @seealso \code{\link{opls}}
 #' @export
+
+
+load('/Users/TKimhofer/Downloads/OPLS_pred_Torben.Rdata')
+opls_model=smod
+newdata=X_healthy
+
+
+
 predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
-  if (class(opls_model)[1] != "OPLS_metabom8") {
-    cat("Error: Model input does not belong to class OPLS_Torben!\n")
+  if (class(opls_model)[1] != "OPLS_metabom8" ) {
+    stop("Model input does not belong to class OPLS_Torben!")
     return(NULL)
   }
+
+  if (length(unique(opls_model@Y$ori)) != 2) {
+    stop("Predictions implemented only for regression or 2-class outcomes.")
+    return(NULL)
+  }
+
   # In case of one sample scenario: define X as column vector
   if (is.null(ncol(newdata))) {
     X <- rbind(newdata)
@@ -53,7 +67,7 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
   }
   # summarise orth component in case nc_orth > 2
   if ((opls_model@nPC-1) > 1) {
-    pc.orth <- pca(t_orth, pc = 1, method = "ppca", scale = "UV")
+    pc.orth <- pca(t_orth, pc = 1,scale = "UV")
     t_orth_pca <- pc.orth@t[, 1]
   } else {
     t_orth_pca <- NULL
@@ -70,10 +84,11 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
     res[, i] <- apply(opts, 1, sum)
   }
   totalPrediction <- apply(res, 1, sum)  # sum over all components
-
   Y_predicted <- (totalPrediction * opls_model@Y_sd) + opls_model@Y_mean
+
   if (opls_model@type == "DA") {
-    levs <- opls_model@Yout
+    cs=table(opls_model@Y$ori, opls_model@Y$dummy)
+    levs=data.frame(Original=rownames(cs), Numeric=as.numeric(colnames(cs)), stringsAsFactors = F, row.names = NULL)
     Y_predicted <- levs$Original[apply(sapply(levs$Numeric, function(x, y = Y_predicted) {
       abs(x - y)
     }), 1, which.min)]

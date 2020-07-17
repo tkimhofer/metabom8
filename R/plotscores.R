@@ -36,6 +36,8 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) 
     if(grepl('OPLS', class(obj)[1])){pc=c('1','o1')}
   }
 
+
+  #browser()
   if( cv==T & grepl('OPLS', class(obj)[1]) ){etype='t_cv'} else{etype='t'};
   res=.viz_df_helper(obj, pc, an, type=etype)
   sc=res$df
@@ -49,6 +51,7 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) 
 
   # Calculate Hotellings T2 elipse
   df=.hotellingsT2(x=sc[,1], y=sc[,2])
+
 
   g <- ggplot() +
     geom_polygon(data = df, aes_string(x = "V1", y = "V2"), fill = NA, alpha = 0.4, colour='black', linetype=3) +
