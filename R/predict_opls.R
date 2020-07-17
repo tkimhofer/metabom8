@@ -20,9 +20,9 @@
 #' @export
 
 
-load('/Users/TKimhofer/Downloads/OPLS_pred_Torben.Rdata')
-opls_model=smod
-newdata=X_healthy
+# load('/Users/TKimhofer/Downloads/OPLS_pred_Torben.Rdata')
+# opls_model=smod
+# newdata=X_healthy
 
 
 
