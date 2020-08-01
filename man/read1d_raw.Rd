@@ -4,7 +4,15 @@
 \alias{read1d_raw}
 \title{Read-in 1D NMR spectra}
 \usage{
-read1d_raw(path, n_max = 1000, filter = T)
+read1d_raw(
+  path,
+  n_max = 1000,
+  filter = T,
+  apodisation = list("exponential", lb = 0.2),
+  zerofil = 1L,
+  type = "absorption",
+  exp = "<PROF_URINE_NOESY>"
+)
 }
 \arguments{
 \item{path}{char, File directory containing spectra}
@@ -13,7 +21,13 @@ read1d_raw(path, n_max = 1000, filter = T)
 
 \item{filter}{lobic, filter for intact file systems (TRUE is recommended)}
 
-\item{procs_exp}{num, Topspin processing experiment ID}
+\item{apodisation}{list, apodisation type and parameter}
+
+\item{zerofil}{int, zero-filling, exponent summand of base 2}
+
+\item{type}{char, return mode: absorption, dispersion, magnitude}
+
+\item{exp}{char, experiments to read-in (e.g. <PROF_URINE_NOESY>)}
 }
 \description{
 Read-in 1D NMR spectra
