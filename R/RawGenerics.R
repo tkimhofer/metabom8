@@ -51,52 +51,69 @@
 
   }
 
-#
-#
-#
-#
-#
-#
-#
-#
-# phase1d<-function(spec, ang=NULL){
-#
-#
-#   sp_re<-Re(spec)
-#   sp_im<-Im(spec)
-#
-#
-#   if(is.null(ang)){
-#     ang<-expand.grid(0:360, 0:360)
-#     out=apply(ang, 1, function(x, le=length(spec), s_re=sp_re, s_im=sp_im){
-#       #browser()
-#       phi=calc_phi(x[1], x[2], le)
-#       # perform phasing
-#       s_phase=s_re * cos(phi) - s_im * sin(phi)
-#       return(sum(s_phase))
-#
-#     })
-#
-#     return(cbind(ang, sum))
-#
-#   }else{
-#
-#     phi<-calc_phi(ang[1], ang[2], le=length(spec))
-#     s_phase<-sp_re * cos(phi) - sp_im * sin(phi)
-#     return(s_phase)
-#   }
-#
-# }
-#
-#
-# calc_phi<-function(ph0, ph1, le){
-#   ph0+(ph1*seq(le)/le)
-# }
-#
-#
-#
-#
-#
+
+
+
+.phase_tsp<-function(sp_re, sp_im, ppm, phi=seq(0, pi, by=0.01), psi=0){
+  idx=get.idx(c(-0.05, 0.05), ppm)
+
+  tsp_max<-which.max(sp_re[idx])
+
+  # peak symmetry
+  out=sapply(phi, function(p, ps=psi){
+    s_ph<-.phase1d(sp_re, sp_im, ang=c(p,ps), demo=F)
+    #browser()
+    tsp_max<-which.max(s_ph[idx])
+    #print(tsp_max)
+    cent_cap<-min(tsp_max, length(idx)-tsp_max)-2
+    iid=(tsp_max-cent_cap):(tsp_max+cent_cap)
+
+    sum(abs(s_ph[idx][iid]-rev(s_ph[idx][iid])))^2
+  })
+
+  return(phi[which.min(out)])
+
+}
+
+
+
+.phase1d<-function(sp_re, sp_im, ang=NULL, demo=T){
+
+
+  if(is.null(ang)){
+    ang<-expand.grid(-180:0, 0:360)
+    out=apply(ang, 1, function(x, le=length(sp_re), s_re=sp_re, s_im=sp_im){
+      phi=.calc_phi(x[1], x[2], le)
+      # perform phasing
+      s_phase=(s_re * cos(phi)) - (s_im * sin(phi))
+      return((s_phase))
+
+    })
+
+    if(demo==T){
+      return(list(ang, out))
+    }else{
+      return(cbind(ang, out))
+    }
+
+
+  }else{
+
+    phi<-.calc_phi(ang[1], ang[2], le=length(sp_re))
+    s_phase<-(sp_re * cos(phi)) - (sp_im * sin(phi))
+    return(s_phase)
+  }
+
+}
+
+.calc_phi<-function(ph0, ph1, le){
+  ph0+(ph1*(seq(le)/le))
+}
+
+
+
+
+
 #
 # # correct for FID offset using a baseline correction when decayed signal is not centered at zero (that is due to quadrature imbalance and is called a direct current (DC) offset)
 #

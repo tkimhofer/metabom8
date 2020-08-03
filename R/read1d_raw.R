@@ -16,8 +16,20 @@
 #' @section
 
 # read1d(path)
-#
-# path='/Volumes/Torben_1 1/Rproj/AUTISM/NMR_Urine/Autism_Urine_Rack1_NH_030816/'
+
+# path='/Users/tk2812/Downloads/2018/LTRStability_Urine_NH190918/'
+# n_max=10
+# filter=T
+# apodisation=list(fun='exponential', lb=0.2)
+# zerofil=1L
+# type='absorption'
+# exp='<PROF_URINE_NOESY>'
+
+#tt=read1d_raw(path,  n_max=20, filter=T, apodisation=list(fun='sem', lb=0.2), zerofil=1L, type='absorption', exp='<PROF_URINE_NOESY>')
+
+#save(tt, file='Unphased1d_list.Rdata')
+
+#path='/Users/tk2812/Box Sync/PretermPBennett/Preterm_PBennett_EH_TKSaeed_170822'
 # datapath=path
 #
 # n_max = 20
@@ -29,10 +41,14 @@
 # matspec(X, ppm, shift=ppm_ra)
 # read1d_raw(path, n_max = 10, type='dispersion')
 # matspec(X, ppm, shift=ppm_ra)
-# read1d_raw(path, n_max = 100, type='absorption', exp = '<PROF_URINE_NOESY>', zerofil = 1L, apodisation=list(fun='cosine', offs=1, end=0.0005, exp=3, plot=T))
+# tt=read1d_raw(path, n_max = 100, type='absorption', exp = '<PROF_URINE_NOESY>', zerofil = 1L, apodisation=list(fun='cosine', offs=1, end=0.0005, exp=3, plot=T))
+a=Sys.time()
+read1d_raw(path, n_max = 200, type='absorption', exp = '<PROF_URINE_NOESY>', zerofil = 1L, apodisation=list(fun='exponential', offs=1, end=0.0005, exp=3, plot=F, lb=0.2))
+b=Sys.time()
+a-b
 # matspec(X, ppm, shift=ppm_ra)
 #
-# matspec(X, ppm, shift=c(3,3.1), main='None')
+# metabom8::matspec(X, ppm, shift=c(-0.1,0.1), main='None')
 #
 
 # read Bruker 1d new
@@ -57,12 +73,11 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
     if(length(le)==1){
       pars=do.call(rbind, pars)
     }else{
-      unam<-names(unlist(pars))
+      unam<-unique(names(unlist(pars)))
       pars<-do.call(rbind, lapply(pars, '[', unam))
       colnames(pars)<-unam
     }
   }
-
 
   if(nrow(pars)!=length(f_list[[1]])){
     pars <- t(pars)
@@ -108,9 +123,6 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
     ) # this is spectra
     spec <- ( spec * (2^pars$a_NC[s]) )
 
-
-
-
     # sp=fft(spec)
     # Omega <- (0:(length(sp) - 1))/length(sp)
     # i <- complex(real = 0, imaginary = 1)
@@ -148,8 +160,7 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
     sp_mag=sp_re+sp_im
 
 
-    browser()
-    # phasing
+    #browser()
 
 
     ppmDist<-pars$a_SW[s]/length(sp_re)
@@ -157,6 +168,18 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
     idx_tsp=which.max(sp_re[0:(length(sp_re)/3)])
     ppm=c(-(idx_tsp-1):0, 1:((length(sp_re))-idx_tsp))* ppmDist
 
+    #return(list(sp_re, sp_im, ppm))
+    browser()
+    # phasing
+    ptsp1=phaseTsp(sp_re, sp_im, ppm, seq(0, pi, by=0.01), 0, idx_tsp=get.idx(c(-0.05, 0.05), ppm)-1)
+    ptsp=.phase_tsp(sp_re, sp_im, ppm, phi=seq(0, pi, by=0.01), psi=0)
+    sp_re=.phase1d(sp_re, sp_im, ang=c(ptsp,0), demo=F)
+    if(abs(min(sp_re[1:idx[1]]))>max(sp_re[1:idx[1]])) {sp_re=sp_re*(-1)}
+
+    # calibration
+    #metabom8::calibrate(sp_re, )
+
+    #return(list(sp_re, sp_im, ppm))
     switch(type,
            'absorption' ={ sp_out<-sp_re},
            'dispersion' ={ sp_out<-sp_im},
@@ -164,11 +187,13 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
            )
 
     fspec=approxfun(ppm, sp_out)
-
-
+    #
+    #
     return(fspec(ppm_ref))
 
   })
+
+  #return(out)
 
   out=t(out)
   colnames(out)=ppm_ref
