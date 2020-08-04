@@ -8,7 +8,7 @@
 #' @param filter lobic, filter for intact file systems (TRUE is recommended)
 #' @param apodisation list, apodisation type and parameter
 #' @param zerofil int, zero-filling, exponent summand of base 2
-#' @param type char, return mode: absorption, dispersion, magnitude
+#' @param return char, return mode: absorption, dispersion, magnitude
 #' @param exp char, experiments to read-in (e.g. <PROF_URINE_NOESY>)
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 # @importFrom base list.files readBin seq gsub
@@ -17,20 +17,17 @@
 
 # read1d(path)
 # #
-path='/Volumes/Torben_1 1/BariatS/BariatS/dat/Cohort1_NMR_Urine/'
-n_max=10
-filter=T
-apodisation=list(fun='exponential', lb=0.2)
-zerofil=1L
-type='absorption'
-exp='<PROF_URINE_NOESY>'
+#path='/Volumes/Torben_1 1/BariatS/BariatS/dat/Cohort1_NMR_Urine/'
+path='/Users/tk2812/Downloads/2018/LTRStability_Urine_NH190918/'
+path='/Users/tk2812/Box Sync/Matt_cys/NMR Raw/NMR_COPIED/Cys_Urine_Rack1_SLL_270814/'
 library(metabom8)
 
 source('R/RawGenerics.R')
 
-
-tt=read1d_raw(path,  n_max=20, filter=T, apodisation=list(fun='sem', lb=0.2), zerofil=1L, type='absorption', exp='<PROF_URINE_NOESY>')
-
+a=Sys.time()
+tt=read1d_raw(path,  n_max=2000, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp='<PROF_URINE_NOESY>')
+b=Sys.time()
+as.numeric(b-a)/nrow(tt)
 #save(tt, file='Unphased1d_list.Rdata')
 
 #path='/Users/tk2812/Box Sync/PretermPBennett/Preterm_PBennett_EH_TKSaeed_170822'
@@ -58,7 +55,7 @@ tt=read1d_raw(path,  n_max=20, filter=T, apodisation=list(fun='sem', lb=0.2), ze
 
 
 # read Bruker 1d new
-read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, type='absorption', exp='<PROF_URINE_NOESY>'){
+read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp='<PROF_URINE_NOESY>'){
 
   if(grepl('^~', path, fixed=F)){
     getwd()
@@ -71,7 +68,6 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
   f_list=.check1d_files_fid(path, n_max, filter)
 
   # extract parameters from acqus and procs (for f1 and f2)
-
   pars <- .extract_acq_pars1d(f_list)
 
   if(is.list(pars)){
@@ -106,13 +102,17 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
   rownames(pars)<-f_list[[2]]
 
   # chem shift
-  ppm_ref <- seq(-2, 13, by=( pars$a_SW_h[1])/pars$a_TD[1]/pars$a_SFO1[1])
+  ppm_ref=defineChemShiftppm(pars$a_SFO1[1], pars$a_SW_h[1], pars$a_TD[1], dref = 4.79, ref=TRUE) # 4.79: distance water to TSP
+
 
   if(length(unique(pars$a_TD))>2 || length(unique(pars$a_GRPDLY))>1){stop('Number of points collected in time domain is unqual across experiments.')}
   apoFct<-.fidApodisationFct(n=(pars$a_TD[1]-(pars$a_GRPDLY[1]*2)), apodisation) # subtract group delay from TD (digital filtering artefact)
 
   # read in binary file and
   out <- sapply(1:length(f_list[[1]]), function(s, pref=ppm_ref, afun=apoFct, zf=zerofil){
+
+
+    #browser()
     # chem shift
     # csF2_ppm <- .chemShift(swidth=pars$a_SW[s], offset=pars$p_OFFSET[s], si=pars$p_SI[s])
     #csF1_hz <- chem_shift(swidth=pars$af1_SW_h[s], offset=pars$pf1_OFFSET[s]*pars$pf1_SF[s], si=pars$pf1_SI[s])
@@ -142,49 +142,25 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
     spec_lb=fid1*afun
 
     if(!is.integer(zf)){stop('Zerofil argument nees to be an integer as it is summand of exponent in log2 space (ie., zerofil=1 doubles , zerofil=2 quadrupoles the number of data points.')}
-    add_zeros=(2^(log2(length(spec))+zf) - length(spec_lb))
-    #cat(add_zeros, '\n')
-    spec_zf=c(spec_lb, rep(0, times= add_zeros))
-    #cat(log2(length(spec_zf)), 'number of  data points fid after zerofilling (log2 exp)\n')
 
-    spec_re<-spec_zf[seq(1,length(spec_zf), by=2)]
-    spec_im<-spec_zf[seq(2,length(spec_zf), by=2)]
-    fid=complex(real = spec_re, imaginary = spec_im)
-
-    sp=fft(fid)
-
-    spli=length(sp)/2
-    idx=c((spli+1) : length(sp), 1:spli) # re-arrange -> center is sfo1
-
-    sp_re=Re(sp[idx])
-    # flip if neg max
-    ii3=1:(length(sp_re)/3)
-    if(abs(min(sp_re[ii3])) > max(sp_re[ii3])) sp_re=sp_re*(-1)
-    sp_im=Im(sp[idx])
+    # zerofill, fft, phasing
+    spec_zf=zerofil(fid = spec_lb, zf = zf, le_ori = length(spec))
+    sp=cplx_fft(spec_zf)[,1]
+    sp_re=Re(sp)
+    sp_im=Im(sp)
     sp_mag=sp_re+sp_im
+    sp_re=phaseTsp(sp_re, sp_im, ppm, seq(0, pi, by=0.01), 0, idx_tsp=get.idx(c(-0.05, 0.05), ppm)-1)[,1]
+    if(abs(min(sp_re[0:(length(sp_re)/3)]))>max(sp_re[0:(length(sp_re)/3)])) {sp_re=sp_re*(-1)}
 
-
-    #browser()
-
-
-    ppmDist<-pars$a_SW[s]/length(sp_re)
-    # define ppm and set zero for TSP
-    idx_tsp=which.max(sp_re[0:(length(sp_re)/3)])
-    ppm=c(-(idx_tsp-1):0, 1:((length(sp_re))-idx_tsp))* ppmDist
-
-    #return(list(sp_re, sp_im, ppm))
-    browser()
-    # phasing
-    ptsp1=phaseTsp(sp_re, sp_im, ppm, seq(0, pi, by=0.01), 0, idx_tsp=get.idx(c(-0.05, 0.05), ppm)-1)
-    ptsp=.phase_tsp(sp_re, sp_im, ppm, phi=seq(0, pi, by=0.01), psi=0)
-    sp_re=.phase1d(sp_re, sp_im, ang=c(ptsp,0), demo=F)
-    if(abs(min(sp_re[1:idx[1]]))>max(sp_re[1:idx[1]])) {sp_re=sp_re*(-1)}
-
+    # define ppm
+    ppm=defineChemShiftppm(pars$a_SFO1[s], pars$a_SW_h[s], sp_re, dref = 4.79, ref=FALSE) # 4.79: distance water to TSP
     # calibration
-    #metabom8::calibrate(sp_re, )
+    ppm=calibTsp(sp_re, ppm)
+
+
 
     #return(list(sp_re, sp_im, ppm))
-    switch(type,
+    switch(return,
            'absorption' ={ sp_out<-sp_re},
            'dispersion' ={ sp_out<-sp_im},
            'magnitude' ={sp_out<-sp_mag}

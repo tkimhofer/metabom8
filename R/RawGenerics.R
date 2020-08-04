@@ -52,65 +52,65 @@
   }
 
 
-
-
-.phase_tsp<-function(sp_re, sp_im, ppm, phi=seq(0, pi, by=0.01), psi=0){
-  idx=get.idx(c(-0.05, 0.05), ppm)
-
-  tsp_max<-which.max(sp_re[idx])
-
-  # peak symmetry
-  out=sapply(phi, function(p, ps=psi){
-    s_ph<-.phase1d(sp_re, sp_im, ang=c(p,ps), demo=F)
-    #browser()
-    tsp_max<-which.max(s_ph[idx])
-    #print(tsp_max)
-    cent_cap<-min(tsp_max, length(idx)-tsp_max)-2
-    iid=(tsp_max-cent_cap):(tsp_max+cent_cap)
-
-    sum(abs(s_ph[idx][iid]-rev(s_ph[idx][iid])))^2
-  })
-
-  return(phi[which.min(out)])
-
-}
-
-
-
-.phase1d<-function(sp_re, sp_im, ang=NULL, demo=T){
-
-
-  if(is.null(ang)){
-    ang<-expand.grid(-180:0, 0:360)
-    out=apply(ang, 1, function(x, le=length(sp_re), s_re=sp_re, s_im=sp_im){
-      phi=.calc_phi(x[1], x[2], le)
-      # perform phasing
-      s_phase=(s_re * cos(phi)) - (s_im * sin(phi))
-      return((s_phase))
-
-    })
-
-    if(demo==T){
-      return(list(ang, out))
-    }else{
-      return(cbind(ang, out))
-    }
-
-
-  }else{
-
-    phi<-.calc_phi(ang[1], ang[2], le=length(sp_re))
-    s_phase<-(sp_re * cos(phi)) - (sp_im * sin(phi))
-    return(s_phase)
-  }
-
-}
-
-.calc_phi<-function(ph0, ph1, le){
-  ph0+(ph1*(seq(le)/le))
-}
-
-
+#
+#
+# .phase_tsp<-function(sp_re, sp_im, ppm, phi=seq(0, pi, by=0.01), psi=0){
+#   idx=get.idx(c(-0.05, 0.05), ppm)
+#
+#   tsp_max<-which.max(sp_re[idx])
+#
+#   # peak symmetry
+#   out=sapply(phi, function(p, ps=psi){
+#     s_ph<-.phase1d(sp_re, sp_im, ang=c(p,ps), demo=F)
+#     #browser()
+#     tsp_max<-which.max(s_ph[idx])
+#     #print(tsp_max)
+#     cent_cap<-min(tsp_max, length(idx)-tsp_max)-2
+#     iid=(tsp_max-cent_cap):(tsp_max+cent_cap)
+#
+#     sum(abs(s_ph[idx][iid]-rev(s_ph[idx][iid])))
+#   })
+#
+#   return(phi[which.min(out)])
+#   #return(out)
+# }
+#
+#
+#
+# .phase1d<-function(sp_re, sp_im, ang=NULL, demo=T){
+#
+#
+#   if(is.null(ang)){
+#     ang<-expand.grid(-180:0, 0:360)
+#     out=apply(ang, 1, function(x, le=length(sp_re), s_re=sp_re, s_im=sp_im){
+#       phi=.calc_phi(x[1], x[2], le)
+#       # perform phasing
+#       s_phase=(s_re * cos(phi)) - (s_im * sin(phi))
+#       return((s_phase))
+#
+#     })
+#
+#     if(demo==T){
+#       return(list(ang, out))
+#     }else{
+#       return(cbind(ang, out))
+#     }
+#
+#
+#   }else{
+#
+#     phi<-.calc_phi(ang[1], ang[2], le=length(sp_re))
+#     s_phase<-(sp_re * cos(phi)) - (sp_im * sin(phi))
+#     return(s_phase)
+#   }
+#
+# }
+#
+# .calc_phi<-function(ph0, ph1, le){
+#   ph0+(ph1*(seq(le)/le))
+# }
+#
+#
 
 
 
