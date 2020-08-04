@@ -16,16 +16,20 @@
 #' @section
 
 # read1d(path)
+# #
+path='/Volumes/Torben_1 1/BariatS/BariatS/dat/Cohort1_NMR_Urine/'
+n_max=10
+filter=T
+apodisation=list(fun='exponential', lb=0.2)
+zerofil=1L
+type='absorption'
+exp='<PROF_URINE_NOESY>'
+library(metabom8)
 
-# path='/Users/tk2812/Downloads/2018/LTRStability_Urine_NH190918/'
-# n_max=10
-# filter=T
-# apodisation=list(fun='exponential', lb=0.2)
-# zerofil=1L
-# type='absorption'
-# exp='<PROF_URINE_NOESY>'
+source('R/RawGenerics.R')
 
-#tt=read1d_raw(path,  n_max=20, filter=T, apodisation=list(fun='sem', lb=0.2), zerofil=1L, type='absorption', exp='<PROF_URINE_NOESY>')
+
+tt=read1d_raw(path,  n_max=20, filter=T, apodisation=list(fun='sem', lb=0.2), zerofil=1L, type='absorption', exp='<PROF_URINE_NOESY>')
 
 #save(tt, file='Unphased1d_list.Rdata')
 
@@ -42,14 +46,16 @@
 # read1d_raw(path, n_max = 10, type='dispersion')
 # matspec(X, ppm, shift=ppm_ra)
 # tt=read1d_raw(path, n_max = 100, type='absorption', exp = '<PROF_URINE_NOESY>', zerofil = 1L, apodisation=list(fun='cosine', offs=1, end=0.0005, exp=3, plot=T))
-a=Sys.time()
-read1d_raw(path, n_max = 200, type='absorption', exp = '<PROF_URINE_NOESY>', zerofil = 1L, apodisation=list(fun='exponential', offs=1, end=0.0005, exp=3, plot=F, lb=0.2))
-b=Sys.time()
-a-b
+# a=Sys.time()
+# read1d_raw(path, n_max = 200, type='absorption', exp = '<PROF_URINE_NOESY>', zerofil = 1L, apodisation=list(fun='exponential', offs=1, end=0.0005, exp=3, plot=F, lb=0.2))
+# b=Sys.time()
+# a-b
 # matspec(X, ppm, shift=ppm_ra)
 #
 # metabom8::matspec(X, ppm, shift=c(-0.1,0.1), main='None')
 #
+
+
 
 # read Bruker 1d new
 read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, type='absorption', exp='<PROF_URINE_NOESY>'){
@@ -104,8 +110,6 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
 
   if(length(unique(pars$a_TD))>2 || length(unique(pars$a_GRPDLY))>1){stop('Number of points collected in time domain is unqual across experiments.')}
   apoFct<-.fidApodisationFct(n=(pars$a_TD[1]-(pars$a_GRPDLY[1]*2)), apodisation) # subtract group delay from TD (digital filtering artefact)
-
-
 
   # read in binary file and
   out <- sapply(1:length(f_list[[1]]), function(s, pref=ppm_ref, afun=apoFct, zf=zerofil){
