@@ -130,10 +130,10 @@ arma::cx_vec cplx_fft(arma::vec fid){
 
 
 // [[Rcpp::export]]
-arma::vec defineChemShiftppm(const float sf_mhz, const float sw_hz, const arma::vec sp_re, const float dref, bool ref){
-  float dist=sw_hz/sp_re.n_elem;
+arma::vec defineChemShiftppm(const float sf_mhz, const float sw_hz, const int n_sp_re, const float dref, bool ref){
+  float dist=sw_hz/n_sp_re;
   arma::vec pps = arma::regspace<arma::vec>(0, dist, (sw_hz-(dist/2)));
-  arma::vec ppm = (pps - (pps(sp_re.n_elem/2)-(dref*sf_mhz))) / sf_mhz;
+  arma::vec ppm = (pps - (pps(n_sp_re/2)-(dref*sf_mhz))) / sf_mhz;
 
   if(ref==true){
     float lower = round(ppm[0])-0.001;

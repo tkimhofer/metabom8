@@ -17,55 +17,32 @@
 
 # read1d(path)
 # #
-#path='/Volumes/Torben_1 1/BariatS/BariatS/dat/Cohort1_NMR_Urine/'
-path='/Users/tk2812/Downloads/2018/LTRStability_Urine_NH190918/'
-path='/Users/tk2812/Box Sync/Matt_cys/NMR Raw/NMR_COPIED/Cys_Urine_Rack1_SLL_270814/'
-library(metabom8)
-
-source('R/RawGenerics.R')
-
-a=Sys.time()
-tt=read1d_raw(path,  n_max=2000, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp='<PROF_URINE_NOESY>')
-b=Sys.time()
-as.numeric(b-a)/nrow(tt)
+# #path='/Volumes/Torben_1 1/BariatS/BariatS/dat/Cohort1_NMR_Urine/'
+# path='/Volumes/Torben_1 1/Epi_data/airwave2/AIRWAVE_Urine_Rack01_RCM_061014/'
+# path='/Users/tk2812/Box Sync/Matt_cys/NMR Raw/NMR_COPIED/Cys_Urine_Rack1_SLL_270814/'
+# library(metabom8)
+#
+# source('R/RawGenerics.R')
+#
+# a=Sys.time()
+# tt=read1d_raw(path,  n_max=90, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp='<PROF_URINE_NOESY>')
+# b=Sys.time()
+# as.numeric(b-a)/nrow(tt)
 #save(tt, file='Unphased1d_list.Rdata')
 
-#path='/Users/tk2812/Box Sync/PretermPBennett/Preterm_PBennett_EH_TKSaeed_170822'
-# datapath=path
-#
-# n_max = 20
-# filter = T
-#
-# par(mfrow=c(3,1))
-# ppm_ra=c(2,4)
-# read1d_raw(path, n_max = 10, type='magnitude')
-# matspec(X, ppm, shift=ppm_ra)
-# read1d_raw(path, n_max = 10, type='dispersion')
-# matspec(X, ppm, shift=ppm_ra)
-# tt=read1d_raw(path, n_max = 100, type='absorption', exp = '<PROF_URINE_NOESY>', zerofil = 1L, apodisation=list(fun='cosine', offs=1, end=0.0005, exp=3, plot=T))
-# a=Sys.time()
-# read1d_raw(path, n_max = 200, type='absorption', exp = '<PROF_URINE_NOESY>', zerofil = 1L, apodisation=list(fun='exponential', offs=1, end=0.0005, exp=3, plot=F, lb=0.2))
-# b=Sys.time()
-# a-b
-# matspec(X, ppm, shift=ppm_ra)
-#
 # metabom8::matspec(X, ppm, shift=c(-0.1,0.1), main='None')
-#
-
-
 
 # read Bruker 1d new
-read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp='<PROF_URINE_NOESY>'){
+read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp='<PROF_URINE_NOESY>', verbose=TRUE, recursive=TRUE) {
 
-  if(grepl('^~', path, fixed=F)){
-    getwd()
-    path=gsub('^~',path.expand("~"), path)
-  }
+  path=path.expand(path)
 
-  if(!type %in% c('absorption', 'dispersion', 'magnitude')){ type='absorption'; message('Check argument type. Returning absorption spectrum.') }
+  if(!return %in% c('absorption', 'dispersion', 'magnitude')){ type='absorption'; message('Check argument type. Returning absorption spectrum.') }
 
+  if(verbose){message('Looking for spectral data...')}
   # check file system intact
   f_list=.check1d_files_fid(path, n_max, filter)
+  if(verbose){message(paste(length(f_list[[1]]), 'experiment files found'))}
 
   # extract parameters from acqus and procs (for f1 and f2)
   pars <- .extract_acq_pars1d(f_list)
@@ -102,16 +79,13 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
   rownames(pars)<-f_list[[2]]
 
   # chem shift
-  ppm_ref=defineChemShiftppm(pars$a_SFO1[1], pars$a_SW_h[1], pars$a_TD[1], dref = 4.79, ref=TRUE) # 4.79: distance water to TSP
-
+  ppm_ref=defineChemShiftppm(pars$a_SFO1[1], pars$a_SW_h[1], pars$a_TD[1], dref = 4.79, ref=TRUE)[,1] # 4.79: distance water to TSP
 
   if(length(unique(pars$a_TD))>2 || length(unique(pars$a_GRPDLY))>1){stop('Number of points collected in time domain is unqual across experiments.')}
   apoFct<-.fidApodisationFct(n=(pars$a_TD[1]-(pars$a_GRPDLY[1]*2)), apodisation) # subtract group delay from TD (digital filtering artefact)
 
   # read in binary file and
   out <- sapply(1:length(f_list[[1]]), function(s, pref=ppm_ref, afun=apoFct, zf=zerofil){
-
-
     #browser()
     # chem shift
     # csF2_ppm <- .chemShift(swidth=pars$a_SW[s], offset=pars$p_OFFSET[s], si=pars$p_SI[s])
@@ -143,21 +117,23 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
 
     if(!is.integer(zf)){stop('Zerofil argument nees to be an integer as it is summand of exponent in log2 space (ie., zerofil=1 doubles , zerofil=2 quadrupoles the number of data points.')}
 
-    # zerofill, fft, phasing
+    # zerofill, fft
     spec_zf=zerofil(fid = spec_lb, zf = zf, le_ori = length(spec))
     sp=cplx_fft(spec_zf)[,1]
     sp_re=Re(sp)
     sp_im=Im(sp)
     sp_mag=sp_re+sp_im
-    sp_re=phaseTsp(sp_re, sp_im, ppm, seq(0, pi, by=0.01), 0, idx_tsp=get.idx(c(-0.05, 0.05), ppm)-1)[,1]
-    if(abs(min(sp_re[0:(length(sp_re)/3)]))>max(sp_re[0:(length(sp_re)/3)])) {sp_re=sp_re*(-1)}
 
     # define ppm
-    ppm=defineChemShiftppm(pars$a_SFO1[s], pars$a_SW_h[s], sp_re, dref = 4.79, ref=FALSE) # 4.79: distance water to TSP
+    ppm=defineChemShiftppm(pars$a_SFO1[s], pars$a_SW_h[s], length(sp_re), dref = 4.79, ref=FALSE) # 4.79: distance water to TSP
     # calibration
     ppm=calibTsp(sp_re, ppm)
 
+    #phasing
+    sp_re=phaseTsp(sp_re, sp_im, ppm, seq(0, pi, by=0.01), 0, idx_tsp=get.idx(c(-0.05, 0.05), ppm)-1)[,1]
+    if(abs(min(sp_re[0:(length(sp_re)/3)]))>max(sp_re[0:(length(sp_re)/3)])) {sp_re=sp_re*(-1)}
 
+    # browser()
 
     #return(list(sp_re, sp_im, ppm))
     switch(return,
@@ -171,20 +147,13 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
     #
     return(fspec(ppm_ref))
 
+    #browser()
   })
 
   #return(out)
 
   out=t(out)
   colnames(out)=ppm_ref
-
-  #
-  # par(mfrow=c(2,1))
-  # matspec(out, ppm_ref, shift=c(2.5,2.6))
-  #
-  # matspec(out1, ppm_ref, shift=c(2.5,2.6))
-  #
-
 
   fnam=strsplit(f_list[[1]], .Platform$file.sep)
   idx_rm=min(sapply(fnam, length))
@@ -201,221 +170,5 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
 
 
 }
-
-
-
-#' @title Check for intact file systems - helper function read1d
-#' @param datapath char, File directory containing spectra
-#' @param procs_exp num, Topspin processing experiment ID
-#' @param n_max int, Maximum number of spectra to read-in
-#' @param filter lobic, filter for intact file systems (TRUE is recommended)
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @section
-.check1d_files_fid <- function(datapath, n_max=10, filter=T) {
-
-  datapath=gsub(paste0(.Platform$file.sep, '$'), '', datapath)
-
-  # searches for status acquisition parameter files
-  f_acqus <- list.files(path = datapath, pattern ="^acqus$",
-                        all.files = FALSE, full.names = TRUE, recursive = TRUE,
-                        ignore.case = TRUE)
-
-
-  # searches for 1r files
-  f_fid <- list.files(path = datapath, pattern ="^fid$",
-                     all.files = FALSE, full.names = TRUE, recursive = TRUE,
-                     ignore.case = TRUE)
-
-
-  # check file systems
-  # get experiement folder id
-  id_a <- gsub(paste("^", datapath, "/|/acqus$", sep = ""), "", f_acqus)
-  id_fid <- gsub(paste("^", datapath, "/|/fid$", sep = ""), "", f_fid)
-  # ensure that all three files are present
-
-  idx_a <- which(id_a %in% id_fid)
-  idx_fid <- which(id_fid %in% id_a)
-
-  if(length(idx_a)!=length(id_a) | length(idx_fid)!=length(id_fid)){
-    if (filter == T) {
-      message('Filtering experiment processing folders.')
-      f_acqus <- f_acqus[idx_a]; id_a=id_a[idx_a]
-      f_fid <- f_fid[idx_fid]; id_fid=id_fid[idx_fid]
-    }else{
-      message('File system seesm to be corrupt for some experiments. Consider function argument \`filter=TRUE\`')
-      return(NULL)
-    }
-  }
-
-
-  # test if these can all be matched
-  idm_fid=match(id_a, id_fid)
-
-  if(any( is.na(idm_fid)) | any(  diff(idm_fid)>1 )){
-    stop('check matching of this functions')
-  }
-
-
-
-  if(length( unique(c(length(f_acqus),length(f_fid)))) != 1) {stop('Somethings wrong after filtering!')}
-
-
-  if(n_max < length(f_fid) ) {
-    f_acqus=f_acqus[1:n_max];
-    f_fid=f_fid[1:n_max];
-    id_fid=id_fid[1:n_max];
-
-    message('Reached n_max - not all spectra read-in.')
-    }
-
-  p_intact=gsub('/acqus$', '', f_acqus)
-  exp_no=id_fid
-
-  return(list(path=p_intact, exp_no=exp_no))
-}
-
-
-
-
-#' @title Read Bruker NMR paramter files - helper function read1d
-#' @param f_list list, intact files system for NMR experiments. See fct checkFiles1d
-#' @param procs_exp num or char, which processing experiment should be extracted
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-# @importFrom base sapply
-#' @section
-.extract_acq_pars1d <- function( f_list ) {
-
-
-  out=lapply(f_list[[1]], function(fil){
-    # f_procs=paste0(fil, .Platform$file.sep, 'pdata', .Platform$file.sep, procs_exp, .Platform$file.sep, 'procs')
-    # # extract procs information for t2
-    # fhand <- file(f_procs, open = "r")
-    # f_procs <- readLines(fhand, n = -1, warn = FALSE)
-    # close(fhand)
-    #
-    # out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_procs, value=T, fixed = F), fixed = F), '=')
-    # d_procs_val=gsub('^ ', '', sapply(out, '[[', 2))
-    # names(d_procs_val) = paste0('p_', sapply(out, '[[', 1))
-
-    # acqus
-    f_acqu=paste0(fil, .Platform$file.sep, 'acqus')
-    # extract procs information for t2
-    fhand <- file(f_acqu, open = "r")
-    f_acqu <- readLines(fhand, n = -1, warn = FALSE)
-    close(fhand)
-
-    out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_acqu, value=T, fixed = F), fixed = F), '=')
-    d_acqu_val=gsub('^ ', '', sapply(out, '[[', 2))
-    names(d_acqu_val) = paste0('a_', sapply(out, '[[', 1))
-
-    # change date
-    idx=grep('date', names(d_acqu_val), ignore.case = T)
-    d_acqu_val[idx]=as.character(as.POSIXct(x = '01/01/1970 00:00:00', format='%d/%m/%Y %H:%M:%S')+(as.numeric(d_acqu_val[idx])))
-
-    return(d_acqu_val)
-
-  })
-
-  out_le = sapply(out, length)
-
-  # if( length(unique(out_le)) > 1 ){
-  #
-  #   cnam=unique(unlist(sapply(out, names)))
-  #   out_df=matrix(NA, nrow = 1, ncol=length(cnam))
-  #
-  #   out=as.data.frame(t(sapply(out, function(x, odf=out_df, cc=cnam){
-  #     odf[1, match(names(x), cnam)]=x
-  #     return(odf)
-  #   })))
-  #   colnames(out)=cnam
-  # }
-  #
-
-  return(out)
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

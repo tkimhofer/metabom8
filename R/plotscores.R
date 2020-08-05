@@ -48,10 +48,10 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) 
 
   if( is.null(res$an_le) || is.na(res$an_le) ) {stop('Check helper function .viz_df_helper')}
 
-
   # Calculate Hotellings T2 elipse
   df=.hotellingsT2(x=sc[,1], y=sc[,2])
 
+  kap<-kappa(obj@X)
 
   g <- ggplot() +
     geom_polygon(data = df, aes_string(x = "V1", y = "V2"), fill = NA, alpha = 0.4, colour='black', linetype=3) +
@@ -62,7 +62,6 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) 
 
 
   if(res$an_le==1){
-
 
     switch(type,
            'categorical' = {
@@ -79,7 +78,6 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) 
 
     g <- g +
       labs(title=title, colour = colnames(sc)[3])
-
     }
 
 
@@ -230,6 +228,8 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) 
   if (legend == "in") {
     g <- g + theme(legend.position = c(1.01, 1.02), legend.justification = c(1, 1))
   }
+
+  9+ggtitle(sub=paste0('kappa=', kap))
   return(g)
 }
 

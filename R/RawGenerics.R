@@ -52,80 +52,106 @@
   }
 
 
-#
-#
-# .phase_tsp<-function(sp_re, sp_im, ppm, phi=seq(0, pi, by=0.01), psi=0){
-#   idx=get.idx(c(-0.05, 0.05), ppm)
-#
-#   tsp_max<-which.max(sp_re[idx])
-#
-#   # peak symmetry
-#   out=sapply(phi, function(p, ps=psi){
-#     s_ph<-.phase1d(sp_re, sp_im, ang=c(p,ps), demo=F)
-#     #browser()
-#     tsp_max<-which.max(s_ph[idx])
-#     #print(tsp_max)
-#     cent_cap<-min(tsp_max, length(idx)-tsp_max)-2
-#     iid=(tsp_max-cent_cap):(tsp_max+cent_cap)
-#
-#     sum(abs(s_ph[idx][iid]-rev(s_ph[idx][iid])))
-#   })
-#
-#   return(phi[which.min(out)])
-#   #return(out)
-# }
-#
-#
-#
-# .phase1d<-function(sp_re, sp_im, ang=NULL, demo=T){
-#
-#
-#   if(is.null(ang)){
-#     ang<-expand.grid(-180:0, 0:360)
-#     out=apply(ang, 1, function(x, le=length(sp_re), s_re=sp_re, s_im=sp_im){
-#       phi=.calc_phi(x[1], x[2], le)
-#       # perform phasing
-#       s_phase=(s_re * cos(phi)) - (s_im * sin(phi))
-#       return((s_phase))
-#
-#     })
-#
-#     if(demo==T){
-#       return(list(ang, out))
-#     }else{
-#       return(cbind(ang, out))
-#     }
-#
-#
-#   }else{
-#
-#     phi<-.calc_phi(ang[1], ang[2], le=length(sp_re))
-#     s_phase<-(sp_re * cos(phi)) - (sp_im * sin(phi))
-#     return(s_phase)
-#   }
-#
-# }
-#
-# .calc_phi<-function(ph0, ph1, le){
-#   ph0+(ph1*(seq(le)/le))
-# }
-#
-#
+
+
+#' @title Read Bruker NMR paramter files - helper function read1d
+#' @param f_list list, intact files system for NMR experiments. See fct checkFiles1d
+#' @param procs_exp num or char, which processing experiment should be extracted
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+# @importFrom base sapply
+#' @section
+.extract_acq_pars1d <- function(f_list) {
+
+  out=lapply(f_list[[1]], function(fil){
+    # acqus
+    f_acqu=paste0(fil, .Platform$file.sep, 'acqus')
+    # extract procs information for t2
+    fhand <- file(f_acqu, open = "r")
+    f_acqu <- readLines(fhand, n = -1, warn = FALSE)
+    close(fhand)
+
+    out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_acqu, value=T, fixed = F), fixed = F), '=')
+    d_acqu_val=gsub('^ ', '', sapply(out, '[[', 2))
+    names(d_acqu_val) = paste0('a_', sapply(out, '[[', 1))
+    # change date
+    idx=grep('date', names(d_acqu_val), ignore.case = T)
+    d_acqu_val[idx]=as.character(as.POSIXct(x = '01/01/1970 00:00:00', format='%d/%m/%Y %H:%M:%S')+(as.numeric(d_acqu_val[idx])))
+    return(d_acqu_val)
+  })
+
+  out_le = sapply(out, length)
+
+  return(out)
+}
 
 
 
-#
-# # correct for FID offset using a baseline correction when decayed signal is not centered at zero (that is due to quadrature imbalance and is called a direct current (DC) offset)
-#
-# fid_bc<-function(fid){
-#
-#   n<-length(fid)
-#   idx=(n-n*1/100):n
-#   me=mean(fid[idx])
-#
-#   if(me>1){
-#     print(me); stop('implement baseline correction');
-#   }
-#
-#
-# }
+
+
+
+#' @title Check for intact file systems - helper function read1d
+#' @param datapath char, File directory containing spectra
+#' @param procs_exp num, Topspin processing experiment ID
+#' @param n_max int, Maximum number of spectra to read-in
+#' @param filter lobic, filter for intact file systems (TRUE is recommended)
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @section
+.check1d_files_fid <- function(datapath, n_max=10, filter=T, recursive=TRUE) {
+
+  datapath=gsub(paste0(.Platform$file.sep, '$'), '', datapath)
+#browser()
+  # searches for status acquisition parameter files
+  f_acqus <- list.files(path = datapath, pattern ="^acqus$",
+                        all.files = FALSE, full.names = TRUE, recursive=recursive,
+                        ignore.case = TRUE)
+
+  # searches for 1r files
+  f_fid <- list.files(path = datapath, pattern ="^fid$",
+                      all.files = FALSE, full.names = TRUE, recursive=recursive,
+                      ignore.case = TRUE)
+
+  # check esxperiment folder ID
+  id_a <- gsub(paste("^", datapath, "/|/acqus$", sep = ""), "", f_acqus)
+  id_fid <- gsub(paste("^", datapath, "/|/fid$", sep = ""), "", f_fid)
+  idx_a <- which(id_a %in% id_fid)
+  idx_fid <- which(id_fid %in% id_a)
+
+  if(length(idx_a) != length(id_a) | length(idx_fid) != length(id_fid)){
+    if (filter == T) {
+      message('Filtering experiment processing folders.')
+      f_acqus <- f_acqus[idx_a]; id_a=id_a[idx_a]
+      f_fid <- f_fid[idx_fid]; id_fid=id_fid[idx_fid]
+    }else{
+      message('File system seems to be corrupt for some experiments. Consider function argument \`filter=TRUE\`')
+      return(NULL)
+    }
+  }
+
+
+  # test if these can all be matched
+  idm_fid=match(id_a, id_fid)
+
+  if(any( is.na(idm_fid)) | any(  diff(idm_fid)>1 )){
+    stop('check matching of this functions')
+  }
+
+
+
+  if(length( unique(c(length(f_acqus),length(f_fid)))) != 1) {stop('Somethings wrong after filtering!')}
+
+
+  if(n_max < length(f_fid) ) {
+    f_acqus=f_acqus[1:n_max];
+    f_fid=f_fid[1:n_max];
+    id_fid=id_fid[1:n_max];
+
+    message('Reached n_max - not all spectra read-in.')
+  }
+
+  p_intact=gsub('/acqus$', '', f_acqus)
+  exp_no=id_fid
+
+  return(list(path=p_intact, exp_no=exp_no))
+}
+
+
