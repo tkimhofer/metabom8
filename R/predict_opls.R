@@ -45,8 +45,12 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
   }
 
   if(!is.null(idx_scale)){ # use provided scaling vector
-    X=.scaleMatRcpp(X, idx_scale-1, center = opls_model@Parameters$center, scale_type = opls_model@Parameters$scale)
-    #X=MetaboMate:::center_scale(ds, idx_scale, center = cent_scale$center, scale = cent_scale$scale )
+    # define scale type
+    map_scale<-c('none'=0L, 'UV'=1L)
+    map_scale[match(opls_model@Parameters$scale, names(map_scale))]
+    #browser()
+    sc_res=.scaleMatRcpp(X, idx_scale-1, center = opls_model@Parameters$center, scale_type = map_scale[match(opls_model@Parameters$scale, names(map_scale))])
+    X <-sc_res$X_prep
   }else{ # use model paramters for scaling
 
     if(all(!is.null(opls_model@X_mean)) && all(!is.null(opls_model@X_sd))){
@@ -54,12 +58,12 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
         (X[,i] - opls_model@X_mean[i]) / opls_model@X_sd[i]
       } ) )
     }
-
   }
 
   # center and scale X<-scale(newdata, center=opls_model@Xcenter, scale=opls_model@Xscale) iteratively remove all orthogonal components from
   # prediction data set
-  e_new_orth <- X
+  e_new_orth <-sc_res$X_prep
+
   t_orth <- matrix(NA, nrow = nrow(X), ncol = opls_model@nPC-1)
   for (i in 1:(opls_model@nPC-1)) {
     t_orth[, i] <- e_new_orth %*% t(t(opls_model@p_orth[i, ]))/drop(crossprod(t(t(opls_model@p_orth[i, ]))))
@@ -93,6 +97,8 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
       abs(x - y)
     }), 1, which.min)]
   }
-  out <- list("Y_predicted" <- Y_predicted, "t_pred" <- t_pred, "t_orth" <- t_orth, "t_orth_pca" <- t_orth_pca)
+
+
+  out <- list("Y_predicted" = Y_predicted, "t_pred" = t_pred, "t_orth" = t_orth, "t_orth_pca" = t_orth_pca)
   return(out)
 }
