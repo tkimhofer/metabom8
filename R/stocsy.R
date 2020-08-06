@@ -17,7 +17,7 @@
 #' @importFrom methods hasArg
 #' @section
 
-stocsy<-function(X, ppm, driver, plotting=T, title=NULL){
+stocsy<-function(X, ppm, driver, plotting=T, title=NULL, pltly=T){
 
   if(!hasArg(ppm)){
     ppm<-as.numeric(colnames(X))
@@ -65,7 +65,12 @@ stocsy<-function(X, ppm, driver, plotting=T, title=NULL){
       theme(axis.text=element_text(colour="black"))+
       geom_vline(xintercept = driver, linetype=2, col='grey')
 
-    plot(g1)
+    if(pltly==T){
+      browser()
+      ggplotly(g1)
+    }
+
+
   }
 
   return(stoc_mod)

@@ -306,6 +306,13 @@
     }
 }
 
+# df=data.frame(ppm=s1@ppm, cor=s1@r, cov=s1@cov, stringsAsFactors = F)
+# fig <- plot_ly(df, x = ~ppm, y = ~cov,  type = 'scatter', mode = 'lines')
+#
+# fig
+
+
+
 
 
 # #' @title Summarise model indices using tabular and graphic modes
