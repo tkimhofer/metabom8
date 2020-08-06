@@ -33,6 +33,34 @@
     .Call(`_metabom8_pls_pred_rcpp`, pls_mod, Xnew)
 }
 
+calcPhi <- function(ph0, ph1, le) {
+    .Call(`_metabom8_calcPhi`, ph0, ph1, le)
+}
+
+phase1d <- function(sp_re, sp_im, ph0, ph1) {
+    .Call(`_metabom8_phase1d`, sp_re, sp_im, ph0, ph1)
+}
+
+phaseTsp <- function(sp_re, sp_im, ppm, ph0, ph1, idx_tsp) {
+    .Call(`_metabom8_phaseTsp`, sp_re, sp_im, ppm, ph0, ph1, idx_tsp)
+}
+
+zerofil <- function(fid, zf, le_ori) {
+    .Call(`_metabom8_zerofil`, fid, zf, le_ori)
+}
+
+cplx_fft <- function(fid) {
+    .Call(`_metabom8_cplx_fft`, fid)
+}
+
+defineChemShiftppm <- function(sf_mhz, sw_hz, n_sp_re, dref, ref) {
+    .Call(`_metabom8_defineChemShiftppm`, sf_mhz, sw_hz, n_sp_re, dref, ref)
+}
+
+calibTsp <- function(spec, ppm) {
+    .Call(`_metabom8_calibTsp`, spec, ppm)
+}
+
 #' Column-wise standard deviation and mean for a matrix
 #' @export
 #' @param X num matrix

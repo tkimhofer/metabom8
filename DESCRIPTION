@@ -21,6 +21,7 @@ Imports:
     ptw,
     RColorBrewer,
     Rcpp (>= 1.0.4.6), 
+    RcppArmadillo,
     RcppEigen, 
     reshape2, 
     scales, 
@@ -29,6 +30,7 @@ Imports:
     utils
 LinkingTo: 
     Rcpp,
+    RcppArmadillo,
     RcppEigen
 biocViews: Metabolomics, Cheminformatics
 Roxygen: list(markdown = TRUE)

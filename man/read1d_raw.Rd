@@ -8,10 +8,12 @@ read1d_raw(
   path,
   n_max = 1000,
   filter = T,
-  apodisation = list("exponential", lb = 0.2),
+  apodisation = list(fun = "exponential", lb = 0.2),
   zerofil = 1L,
-  type = "absorption",
-  exp = "<PROF_URINE_NOESY>"
+  return = "absorption",
+  exp = "<PROF_URINE_NOESY>",
+  verbose = TRUE,
+  recursive = TRUE
 )
 }
 \arguments{
@@ -25,7 +27,7 @@ read1d_raw(
 
 \item{zerofil}{int, zero-filling, exponent summand of base 2}
 
-\item{type}{char, return mode: absorption, dispersion, magnitude}
+\item{return}{char, return mode: absorption, dispersion, magnitude}
 
 \item{exp}{char, experiments to read-in (e.g. <PROF_URINE_NOESY>)}
 }
