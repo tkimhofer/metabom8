@@ -14,6 +14,7 @@
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_v_line scales_x_reverse scale_colour_gradientn labs theme_bw theme element_text
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales sapply
+#' @importFrom methods hasArg
 #' @section
 
 stocsy<-function(X, ppm, driver, plotting=T, title=NULL){
@@ -93,13 +94,11 @@ plot_stocsy=function(stoc_mod, shift=c(0,10), title=NULL){
   if('stocsy1d_metabom8'!=class(stoc_mod)[1]) stop('Provide a STOCSY object')
   ds=data.frame(r=stoc_mod@r, cov=stoc_mod@cov, ppm=stoc_mod@ppm, stringsAsFactors = F)
   if(!all(is.numeric(shift)) || min(shift)<min(ds$ppm) || max(shift)>max(ds$ppm)) stop('Check shift argument')
+
   shift=sort(shift)
   idx=get.idx(shift, ds$ppm)
   if(length(idx)==0) stop('Check shift argument')
-
   ds=ds[idx,]
-
-
   g1=ggplot(ds, aes_string(x='ppm', y='cov', colour='abs(r)'))+
     geom_line()+
     scale_x_reverse(breaks=seq(shift[1], shift[2], by=abs(diff(shift))/10))+
