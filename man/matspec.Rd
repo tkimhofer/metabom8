@@ -4,7 +4,7 @@
 \alias{matspec}
 \title{Simple plotting of multiple NMR spectra overlayed}
 \usage{
-matspec(X, ppm, shift = c(0, 9.5), add = F, ...)
+matspec(X, ppm, shift = c(0, 9.5), interactive = T, ...)
 }
 \arguments{
 \item{X}{NMR matrix with spectra represented in rows.}
@@ -13,15 +13,15 @@ matspec(X, ppm, shift = c(0, 9.5), add = F, ...)
 
 \item{shift}{Chemical shift region to be plotted (in ppm).}
 
-\item{add}{Logical indicating if spectra should be added to a current plot generated with \code{spec()} or \code{matspec()}.}
+\item{interactive}{logical, interactive version (plotly package)}
 
-\item{...}{Additional parameters to be passed on to the plot function.}
+\item{...}{Additional parameters to be passed on to the graphics generic plot function.}
 }
 \description{
 Simple plotting of multiple NMR spectra overlayed
 }
 \details{
-Low-level plotting function for NMR spectra.
+Low-level plotting function for NMR spectra, interactive plotting with ggplotly
 }
 \section{}{
 NA

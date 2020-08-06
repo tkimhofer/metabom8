@@ -4,7 +4,7 @@
 \alias{stocsy}
 \title{Statistical Total Correlation Spectroscopy (STOCSY)}
 \usage{
-stocsy(X, ppm, driver, plotting = T, title = NULL)
+stocsy(X, ppm, driver, plotting = T, title = NULL, pltly = T)
 }
 \arguments{
 \item{X}{Numeric matrix or dataframe where each row represents a NMR spectrum and each column a chemical shift variable.}

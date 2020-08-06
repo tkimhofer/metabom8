@@ -4,7 +4,7 @@
 \alias{spec}
 \title{Simple plotting of a single NMR spectrum}
 \usage{
-spec(x, ppm, shift = c(0, 9.5), add = F, ...)
+spec(x, ppm, shift = c(0, 11), add = F, interactive = T, name = "A", ...)
 }
 \arguments{
 \item{x}{NMR spectrum.}
@@ -15,7 +15,9 @@ spec(x, ppm, shift = c(0, 9.5), add = F, ...)
 
 \item{add}{Logical indicating if spectrum should be added to a current plot generated with \code{spec()} or \code{matspec()}.}
 
-\item{...}{Additional parameters to be passed on to the plot function.}
+\item{interactive}{logical, interactive version (plotly package)}
+
+\item{...}{Additional parameters to be passed on to the graphics generic plot function.}
 }
 \description{
 Simple plotting of a single NMR spectrum

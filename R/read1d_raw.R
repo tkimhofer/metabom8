@@ -25,7 +25,7 @@
 # source('R/RawGenerics.R')
 #
 # a=Sys.time()
-# tt=read1d_raw(path,  n_max=90, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp='<PROF_URINE_NOESY>')
+ # tt=read1d_raw(path,  n_max=5, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp='<PROF_URINE_NOESY>')
 # b=Sys.time()
 # as.numeric(b-a)/nrow(tt)
 #save(tt, file='Unphased1d_list.Rdata')
@@ -80,6 +80,7 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
 
   # chem shift
   ppm_ref=defineChemShiftppm(pars$a_SFO1[1], pars$a_SW_h[1], pars$a_TD[1], dref = 4.79, ref=TRUE)[,1] # 4.79: distance water to TSP
+  ppm_ref=ppm_ref-ppm_ref[which.min(abs(ppm_ref-0))]
 
   if(length(unique(pars$a_TD))>2 || length(unique(pars$a_GRPDLY))>1){stop('Number of points collected in time domain is unqual across experiments.')}
   apoFct<-.fidApodisationFct(n=(pars$a_TD[1]-(pars$a_GRPDLY[1]*2)), apodisation) # subtract group delay from TD (digital filtering artefact)
@@ -126,12 +127,15 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
 
     # define ppm
     ppm=defineChemShiftppm(pars$a_SFO1[s], pars$a_SW_h[s], length(sp_re), dref = 4.79, ref=FALSE) # 4.79: distance water to TSP
-    # calibration
-    ppm=calibTsp(sp_re, ppm)
 
     #phasing
     sp_re=phaseTsp(sp_re, sp_im, ppm, seq(0, pi, by=0.01), 0, idx_tsp=get.idx(c(-0.05, 0.05), ppm)-1)[,1]
     if(abs(min(sp_re[0:(length(sp_re)/3)]))>max(sp_re[0:(length(sp_re)/3)])) {sp_re=sp_re*(-1)}
+
+
+    # calibration
+    #browser()
+    ppm=calibTsp(sp_re, ppm)
 
     # browser()
 
@@ -144,8 +148,11 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
 
     fspec=approxfun(ppm, sp_out)
     #
+
+    spec_out=fspec(ppm_ref)
+
     #
-    return(fspec(ppm_ref))
+    return(spec_out)
 
     #browser()
   })

@@ -4,26 +4,57 @@
 #' @param x NMR spectrum.
 #' @param shift chemical shift region to be plotted.
 #' @param add Logical indicating if spectrum should be added to a current plot generated with \code{spec()} or \code{matspec()}.
-#' @param ... Additional parameters to be passed on to the plot function.
+#' @param interactive logical, interactive version (plotly package)
+#' @param mode string, plot mode for interactive version: 'lines', 'lines+markers' or 'markers' (see Details)
+#' @param ... Additional parameters to be passed on to the graphics generic plot function.
 #' @seealso  \code{\link{matspec}} \code{\link{plot}}
 #' @aliases spec
-#' @details Low-level plotting function for a single NMR spectrum.
+#' @details Low-level plotting function for a single NMR spectrum (base graphics). Interactive version, mode
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom graphics points
+#' @importFrom plotly plot_ly add_lines layout %>% add_trace
 #' @section
-spec <- function(x, ppm, shift = c(0, 9.5), add = F, ...) {
+spec <- function(x, ppm, shift = c(0, 11), add = F, interactive=T, name='A', mode='lines', ...) {
 
   if(!is.null(ncol(x))){ stop('More than one spectrum provided.')}
 
   if(length(x)!=length(ppm)){stop('X and ppm don\'t match.')}
 
   idx <- get.idx(shift, ppm)
-  if (add == T) {
+
+  if(interactive){
+    sp=data.frame(ppm=ppm[idx], spec=x[idx])
+    if(add){
+      if(!exists('.ind_interactive', envir = parent.frame())){stop('First create interactive plot (set add=FALSE), then add desired spectrum')}
+      p= get(".p", envir = parent.frame())
+      p=p %>% add_trace(data=sp, y = ~spec, name = 'trace 1', mode = mode)
+      assign(".p", p, envir =   parent.frame())
+      return(p)
+    }else{
+     # if(!exists('mm8_plot', mode='environment')) mm8_plot <- new.env(parent = globalenv())
+      assign(".ind_interactive", T, envir =  globalenv())
+      x <- list(title = "δ<sup>1</sup>H (ppm)", autorange="reversed")
+      y <- list( title = "Intensity")
+      p=plot_ly(data=sp, x=~ppm, y=~spec,   name='A', type = 'scatter', mode = mode,  hovertemplate = '%{x} ppm<extra></extra>') %>% layout(xaxis = x, yaxis=y)
+      assign(".p", p, envir  = parent.frame())
+    }
+   return(p)
+  }
+
+
+  if(exists('.ind_interactive', envir = parent.frame())){ assign(".ind_interactive", F, envir =  globalenv())}
+  if (add) {
     points(ppm[idx], x[idx], type = "l", ...)
   } else {
-    plot(ppm[idx], as.numeric(x[idx]), type = "l", xlim = rev(range(ppm[idx])), xlab = "ppm", ylab = "Intensity", ...)
-  }
+      plot(ppm[idx], as.numeric(x[idx]), type = "l", xlim = rev(range(ppm[idx])), xlab = "ppm", ylab = "Intensity", ...)
+    }
+
 }
+# spec(X[1,], ppm, shift=c(-1,11), name='A', interactive=T, mode='lines')
+# spec(X[3,], ppm, shift=c(-1,11), name='C', add=T, interactive=T, mode='lines')
+
+
+
 
 
 #' Simple plotting of multiple NMR spectra overlayed
@@ -31,26 +62,37 @@ spec <- function(x, ppm, shift = c(0, 9.5), add = F, ...) {
 #' @param ppm ppm vector.
 #' @param X NMR matrix with spectra represented in rows.
 #' @param shift Chemical shift region to be plotted (in ppm).
-#' @param add Logical indicating if spectra should be added to a current plot generated with \code{spec()} or \code{matspec()}.
-#' @param ... Additional parameters to be passed on to the plot function.
+#' @param interactive logical, interactive version (plotly package)
+#' @param ... Additional parameters to be passed on to the graphics generic plot function.
 #' @seealso \code{\link{spec}} \code{\link{plot}}
 #' @aliases matspec
-#' @details Low-level plotting function for NMR spectra.
+#' @details Low-level plotting function for NMR spectra, interactive plotting with ggplotly
 #' @importFrom graphics matplot matpoints
+#' @importFrom plotly plot_ly add_lines layout %>%
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
-matspec <- function(X, ppm, shift = c(0, 9.5), add = F, ...) {
+matspec <- function(X, ppm, shift = c(0, 9.5), interactive=T, ...) {
   if(is.null(ppm)){ppm=as.numeric(colnames(X)); } else{
     if(!.check_X_ppm(X, ppm)) stop('Non-matching dimensions X matrix and ppm vector or missing values in ppm.')
   }
 
   idx <- get.idx(shift, ppm)
-  if (add == T) {
-    matpoints(ppm[idx], t(X[, idx]), type = "l", ...)
-  } else {
+
+
+  if(interactive){
+    df=melt(X)
+    x <- list(title = "δ<sup>1</sup>H (ppm)", autorange="reversed")
+    y <- list( title = "Intensity")
+    p=plot_ly(data=df, x = ~Var2, y = ~value, color = ~factor(Var1),  hovertemplate = '%{x} ppm<extra></extra>') %>% layout(xaxis = x, yaxis=y) %>% add_lines()
+      return(p)
+    }
+
     matplot(ppm[idx], t(X[, idx]), type = "l", xlim = rev(range(ppm[idx])), xlab = "ppm", ylab = "Intensity", ...)
-  }
+
 }
+
+# matspec(X, ppm, shift=c(-1,11), interactive=T)
+
 
 
 #' Higher level plotting function to overlay NMR spectra (ggplot2 based)
