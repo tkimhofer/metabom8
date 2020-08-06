@@ -9,7 +9,7 @@
 #' @param ... Additional parameters to be passed on to the graphics generic plot function.
 #' @seealso  \code{\link{matspec}} \code{\link{plot}}
 #' @aliases spec
-#' @details Low-level plotting function for a single NMR spectrum (base graphics). Interactive version, mode
+#' @details Low-level plotting function for a single NMR spectrum (base graphics). Interactive visualisation in mode of markers or line+markers will take longer (mode='lines' is recommended).
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom graphics points
 #' @importFrom plotly plot_ly add_lines layout %>% add_trace
@@ -50,8 +50,8 @@ spec <- function(x, ppm, shift = c(0, 11), add = F, interactive=T, name='A', mod
     }
 
 }
-# spec(X[1,], ppm, shift=c(-1,11), name='A', interactive=T, mode='lines')
-# spec(X[3,], ppm, shift=c(-1,11), name='C', add=T, interactive=T, mode='lines')
+# spec(Xb[1,], ppm, shift=c(-1,11), name='A', interactive=T, mode='lines')
+# spec(X[4,], ppm, shift=c(-1,11), name='C', add=T, interactive=T, mode='lines')
 
 
 
@@ -68,7 +68,8 @@ spec <- function(x, ppm, shift = c(0, 11), add = F, interactive=T, name='A', mod
 #' @aliases matspec
 #' @details Low-level plotting function for NMR spectra, interactive plotting with ggplotly
 #' @importFrom graphics matplot matpoints
-#' @importFrom plotly plot_ly add_lines layout %>%
+#' @importFrom graphics matplot matpoints
+#' @importFrom RColorBrewer brewer.pal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
 matspec <- function(X, ppm, shift = c(0, 9.5), interactive=T, ...) {
@@ -78,12 +79,15 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive=T, ...) {
 
   idx <- get.idx(shift, ppm)
 
-
   if(interactive){
-    df=melt(X)
+    df=melt(X[,idx])
     x <- list(title = "δ<sup>1</sup>H (ppm)", autorange="reversed")
     y <- list( title = "Intensity")
-    p=plot_ly(data=df, x = ~Var2, y = ~value, color = ~factor(Var1),  hovertemplate = '%{x} ppm<extra></extra>') %>% layout(xaxis = x, yaxis=y) %>% add_lines()
+
+    cols <- colorRampPalette(brewer.pal(8, "Set2"))(nrow(X))
+    df$col=rep(cols, length(idx))
+
+    p=plot_ly(data=df, x = ~Var2, y = ~value, color = ~col, name=~Var1, hovertemplate = '%{x} ppm<extra></extra>') %>% layout(xaxis = x, yaxis=y) %>% add_lines()
       return(p)
     }
 
@@ -91,11 +95,15 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive=T, ...) {
 
 }
 
-# matspec(X, ppm, shift=c(-1,11), interactive=T)
+# # Xb=bline(X)
+# # matspec(Xb, ppm, shift=c(-0.5,4), interactive=T)
+#
+# idx=get.idx(c(6,8), ppm)
+# plot(apply(Xb[,idx], 1, sum))
 
 
 
-#' Higher level plotting function to overlay NMR spectra (ggplot2 based)
+#' @title  Higher level plotting function to overlay NMR spectra (ggplot2 based)
 #' @aliases specOverlay
 #' @export
 #' @param X Input NMR data matrix with row representing spectra.

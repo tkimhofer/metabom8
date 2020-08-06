@@ -13,6 +13,9 @@
 # procs_exp = '1'
 # n_max = 2
 # filter = T
+#path='/Volumes/Torben Kimhofer/tutdata/'
+#read1d(path, n_max = 5)
+
 
 # read Bruker 1d new
 read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
@@ -27,7 +30,6 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
   f_list=.checkFiles1d(path, procs_exp, n_max, filter)
 
   # extract parameters from acqus and procs (for f1 and f2)
-
   pars <- t(.extract_pars1d ( f_list, procs_exp))
 
   if(is.list(pars)){
@@ -91,10 +93,11 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
   colnames(out)=ppm_ref
 
   fnam=strsplit(f_list[[1]], .Platform$file.sep)
-  idx_rm=min(sapply(fnam, length))-1
-  fnam=sapply(fnam, function(x, st=idx_rm){
-    paste(x[idx_rm:length(x)], collapse=.Platform$file.sep)
+  idx_keep=which((apply(do.call(rbind, fnam), 2, function(x) length(unique(x))))>1)
+  fnam=sapply(fnam, function(x, st=idx_keep){
+    paste(x[idx_keep], collapse=.Platform$file.sep)
   })
+
 
   rownames(out)=fnam
   rownames(pars)=fnam
@@ -257,6 +260,7 @@ read1d <- function(path,  procs_exp=1, n_max=1000, filter=T){
     f_procs=f_procs[1:n_max];
     f_acqus=f_acqus[1:n_max];
     f_1r=f_1r[1:n_max];
+    id_p=id_p[1:n_max];
 
     message('Reached n_max - not all spectra read-in.') }
   if(length(f_procs) == 0) { message('No spectrum found'); return(NULL) }

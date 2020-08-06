@@ -9,14 +9,14 @@
 #' @param apodisation list, apodisation type and parameter
 #' @param zerofil int, zero-filling, exponent summand of base 2
 #' @param return char, return mode: absorption, dispersion, magnitude
-#' @param exp char, experiments to read-in (e.g. <PROF_URINE_NOESY>)
+#' @param pulprog char, experiment type to read-in as defined by TopSpin pulprog (e.g. <noesygppr1d>)
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 # @importFrom base list.files readBin seq gsub
 #' @importFrom stats approxfun
 #' @section
 
 # read1d(path)
-# #
+# path='/Volumes/Torben Kimhofer/tutdata/'
 # #path='/Volumes/Torben_1 1/BariatS/BariatS/dat/Cohort1_NMR_Urine/'
 # path='/Volumes/Torben_1 1/Epi_data/airwave2/AIRWAVE_Urine_Rack01_RCM_061014/'
 # path='/Users/tk2812/Box Sync/Matt_cys/NMR Raw/NMR_COPIED/Cys_Urine_Rack1_SLL_270814/'
@@ -25,7 +25,7 @@
 # source('R/RawGenerics.R')
 #
 # a=Sys.time()
- # tt=read1d_raw(path,  n_max=5, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp='<PROF_URINE_NOESY>')
+ # tt=read1d_raw(path,  n_max=50, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', pulprog='<noesygppr1d>')
 # b=Sys.time()
 # as.numeric(b-a)/nrow(tt)
 #save(tt, file='Unphased1d_list.Rdata')
@@ -33,7 +33,7 @@
 # metabom8::matspec(X, ppm, shift=c(-0.1,0.1), main='None')
 
 # read Bruker 1d new
-read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp='<PROF_URINE_NOESY>', verbose=TRUE, recursive=TRUE) {
+read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', pulprog='<noesygppr1d>', verbose=TRUE, recursive=TRUE) {
 
   path=path.expand(path)
 
@@ -68,8 +68,8 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
   })
   pars<-as.data.frame(pars)
 
-  idx_filt<-which(pars$a_EXP == exp)
-  if(length(idx_filt)==0){stop(paste('Specified experiment (', exp, ') not in path. Select one of the following: ', unique(pars$a_EXP), sep=''))}
+  idx_filt<-which(pars$a_PULPROG == pulprog)
+  if(length(idx_filt)==0){stop(paste('Specified experiment (', pulprog, ') not in path. Select one of the following: ', unique(pars$a_PULPROG), sep=''))}
 
   pars=pars[idx_filt,]
   f_list[[1]]=f_list[[1]][idx_filt]
@@ -163,9 +163,9 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
   colnames(out)=ppm_ref
 
   fnam=strsplit(f_list[[1]], .Platform$file.sep)
-  idx_rm=min(sapply(fnam, length))
-  fnam=sapply(fnam, function(x, st=idx_rm){
-    paste(x[idx_rm:length(x)], collapse=.Platform$file.sep)
+  idx_keep=which((apply(do.call(rbind, fnam), 2, function(x) length(unique(x))))>1)
+  fnam=sapply(fnam, function(x, st=idx_keep){
+    paste(x[idx_keep], collapse=.Platform$file.sep)
   })
 
   rownames(out)=fnam
