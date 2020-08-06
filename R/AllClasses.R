@@ -44,6 +44,16 @@ setClass("OPLS_metabom8", representation(
 
 
 
+# define slots for stocsy_Torben object
+setClass("stocsy1d_metabom8", representation(
+  version = "character",
+  X = "matrix",
+  ppm = "vector",
+  driver ='numeric',
+  r = "vector",
+  cov="vector"
+)
+)
 
 # @title Plotting function OplsMAte object
 # @param x OplsMAte object
