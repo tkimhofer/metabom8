@@ -41,9 +41,6 @@ Read-in 1D NMR spectra
 NA
 }
 
-\seealso{
-\code{\reference{read1d}}
-}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }

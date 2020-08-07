@@ -13,7 +13,7 @@
 #' @return Three objects: NMR data matrix (2D: rows=spectra, cols=chem shift variables), ppm num vector matched to NMR data columns, meta data.frame containing spectrometer metadata
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @family Import NMR data functions
-#' @seealso \code{\reference{read1d}}
+# @seealso \code{\reference{read1d}}
 #' @importFrom stats approxfun
 #' @section
 

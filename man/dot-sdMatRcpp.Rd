@@ -5,13 +5,30 @@
 \title{Column-wise standard deviation and mean for a matrix}
 \usage{
 .sdMatRcpp(X, idc, center, scale_type)
+
+.sdMatRcpp(X, idc, center, scale_type)
 }
 \arguments{
 \item{X}{num matrix}
+
+\item{idc}{int row indices of X}
+
+\item{center}{bool mean centering}
+
+\item{scale_type}{int 0: no scaling, 1: SD scaling, 2: Pareto scaling}
 }
 \value{
 list: 1. sd (num vec), 2. mean (sd vec)
+
+list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
 }
 \description{
 Column-wise standard deviation and mean for a matrix
+
+Column-wise matrix scaling
+}
+\author{
+Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+
+Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
