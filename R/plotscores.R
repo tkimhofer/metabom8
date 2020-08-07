@@ -52,7 +52,7 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) 
   # Calculate Hotellings T2 elipse
   df=.hotellingsT2(x=sc[,1], y=sc[,2])
 
-  kap<-kappa(obj@X)
+  #kap<-kappa(obj@X)
 
   g <- ggplot() +
     geom_polygon(data = df, aes_string(x = "V1", y = "V2"), fill = NA, alpha = 0.4, colour='black', linetype=3) +
@@ -230,7 +230,7 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) 
     g <- g + theme(legend.position = c(1.01, 1.02), legend.justification = c(1, 1))
   }
 
-  9+ggtitle(sub=paste0('kappa=', kap))
+  #9+ggtitle(sub=paste0('kappa=', kap))
   return(g)
 }
 
