@@ -10,11 +10,14 @@
 #' @param driver num, chemical shift indicating STOCSY driver signal
 #' @param plotting logical, indicing if results should be plotted
 #' @param title char, plot title
+#' @return S4 object of class stocsy1d_metabom8
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family metID functions
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_v_line scales_x_reverse scale_colour_gradientn labs theme_bw theme element_text
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales sapply breaks_pretty
 #' @importFrom methods hasArg
+#' @export
 #' @section
 
 stocsy<-function(X, ppm, driver, plotting=T, title=NULL, pltly=T){
@@ -67,7 +70,7 @@ stocsy<-function(X, ppm, driver, plotting=T, title=NULL, pltly=T){
 
     if(pltly==T){
       browser()
-      ggplotly(g1)
+      ggplotly(g1, layerData = 2)
     }
 
 
@@ -89,9 +92,11 @@ stocsy<-function(X, ppm, driver, plotting=T, title=NULL, pltly=T){
 #' @param plotting logical, indicing if results should be plotted
 #' @param title char, plot title
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family metID functions
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_v_line scales_x_reverse scale_colour_gradientn labs theme_bw theme element_text
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales sapply
+#' @export
 #' @section
 
 plot_stocsy=function(stoc_mod, shift=c(0,10), title=NULL){

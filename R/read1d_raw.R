@@ -10,8 +10,10 @@
 #' @param zerofil int, zero-filling, exponent summand of base 2
 #' @param return char, return mode: absorption, dispersion, magnitude
 #' @param pulprog char, experiment type to read-in as defined by TopSpin pulprog (e.g. <noesygppr1d>)
+#' @return Three objects: NMR data matrix (2D: rows=spectra, cols=chem shift variables), ppm num vector matched to NMR data columns, meta data.frame containing spectrometer metadata
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-# @importFrom base list.files readBin seq gsub
+#' @family Import NMR data functions
+#' @seealso \code{\reference{read1d}}
 #' @importFrom stats approxfun
 #' @section
 
@@ -21,11 +23,12 @@
 # path='/Volumes/Torben_1 1/Epi_data/airwave2/AIRWAVE_Urine_Rack01_RCM_061014/'
 # path='/Users/tk2812/Box Sync/Matt_cys/NMR Raw/NMR_COPIED/Cys_Urine_Rack1_SLL_270814/'
 # library(metabom8)
+# path='/Volumes/Torben_2/adjNS_LTRexp/'
 #
 # source('R/RawGenerics.R')
 #
 # a=Sys.time()
- # tt=read1d_raw(path,  n_max=50, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', pulprog='<noesygppr1d>')
+ # tt=read1d_raw(path,  n_max=50, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', pulprog='<cpmgesgp1d>')
 # b=Sys.time()
 # as.numeric(b-a)/nrow(tt)
 #save(tt, file='Unphased1d_list.Rdata')
@@ -37,7 +40,7 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
 
   path=path.expand(path)
 
-  if(!return %in% c('absorption', 'dispersion', 'magnitude')){ type='absorption'; message('Check argument type. Returning absorption spectrum.') }
+  if(!return %in% c('absorption', 'dispersion', 'magnitude')){ return='absorption'; message('Check argument type. Returning absorption spectrum.') }
 
   if(verbose){message('Looking for spectral data...')}
   # check file system intact
@@ -83,7 +86,8 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
   ppm_ref=ppm_ref-ppm_ref[which.min(abs(ppm_ref-0))]
 
   if(length(unique(pars$a_TD))>2 || length(unique(pars$a_GRPDLY))>1){stop('Number of points collected in time domain is unqual across experiments.')}
-  apoFct<-.fidApodisationFct(n=(pars$a_TD[1]-(pars$a_GRPDLY[1]*2)), apodisation) # subtract group delay from TD (digital filtering artefact)
+
+  apoFct<-.fidApodisationFct(n=(pars$a_TD[1]-(floor(pars$a_GRPDLY[1])*2)), apodisation) # subtract group delay from TD (digital filtering artefact)
 
   # read in binary file and
   out <- sapply(1:length(f_list[[1]]), function(s, pref=ppm_ref, afun=apoFct, zf=zerofil){
@@ -110,13 +114,13 @@ read1d_raw <- function(path,  n_max=1000, filter=T, apodisation=list(fun='expone
 
     # remove group delay points
     if(pars$a_DSPFVS[s]<20){stop('Implement group delay digital filter correction ofr DSP firmware <20 (DSPFVS & DECIM')}
-    fid1=spec[-(1:(pars$a_GRPDLY[s]*2))]
+    fid1=spec[-(1:(floor(pars$a_GRPDLY[s])*2))]
     # plot(spec[1:200], type='l')
     # points(c(rep(0, (pars$a_GRPDLY[s]*2)), (fid1)), type='l', col='cyan')
     # abline(v=76)
     spec_lb=fid1*afun
 
-    if(!is.integer(zf)){stop('Zerofil argument nees to be an integer as it is summand of exponent in log2 space (ie., zerofil=1 doubles , zerofil=2 quadrupoles the number of data points.')}
+    if(!is.integer(zf)){stop('Zerofil argument nees to be an integer as it is summand of exponent in log2 space (ie., zerofil=1 doubles , zerofil=2 quadruples the number of data points.')}
 
     # zerofill, fft
     spec_zf=zerofil(fid = spec_lb, zf = zf, le_ori = length(spec))

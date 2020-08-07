@@ -4,7 +4,16 @@
 \alias{spec}
 \title{Simple plotting of a single NMR spectrum}
 \usage{
-spec(x, ppm, shift = c(0, 11), add = F, interactive = T, name = "A", ...)
+spec(
+  x,
+  ppm,
+  shift = c(0, 11),
+  add = F,
+  interactive = T,
+  name = "A",
+  mode = "lines",
+  ...
+)
 }
 \arguments{
 \item{x}{NMR spectrum.}
@@ -17,13 +26,15 @@ spec(x, ppm, shift = c(0, 11), add = F, interactive = T, name = "A", ...)
 
 \item{interactive}{logical, interactive version (plotly package)}
 
+\item{mode}{string, plot mode for interactive version: 'lines', 'lines+markers' or 'markers' (see Details)}
+
 \item{...}{Additional parameters to be passed on to the graphics generic plot function.}
 }
 \description{
 Simple plotting of a single NMR spectrum
 }
 \details{
-Low-level plotting function for a single NMR spectrum.
+Low-level plotting function for a single NMR spectrum (base graphics). Interactive visualisation in mode of markers or line+markers will take longer (mode='lines' is recommended).
 }
 \section{}{
 NA
@@ -31,7 +42,11 @@ NA
 
 \seealso{
 \code{\link{matspec}} \code{\link{plot}}
+
+Other visNMR: 
+\code{\link{matspec}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{visNMR}

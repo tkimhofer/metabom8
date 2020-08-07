@@ -28,7 +28,12 @@ Wold S. (1976) Pattern recognition by means of disjoint principal components mod
 }
 \seealso{
 \code{\link{opls}}
+
+Other OPLS model validation functions: 
+\code{\link{cvanova}()},
+\code{\link{opls_perm}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{OPLS model validation functions}

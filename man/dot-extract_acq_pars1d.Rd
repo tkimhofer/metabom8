@@ -14,10 +14,11 @@
 \description{
 Read Bruker NMR paramter files - helper function read1d
 }
-\section{}{
-NA
+\section{NA}{
+
 }
 
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\keyword{internal}

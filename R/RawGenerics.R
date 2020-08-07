@@ -1,4 +1,6 @@
 #  apodisation functions
+#' @keywords internal
+#' @section
 .em<-function(n, lb){
   idx<-seq(n)
   out<-exp(-( idx * lb * pi) / (length(idx)))
@@ -11,24 +13,30 @@
 #   minmax(out)
 # }
 
+#' @keywords internal
+#' @section
 .cosine<-function(n){
   idx<-seq(n)
   out=cos(pi*idx/n)
   minmax(out)
 }
-
+#' @keywords internal
+#' @section
 .sine<-function(n){
   idx=seq(n)
   out<-sin(pi*idx/n)
   minmax(out)
 }
-
+#' @keywords internal
+#' @section
 .sem<-function(n, lb=1.5){
   idx=seq(n)
   out<-sin((pi*idx)/n) * exp(-( idx * lb * pi) / n)
   minmax(out)
 }
 
+
+#' @section
 .fidApodisationFct<-function(n, pars){
 
   if(is.null(pars$fun) || !pars$fun %in% c('uniform', 'exponential', 'cosine', 'sine', 'sem')){stop('Check apodisation function argument (fun).')}
@@ -60,6 +68,8 @@
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 # @importFrom base sapply
 #' @section
+#' @keywords internal
+#' @section
 .extract_acq_pars1d <- function(f_list) {
 
   out=lapply(f_list[[1]], function(fil){
@@ -79,7 +89,7 @@
     return(d_acqu_val)
   })
 
-  out_le = sapply(out, length)
+  #out_le = sapply(out, length)
 
   return(out)
 }
@@ -95,6 +105,7 @@
 #' @param n_max int, Maximum number of spectra to read-in
 #' @param filter lobic, filter for intact file systems (TRUE is recommended)
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @keywords internal
 #' @section
 .check1d_files_fid <- function(datapath, n_max=10, filter=T, recursive=TRUE) {
 

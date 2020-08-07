@@ -14,6 +14,7 @@
 #' @importFrom ggplot2 aes_string geom_hline geom_vline geom_point labs scale_x_continuous scale_y_continuous theme_bw geom_label_repel guides theme
 #' @importFrom stats cov
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family dataviz
 #' @section
 
 ## loadiings function

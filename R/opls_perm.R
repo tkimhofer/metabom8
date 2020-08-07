@@ -13,6 +13,7 @@
 #' @importFrom stats median
 #' @importFrom parallel detectCores
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family OPLS model validation functions
 #' @section
 
 opls_perm <- function(smod, n=10, plot=T, mc=F){

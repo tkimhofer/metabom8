@@ -31,8 +31,14 @@ Eriksson, L, et al. (2008) CV-ANOVA for significance testing of PLS and OPLS mod
 
 Eriksson, L, et al. (2008) CV-ANOVA for significance testing of PLS and OPLS models. \emph{Journal of Chemometrics}, 22, 594-600.
 }
+\seealso{
+Other OPLS model validation functions: 
+\code{\link{dmodx}()},
+\code{\link{opls_perm}()}
+}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{OPLS model validation functions}

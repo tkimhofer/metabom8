@@ -2,6 +2,7 @@
 % Please edit documentation in R/pqn.R
 \name{pqn}
 \alias{pqn}
+\alias{pqn_normalisation}
 \title{Probabilistic quotient normalisation}
 \usage{
 pqn(
@@ -23,6 +24,9 @@ pqn(
 
 \item{bin}{named list: ppm and binning function parameters width or npoints}
 }
+\value{
+Normalised spectral matrix of the same dimensions as input
+}
 \description{
 Probabilistic quotient normalisation
 }
@@ -35,3 +39,4 @@ Dieterle, F., \emph{et al.} (2006), Probabilistic Quotient Normalization as Robu
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{normalisation functions}

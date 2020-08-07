@@ -3,6 +3,7 @@
 #' @description Non-parametric effect size estimate used to quantify the degree to which one population's variable distribution lies to the right or left of a reference group distribution.
 #' @param ref num, reference group
 #' @param comp num, comparator group
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @references Cliff, N (1993), Dominance statistics: Ordinal analyses to answer ordinal quetsions \emph{Psychological Bulletin}, 114.(3), 494-509.<https://doi.org/10.1037%2F0033-2909.114.3.494>
 #' @return This function returns Cliff's delta effect size ranging from -1 to 1
 ## #' @seealso \code{\link{OPLS_MetaboMate-class}} \code{\link{dmodx}} \code{\link{plotscores}} \code{\link{plotload}} \code{\link{specload}}

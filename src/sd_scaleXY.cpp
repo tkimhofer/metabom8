@@ -1,10 +1,11 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' Column-wise standard deviation and mean for a matrix
-//' @export
+//' @title Column-wise standard deviation and mean for a matrix
 //' @param X num matrix
+//' @keyword internal
 //' @return list: 1. sd (num vec), 2. mean (sd vec)
+//' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export(.sdMatRcpp)]]
 List sd_rcpp(NumericMatrix X) {
 
@@ -30,14 +31,16 @@ List sd_rcpp(NumericMatrix X) {
 // test=scale_rcpp(X, idc=0:(nrow(X)-1), center=T, scale_type=0)
 
 
-//' Column-wise matrix scaling
+//' @title Column-wise matrix scaling
 //' @export
 //' @param X num matrix
 //' @param idc int row indices of X
 //' @param center bool mean centering
 //' @param scale_type int 0: no scaling, 1: SD scaling, 2: Pareto scaling
 //' @return list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
-// [[Rcpp::export(.scaleMatRcpp)]]
+//' @keyword internal
+//' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+// [[Rcpp::export(.sdMatRcpp)]]
 List scale_rcpp(NumericMatrix X, IntegerVector idc, bool center,  int scale_type) {
 
   // scale_type: 0 - none, 1 - UV, 2 - Pareto

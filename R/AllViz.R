@@ -13,6 +13,7 @@
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom graphics points
 #' @importFrom plotly plot_ly add_lines layout %>% add_trace
+#' @family visNMR
 #' @section
 spec <- function(x, ppm, shift = c(0, 11), add = F, interactive=T, name='A', mode='lines', ...) {
 
@@ -71,6 +72,7 @@ spec <- function(x, ppm, shift = c(0, 11), add = F, interactive=T, name='A', mod
 #' @importFrom graphics matplot matpoints
 #' @importFrom RColorBrewer brewer.pal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family visNMR
 #' @section
 matspec <- function(X, ppm, shift = c(0, 9.5), interactive=T, ...) {
   if(is.null(ppm)){ppm=as.numeric(colnames(X)); } else{
@@ -195,6 +197,7 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
 #' @importFrom colorRamps matlab.like2
 #' @importFrom stats as.formula
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family dataviz
 #' @section
 specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, type = "Backscaled", title = "", r_scale=F) {
 
@@ -309,7 +312,7 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
 
 #' Plotting PCA or OPLS loadings
 #' @export
-#' @param mod PCA or OPLS model generated via \emph{MetaboMate} package functions.
+#' @param mod PCA or OPLS model generated via \emph{metabom8} package functions.
 #' @param shift ppm region to visualise.
 #' @param pc index of principal component to visualise, set to 1 if input model is OPLS
 #' @param type Type of loadings visualisation, either \code{'Statistical reconstruction'} or \code{'Backscaled'} (see Details).
@@ -323,6 +326,7 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales breaks_pretty
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family dataviz
 #' @section
 
 plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title = NULL, r_scale=F) {
@@ -392,6 +396,7 @@ plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title =
 #' @importFrom colorRamps matlab.like
 #' @importFrom stats t.test sd
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family OPLS model validation functions
 #' @section
 # E=residual Matrix N=number of samples K=number of variables A=number of model components A0= (1 if mean centred, 0 otherwise)
 

@@ -29,7 +29,11 @@ NA
 
 \seealso{
 \code{\link{spec}} \code{\link{plot}}
+
+Other visNMR: 
+\code{\link{spec}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{visNMR}

@@ -6,6 +6,7 @@
 #' @references Eriksson, L, et al. (2008) CV-ANOVA for significance testing of PLS and OPLS models. \emph{Journal of Chemometrics}, 22, 594-600.
 #' @return \emph{data.frame} describing ANOVA stats incl, p value
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family OPLS model validation functions
 #' @importFrom stats lm pf
 cvanova<-function(smod){
 

@@ -14,7 +14,7 @@
 #' @details Scores colouring is specified with the argument \code{an}, which is a list of three elements. The first list element specifies the colour (class factor required for categorical variables), the second list element specifies a point labeling (class character or factor) and the third list element specifies point shape. The Hotelling's \out{T<sup>2</sup>} ellipse is automatically included and calculated for the dimensions selected by the \code{pc} argument.
 #' @references Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
 #' @references Hotelling, H. (1931) The generalization of Student’s ratio. \emph{Ann. Math. Stat.}, 2, 360-378.
-#' @return This function returns a \emph{ggplot2} plot object.
+#' @return This function returns a \emph{ggplot2} object.
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom stats cov
 #' @importFrom ellipse ellipse
@@ -26,6 +26,7 @@
 #' @importFrom reshape2 melt
 #' @importFrom scales breaks_pretty
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family dataviz
 #' @section
 
 

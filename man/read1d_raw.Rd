@@ -11,7 +11,7 @@ read1d_raw(
   apodisation = list(fun = "exponential", lb = 0.2),
   zerofil = 1L,
   return = "absorption",
-  exp = "<PROF_URINE_NOESY>",
+  pulprog = "<noesygppr1d>",
   verbose = TRUE,
   recursive = TRUE
 )
@@ -29,7 +29,10 @@ read1d_raw(
 
 \item{return}{char, return mode: absorption, dispersion, magnitude}
 
-\item{exp}{char, experiments to read-in (e.g. <PROF_URINE_NOESY>)}
+\item{pulprog}{char, experiment type to read-in as defined by TopSpin pulprog (e.g. <noesygppr1d>)}
+}
+\value{
+Three objects: NMR data matrix (2D: rows=spectra, cols=chem shift variables), ppm num vector matched to NMR data columns, meta data.frame containing spectrometer metadata
 }
 \description{
 Read-in 1D NMR spectra
@@ -38,6 +41,10 @@ Read-in 1D NMR spectra
 NA
 }
 
+\seealso{
+\code{\reference{read1d}}
+}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{Import NMR data functions}

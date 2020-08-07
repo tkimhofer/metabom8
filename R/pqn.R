@@ -1,6 +1,6 @@
 #' Probabilistic quotient normalisation
 #' @export
-#' @aliases pqn
+#' @aliases pqn_normalisation
 #' @param X num matrix or data.frame, metabolite data with rows representing spectra and column spectral variables
 #' @param iref num or int vector of X row indices, used to calculate the reference spectrum (see Details). Set to NULL if all samples should be use to calculate reference index
 #' @param TArea logical indicating if total area normalisation should be applied first (see Details).
@@ -9,7 +9,8 @@
 #' @details It is sometimes favourable not to use all spectra to calculate a dilution reference (e.g. QC samples should generally be excluded). Therefore, a vector of indices can be specified with the parameter \code{reference.idx} and the respective spectra are used to calculate the median spectrum as a dilution reference. The parameter \code{reference.idx} can also be a single index, then the respective spectrum is used as a reference. If it is set \code{N/A}, all spectra in \code{X} are used to calculate the dilution reference spectrum. to Total area normalisation is integral part of the probabilistic quotient normalisation algorithm (see References), however, this sometimes distorts the spectra, i.e. is not suitable for normalisation. The parameter \code{TArea} can be set to TRUE or FALSE, depending if total area normalisation should be applied or not.
 #' @references Dieterle, F., \emph{et al.} (2006), Probabilistic Quotient Normalization as Robust Method to Account for Dilution of Complex Biological Mixtures. Application in 1H NMR Metabonomics, \emph{Analytical Chemistry}, 78.3, 4281-90.
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-
+#' @return Normalised spectral matrix of the same dimensions as input
+#' @family normalisation functions
 
 pqn <- function(X, iref = NULL, TArea = F, add_DilF = NULL, bin=list(ppm=NULL, width=0.05, npoints=NULL)) {
 

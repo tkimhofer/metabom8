@@ -25,8 +25,14 @@ Model validation using Y-permutations
 NA
 }
 
+\seealso{
+Other OPLS model validation functions: 
+\code{\link{cvanova}()},
+\code{\link{dmodx}()}
+}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{OPLS model validation functions}

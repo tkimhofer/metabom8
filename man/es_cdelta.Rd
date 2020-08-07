@@ -31,4 +31,6 @@ Cliff, N (1993), Dominance statistics: Ordinal analyses to answer ordinal quetsi
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+
+Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }

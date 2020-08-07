@@ -24,7 +24,7 @@ plotscores(obj, pc, an, title = "", qc, legend = "in", cv = T, ...)
 \item{...}{Additional values passed on to \code{\link[ggplot2]{scale_colour_gradientn}}.}
 }
 \value{
-This function returns a \emph{ggplot2} plot object.
+This function returns a \emph{ggplot2} object.
 }
 \description{
 Function for plotting PCA, PLS or OPLS model scores.
@@ -41,8 +41,15 @@ Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS)
 
 Hotelling, H. (1931) The generalization of Student’s ratio. \emph{Ann. Math. Stat.}, 2, 360-378.
 }
+\seealso{
+Other dataviz: 
+\code{\link{plotload_cat}()},
+\code{\link{plotload}()},
+\code{\link{specload}()}
+}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{dataviz}

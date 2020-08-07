@@ -17,6 +17,9 @@ stocsy(X, ppm, driver, plotting = T, title = NULL, pltly = T)
 
 \item{title}{char, plot title}
 }
+\value{
+S4 object of class stocsy1d_metabom8
+}
 \description{
 Statistical Total Correlation Spectroscopy (STOCSY)
 }
@@ -24,6 +27,11 @@ Statistical Total Correlation Spectroscopy (STOCSY)
 NA
 }
 
+\seealso{
+Other metID functions: 
+\code{\link{plot_stocsy}()}
+}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{metID functions}

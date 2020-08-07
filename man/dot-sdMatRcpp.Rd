@@ -4,7 +4,7 @@
 \alias{.sdMatRcpp}
 \title{Column-wise standard deviation and mean for a matrix}
 \usage{
-.sdMatRcpp(X)
+.sdMatRcpp(X, idc, center, scale_type)
 }
 \arguments{
 \item{X}{num matrix}

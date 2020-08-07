@@ -43,8 +43,9 @@ setClass("OPLS_metabom8", representation(
   )
 
 
-
-# define slots for stocsy_Torben object
+#' @title An S4 class to represent STOCSY model constructed with metabom8
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @section
 setClass("stocsy1d_metabom8", representation(
   version = "character",
   X = "matrix",

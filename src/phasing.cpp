@@ -1,6 +1,8 @@
 #include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
 
+//' @keywords internal
+//' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export]]
 arma::vec calcPhi(double ph0, double& ph1, int& le) {
   arma::vec v = arma::linspace<arma::vec>(0, le, le+1);
@@ -9,7 +11,8 @@ arma::vec calcPhi(double ph0, double& ph1, int& le) {
 }
 
 
-
+//' @keywords internal
+//' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export]]
 arma::vec phase1d(arma::vec& sp_re, arma::vec& sp_im, double ph0, double ph1){
   int le=sp_re.n_elem-1;
@@ -18,7 +21,8 @@ arma::vec phase1d(arma::vec& sp_re, arma::vec& sp_im, double ph0, double ph1){
   return out;
 }
 
-
+//' @keywords internal
+//' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export]]
 arma::vec phaseTsp(arma::vec& sp_re, arma::vec& sp_im, arma::vec& ppm, arma::vec& ph0, double& ph1, arma::uvec idx_tsp){
 
@@ -83,6 +87,9 @@ arma::vec phaseTsp(arma::vec& sp_re, arma::vec& sp_im, arma::vec& ppm, arma::vec
 
 }
 
+
+//' @keywords internal
+//' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export]]
 arma::vec zerofil(arma::vec fid, const int zf, int le_ori){
   int n_zero= (pow(2, log2(le_ori) +zf)) - fid.n_elem;
@@ -93,7 +100,8 @@ arma::vec zerofil(arma::vec fid, const int zf, int le_ori){
   return out;
 }
 
-
+//' @keywords internal
+//' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export]]
 arma::cx_vec cplx_fft(arma::vec fid){
 
@@ -128,7 +136,8 @@ arma::cx_vec cplx_fft(arma::vec fid){
 
 
 
-
+//' @keywords internal
+//' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export]]
 arma::vec defineChemShiftppm(const float sf_mhz, const float sw_hz, const int n_sp_re, const float dref, bool ref){
   float dist=sw_hz/n_sp_re;
@@ -151,7 +160,8 @@ arma::vec defineChemShiftppm(const float sf_mhz, const float sw_hz, const int n_
 // ppm=(pps-(pps[length(sp_re)/2]-(4.79 * pars$a_SFO1[s])))/pars$a_SFO1[s]
 
 
-
+//' @keywords internal
+//' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export]]
 arma::vec calibTsp(arma::vec spec,arma::vec ppm){
 

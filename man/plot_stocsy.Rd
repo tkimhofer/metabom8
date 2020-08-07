@@ -24,6 +24,11 @@ Plot Statistical Total Correlation Spectroscopy (STOCSY)
 NA
 }
 
+\seealso{
+Other metID functions: 
+\code{\link{stocsy}()}
+}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{metID functions}

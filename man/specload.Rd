@@ -45,8 +45,15 @@ OPLS: If \code{type='Statistical reconstruction'} the function calculates the co
 NA
 }
 
+\seealso{
+Other dataviz: 
+\code{\link{plotload_cat}()},
+\code{\link{plotload}()},
+\code{\link{plotscores}()}
+}
 \author{
 Torben Kimhofer \email{tkimhofer@gmail.com}
 
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{dataviz}

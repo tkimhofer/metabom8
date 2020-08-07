@@ -14,7 +14,7 @@ plotload(
 )
 }
 \arguments{
-\item{mod}{PCA or OPLS model generated via \emph{MetaboMate} package functions.}
+\item{mod}{PCA or OPLS model generated via \emph{metabom8} package functions.}
 
 \item{shift}{ppm region to visualise.}
 
@@ -39,8 +39,15 @@ NA
 \references{
 Cloarec, O., \emph{et al.} (2005). Evaluation of the Orthogonal Projection on Latent Structure Model Limitations Caused by Chemical Shift Variability and Improved Visualization of Biomarker Changes in 1H NMR Spectroscopic Metabonomic Studies. \emph{Analytical Chemistry} 77.2, 517-26.
 }
+\seealso{
+Other dataviz: 
+\code{\link{plotload_cat}()},
+\code{\link{plotscores}()},
+\code{\link{specload}()}
+}
 \author{
 Torben Kimhofer \email{tkimhofer@gmail.com}
 
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{dataviz}
