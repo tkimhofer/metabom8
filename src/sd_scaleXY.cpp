@@ -6,7 +6,7 @@ using namespace Rcpp;
 //' @keyword internal
 //' @return list: 1. sd (num vec), 2. mean (sd vec)
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-// [[Rcpp::export(.sdMatRcpp)]]
+// [[Rcpp::export(.sdRcpp)]]
 List sd_rcpp(NumericMatrix X) {
 
   NumericVector sd_out(X.cols());

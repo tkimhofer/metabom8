@@ -80,7 +80,7 @@ calibTsp <- function(spec, ppm) {
 #' @keyword internal
 #' @return list: 1. sd (num vec), 2. mean (sd vec)
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-.sdMatRcpp <- function(X) {
+.sdRcpp <- function(X) {
     .Call(`_metabom8_sd_rcpp`, X)
 }
 
