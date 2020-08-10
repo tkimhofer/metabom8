@@ -4,7 +4,7 @@
 \alias{.sdMatRcpp}
 \title{Column-wise matrix scaling}
 \usage{
-.sdMatRcpp(X, idc, center, scale_type)
+.sdMatRcpp(X)
 }
 \arguments{
 \item{X}{num matrix}

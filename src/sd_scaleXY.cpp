@@ -40,7 +40,7 @@ List sd_rcpp(NumericMatrix X) {
 //' @return list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
 //' @keyword internal
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-// [[Rcpp::export(.sdMatRcpp)]]
+// [[Rcpp::export(.scaleMatRcpp)]]
 List scale_rcpp(NumericMatrix X, IntegerVector idc, bool center,  int scale_type) {
 
   // scale_type: 0 - none, 1 - UV, 2 - Pareto

@@ -93,7 +93,7 @@ calibTsp <- function(spec, ppm) {
 #' @return list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
 #' @keyword internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-.sdMatRcpp <- function(X, idc, center, scale_type) {
+.scaleMatRcpp <- function(X, idc, center, scale_type) {
     .Call(`_metabom8_scale_rcpp`, X, idc, center, scale_type)
 }
 

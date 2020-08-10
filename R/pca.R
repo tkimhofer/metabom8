@@ -18,7 +18,8 @@ pca <- function(X, pc = 2, scale = "UV", center = T, method = "nipals") {
 
     if(is.data.frame(X)) X=as.matrix(X)
 
-    if(pc>=min(c(ncol(X), min(nrow(X))))){stop('Lower the number of desired components.')}
+    pc_max=min(c(ncol(X), min(nrow(X))))
+    if(pc>=pc_max){ message(paste('Too many number of components, setting pc to', pc_max)); pc=pc_max }
 
     if(!is.logical(center)){stop('Check center parameter argument!')}
     sc_num<-switch(scale,
