@@ -36,7 +36,8 @@
 
 
 <meta property="og:title" content="Column-wise standard deviation and mean for a matrix — .sdMatRcpp" />
-<meta property="og:description" content="Column-wise standard deviation and mean for a matrix" />
+<meta property="og:description" content="Column-wise standard deviation and mean for a matrix
+Column-wise matrix scaling" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -125,9 +126,12 @@
 
     <div class="ref-description">
     <p>Column-wise standard deviation and mean for a matrix</p>
+<p>Column-wise matrix scaling</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.sdMatRcpp</span>(<span class='no'>X</span>, <span class='no'>idc</span>, <span class='no'>center</span>, <span class='no'>scale_type</span>)</pre>
+    <pre class="usage"><span class='fu'>.sdMatRcpp</span>(<span class='no'>X</span>, <span class='no'>idc</span>, <span class='no'>center</span>, <span class='no'>scale_type</span>)
+
+<span class='fu'>.sdMatRcpp</span>(<span class='no'>X</span>, <span class='no'>idc</span>, <span class='no'>center</span>, <span class='no'>scale_type</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,11 +140,24 @@
       <th>X</th>
       <td><p>num matrix</p></td>
     </tr>
+    <tr>
+      <th>idc</th>
+      <td><p>int row indices of X</p></td>
+    </tr>
+    <tr>
+      <th>center</th>
+      <td><p>bool mean centering</p></td>
+    </tr>
+    <tr>
+      <th>scale_type</th>
+      <td><p>int 0: no scaling, 1: SD scaling, 2: Pareto scaling</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>list: 1. sd (num vec), 2. mean (sd vec)</p>
+<p>list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -150,6 +167,9 @@
       <li><a href="#value">Value</a></li>
     </ul>
 
+    <h2>Author</h2>
+    <p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+<p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
   </div>
 </div>
 

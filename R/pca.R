@@ -30,8 +30,6 @@ pca <- function(X, pc = 2, scale = "UV", center = T, method = "nipals") {
     x_check<-.checkXclassNas(X)
     msd_x<-.sdMatRcpp(X); # returns list with elements mean and sd
     XcsTot<-.scaleMatRcpp(X, 0:(nrow(X)-1), center=TRUE, scale_type = sc_num)[[1]]
-
-
   }
 
   if (method == "nipals") {
