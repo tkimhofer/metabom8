@@ -33,17 +33,6 @@ opls_perm <- function(smod, n=10, plot=T, mc=F){
 
   type=smod@type
 
-
-  browser()
-
-  do_perm <- function(i, Y, cv, type, nc_o){
-    Y_perm=t(t(sample(Y[,1])))
-    ind=.permYmod(Xs, Y_perm, cv, type, nc_o)
-    list(ind=ind,  r=cor(Y, Y_perm)[1,1])
-  }
-
-
-
   # browser()
   # if(mc==TRUE){
   #   numCores <- detectCores()-2
@@ -56,17 +45,11 @@ opls_perm <- function(smod, n=10, plot=T, mc=F){
     })
 #  }
 
-
-
-  out_df=as.data.frame(t(sapply(out, '[[', 1)))
+  out_df=as.data.frame(t(vapply(out, unlist, FUN.VALUE = rep(1, 5))))
   out_df=data.frame(apply(out_df, 2, function(x) as.numeric(unlist(x))), stringsAsFactors = F)
-  colnames(out_df)=c('r2_comp', 'q2_comp', 'aucs_tr', 'aucs_te')
-  out_df$r= as.numeric(unlist(sapply(out, '[[', 2)))
-
-
-  out_df$model=paste0('perm_', 1:nrow(out_df))
+  colnames(out_df)=c('r2_comp', 'q2_comp', 'aucs_tr', 'aucs_te', 'r')
+  out_df$model=paste0('perm_', seq_len(nrow(out_df)))
   mod=.permYmod(Xs, Y, cv, type, nc_o)
-
   add=as.data.frame(t(c(unlist(mod), 1)))
   add$model='Non-permuted'
   colnames(add)=colnames(out_df)
@@ -119,9 +102,13 @@ opls_perm <- function(smod, n=10, plot=T, mc=F){
 
 }
 
-
-
-
+#
+# .do_perm <- function(i, Y, cv, type, nc_o){
+#   Y_perm=t(t(sample(Y[,1])))
+#   ind=.permYmod(Xs, Y_perm, cv, type, nc_o)
+#   list(ind=ind,  r=cor(Y, Y_perm)[1,1])
+# }
+#
 
 
 

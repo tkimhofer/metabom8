@@ -29,7 +29,7 @@ binning <- function(X, ppm, width = 0.001, npoints = NULL) {
     stop('Define bin widht or desired number of bins.')
   }
   if (!is.null(width)) {
-    if (width <= abs(diff(ppm[1:2]))) {
+    if (width <= abs(diff(ppm[seq_len(2)]))) {
       stop("Bin width equals or is smaller than the difference of neighbouring ppm points.")
     }
     ppm_bin <- seq(max(ppm), min(ppm), by = - width)
@@ -43,8 +43,8 @@ binning <- function(X, ppm, width = 0.001, npoints = NULL) {
 
   quot <- ceiling(width/(ppm[1] - ppm[2]))
   rr <- ceiling(length(ppm)/quot)
-  x <- rep(1:200, each = rr)
-  x <- x[1:length(ppm)]
+  x <- rep(seq_len(200), each = rr)
+  x <- x[seq_len(length(ppm))]
   Xb <- t(apply(X, 1, function(x, ppmt = ppm_bin, ppm_fres = ppm) {
     sInter <- approxfun(ppm_fres, x)
     sInter(ppmt)

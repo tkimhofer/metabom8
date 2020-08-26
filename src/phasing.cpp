@@ -3,7 +3,7 @@
 
 //' @keywords internal
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-// [[Rcpp::export]]
+// [[Rcpp::export(.calcPhi)]]
 arma::vec calcPhi(double ph0, double& ph1, int& le) {
   arma::vec v = arma::linspace<arma::vec>(0, le, le+1);
   arma::vec ang =ph0 + ((ph1 * v) / le);
@@ -13,19 +13,20 @@ arma::vec calcPhi(double ph0, double& ph1, int& le) {
 
 //' @keywords internal
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-// [[Rcpp::export]]
+// [[Rcpp::export(.phase1d)]]
 arma::vec phase1d(arma::vec& sp_re, arma::vec& sp_im, double ph0, double ph1){
+//  Rcpp::Rcout << "phasing 1D..." << std::endl;
   int le=sp_re.n_elem-1;
-  arma::vec phi=calcPhi(ph0, ph1, le);
+  arma::vec phi= calcPhi(ph0, ph1, le);
   arma::vec out= (sp_re  % cos(phi)) - (sp_im % sin(phi));
+ // Rcpp::Rcout << "done." << std::endl;
   return out;
 }
 
 //' @keywords internal
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-// [[Rcpp::export]]
+// [[Rcpp::export(.phaseTsp)]]
 arma::vec phaseTsp(arma::vec& sp_re, arma::vec& sp_im, arma::vec& ppm, arma::vec& ph0, double& ph1, arma::uvec idx_tsp){
-
   arma::vec s_ph;
   arma::vec bound;
   arma::vec comp;
@@ -40,31 +41,45 @@ arma::vec phaseTsp(arma::vec& sp_re, arma::vec& sp_im, arma::vec& ppm, arma::vec
   int tsp_max;
   int start;
   int end;
-  int test;
+  //int test;
 
   for(int i=0; i<ph0.n_elem; ++i)
   {
+
+   // Rcpp::Rcout << i << std::endl;
+   // Rcpp::Rcout << ph0(i) << std::endl;
     s_ph=phase1d(sp_re, sp_im, ph0(i), ph1);
     tsp_max=arma::index_max(abs(s_ph.elem(idx_tsp)));
 
-    test=idx_tsp.n_elem;
+    //test=idx_tsp.n_elem;
     inter = (idx_tsp.n_elem - tsp_max);
     bound << tsp_max << inter << arma::endr;
-
+   // Rcpp::Rcout << bound << std::endl;
     bmin=bound.min()-2;
+   // bmin=bound.max()-1;
+   // Rcpp::Rcout << bmin << std::endl;
+
+
     start=tsp_max-bmin;
     end=tsp_max+bmin;
 
     iid=arma::linspace<arma::vec>(start, end, end-start+1);
     iiu=arma::conv_to<arma::uvec>::from(iid);
+    //Rcpp::Rcout << iiu << std::endl;
+
     iis=idx_tsp.elem(iiu);
+   // Rcpp::Rcout << iis(0) << std::endl;
+   // Rcpp::Rcout << iis.n_elem << std::endl;
+
     out[i] = arma::sum(abs(s_ph.elem(iis) - reverse(s_ph.elem(iis))));
+   // Rcpp::Rcout << out << std::endl;
   }
 
   float ang_best = ph0(arma::index_min(out));
   arma::vec spec_phase=phase1d(sp_re, sp_im, ang_best, 0);
-
   return spec_phase;
+
+//  return out;
 
 // //  return bound;
 //   return Rcpp::List::create(Rcpp::Named("idx_tsp") = idx_tsp,
@@ -90,7 +105,7 @@ arma::vec phaseTsp(arma::vec& sp_re, arma::vec& sp_im, arma::vec& ppm, arma::vec
 
 //' @keywords internal
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-// [[Rcpp::export]]
+// [[Rcpp::export(.zerofil)]]
 arma::vec zerofil(arma::vec fid, const int zf, int le_ori){
   int n_zero= (pow(2, log2(le_ori) +zf)) - fid.n_elem;
 
@@ -102,8 +117,8 @@ arma::vec zerofil(arma::vec fid, const int zf, int le_ori){
 
 //' @keywords internal
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-// [[Rcpp::export]]
-arma::cx_vec cplx_fft(arma::vec fid){
+// [[Rcpp::export(.cplxFft)]]
+arma::cx_vec cplxFft(arma::vec fid){
 
   arma::vec idx_re = arma::linspace<arma::vec>(0, fid.n_elem-2,( fid.n_elem/2));
   arma::uvec idx_reu=arma::conv_to<arma::uvec>::from(idx_re);
@@ -138,8 +153,8 @@ arma::cx_vec cplx_fft(arma::vec fid){
 
 //' @keywords internal
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-// [[Rcpp::export]]
-arma::vec defineChemShiftppm(const float sf_mhz, const float sw_hz, const int n_sp_re, const float dref, bool ref){
+// [[Rcpp::export(.defineChemShiftPpm)]]
+arma::vec defineChemShiftPpm(const float sf_mhz, const float sw_hz, const int n_sp_re, const float dref, bool ref){
   float dist=sw_hz/n_sp_re;
   arma::vec pps = arma::regspace<arma::vec>(0, dist, (sw_hz-(dist/2)));
   arma::vec ppm = (pps - (pps(n_sp_re/2)-(dref*sf_mhz))) / sf_mhz;
@@ -159,10 +174,10 @@ arma::vec defineChemShiftppm(const float sf_mhz, const float sw_hz, const int n_
 //   pps=seq(0, pars$a_SW_h[s], by=ppmDist)[-1]
 // ppm=(pps-(pps[length(sp_re)/2]-(4.79 * pars$a_SFO1[s])))/pars$a_SFO1[s]
 
-
+//' @title Calibrate
 //' @keywords internal
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-// [[Rcpp::export]]
+// [[Rcpp::export(.calibTsp)]]
 arma::vec calibTsp(arma::vec spec,arma::vec ppm){
 
 // find max close to zero

@@ -3,7 +3,7 @@ using namespace Rcpp;
 
 //' @title Column-wise standard deviation and mean for a matrix
 //' @param X num matrix
-//' @keyword internal
+//' @keywords internal
 //' @return list: 1. sd (num vec), 2. mean (sd vec)
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export(.sdRcpp)]]
@@ -38,7 +38,7 @@ List sd_rcpp(NumericMatrix X) {
 //' @param center bool mean centering
 //' @param scale_type int 0: no scaling, 1: SD scaling, 2: Pareto scaling
 //' @return list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
-//' @keyword internal
+//' @keywords internal
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export(.scaleMatRcpp)]]
 List scale_rcpp(NumericMatrix X, IntegerVector idc, bool center,  int scale_type) {

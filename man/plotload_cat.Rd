@@ -35,7 +35,6 @@ Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tut
 \seealso{
 Other dataviz: 
 \code{\link{plotload}()},
-\code{\link{plotscores}()},
 \code{\link{specload}()}
 }
 \author{

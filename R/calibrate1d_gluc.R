@@ -1,11 +1,12 @@
 # reference 1D NMR to glucose @ 5.233 (d)
 
-#' Calibrate 1D to glucose @ 5.233 (d)
+#' @title Calibrate 1D to glucose @ 5.233 (d)
 #' @param X num matrix, NMR matrix with spectra in rows
 #' @param ppm num vec, chemical shift matching to X
 #' @return Calibrated X matrix
 #' @author Torben Kimhofer \email{torben.kimhofer@@gmail.com}
 #' @import signal sgolayfilt
+#' @keywords internal
 .calibrate1d_gluc <- function(X, ppm) {
 
   ppick=function(X, ppm, fil.n=5, fil.p=3){
@@ -40,10 +41,8 @@
 
   # calculate J const
   s=lapply(test, function(x){
-    #browser()
     ii=combn(seq(nrow(x)), 2)
     ii_d=apply(ii, 2, function(id, pp=x$ppm){
-      #browser()
       abs(diff(pp[id]))
     })
 
@@ -73,16 +72,13 @@
     }else{NULL}
   })
 
-  Xc=sapply(seq(nrow(X)), function(i){
-    #browser()
-    print(i)
+  Xc=vapply(seq(nrow(X)), function(i){
     if(is.null(s[[i]]) && nrow(s[[i]])>2){message(paste('Could not calibrate spectrum', i))}else{
-      #browser()
       ff=approxfun(x=ppm-(max(s[[i]]$ppm)-5.233),  y=X[i,])
       news=ff(ppm)
       return(news)
     }
-  })
+  }, FUN.VALUE =X[1,])
   Xc=t(Xc)
   return(Xc)
 }

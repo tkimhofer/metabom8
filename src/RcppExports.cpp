@@ -158,20 +158,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cplx_fft
-arma::cx_vec cplx_fft(arma::vec fid);
-RcppExport SEXP _metabom8_cplx_fft(SEXP fidSEXP) {
+// cplxFft
+arma::cx_vec cplxFft(arma::vec fid);
+RcppExport SEXP _metabom8_cplxFft(SEXP fidSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type fid(fidSEXP);
-    rcpp_result_gen = Rcpp::wrap(cplx_fft(fid));
+    rcpp_result_gen = Rcpp::wrap(cplxFft(fid));
     return rcpp_result_gen;
 END_RCPP
 }
-// defineChemShiftppm
-arma::vec defineChemShiftppm(const float sf_mhz, const float sw_hz, const int n_sp_re, const float dref, bool ref);
-RcppExport SEXP _metabom8_defineChemShiftppm(SEXP sf_mhzSEXP, SEXP sw_hzSEXP, SEXP n_sp_reSEXP, SEXP drefSEXP, SEXP refSEXP) {
+// defineChemShiftPpm
+arma::vec defineChemShiftPpm(const float sf_mhz, const float sw_hz, const int n_sp_re, const float dref, bool ref);
+RcppExport SEXP _metabom8_defineChemShiftPpm(SEXP sf_mhzSEXP, SEXP sw_hzSEXP, SEXP n_sp_reSEXP, SEXP drefSEXP, SEXP refSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -180,7 +180,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type n_sp_re(n_sp_reSEXP);
     Rcpp::traits::input_parameter< const float >::type dref(drefSEXP);
     Rcpp::traits::input_parameter< bool >::type ref(refSEXP);
-    rcpp_result_gen = Rcpp::wrap(defineChemShiftppm(sf_mhz, sw_hz, n_sp_re, dref, ref));
+    rcpp_result_gen = Rcpp::wrap(defineChemShiftPpm(sf_mhz, sw_hz, n_sp_re, dref, ref));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -235,8 +235,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_metabom8_phase1d", (DL_FUNC) &_metabom8_phase1d, 4},
     {"_metabom8_phaseTsp", (DL_FUNC) &_metabom8_phaseTsp, 6},
     {"_metabom8_zerofil", (DL_FUNC) &_metabom8_zerofil, 3},
-    {"_metabom8_cplx_fft", (DL_FUNC) &_metabom8_cplx_fft, 1},
-    {"_metabom8_defineChemShiftppm", (DL_FUNC) &_metabom8_defineChemShiftppm, 5},
+    {"_metabom8_cplxFft", (DL_FUNC) &_metabom8_cplxFft, 1},
+    {"_metabom8_defineChemShiftPpm", (DL_FUNC) &_metabom8_defineChemShiftPpm, 5},
     {"_metabom8_calibTsp", (DL_FUNC) &_metabom8_calibTsp, 2},
     {"_metabom8_sd_rcpp", (DL_FUNC) &_metabom8_sd_rcpp, 1},
     {"_metabom8_scale_rcpp", (DL_FUNC) &_metabom8_scale_rcpp, 4},

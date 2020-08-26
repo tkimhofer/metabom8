@@ -1,10 +1,11 @@
 ---
 title: "Import NMR data"
+author: "Torben Kimhofer"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Import NMR data}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r, include = FALSE}

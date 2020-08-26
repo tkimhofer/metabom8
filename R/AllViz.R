@@ -5,6 +5,7 @@
 #' @param shift chemical shift region to be plotted.
 #' @param add Logical indicating if spectrum should be added to a current plot generated with \code{spec()} or \code{matspec()}.
 #' @param interactive logical, interactive version (plotly package)
+#' @param name string, name of trace (only used in interactive mode)
 #' @param mode string, plot mode for interactive version: 'lines', 'lines+markers' or 'markers' (see Details)
 #' @param ... Additional parameters to be passed on to the graphics generic plot function.
 #' @seealso  \code{\link{matspec}} \code{\link{plot}}
@@ -15,7 +16,7 @@
 #' @importFrom plotly plot_ly add_lines layout %>% add_trace
 #' @family visNMR
 #' @section
-spec <- function(x, ppm, shift = c(0, 11), add = F, interactive=T, name='A', mode='lines', ...) {
+spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive=TRUE, name='A', mode='lines', ...) {
 
   if(!is.null(ncol(x))){ stop('More than one spectrum provided.')}
 
@@ -33,8 +34,8 @@ spec <- function(x, ppm, shift = c(0, 11), add = F, interactive=T, name='A', mod
       return(p)
     }else{
      # if(!exists('mm8_plot', mode='environment')) mm8_plot <- new.env(parent = globalenv())
-      assign(".ind_interactive", T, envir =  globalenv())
-      x <- list(title = "δ<sup>1</sup>H (ppm)", autorange="reversed")
+      assign(".ind_interactive", TRUE, envir =  globalenv())
+      x <- list(title = "&delta;<sup>1</sup>H (ppm)", autorange="reversed")
       y <- list( title = "Intensity")
       p=plot_ly(data=sp, x=~ppm, y=~spec,   name='A', type = 'scatter', mode = mode,  hovertemplate = '%{x} ppm<extra></extra>') %>% layout(xaxis = x, yaxis=y)
       assign(".p", p, envir  = parent.frame())
@@ -43,7 +44,7 @@ spec <- function(x, ppm, shift = c(0, 11), add = F, interactive=T, name='A', mod
   }
 
 
-  if(exists('.ind_interactive', envir = parent.frame())){ assign(".ind_interactive", F, envir =  globalenv())}
+  if(exists('.ind_interactive', envir = parent.frame())){ assign(".ind_interactive", FALSE, envir =  globalenv())}
   if (add) {
     points(ppm[idx], x[idx], type = "l", ...)
   } else {
@@ -69,12 +70,12 @@ spec <- function(x, ppm, shift = c(0, 11), add = F, interactive=T, name='A', mod
 #' @aliases matspec
 #' @details Low-level plotting function for NMR spectra, interactive plotting with ggplotly
 #' @importFrom graphics matplot matpoints
-#' @importFrom graphics matplot matpoints
-#' @importFrom RColorBrewer brewer.pal
+# #' @importFrom RColorBrewer brewer.pal
+#' @importFrom grDevices colorRampPalette
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @family visNMR
 #' @section
-matspec <- function(X, ppm, shift = c(0, 9.5), interactive=T, ...) {
+matspec <- function(X, ppm, shift = c(0, 9.5), interactive=TRUE, ...) {
   if(is.null(ppm)){ppm=as.numeric(colnames(X)); } else{
     if(!.check_X_ppm(X, ppm)) stop('Non-matching dimensions X matrix and ppm vector or missing values in ppm.')
   }
@@ -83,7 +84,7 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive=T, ...) {
 
   if(interactive){
     df=melt(X[,idx])
-    x <- list(title = "δ<sup>1</sup>H (ppm)", autorange="reversed")
+    x <- list(title = "&delta;<sup>1</sup>H (ppm)", autorange="reversed")
     y <- list( title = "Intensity")
 
     cols <- colorRampPalette(brewer.pal(8, "Set2"))(nrow(X))
@@ -133,7 +134,7 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
 
   if (is.null(names(an))) {
     cat("No facet, colour and linetype names given. See an argument in ?specOverlay\n")
-    names(an) <- paste("an", 1:length(an), sep = "")
+    names(an) <- paste("an", seq_len(length(an)), sep = "")
   }
   le.arg <- paste(length(an))
   if ("" %in% names(an)) {
@@ -145,8 +146,8 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
   specs <- X[, idx]
   colnames(specs) <- paste("Idx", idx, sep = "_")
   # create dataframe for ggplot function
-  df <- data.frame(do.call(cbind.data.frame, an), ID = 1:nrow(specs), alp, specs)
-  colnames(df)[1:le.arg] <- names(an)
+  df <- data.frame(do.call(cbind.data.frame, an), ID = seq_len(nrow(specs)), alp, specs)
+  colnames(df)[seq_len(le.arg)] <- names(an)
   df <- melt(df, id.vars = c("alp", "ID", names(an)))
   df$variable <- ppm[as.numeric(gsub("Idx_", "", df$variable))]
   # initiate generic ggplot object
@@ -160,7 +161,7 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
     g <- g + geom_line(data = df, aes_string(x = "variable", y = "value", group = "ID", colour = names(an)[2]), alpha = alp, size = size)
     # add multi-colour gradient if colour vector is not factor/char
     col.cat <- is.factor(an[[2]]) | is.character(an[[2]]) | is.logical(an[[2]])
-    if (col.cat == F) {
+    if (!col.cat) {
       g <- g + scale_colour_gradientn(colors = matlab.like2(length(an[[2]])))
     }
   }, `3` = {
@@ -169,7 +170,7 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
                        size = size)
     # add multi-colour gradient if colour vector is not factor/char
     col.cat <- is.factor(an[[2]]) | is.character(an[[2]]) | is.logical(an[[2]])
-    if (col.cat == F) {
+    if (!col.cat) {
       g <- g + scale_colour_gradientn(colors = matlab.like2(length(an[[2]])))
     }
   })
@@ -199,12 +200,12 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @family dataviz
 #' @section
-specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, type = "Backscaled", title = "", r_scale=F) {
+specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, type = "Backscaled", title = "", r_scale=FALSE) {
 
   if(!class(mod)[1] %in% c('OPLS_metabom8', 'PCA_metabom8')) {stop('Need metabom8 PCA or OPLS object.')}
 
   # calc loadings
-  if (grepl("st|recon", type, ignore.case = T)) {
+  if (grepl("st|recon", type, ignore.case = TRUE)) {
     type <- "Statistical reconstruction"
   } else {
     type <- "Backscaled"
@@ -248,10 +249,10 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
     cols <- abs(df_l[,1])
 
   }
-
-
-  #####################
-  # plot specs
+#
+#
+#   #####################
+#   # plot specs
 
   specs <- X[, idx]
   limY <- range(specs)
@@ -329,11 +330,11 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
 #' @family dataviz
 #' @section
 
-plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title = NULL, r_scale=F) {
+plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title = NULL, r_scale=FALSE) {
 
   if(!class(mod)[1] %in% c('OPLS_metabom8', 'PCA_metabom8')) {stop('Need metabom8 PCA or OPLS object.')}
 
-  if (grepl("st|recon", type, ignore.case = T)) {
+  if (grepl("st|recon", type, ignore.case = TRUE)) {
     type <- "Statistical reconstruction"
   } else {
     type <- "Backscaled"
@@ -400,7 +401,7 @@ plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title =
 #' @section
 # E=residual Matrix N=number of samples K=number of variables A=number of model components A0= (1 if mean centred, 0 otherwise)
 
-dmodx <- function(mod, plot = T) {
+dmodx <- function(mod, plot = TRUE) {
   if (class(mod)[1] != "OPLS_metabom8") {
     stop("Please provide a OPLS_metabom8 object.")
   }
@@ -414,8 +415,8 @@ dmodx <- function(mod, plot = T) {
   dmodX <- sqrt(ss_res/(K - A))/sqrt(sum(ss_res)/((N - A - A0) * (K - A)))
   tt <- t.test(dmodX, alternative = "less")
   ci95 <- tt$conf.int[2] + 2 * sd(dmodX)
-  df <- data.frame(col = mod@t_pred_cv[,1], ID = 1:length(dmodX), DmodX = dmodX, passedT.test = dmodX < tt$conf.int[2] + 2 * sd(dmodX))
-  if (plot == T) {
+  df <- data.frame(col = mod@t_pred_cv[,1], ID = seq_len(length(dmodX)), DmodX = dmodX, passedT.test = dmodX < tt$conf.int[2] + 2 * sd(dmodX))
+  if(plot) {
     df$Y=mod@Y$ori
     g <- ggplot(data = df) +
       geom_segment(aes_string(x = "ID", xend = "ID", y = "min(dmodX)-0.1", yend = "DmodX"), colour = "gray60", size = 0.1) +

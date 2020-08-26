@@ -26,7 +26,7 @@
 #' @importFrom reshape2 melt
 #' @importFrom scales breaks_pretty
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @family dataviz
+#' @family dataviz nmr functions msfunctions
 #' @section
 
 

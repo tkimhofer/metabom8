@@ -42,7 +42,6 @@ Cloarec, O., \emph{et al.} (2005). Evaluation of the Orthogonal Projection on La
 \seealso{
 Other dataviz: 
 \code{\link{plotload_cat}()},
-\code{\link{plotscores}()},
 \code{\link{specload}()}
 }
 \author{

@@ -27,10 +27,12 @@
 
 
 predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
+
   if (class(opls_model)[1] != "OPLS_metabom8" ) {
     stop("Model input does not belong to class OPLS_Torben!")
     return(NULL)
   }
+
 
   if (length(unique(opls_model@Y$ori)) != 2) {
     stop("Predictions implemented only for regression or 2-class outcomes.")
@@ -44,6 +46,12 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
     X <- newdata
   }
 
+  # check if dimensions X match to opls_model X
+  if(length(opls_model@X_mean)!=ncol(newdata)){
+    stop('Newdata argument does not match training data.')
+  }
+
+
   if(!is.null(idx_scale)){ # use provided scaling vector
     # define scale type
     map_scale<-c('none'=0L, 'UV'=1L)
@@ -53,19 +61,18 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
     X <-sc_res$X_prep
   }else{ # use model paramters for scaling
 
-    if(all(!is.null(opls_model@X_mean)) && all(!is.null(opls_model@X_sd))){
-      X=(sapply(seq(ncol(X)), function(i){
-        (X[,i] - opls_model@X_mean[i]) / opls_model@X_sd[i]
-      } ) )
+    if(all(!is.null(opls_model@X_mean) & !is.na(opls_model@X_mean)) && all(!is.null(opls_model@X_sd) & !is.na(opls_model@X_sd))){
+      Xmc=sweep(X, 2, opls_model@X_mean, FUN='-')
+      X=sweep(Xmc, 2, opls_model@X_sd, FUN='/')
     }
   }
 
   # center and scale X<-scale(newdata, center=opls_model@Xcenter, scale=opls_model@Xscale) iteratively remove all orthogonal components from
   # prediction data set
-  e_new_orth <-sc_res$X_prep
+  e_new_orth <-X
 
   t_orth <- matrix(NA, nrow = nrow(X), ncol = opls_model@nPC-1)
-  for (i in 1:(opls_model@nPC-1)) {
+  for (i in seq_len(opls_model@nPC-1)) {
     t_orth[, i] <- e_new_orth %*% t(t(opls_model@p_orth[i, ]))/drop(crossprod(t(t(opls_model@p_orth[i, ]))))
     e_new_orth <- e_new_orth - (cbind(t_orth[, i]) %*% t(opls_model@p_orth[i, ]))
   }
@@ -83,19 +90,21 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
   betas <- opls_model@betas_pred
   q_h <- opls_model@Qpc
   res <- matrix(NA, nrow = nrow(X), ncol = ncol(opls_model@t_pred))
-  for (i in 1:ncol(opls_model@t_pred)) {
+  for (i in seq_len(ncol(opls_model@t_pred))) {
     opts <- t(cbind(betas[i]) %*% t_pred[, i]) %*% rbind(q_h[, i])
     res[, i] <- apply(opts, 1, sum)
   }
   totalPrediction <- apply(res, 1, sum)  # sum over all components
   Y_predicted <- (totalPrediction * opls_model@Y_sd) + opls_model@Y_mean
-
   if (opls_model@type == "DA") {
+
+    # TODO: adjust class predictions to unequal group sizes of training set (decision boundary shifting)
     cs=table(opls_model@Y$ori, opls_model@Y$dummy)
     levs=data.frame(Original=rownames(cs), Numeric=as.numeric(colnames(cs)), stringsAsFactors = F, row.names = NULL)
-    Y_predicted <- levs$Original[apply(sapply(levs$Numeric, function(x, y = Y_predicted) {
+    Y_predicted <- levs$Original[apply(
+      vapply(levs$Numeric, function(x, y = Y_predicted) {
       abs(x - y)
-    }), 1, which.min)]
+    },  Y_predicted), 1, which.min)]
   }
 
 

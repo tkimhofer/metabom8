@@ -171,7 +171,6 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
              }else{
                if (grepl('MC', type)) {
                  r2_comp[nc] <- .r2(YcsTot, preds_train[1,,], NULL)
-                 browser()
                  q2_comp[nc] <- .r2(YcsTot, preds_test[4,], tssy)
                }else{
                  r2_comp[nc] <- .r2(YcsTot, preds_train[1,], NULL)
@@ -218,7 +217,6 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
     nc <- nc + 1
   }
 
-  #browser()
   # xfilt_obsolete <- .nipOplsRcpp(X = opls_filt$X_res, Y = YcsTot)
   m_summary=.orthModelCompSummary(type = type, r2x_comp = c(r2x_comp, NA), r2_comp = r2_comp, q2_comp = q2_comp, aucs_te = aucs_te, aucs_tr=aucs_tr, cv = cv)
   if (plotting == TRUE) { suppressWarnings(print(m_summary[[2]])) }

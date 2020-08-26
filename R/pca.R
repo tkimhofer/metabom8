@@ -11,6 +11,7 @@
 #' @return This function returns a \emph{PCA_MetaboMate} S4 object.
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom pcaMethods pca
+#' @family dataviz nmr functions, ms functions
 
 pca <- function(X, pc = 2, scale = "UV", center = T, method = "nipals") {
 
@@ -35,18 +36,19 @@ pca <- function(X, pc = 2, scale = "UV", center = T, method = "nipals") {
 
   if (method == "nipals") {
     res <- list()
-    for (i in 1:pc) {
+    for (i in seq_len(pc)) {
       if (i == 1) {
         res[[i]] <- .nipPcaCompRcpp(XcsTot)
       } else (res[[i]] <- .nipPcaCompRcpp(X = res[[i - 1]][[1]]))
     }
-    Tpc <- sapply(res, "[[", 2)
-    Ppc <- sapply(res, "[[", 3)
+
+    Tpc <- vapply(res, "[[", 2, FUN.VALUE = X[,1])
+    Ppc <- vapply(res, "[[", 3, FUN.VALUE = X[1,])
     # total.var<-sum(diag(cov(X))) #Calculate total variance in
     tssx<-.tssRcpp(XcsTot)
     #Calculate proportion of variance explained and cumulative
     ss_comp <- rep(NA, ncol(Tpc))
-    for (i in 1:ncol(Tpc)) {
+    for (i in seq_len(ncol(Tpc))) {
       ss_comp[i] <- .tssRcpp(Tpc[, i] %o% Ppc[, i]) / tssx
     }
 
@@ -63,11 +65,11 @@ pca <- function(X, pc = 2, scale = "UV", center = T, method = "nipals") {
 
     mod <- pcaMethods::pca(X, nPcs = pc, scale = "none", center = F, method = method)
     r2 <- mod@R2cum
-    for (i in 1:pc) {
+    for (i in seq_len(pc)) {
       if (i == 1) {
         next
       } else {
-        r2[i] <- r2[i] - cumsum(r2[1:(i - 1)])
+        r2[i] <- r2[i] - cumsum(r2[seq_len((i - 1))])
       }
     }
 

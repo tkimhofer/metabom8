@@ -2,6 +2,7 @@
 #' @description This function checks for missing values in Y (NA, NAN, infinite) and establishes analysis type accroding to the class of the input data Y: regression (R) or discriminant analysis (DA). It also converts Y to a matrix.
 #' @param Y Input data (uni or multivar) formatted as vector or matrix or data.frame
 #' @return List of i) Y matrix, ii) Y levels (empty if numeric Y), iii) Y type (R or DA)
+#' @keywords internal
 #' @section
 
 # check Y for regression or DA
@@ -48,6 +49,7 @@
 #' @description This function checks for missing values in Y (NA, NAN, infinite), numeric variable format.
 #' @param X Input data (uni or multivar) formatted as vector or matrix or data.frame
 #' @return NULL if all's fine and throws error otherwise
+#' @keywords internal
 #' @section
 .checkXclassNas = function(X) {
 
@@ -67,6 +69,7 @@
 #' @param X X matrix (observations x variables)
 #' @param Y Y matrix (observations x variables)
 #' @return NULL if all's fine and throws error otherwise
+#' @keywords internal
 #' @section
 
 .checkDimXY = function(X, Y) {
@@ -90,6 +93,7 @@
 #' @param aucs_te num array with AUROC entries of principal components
 #' @param pc_max maximum number of components
 #' @return bool: FALSE if another component should be fitted, TRUE if the current component is starting to overfit OR improves only little in prediction capcity when compared to the previous one.
+#' @keywords internal
 #' @section
 #'
 #' evalFit(type, q2_comp, aucs_tr aucs_te, maxPCo)
@@ -134,6 +138,7 @@
 #' @param k int k parameter
 #' @param Y matrix (observations times variables)
 #' @return list of Y row-indices for each fold
+#' @keywords internal
 #' @section
 .kFold = function(k, Y){
     #browser()
@@ -161,6 +166,7 @@
 #' @param k int CV parameter k
 #' @param stratified list with 3 elements: 1) char: R for regression (Y is numeric), DA for discriminant analysis (Y treated as categorical), prefix '-mY' indicates multi-column Y (see Y) 2) Y matrix (observations times variables), always with ncol = 1 (stratified CV generation for multi-Y to be implemented) and 3) quantile function probabilities for stratification of numberic Y
 #' @return list of Y row-indices for each fold
+#' @keywords internal
 #' @section
 .kFoldStratified = function(k, stratified){
     if (grepl('R', stratified[[1]])) {
@@ -201,6 +207,7 @@
 #' @param Y matrix (observations times variables) with ncol(Y)=1, always (column reduction for multicolumn Y  in parent function: .cvSetsMethod)!
 #' @param split Ratio of the number of samples in training and test set
 #' @return list of Y row-indices for each fold
+#' @keywords internal
 #' @section
 .mc = function(k, Y, split){
     if (!is.integer(k)) {k=ceiling(k); warning(paste0("The k-fold parameter should be an integer. I'm rounding to k=", k))}
@@ -217,8 +224,7 @@
 #' @param k int k parameter
 #' @param split Fraction of samples used to generate training set for class/group-balanced Monte Carlo (MC) CV
 #' @param stratified list with 3 elements: 1) char: R for regression (Y is numeric), DA for discriminant analysis (Y treated as categorical), prefix '-mY' indicates multi-column Y (see Y) 2) Y matrix (observations times variables), always with ncol = 1 (stratified CV generation for multi-Y to be implemented) and 3) quantile function probabilities for stratification of numberic Y
-
-
+#' @keywords internal
 #' @return list of Y row-indices for each fold
 #' @section
 .mcBalanced = function(k, split, stratified){
@@ -260,6 +266,7 @@
 #' @param k Number of training sets to generate.
 #' @param split Fraction of samples used to generate training set for class/group-balanced Monte Carlo (MC) CV
 #' @return list of Y row-indices for each CV fold
+#' @keywords internal
 #' @section
 .cvSetsMethod <- function(Y, type, method = "k-fold_stratified", k = 7, split = 2/3) {
 
@@ -285,6 +292,7 @@
 #' @return List of two: Dummy matrix and data frame mapping Y-levels to numeric representations.
 #' @aliases create_dummy_Y
 #' @author Torben Kimhofer \email{MetaboMate@@tkimhofer.com}
+#' @keywords internal
 #' @section
 .createDummyY <- function(Y) {
     if (!is.numeric(Y)) {
@@ -305,15 +313,6 @@
         return(list(cbind(Y), data.frame()))
     }
 }
-
-# df=data.frame(ppm=s1@ppm, cor=s1@r, cov=s1@cov, stringsAsFactors = F)
-# fig <- plot_ly(df, x = ~ppm, y = ~cov,  type = 'scatter', mode = 'lines')
-#
-# fig
-
-
-
-
 
 # #' @title Summarise model indices using tabular and graphic modes
 # #' @param type char: regression (\code{R}) or discriminant analysis (\code{DA})
@@ -367,16 +366,15 @@
 #' @param mod.cv cv parameters
 #' @return Named list of collated OPLS data for respective component
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @keywords internal
 #' @section
 
 
 # TODO: add scaling and centering
 .oplsComponentCv=function(X, Y, cv.set, nc,  mod.cv){
 
-    #browser()
     out=lapply(seq_along(cv.set), function(k){
 
-        #browser()
         idc=cv.set[[k]]
         if(nc==1){
             Xcs <- .scaleMatRcpp(X, idc-1, center=TRUE, scale_type = 1)[[1]] # subtract 1 since Rcpp indexing starts at zero
@@ -398,59 +396,36 @@
         # create list opls_mod:
         # with w_xo, p_xo, (matrix with columns, rows equating to the number of orthogonal components, resp) and
         # w_xp, p_xp, p_yp (a single one for predictive component)
-
-
-
-        #browser()
         if(nc==1){
-
             mod.cv=list(
                 # w_xo = matrix(NA, nrow=ncol(X), ncol=1),
                 # p_xo = matrix(NA, nrow=1, ncol=ncol(X)),
-
                 t_xo = matrix(NA, nrow=nrow(Y), ncol=1),
-
                 # w_xp = matrix(NA, nrow=ncol(X), ncol=1),
                 # p_xp = matrix(NA, nrow=1, ncol=ncol(X)),
                 # p_yp = matrix(NA, nrow=ncol(Y), ncol=1),
-
                 t_xp = matrix(NA, nrow=nrow(Y), ncol=1),
-
                 y_pred_train = matrix(NA, nrow=nrow(Y), ncol=ncol(Y)),
                 y_pred_test = matrix(NA, nrow=nrow(Y), ncol=ncol(Y)),
-
                 x_res = matrix(NA, nrow=nrow(Y), ncol=ncol(Xcs))
-
                 #r2x_pred_comp_cv = array()
-
             )
-
             # mod.cv$w_xo[,nc]=opls_filt$w_o
             # mod.cv$p_xo[nc,]=opls_filt$p_o
-
             # mod.cv$t_xo[idc, nc]=opls_filt$t_o
             mod.cv$t_xo[-idc, nc]=opls_pred$t_xo_new
-
             # mod.cv$w_xp[,nc]=pred_comp$w_x
             # mod.cv$p_xp[nc,]=pred_comp$p_x
-
             #mod.cv$t_xp[idc,nc]=pred_comp$t_p
             mod.cv$t_xp[-idc,nc]=opls_pred$t_pred # cv scores
-
             #mod.cv$p_py[idc,nc]=pred_comp$p_y
             #mod.cv$p_py[,nc]=opls_pred$y_pred
-
             mod.cv$y_pred_train[idc,]=pred_comp$y_pred
             mod.cv$y_pred_test[-idc,]=opls_pred$y_pred #t(apply(opls_pred$y_pred, 1, function(x, me= Y_scale$mean, ssd=Y_scale$sd) { (x+me) * ssd}))
-
             mod.cv$x_res[idc,] = opls_filt$X_res
             mod.cv$x_res[-idc,] = opls_pred$Xres
-
            # mod.cv$r2x_pred_comp_cv = .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, tssx)
-
-            #browser()
             return(mod.cv)
-
         }else{
 
             #browser()
@@ -503,6 +478,7 @@
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom abind abind
 #' @importFrom stats sd
+#' @keywords internal
 #' @section
 #'
 # this has to be adjusted from multi-column Y
@@ -526,7 +502,7 @@
             f_mat=do.call(cbind, inter);
             fout=apply(f_mat, 1, function(x){
                 idx=which(!is.na(x))
-                c('mean'=mean(x[idx], na.rm = T), 'sd'=sd(x[idx], na.rm = T), '%cv'=length(idx)/length(x))
+                c('mean'=mean(x[idx], na.rm = TRUE), 'sd'=sd(x[idx], na.rm = TRUE), '%cv'=length(idx)/length(x))
             })
         }
     }else{
@@ -551,32 +527,13 @@
     return(fout)
 }
 
-
-# # in case of mY==T and MCCV as cv_type
-# df=melt(fout, varnames = 'indices')
-# df$Y=Y[df$X2]
-# colnames(df)=c('index', 'sample', 'class', 'value', 'Y')
-#
-#
-# .q2 <- function(Y, Yhat, ytss=NULL) {
-#
-#
-#   press <- sum(as.vector((Y - Yhat)^2), na.rm=T) / ncol(Y)
-#
-#   if(is.null(ytss)){  ytss <- sum(as.vector(Y^2), na.rm=T) / ncol(Y) }
-#
-#   1-(press / ytss)
-#
-# }
-#
-
-
 #' @title R2 and Q2
 #' @param Y num matrix Y: OPLS outcome, dummy matrix in case it is categorical
 #' @param Yhat num matrix, predicted Y
 #' @param ytss num, total sum of squares of Y
 #' @return R2=1-(PRESS/TSS)
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @keywords internal
 #' @section
 .r2 <- function(Y, Yhat, ytss) {
 
@@ -602,6 +559,7 @@
 #' @return list: 1. data.frame, summary table 2. ggplot2, viz of summary tbl
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom scales breaks_pretty
+#' @keywords internal
 #' @section
 .orthModelCompSummary=function(type, r2x_comp, r2_comp, q2_comp, aucs_tr, aucs_te, cv){
     type=strsplit(type, '-')[[1]][1]
@@ -656,6 +614,7 @@
 #' @param X NMR matrix with spectra represented in rows.
 #' @param ppm ppm vector.
 #' @return  Logical indicating if X and ppm match and absence of NA and inf in ppm
+#' @keywords internal
 #' @section
 .check_X_ppm <- function(X, ppm){
 
@@ -674,8 +633,9 @@
 #' @export
 #' @aliases get.idx
 #' @author Torben Kimhofer \email{tkimhofer@@gmail.com}
+#' @section
 get.idx <- function(range = c(1, 5), ppm) {
-    range <- sort(range, decreasing = T)
+    range <- sort(range, decreasing = TRUE)
     which(ppm <= range[1] & ppm >= range[2])
 }
 
@@ -689,6 +649,7 @@ get.idx <- function(range = c(1, 5), ppm) {
 #' \deqn{X_{scaled}=\frac{x-x_{min}}{x_{max}-x_{min}}}
 #' @usage minmax(x)
 #' @author Torben Kimhofer \email{torben.kimhofer@@gmail.com}
+#' @section
 minmax <- function(x) {
     (x - min(x))/(max(x) - min(x))
 }
@@ -744,9 +705,10 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 
-# @title Prep data.frame for plotting functions
+#' @title Prep data.frame for plotting functions
 # @importFrom ptw asysm
-# @section
+#' @keywords internal
+#' @section
 .viz_df_helper=function(obj, pc, an, type='p'){
 
     an=.check_an_viz(an, obj)
@@ -786,12 +748,12 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
         # extract data from obj
         switch(class(obj)[1],
                "PCA_metabom8"={
-                   for(i in 1:length(pc)){
+                   for(i in seq_len(length(pc))){
                        com[[i]]=obj@p[,pc[i]]
                    }
                },
                "OPLS_metabom8"={
-                   for(i in 1:length(pc)){
+                   for(i in seq_len(length(pc))){
                        if( grepl('o', pc[i]) ){ com[[i]]=obj@p_orth[pc1[1],]}else{com[[i]]=obj@p_pred[1,]}
                    }
                }
@@ -808,12 +770,12 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
         # extract data from obj
         switch(class(obj)[1],
                "PCA_metabom8"={
-                   for(i in 1:length(pc)){
+                   for(i in seq_len(length(pc))){
                        com[[i]]=obj@t[,pc[i]]
                    }
                },
                "OPLS_metabom8"={
-                   for(i in 1:length(pc)){
+                   for(i in seq_len(length(pc))){
                        if( grepl('o', pc[i]) ){ com[[i]]=obj@t_orth[,pc1[1]]}else{com[[i]]=obj@t_pred[,1]}
                    }
 
@@ -831,7 +793,7 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
                    stop('t_cv not defined in PCA context')
                },
                "OPLS_metabom8"={
-                   for(i in 1:length(pc)){
+                   for(i in seq_len(length(pc))){
                        if( grepl('o', pc[i]) ){ com[[i]]=obj@t_orth_cv[,pc1[1]]}else{com[[i]]=obj@t_pred_cv[,1]}
                    }
                }
@@ -889,7 +851,9 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 
-
+#' @title Backscaling for NMR data
+#' @keywords internal
+#' @section
 .load_backscaled_nmr=function(mod, pc, idx, ppm){
     p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
     # backscaling p
@@ -907,7 +871,9 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 
-
+#' @title cor / cov model scores and NMR data
+#' @keywords internal
+#' @section
 .load_stat_reconstr_nmr=function(mod, pc, X, idx, ppm){
     t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
     cc <- cor(t_mod$df[,1], X)[1, ]
@@ -920,6 +886,7 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 
+# check input arguments for plotting pca / opls scores
 .check_an_viz=function(an, obj){
     #browser()
     if (missing(an)) {
@@ -927,8 +894,7 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
     }
 
     if(length(an)>3){message('an is a list of maximum three elements, see documentation for more infos.')}
-
-    an=an[!sapply(an, is.null)]
+    an=an[!vapply(an, is.null, FUN.VALUE = TRUE)]
 
     # create df for ggplot
     if(is.null(names(an))){
@@ -952,12 +918,9 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 
-
+# OPLS Y-oermutations
 .permYmod=function(Xs, Y, cv, type, nc_o){
 
-
-
-    browser()
     # remove orthogonal component(s)
     for(i in seq(nc_o)){
         if(nc_o == 1){ tt<-.oplsComponentCv(Xs, Y=Y, cv$cv_sets, nc_o[i],  mod.cv=NULL)
@@ -1016,9 +979,9 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
                        mod <- multiclass.roc(response = Y, predictor = preds_te, quiet = TRUE)
                        aucs_tr[nc] <- mod$auc
                    }else{
-                       mod <- roc(response = Y, predictor = preds_test, quiet = TRUE)
+                       mod <- roc(response = as.vector(Y), predictor = as.vector(preds_test), quiet = TRUE)
                        aucs_te[nc] <- mod$auc
-                       mod <- roc(response = Y, predictor = preds_train[1,], quiet = TRUE)
+                       mod <- roc(response = as.vector(Y), predictor = preds_train[1,], quiet = TRUE)
                        aucs_tr[nc] <- mod$auc
                    }
                }else{

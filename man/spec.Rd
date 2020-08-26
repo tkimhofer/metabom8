@@ -26,6 +26,8 @@ spec(
 
 \item{interactive}{logical, interactive version (plotly package)}
 
+\item{name}{string, name of trace (only used in interactive mode)}
+
 \item{mode}{string, plot mode for interactive version: 'lines', 'lines+markers' or 'markers' (see Details)}
 
 \item{...}{Additional parameters to be passed on to the graphics generic plot function.}

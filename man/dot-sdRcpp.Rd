@@ -18,3 +18,4 @@ Column-wise standard deviation and mean for a matrix
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\keyword{internal}

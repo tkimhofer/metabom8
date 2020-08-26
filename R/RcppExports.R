@@ -35,49 +35,50 @@
 
 #' @keywords internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-calcPhi <- function(ph0, ph1, le) {
+.calcPhi <- function(ph0, ph1, le) {
     .Call(`_metabom8_calcPhi`, ph0, ph1, le)
 }
 
 #' @keywords internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-phase1d <- function(sp_re, sp_im, ph0, ph1) {
+.phase1d <- function(sp_re, sp_im, ph0, ph1) {
     .Call(`_metabom8_phase1d`, sp_re, sp_im, ph0, ph1)
 }
 
 #' @keywords internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-phaseTsp <- function(sp_re, sp_im, ppm, ph0, ph1, idx_tsp) {
+.phaseTsp <- function(sp_re, sp_im, ppm, ph0, ph1, idx_tsp) {
     .Call(`_metabom8_phaseTsp`, sp_re, sp_im, ppm, ph0, ph1, idx_tsp)
 }
 
 #' @keywords internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-zerofil <- function(fid, zf, le_ori) {
+.zerofil <- function(fid, zf, le_ori) {
     .Call(`_metabom8_zerofil`, fid, zf, le_ori)
 }
 
 #' @keywords internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-cplx_fft <- function(fid) {
-    .Call(`_metabom8_cplx_fft`, fid)
+.cplxFft <- function(fid) {
+    .Call(`_metabom8_cplxFft`, fid)
 }
 
 #' @keywords internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-defineChemShiftppm <- function(sf_mhz, sw_hz, n_sp_re, dref, ref) {
-    .Call(`_metabom8_defineChemShiftppm`, sf_mhz, sw_hz, n_sp_re, dref, ref)
+.defineChemShiftPpm <- function(sf_mhz, sw_hz, n_sp_re, dref, ref) {
+    .Call(`_metabom8_defineChemShiftPpm`, sf_mhz, sw_hz, n_sp_re, dref, ref)
 }
 
+#' @title Calibrate
 #' @keywords internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-calibTsp <- function(spec, ppm) {
+.calibTsp <- function(spec, ppm) {
     .Call(`_metabom8_calibTsp`, spec, ppm)
 }
 
 #' @title Column-wise standard deviation and mean for a matrix
 #' @param X num matrix
-#' @keyword internal
+#' @keywords internal
 #' @return list: 1. sd (num vec), 2. mean (sd vec)
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .sdRcpp <- function(X) {
@@ -91,7 +92,7 @@ calibTsp <- function(spec, ppm) {
 #' @param center bool mean centering
 #' @param scale_type int 0: no scaling, 1: SD scaling, 2: Pareto scaling
 #' @return list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
-#' @keyword internal
+#' @keywords internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .scaleMatRcpp <- function(X, idc, center, scale_type) {
     .Call(`_metabom8_scale_rcpp`, X, idc, center, scale_type)

@@ -27,9 +27,11 @@ es_cdelta = function(ref, comp){
 
   if(length(ref) < 5 | length(comp) < 5) stop('Low number of values (< 5)')
 
-  top_counts=sapply(ref, function(x, y=comp){
+  top_counts=vapply(ref, function(x, y=comp){
+    names(x)=NULL
+    names(y)=NULL
     c(length(which(x>y)), length(which(x<y)))
-  })
+  }, FUN.VALUE=c(2,length(ref)))
   out=(sum(top_counts[1,])-sum(top_counts[2,]))/(length(ref)*length(comp))
   return(out)
 }

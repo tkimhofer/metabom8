@@ -29,7 +29,11 @@ read1d_raw(
 
 \item{return}{char, return mode: absorption, dispersion, magnitude}
 
-\item{pulprog}{char, experiment type to read-in as defined by TopSpin pulprog (e.g. <noesygppr1d>)}
+\item{pulprog}{char, experiment type to read-in as defined by TopSpin pulprog (e.g. \<noesygppr1d\>)}
+
+\item{verbose}{logic, if TRUE print function messages to console}
+
+\item{recursive}{logic, if TRUE recursively search all subfolders of path for specified NMR files}
 }
 \value{
 Three objects: NMR data matrix (2D: rows=spectra, cols=chem shift variables), ppm num vector matched to NMR data columns, meta data.frame containing spectrometer metadata

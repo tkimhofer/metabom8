@@ -32,3 +32,4 @@ Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tut
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{dataviz nmr functions, ms functions}

@@ -4,7 +4,7 @@
 \alias{stocsy}
 \title{Statistical Total Correlation Spectroscopy (STOCSY)}
 \usage{
-stocsy(X, ppm, driver, plotting = T, title = NULL, pltly = T)
+stocsy(X, ppm, driver, plotting = T, title = NULL, plotly = T)
 }
 \arguments{
 \item{X}{Numeric matrix or dataframe where each row represents a NMR spectrum and each column a chemical shift variable.}
@@ -16,6 +16,8 @@ stocsy(X, ppm, driver, plotting = T, title = NULL, pltly = T)
 \item{plotting}{logical, indicing if results should be plotted}
 
 \item{title}{char, plot title}
+
+\item{plotly}{logic, interactive plottin using plotly}
 }
 \value{
 S4 object of class stocsy1d_metabom8
@@ -29,9 +31,10 @@ NA
 
 \seealso{
 Other metID functions: 
-\code{\link{plot_stocsy}()}
+\code{\link{plotStocsy}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{metID functions}
+\concept{nmr functions}

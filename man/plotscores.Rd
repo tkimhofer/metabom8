@@ -41,15 +41,9 @@ Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS)
 
 Hotelling, H. (1931) The generalization of Student’s ratio. \emph{Ann. Math. Stat.}, 2, 360-378.
 }
-\seealso{
-Other dataviz: 
-\code{\link{plotload_cat}()},
-\code{\link{plotload}()},
-\code{\link{specload}()}
-}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{dataviz}
+\concept{dataviz nmr functions msfunctions}

@@ -27,8 +27,8 @@ pqn <- function(X, iref = NULL, TArea = F, add_DilF = NULL, bin=list(ppm=NULL, w
     X1 <- binning(X, ppm, unlist(bin))
   }
   # apply total area normalisation
-  if (TArea == T) {
-    X1 <- t(apply(X1, 1, function(x) x/sum(x, na.rm = T) * 100))
+  if(TArea) {
+    X1 <- t(apply(X1, 1, function(x) x/sum(x, na.rm = TRUE) * 100))
   }
 
   le.ref <- length(iref)
@@ -52,8 +52,8 @@ pqn <- function(X, iref = NULL, TArea = F, add_DilF = NULL, bin=list(ppm=NULL, w
 
   ref[ref == 0] <- 1e-04
 
-  dil_F <- 1/apply(X1, 1, function(x) median(x/ref, na.rm = T))
-  X_pqn <- t(apply(rbind(1:nrow(X)), 2, function(i) {
+  dil_F <- 1/apply(X1, 1, function(x) median(x/ref, na.rm = TRUE))
+  X_pqn <- t(apply(rbind(seq_len(nrow(X))), 2, function(i) {
     X[i, ] * dil_F[i]
   }))
   if (!is.null(add_DilF)) {

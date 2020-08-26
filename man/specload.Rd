@@ -48,8 +48,7 @@ NA
 \seealso{
 Other dataviz: 
 \code{\link{plotload_cat}()},
-\code{\link{plotload}()},
-\code{\link{plotscores}()}
+\code{\link{plotload}()}
 }
 \author{
 Torben Kimhofer \email{tkimhofer@gmail.com}
