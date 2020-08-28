@@ -38,7 +38,7 @@
 # metabom8::matspec(X, ppm, shift=c(-0.1,0.1), main='None')
 
 # read Bruker 1d new
-read1d_raw<-function(path,  n_max=1000, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_PLASMA_NOESY128_3mm'), pulprog=c('noesygppr1d')),  verbose=1, recursive=TRUE) {
+read1d_raw<-function(path,  n_max=1000, filter=TRUE, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_PLASMA_NOESY128_3mm'), pulprog=c('noesygppr1d')),  verbose=1, recursive=TRUE) {
 
   path=path.expand(path)
 

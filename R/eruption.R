@@ -17,10 +17,8 @@
 
 
 
-eruption <- function(mod, pc=1, p_adj='BH', invert_es=F){
+eruption <- function(mod, pc=1, p_adj='BH', invert_es=FALSE){
 
-
-  #browser()
   if(is.na(p_adj) || is.infinite(p_adj) || length(p_adj)>1) {p_adj='none'}
 
   if(length(unique(mod@Y$ori))>2) { stop('Eruption plot defined for two-level outcome.') }

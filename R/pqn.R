@@ -12,7 +12,7 @@
 #' @return Normalised spectral matrix of the same dimensions as input
 #' @family normalisation functions
 
-pqn <- function(X, iref = NULL, TArea = F, add_DilF = NULL, bin=list(ppm=NULL, width=0.05, npoints=NULL)) {
+pqn <- function(X, iref = NULL, TArea = FALSE, add_DilF = NULL, bin=list(ppm=NULL, width=0.05, npoints=NULL)) {
 
   nams <- rownames(X)
 

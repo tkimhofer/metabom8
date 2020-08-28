@@ -12,7 +12,7 @@
 #
 .hotellingsT2=function(x, y, alpha=0.95){
   SD <- cov(cbind(x, y), use='complete.obs')
-  el <- ellipse(SD, centre = colMeans(cbind(x, y), na.rm = T), level = alpha)
+  el <- ellipse(SD, centre = colMeans(cbind(x, y), na.rm = TRUE), level = alpha)
   colnames(el) <- c("V1", "V2")
   xlim <- c(min((c(el[, 1], x))), max((c(el[, 1], x))))
   xlim <- xlim + c(diff(range(xlim)) * -0.05, diff(range(xlim)) *

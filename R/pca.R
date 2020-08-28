@@ -13,15 +13,12 @@
 #' @importFrom pcaMethods pca
 #' @family dataviz nmr functions, ms functions
 
-pca <- function(X, pc = 2, scale = "UV", center = T, method = "nipals") {
+pca <- function(X, pc = 2, scale = "UV", center = TRUE, method = "nipals") {
 
   {
-
     if(is.data.frame(X)) X=as.matrix(X)
-
     pc_max=min(c(ncol(X), min(nrow(X))))
     if(pc>=pc_max){ message(paste('Too many number of components, setting pc to', pc_max)); pc=pc_max }
-
     if(!is.logical(center)){stop('Check center parameter argument!')}
     sc_num<-switch(scale,
                    'None'={0},
@@ -33,7 +30,6 @@ pca <- function(X, pc = 2, scale = "UV", center = T, method = "nipals") {
     msd_x<-.sdRcpp(X); # returns list with elements mean and sd
     XcsTot<-.scaleMatRcpp(X, 0:(nrow(X)-1), center=TRUE, scale_type = sc_num)[[1]]
   }
-
   if (method == "nipals") {
     res <- list()
     for (i in seq_len(pc)) {
@@ -63,7 +59,7 @@ pca <- function(X, pc = 2, scale = "UV", center = T, method = "nipals") {
     mod_pca <- new("PCA_metabom8", type ='NIPALS', t = Tpc, p = Ppc, nPC = pc, X_mean=msd_x[[1]], X_sd=msd_x[[2]], Parameters=pars,  X=X )
   } else {
 
-    mod <- pcaMethods::pca(X, nPcs = pc, scale = "none", center = F, method = method)
+    mod <- pcaMethods::pca(X, nPcs = pc, scale = "none", center = FALSE, method = method)
     r2 <- mod@R2cum
     for (i in seq_len(pc)) {
       if (i == 1) {

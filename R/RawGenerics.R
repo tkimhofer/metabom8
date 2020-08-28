@@ -112,7 +112,7 @@
     idx<-grep('..', f_acqu, fixed=TRUE)
     f_acqu[idx]<-vapply(idx, function(i){ gsub(' .*', f_acqu[i+1], f_acqu[i])}, FUN.VALUE = '')
 
-    out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_acqu, value=TRUE, fixed = F), fixed = F), '=')
+    out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_acqu, value=TRUE, fixed = FALSE), fixed = FALSE), '=')
     d_acqu_val=gsub('^ ', '', vapply(out, '[[', 2 , FUN.VALUE = ''))
     names(d_acqu_val) = paste0('a_', vapply(out, '[[', 1, FUN.VALUE = ''))
     # change date

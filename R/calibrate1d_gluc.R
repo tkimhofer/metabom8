@@ -25,7 +25,6 @@
       xd_sign=sign(diff(x_smooth))
       ids=which(xd_sign[-ic]!=xd_sign[-1] )+1
       idx=which(x[ids]>noi)
-      #browser()
       out=data.frame(idc=ids[idx], ppm=pp[ids[idx]], Int=x[ids[idx]])
       rownames(out)=NULL
       out
@@ -57,7 +56,7 @@
     }
 
     if(length(ii_idx)>1){
-      if(!is.matrix(ii[,ii_idx])) browser()
+      if(!is.matrix(ii[,ii_idx]))
       crit=apply(ii[,ii_idx], 2, function(id){
         c('max'=mean(x$Int[id]), 'ratio'=max(x$Int)/min(x$Int[2]))
       })

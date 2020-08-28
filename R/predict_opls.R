@@ -28,7 +28,7 @@
 
 predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
 
-  if (class(opls_model)[1] != "OPLS_metabom8" ) {
+  if (!"OPLS_metabom8" %in% is(opls_model)) {
     stop("Model input does not belong to class OPLS_Torben!")
     return(NULL)
   }
@@ -60,7 +60,6 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
     sc_res=.scaleMatRcpp(X, idx_scale-1, center = opls_model@Parameters$center, scale_type = map_scale[match(opls_model@Parameters$scale, names(map_scale))])
     X <-sc_res$X_prep
   }else{ # use model paramters for scaling
-
     if(all(!is.null(opls_model@X_mean) & !is.na(opls_model@X_mean)) && all(!is.null(opls_model@X_sd) & !is.na(opls_model@X_sd))){
       Xmc=sweep(X, 2, opls_model@X_mean, FUN='-')
       X=sweep(Xmc, 2, opls_model@X_sd, FUN='/')
@@ -100,7 +99,7 @@ predict_opls <- function(opls_model, newdata, idx_scale=NULL) {
 
     # TODO: adjust class predictions to unequal group sizes of training set (decision boundary shifting)
     cs=table(opls_model@Y$ori, opls_model@Y$dummy)
-    levs=data.frame(Original=rownames(cs), Numeric=as.numeric(colnames(cs)), stringsAsFactors = F, row.names = NULL)
+    levs=data.frame(Original=rownames(cs), Numeric=as.numeric(colnames(cs)), stringsAsFactors = FALSE, row.names = NULL)
     Y_predicted <- levs$Original[apply(
       vapply(levs$Numeric, function(x, y = Y_predicted) {
       abs(x - y)

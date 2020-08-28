@@ -16,7 +16,7 @@
 #' @family OPLS model validation functions
 #' @section
 
-opls_perm <- function(smod, n=10, plot=T, mc=F){
+opls_perm <- function(smod, n=10, plot=TRUE, mc=FALSE){
 
 
   # how many orth components
@@ -46,7 +46,7 @@ opls_perm <- function(smod, n=10, plot=T, mc=F){
 #  }
 
   out_df=as.data.frame(t(vapply(out, unlist, FUN.VALUE = rep(1, 5))))
-  out_df=data.frame(apply(out_df, 2, function(x) as.numeric(unlist(x))), stringsAsFactors = F)
+  out_df=data.frame(apply(out_df, 2, function(x) as.numeric(unlist(x))), stringsAsFactors = FALSE)
   colnames(out_df)=c('r2_comp', 'q2_comp', 'aucs_tr', 'aucs_te', 'r')
   out_df$model=paste0('perm_', seq_len(nrow(out_df)))
   mod=.permYmod(Xs, Y, cv, type, nc_o)
@@ -65,7 +65,7 @@ opls_perm <- function(smod, n=10, plot=T, mc=F){
 
 
 
-  if(plot==T){
+  if(plot==TRUE){
 
 #
 #     x.val=out_df$aucs_te[out_df$model!='Non-permuted']
@@ -82,7 +82,7 @@ opls_perm <- function(smod, n=10, plot=T, mc=F){
 
     out_df$model=gsub('_.*','', out_df$model)
 
-    add_summary=data.frame(t(apply(out_df[out_df$model=='perm',-ncol(out_df)], 2, median)), stringsAsFactors = F)
+    add_summary=data.frame(t(apply(out_df[out_df$model=='perm',-ncol(out_df)], 2, median)), stringsAsFactors = FALSE)
     add_summary$model='perm'
 
 

@@ -30,7 +30,7 @@
 #' @section
 
 
-plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) {
+plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ...) {
 
   if(missing(pc)){
     if(grepl('PCA', class(obj)[1])){pc=c(1,2)}
@@ -39,7 +39,7 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = T, ...) 
 
 
   #browser()
-  if( cv==T & grepl('OPLS', class(obj)[1]) ){etype='t_cv'} else{etype='t'};
+  if( cv==TRUE & grepl('OPLS', class(obj)[1]) ){etype='t_cv'} else{etype='t'};
   res=.viz_df_helper(obj, pc, an, type=etype)
   sc=res$df
 

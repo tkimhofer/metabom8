@@ -39,7 +39,7 @@ cvanova<-function(smod){
 
   p_val<-1-pf(F_val, df[2], df[3])
 
-  out=data.frame('SS'=c(format(ss, scientific = T), NA), 'DF'=c(df, NA), 'MS'=c(format(ms, scientific = T), NA), 'F_value'=c(rep(NA, 3), F_val),   'p_value'=c(rep(NA, 3),format(p_val, scientific = T)), row.names = c('Total corrected', 'Regression', 'Residual', 'RESULT'))
+  out=data.frame('SS'=c(format(ss, scientific = TRUE), NA), 'DF'=c(df, NA), 'MS'=c(format(ms, scientific = TRUE), NA), 'F_value'=c(rep(NA, 3), F_val),   'p_value'=c(rep(NA, 3),format(p_val, scientific = TRUE)), row.names = c('Total corrected', 'Regression', 'Residual', 'RESULT'))
 
   return(out)
 }

@@ -20,7 +20,7 @@
 
 
 # read Bruker 1d new
-read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_PLASMA_NOESY128_3mm')), n_max=1000, filter=T, recursive=T, verbose=T){
+read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_PLASMA_NOESY128_3mm')), n_max=1000, filter=TRUE, recursive=TRUE, verbose=TRUE){
 
 
   path<-path.expand(path)
@@ -77,7 +77,7 @@ read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_P
                     what = "int",
                     n = pars$p_FTSIZE[s],
                     size = 4,
-                    signed = T,
+                    signed = TRUE,
                     endian = names(byteorda)[match(pars$a_BYTORDA[s], byteorda)]
     )
     spec <- ( spec * (2^pars$a_NC[s]) )
@@ -122,9 +122,9 @@ read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_P
     fhand<-file(f_procs, open = "r")
     f_procs<-readLines(fhand, n = -1, warn = FALSE)
     close(fhand)
-    idx<-grep('..', f_procs, fixed=T)
+    idx<-grep('..', f_procs, fixed=TRUE)
     f_procs[idx]<-vapply(idx, function(i){ gsub(' .*', f_procs[i+1], f_procs[i])}, FUN.VALUE = '')
-    out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_procs, value=T, fixed = F), fixed = F), '=')
+    out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_procs, value=TRUE, fixed = FALSE), fixed = FALSE), '=')
     d_procs_val<-gsub('^ ', '', vapply(out, '[[', 2 , FUN.VALUE = ''))
     names(d_procs_val)<-paste0('p_', vapply(out, '[[', 1 , FUN.VALUE = ''))
 
@@ -136,14 +136,14 @@ read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_P
     close(fhand)
 
     # TODO: add visualisation of pulse sequence
-    idx<-grep('..', f_acqu, fixed=T)
+    idx<-grep('..', f_acqu, fixed=TRUE)
     f_acqu[idx]<-vapply(idx, function(i){ gsub(' .*', f_acqu[i+1], f_acqu[i])}, FUN.VALUE = '')
 
-    out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_acqu, value=T, fixed = F), fixed = F), '=')
+    out=strsplit(gsub('^##\\$', '',  grep('^##\\$', f_acqu, value=TRUE, fixed = FALSE), fixed = FALSE), '=')
     d_acqu_val<-gsub('^ ', '', vapply(out, '[[', 2 , FUN.VALUE = ''))
     names(d_acqu_val)<-paste0('a_', vapply(out, '[[', 1 , FUN.VALUE = ''))
     # change date
-    idx<-grep('date', names(d_acqu_val), ignore.case = T)
+    idx<-grep('date', names(d_acqu_val), ignore.case = TRUE)
     d_acqu_val[idx]<-as.character(as.POSIXct(x = '01/01/1970 00:00:00', format='%d/%m/%Y %H:%M:%S')+(as.numeric(d_acqu_val[idx])))
     pars<-c(d_acqu_val, d_procs_val)
     return(pars)
@@ -216,7 +216,7 @@ read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_P
 
 #.detect1d_procs(datapath, n_max=10, filter=T, recursive, verbose)
 
-.detect1d_procs <- function(datapath, n_max=10, filter=T, recursive, verbose) {
+.detect1d_procs <- function(datapath, n_max=10, filter=TRUE, recursive, verbose) {
 
   datapath=gsub(paste0(.Platform$file.sep, '$'), '', datapath)
 
@@ -246,7 +246,7 @@ read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_P
   idx_f1r <- which(id_f1r %in% id_a)
 
   if(length(idx_a) != length(id_a) || length(idx_f1r) != length(id_f1r) || length(idx_p) != length(id_p)){
-    if (filter == T) {
+    if (filter) {
       if(verbose>1){ message('Reading experiments with matching acqus, procs and 1r files.')}
       f_acqus <- f_acqus[idx_a]; id_a=id_a[idx_a]
       f_procs <- f_procs[idx_p]; id_p=id_p[idx_p]
@@ -297,12 +297,9 @@ read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_P
 #' @keywords internal
 #' @section
 .chemShift <- function(swidth, offset, si){
-
   dppm <- swidth/(si - 1) # ho
   cshift <- seq(offset, (offset - swidth), by = -dppm)
-
   return(cshift)
-
 }
 
 

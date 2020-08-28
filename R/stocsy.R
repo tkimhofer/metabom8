@@ -31,7 +31,7 @@ stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL, plotly=TRUE){
     }
   }
 
-  if(! (class(X)=='matrix' & is.numeric(X))){stop('X argument is not a numeric matrix')}
+  if(! 'matrix' %in% is(X) & is.numeric(X)){stop('X argument is not a numeric matrix')}
   if(!is.numeric(driver) || !( driver[1] <= max(ppm) & driver[1] >= min(ppm)) ) {stop('STOCSY driver not numeric or outside ppm range')}
   if(!is.logical(plotting)){plotting=TRUE}
 
@@ -40,11 +40,12 @@ stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL, plotly=TRUE){
     l=driver
     ext_driver=TRUE
   }else{
-    ext_driver=F
+    ext_driver=FALSE
     idx=which.min(abs(ppm-driver))
     l=X[,idx]
   }
 
+  browser()
   cc=apply(X, 2, function(x, ll=l) {cor(x,ll)})
   cv=apply(X, 2, function(x, ll=l) {cov(x,ll)})
   df=data.frame(cc, cv, ppm)
@@ -76,10 +77,6 @@ stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL, plotly=TRUE){
 
 
 
-
-
-
-
 #' @title Plot Statistical Total Correlation Spectroscopy (STOCSY)
 #' @param stoc_mod STOCSY object, as created with function 'stocsy' ('see ?stocsy()')
 #' @param shift num array, chemical shift range defining plotting area
@@ -94,8 +91,8 @@ stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL, plotly=TRUE){
 
 plotStocsy=function(stoc_mod, shift=c(0,10), title=NULL){
 
-  if('stocsy1d_metabom8' %in% is(stoc_mod)) stop('Provide a STOCSY object')
-  ds=data.frame(r=stoc_mod@r, cov=stoc_mod@cov, ppm=stoc_mod@ppm, stringsAsFactors = F)
+  if(!'stocsy1d_metabom8' %in% is(stoc_mod)) stop('Provide a STOCSY object')
+  ds=data.frame(r=stoc_mod@r, cov=stoc_mod@cov, ppm=stoc_mod@ppm, stringsAsFactors = FALSE)
   if(!all(is.numeric(shift))) stop('Check shift argument')
   if(min(shift)<min(ds$ppm)){shift[which.min(shift)]=min(ds$ppm)}
   if(max(shift)>max(ds$ppm)){shift[which.max(shift)]=max(ds$ppm)}
