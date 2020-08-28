@@ -19,9 +19,7 @@
 spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive=TRUE, name='A', mode='lines', ...) {
 
   if(!is.null(ncol(x))){ stop('More than one spectrum provided.')}
-
   if(length(x)!=length(ppm)){stop('X and ppm don\'t match.')}
-
   idx <- get.idx(shift, ppm)
 
   if(interactive){

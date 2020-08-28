@@ -22,7 +22,7 @@
 #' @export
 #' @section
 
-stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL, plotly=TRUE){
+stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL){
 
   if(!hasArg(ppm)){
     ppm<-as.numeric(colnames(X))
@@ -31,24 +31,29 @@ stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL, plotly=TRUE){
     }
   }
 
-  if(! 'matrix' %in% is(X) & is.numeric(X)){stop('X argument is not a numeric matrix')}
-  if(!is.numeric(driver) || !( driver[1] <= max(ppm) & driver[1] >= min(ppm)) ) {stop('STOCSY driver not numeric or outside ppm range')}
+  dr_le=length(driver)
+  if(dr_le>1){
+    if(dr_le!=nrow(X)){stop('Ext driver does not match to X.')}
+    idx=which(!is.na(driver))
+    driver=driver[idx]
+    X=X[idx,]
+    extD=TRUE
+    }else{extD=FALSE}
+
+  if(!'matrix' %in% is(X) & is.numeric(X)){stop('X argument is not a numeric matrix')}
+  if(!is.numeric(driver) || (!extD & length(driver)>1 && !( driver[1] <= max(ppm) & driver[1] >= min(ppm)) )) {stop('STOCSY driver not numeric or outside ppm range')}
   if(!is.logical(plotting)){plotting=TRUE}
 
 
-  if (length(driver)==nrow(X)){
+  if (extD){
     l=driver
-    ext_driver=TRUE
   }else{
-    ext_driver=FALSE
     idx=which.min(abs(ppm-driver))
     l=X[,idx]
   }
 
-  browser()
   cc=apply(X, 2, function(x, ll=l) {cor(x,ll)})
   cv=apply(X, 2, function(x, ll=l) {cov(x,ll)})
-  df=data.frame(cc, cv, ppm)
 
   stoc_mod <- new("stocsy1d_metabom8",
                   version = "0.9",
@@ -56,21 +61,29 @@ stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL, plotly=TRUE){
                   ppm = ppm,
                   driver = driver,
                   r = cc,
-                  cov=cv
-  )
+                  cov=cv)
+
+
   if(plotting){
-    g1=ggplot(df, aes_string(x='ppm', y='cv', colour='abs((cc))'))+
+    df=data.frame(cc, cv, ppm)
+    if(extD){
+      csc_lab="r(ext, X)"
+      extD_stats=round(summary(stoc_mod@driver), 2)
+      cap=paste0('Sample size: n=', length(stoc_mod@driver), '\nExternal driver: Median=', extD_stats[3], ' range=', extD_stats[1], '-', extD_stats[6])
+    }else{
+        csc_lab=paste("r(d=", stoc_mod@driver, ', X)', sep='')
+        cap=paste0('Sample size: n=', nrow(X))
+        }
+
+    g1=ggplot(df, aes_string(x='ppm', y='cv', colour='abs(cc)'))+
       geom_line()+
       scale_x_reverse(breaks=breaks_pretty())+
-      scale_colour_gradientn(colours = matlab.like2(10), limits=c(0,1), name=paste("r"))+
-      labs(x=expression(delta~{}^1*H~(ppm)), y=paste("cov"), title=title)+
+      scale_colour_gradientn(colours = matlab.like2(10), limits=c(0,1), name=csc_lab)+
+      labs(x=expression(delta~{}^1*H~(ppm)), y=gsub('^r', 'cov', csc_lab), title=title, caption=cap)+
       theme_bw()+
-      theme(axis.text=element_text(colour="black"))+
-      geom_vline(xintercept = driver, linetype=2, col='grey')
-
-    if(plotly){
-      ggplotly(g1, layerData = 2)
-    }
+      theme(axis.text=element_text(colour="black"), panel.grid.minor.x = element_blank())
+    if(!extD){g1=g1+geom_vline(xintercept = driver, linetype=2, col='grey')}
+    plot(g1)
   }
   return(stoc_mod)
 }
@@ -94,23 +107,39 @@ plotStocsy=function(stoc_mod, shift=c(0,10), title=NULL){
   if(!'stocsy1d_metabom8' %in% is(stoc_mod)) stop('Provide a STOCSY object')
   ds=data.frame(r=stoc_mod@r, cov=stoc_mod@cov, ppm=stoc_mod@ppm, stringsAsFactors = FALSE)
   if(!all(is.numeric(shift))) stop('Check shift argument')
+
+  dr_le=length(stoc_mod@driver)
+  if(dr_le>1){extD=TRUE}else{extD=FALSE}
+
   if(min(shift)<min(ds$ppm)){shift[which.min(shift)]=min(ds$ppm)}
   if(max(shift)>max(ds$ppm)){shift[which.max(shift)]=max(ds$ppm)}
 
   shift=sort(shift)
   idx=get.idx(shift, ds$ppm)
-  if(length(idx)==0) stop('Check shift argument')
+  if(length(idx)==0) stop('Check chemical shift argument')
   ds=ds[idx,]
+
+
+  if(extD){
+    csc_lab="r(ext, X)"
+    extD_stats=round(summary(stoc_mod@driver), 2)
+    cap=paste0('Sample size: n=', length(stoc_mod@driver), '\nExternal driver: Median=', extD_stats[3], ' Range=', extD_stats[1], '-', extD_stats[6])
+  }else{
+      csc_lab=paste("r(d=", stoc_mod@driver, ', X)', sep='')
+      cap=paste0('Sample size: n=', row(stoc_mod@X))
+      }
+
+
   g1=ggplot(ds, aes_string(x='ppm', y='cov', colour='abs(r)'))+
     geom_line()+
     scale_x_reverse(breaks=breaks_pretty())+
-    scale_colour_gradientn(colours = matlab.like2(10), limits=c(0,1), name=paste("r(d=", stoc_mod@driver, ', X)', sep=''))+
-    labs(x=expression(delta~{}^1*H~(ppm)), y=paste("cov(d=", stoc_mod@driver, ', X)', sep=''), title=title)+
+    scale_colour_gradientn(colours = matlab.like2(10), limits=c(0,1), name=csc_lab)+
+    labs(x=expression(delta~{}^1*H~(ppm)), y=gsub('^r', 'cov', csc_lab), title=title, caption=cap)+
     theme_bw()+
     theme(axis.text=element_text(colour="black"))+
     ggtitle(title)
 
-  if(shift[1]<stoc_mod@driver & shift[2]>stoc_mod@driver){
+  if(!extD && (shift[1]<stoc_mod@driver & shift[2]>stoc_mod@driver)){
     g1<-g1+geom_vline(xintercept =stoc_mod@driver, linetype=2, col='grey')
   }
 
