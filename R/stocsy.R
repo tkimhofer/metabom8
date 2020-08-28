@@ -103,7 +103,6 @@ stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL){
 #' @section
 
 plotStocsy=function(stoc_mod, shift=c(0,10), title=NULL){
-
   if(!'stocsy1d_metabom8' %in% is(stoc_mod)) stop('Provide a STOCSY object')
   ds=data.frame(r=stoc_mod@r, cov=stoc_mod@cov, ppm=stoc_mod@ppm, stringsAsFactors = FALSE)
   if(!all(is.numeric(shift))) stop('Check shift argument')
@@ -126,7 +125,7 @@ plotStocsy=function(stoc_mod, shift=c(0,10), title=NULL){
     cap=paste0('Sample size: n=', length(stoc_mod@driver), '\nExternal driver: Median=', extD_stats[3], ' Range=', extD_stats[1], '-', extD_stats[6])
   }else{
       csc_lab=paste("r(d=", stoc_mod@driver, ', X)', sep='')
-      cap=paste0('Sample size: n=', row(stoc_mod@X))
+      cap=paste0('Sample size: n=', nrow(stoc_mod@X))
       }
 
 
