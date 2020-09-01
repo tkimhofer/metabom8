@@ -2,19 +2,30 @@
 % Please edit documentation in R/bline.R
 \name{bline}
 \alias{bline}
+\alias{blcor}
 \title{Baseline correction for 1D NMR spectra}
 \usage{
 bline(X)
 }
 \arguments{
-\item{X}{NMR data matrix or dataframe with rows representing spectra.}
+\item{X}{num matrix or data.frame, NMR data with rows representing spectra}
 }
 \value{
-Baseline corrected NMR matrix.
+Baseline corrected NMR matrix an with same dimension as input matrix.
 }
 \description{
-Baseline correction for NMR spectra. This function firstly estimates a baseline trend based on a asymmetric least squares. Secondly the estimated baseline is subtracted from the NMR spectrum. Baseline estimation uses the the \code{asysm} function as implemented in the \code{ptw} package.
+Non-linear baseline correction for NMR spectra. This function estimates smooth and non-linear baseline trends for each spectrum based on a asymmetric least squares method. The estimated baseline is subtracted from each spectrum and the remainder is returned.
+}
+\seealso{
+\code{\link[ptw]{asysm}}
+
+Other NMR: 
+\code{\link{binning}()},
+\code{\link{ppick}()},
+\code{\link{read1d_raw}()},
+\code{\link{read1d}()}
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{NMR}

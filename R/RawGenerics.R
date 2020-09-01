@@ -154,7 +154,8 @@
 #' @param procs_exp num, Topspin processing experiment ID
 #' @param n_max int, Maximum number of spectra to read-in
 #' @param filter lobic, filter for intact file systems (TRUE is recommended)
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @return List of strings, each one is a path to fid and experiment number
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @keywords internal
 #' @section
 .check1d_files_fid <- function(datapath, n_max=10, filter=TRUE, recursive, verbose) {

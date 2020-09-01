@@ -4,7 +4,7 @@
 \alias{matspec}
 \title{Simple plotting of multiple NMR spectra overlayed}
 \usage{
-matspec(X, ppm, shift = c(0, 9.5), interactive = T, ...)
+matspec(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...)
 }
 \arguments{
 \item{X}{NMR matrix with spectra represented in rows.}

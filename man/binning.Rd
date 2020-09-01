@@ -2,25 +2,38 @@
 % Please edit documentation in R/binning.R
 \name{binning}
 \alias{binning}
-\title{Equidistant binning of spectra}
+\title{NMR data binning
+Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.}
 \usage{
 binning(X, ppm, width = 0.001, npoints = NULL)
 }
 \arguments{
-\item{X}{NMR matrix (spectra in rows)}
+\item{X}{num matrix, NMR data with spectra in rows}
 
-\item{ppm}{num ppm vector}
+\item{ppm}{num array, chemical shift positions, length matches to columns in X}
 
-\item{width}{num, bin size}
+\item{width}{num, bin size in ppm or NULL in case \code{npoints} is specified}
 
-\item{npoints}{num, desired number of bins per spectrum}
+\item{npoints}{num, desired number of bins per spectrum or NULL in case  \code{width} is specified}
 }
 \value{
-Use either width or npoints argument. Function returns is a matrix (rows = spectra, columns=bins).
+Numeric matrix whith spectra in rows and chemical shift bins in columns.
 }
 \description{
-Equidistant binning of spectra
+NMR data binning
+Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.
+}
+\details{
+Specify either \code{width} or \code{npoints} argument - if both are fiven, \code{npoints} is used. Input argument \code{ppm} can be omitted if chemical shift infomration is encoded in the column names of the NMR matrix \code{X}.
+}
+\seealso{
+Other NMR: 
+\code{\link{bline}()},
+\code{\link{ppick}()},
+\code{\link{read1d_raw}()},
+\code{\link{read1d}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{NMR}

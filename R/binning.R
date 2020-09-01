@@ -1,12 +1,15 @@
-#' Equidistant binning of spectra
+#' @title NMR data binning
+#' Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.
 #' @export
-#' @param X NMR matrix (spectra in rows)
-#' @param ppm num ppm vector
-#' @param width num, bin size
-#' @param npoints num, desired number of bins per spectrum
-#' @return Use either width or npoints argument. Function returns is a matrix (rows = spectra, columns=bins).
+#' @param X num matrix, NMR data with spectra in rows
+#' @param ppm num array, chemical shift positions, length matches to columns in X
+#' @param width num, bin size in ppm or NULL in case \code{npoints} is specified
+#' @param npoints num, desired number of bins per spectrum or NULL in case  \code{width} is specified
+#' @details Specify either \code{width} or \code{npoints} argument - if both are fiven, \code{npoints} is used. Input argument \code{ppm} can be omitted if chemical shift infomration is encoded in the column names of the NMR matrix \code{X}.
+#' @return Numeric matrix whith spectra in rows and chemical shift bins in columns.
 #' @import stats approxfun
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family NMR
 
 binning <- function(X, ppm, width = 0.001, npoints = NULL) {
 

@@ -70,6 +70,7 @@
 }
 
 #' @title Calibrate
+#' @value Shift-adjusted ppm vector
 #' @keywords internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .calibTsp <- function(spec, ppm) {

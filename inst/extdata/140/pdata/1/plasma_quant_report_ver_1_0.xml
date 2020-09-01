@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RESULTS version="Quant-PS 2.0.0  Reseach Use Only">
+   <SAMPLE date="10-Jun-2020 10:52:22" name="COVID_Plasma_IVDR04_PN_100620_expno140.100000.10r" project="" type="plasma/serum"/>
+   <CLASSIFICATION/>
+   <VERIFICATION/>
+   <QUANTIFICATION version="Quant-PS 2.0.0  Reseach Use Only">
+      <PARAMETER name="Ethanol" type="quantification">
+         <VALUE lod="0.100" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.82" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Trimethylamine-N-oxide" type="quantification">
+         <VALUE lod="0.080" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.08" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="2-Aminobutyric acid" type="quantification">
+         <VALUE lod="0.050" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.10" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Alanine" type="quantification">
+         <VALUE lod="0.020" loq="-" unit="mmol/L" value="0.52" valueext="0.52"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.64" vmin="0.29"/>
+      </PARAMETER>
+      <PARAMETER name="Asparagine" type="quantification">
+         <VALUE lod="0.050" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.08" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Creatine" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0.01" valueext="0.01"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.07" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Creatinine" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0.12" valueext="0.12"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.14" vmin="0.06"/>
+      </PARAMETER>
+      <PARAMETER name="Glutamic acid" type="quantification">
+         <VALUE lod="0.050" loq="-" unit="mmol/L" value="0.24" valueext="0.24"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.24" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Glutamine" type="quantification">
+         <VALUE lod="0.020" loq="-" unit="mmol/L" value="0.58" valueext="0.58"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.83" vmin="0.30"/>
+      </PARAMETER>
+      <PARAMETER name="Glycine" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0.25" valueext="0.25"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.44" vmin="0.17"/>
+      </PARAMETER>
+      <PARAMETER name="Histidine" type="quantification">
+         <VALUE lod="0.020" loq="-" unit="mmol/L" value="0.04" valueext="0.04"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.16" vmin="0.07"/>
+      </PARAMETER>
+      <PARAMETER name="Isoleucine" type="quantification">
+         <VALUE lod="0.030" loq="-" unit="mmol/L" value="0.05" valueext="0.05"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.11" vmin="0.03"/>
+      </PARAMETER>
+      <PARAMETER name="Leucine" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0.16" valueext="0.16"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.20" vmin="0.07"/>
+      </PARAMETER>
+      <PARAMETER name="Lysine" type="quantification">
+         <VALUE lod="0.040" loq="-" unit="mmol/L" value="0.20" valueext="0.20"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.29" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Methionine" type="quantification">
+         <VALUE lod="0.050" loq="-" unit="mmol/L" value="0.05" valueext="0.05"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.13" vmin="0.05"/>
+      </PARAMETER>
+      <PARAMETER name="N,N-Dimethylglycine" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.01" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Ornithine" type="quantification">
+         <VALUE lod="0.020" loq="-" unit="mmol/L" value="0.04" valueext="0.04"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.16" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Phenylalanine" type="quantification">
+         <VALUE lod="0.030" loq="-" unit="mmol/L" value="0.32" valueext="0.32"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.07" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Proline" type="quantification">
+         <VALUE lod="0.050" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.59" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Sarcosine" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.01" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Threonine" type="quantification">
+         <VALUE lod="0.040" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.24" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Tyrosine" type="quantification">
+         <VALUE lod="0.030" loq="-" unit="mmol/L" value="0.06" valueext="0.06"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.08" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Valine" type="quantification">
+         <VALUE lod="0.030" loq="-" unit="mmol/L" value="0.24" valueext="0.24"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.35" vmin="0.15"/>
+      </PARAMETER>
+      <PARAMETER name="2-Hydroxybutyric acid" type="quantification">
+         <VALUE lod="0.150" loq="-" unit="mmol/L" value="0.64" valueext="0.64"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.17" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Acetic acid" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0.03" valueext="0.03"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.06" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Citric acid" type="quantification">
+         <VALUE lod="0.030" loq="-" unit="mmol/L" value="0.04" valueext="0.04"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.21" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Formic acid" type="quantification">
+         <VALUE lod="0.020" loq="-" unit="mmol/L" value="0.07" valueext="0.07"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.03" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Lactic acid" type="quantification">
+         <VALUE lod="0.030" loq="-" unit="mmol/L" value="2.3" valueext="2.3"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="7.14" vmin="2.23"/>
+      </PARAMETER>
+      <PARAMETER name="Succinic acid" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.01" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Choline" type="quantification">
+         <VALUE lod="0.050" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.06" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="2-Oxoglutaric acid" type="quantification">
+         <VALUE lod="0.020" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.02" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="3-Hydroxybutyric acid" type="quantification">
+         <VALUE lod="0.020" loq="-" unit="mmol/L" value="0.06" valueext="0.06"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.26" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Acetoacetic acid" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.02" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Acetone" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0.06" valueext="0.06"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.06" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Pyruvic acid" type="quantification">
+         <VALUE lod="0.030" loq="-" unit="mmol/L" value="0.09" valueext="0.09"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.07" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="D-Galactose" type="quantification">
+         <VALUE lod="0.110" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.11" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Glucose" type="quantification">
+         <VALUE lod="0.540" loq="-" unit="mmol/L" value="9.8" valueext="9.8"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="6.08" vmin="1.73"/>
+      </PARAMETER>
+      <PARAMETER name="Glycerol" type="quantification">
+         <VALUE lod="0.080" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.44" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Dimethylsulfone" type="quantification">
+         <VALUE lod="0.010" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.02" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="Ca-EDTA" type="quantification">
+         <VALUE lod="0.500" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.50" vmin="-"/>
+      </PARAMETER>
+      <PARAMETER name="K-EDTA" type="quantification">
+         <VALUE lod="0.500" loq="-" unit="mmol/L" value="0" valueext="0"/>
+         <REFERENCE source="NMR Database" unit="mmol/L" vmax="0.50" vmin="-"/>
+      </PARAMETER>
+   </QUANTIFICATION>
+</RESULTS>

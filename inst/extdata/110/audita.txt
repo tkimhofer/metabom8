@@ -1,0 +1,23 @@
+##TITLE= Audit trail, TopSpin 3.6.2
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= nmrsu
+$$ D:/IVDrData/data/COVID_Plasma_IVDR04_PN_100620/110/audita.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2020-06-10 17:38:47.644 +0800>,<nmrsu>,<IVDR04>,<go4>,<TopSpin 3.6.2>,
+      <created by zg
+	started at 2020-06-10 17:34:38.859 +0800,
+	POWCHK enabled, PULCHK disabled,
+       configuration hash MD5:
+       9A 49 C2 C5 A6 FA 23 F3 C0 50 E8 9C 63 22 67 D8
+       data hash MD5: 96K
+       8A B7 5C EC AE 56 2E 98 C1 1E D5 C4 7D DD DE 10>)
+(   2,<2020-06-10 17:38:48.410 +0800>,<nmrsu>,<IVDR04>,<audit>,<TopSpin 3.6.2>,
+      <user comment:
+       ICON-NMR User ID: nmrsu
+       data hash MD5: 96K
+       8A B7 5C EC AE 56 2E 98 C1 1E D5 C4 7D DD DE 10>)
+##END=
+
+$$ hash MD5
+$$ 30 CD 92 9C AF D5 29 59 AE 72 FA EF 95 4B BD C7

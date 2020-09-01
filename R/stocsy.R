@@ -10,7 +10,6 @@
 #' @param driver num, chemical shift indicating STOCSY driver signal
 #' @param plotting logical, indicing if results should be plotted
 #' @param title char, plot title
-#' @param plotly logic, interactive plottin using plotly
 #' @return S4 object of class stocsy1d_metabom8
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @family metID functions

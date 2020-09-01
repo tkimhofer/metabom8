@@ -4,7 +4,7 @@
 \alias{opls_perm}
 \title{OPLS model Y-permutations}
 \usage{
-opls_perm(smod, n = 10, plot = T, mc = F)
+opls_perm(smod, n = 10, plot = TRUE, mc = FALSE)
 }
 \arguments{
 \item{smod}{OPLS model of the package \emph{metabom8}}

@@ -92,9 +92,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/hi.html">hi</a>
-    </li>
-    <li>
       <a href="../articles/import-NMR-data.html">Import NMR data</a>
     </li>
   </ul>
@@ -188,7 +185,7 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>iris</span>)
-<span class='no'>smod</span><span class='kw'>=</span><span class='fu'>opls</span>(<span class='kw'>X</span><span class='kw'>=</span><span class='no'>iris</span>[,<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='fl'>4</span>)], <span class='kw'>Y</span><span class='kw'>=</span><span class='no'>iris</span>$<span class='no'>Species</span><span class='kw'>==</span><span class='st'>'setosa'</span>)</div><div class='output co'>#&gt; <span class='message'>Performing discriminant analysis.</span></div><div class='output co'>#&gt; <span class='error'>Error in .sdMatRcpp(y_check[[1]]): argument "idc" is missing, with no default</span></div></pre>
+<span class='no'>smod</span><span class='kw'>=</span><span class='fu'>opls</span>(<span class='kw'>X</span><span class='kw'>=</span><span class='no'>iris</span>[,<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='fl'>4</span>)], <span class='kw'>Y</span><span class='kw'>=</span><span class='no'>iris</span>$<span class='no'>Species</span><span class='kw'>==</span><span class='st'>'setosa'</span>)</div><div class='output co'>#&gt; <span class='message'>Performing discriminant analysis.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Deprecated use a matrix as predictor. Unexpected results may be produced, please pass a numeric vector.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Deprecated use a matrix as predictor. Unexpected results may be produced, please pass a numeric vector.</span></div><div class='output co'>#&gt; <span class='message'>An O-PLS-DA model with 1 predictive and 1 orthogonal components was fitted.</span></div><div class='img'><img src='opls-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

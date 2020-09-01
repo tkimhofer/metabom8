@@ -92,9 +92,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/hi.html">hi</a>
-    </li>
-    <li>
       <a href="../articles/import-NMR-data.html">Import NMR data</a>
     </li>
   </ul>
@@ -127,39 +124,76 @@
     <p>Read-in 1D NMR spectra</p>
     </div>
 
-    <pre class="usage"><span class='fu'>read1d</span>(<span class='no'>path</span>, <span class='kw'>procs_exp</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>n_max</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
+    <pre class="usage"><span class='fu'>read1d</span>(
+  <span class='no'>path</span>,
+  <span class='kw'>exp_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>exp</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PROF_PLASMA_CPMG128_3mm"</span>, <span class='st'>"PROF_PLASMA_NOESY128_3mm"</span>)),
+  <span class='kw'>n_max</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+  <span class='kw'>filter</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>path</th>
-      <td><p>char, File directory containing spectra</p></td>
+      <td><p>char, path to file directory containing spectra</p></td>
     </tr>
     <tr>
-      <th>procs_exp</th>
-      <td><p>num, Topspin processing experiment ID</p></td>
+      <th>exp_type</th>
+      <td><p>named list, filter for acquisition paramters of experiments to read-in (see Details)</p></td>
     </tr>
     <tr>
       <th>n_max</th>
-      <td><p>int, Maximum number of spectra to read-in</p></td>
+      <td><p>int, maximum number of experiments to read-in</p></td>
     </tr>
     <tr>
       <th>filter</th>
-      <td><p>lobic, filter for intact file systems (TRUE is recommended)</p></td>
+      <td><p>logic, remove experiments with incomplete file systems (TRUE is recommended)</p></td>
+    </tr>
+    <tr>
+      <th>recursive</th>
+      <td><p>logic, if TRUE recursively search all subfolders of path for specified NMR files</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>num, different verbose levels: 0 (no info), 1 (overview), 2 (detailed), 3 (step-by-step for debugging)</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The function exports the following three objects into the currently active R environment (no variable assignments needed):</p><ul>
+<li><p>X, num matrix:  NMR data, spectra in rows</p></li>
+<li><p>ppm, num array - chemical shift positions, length matches to columns in X</p></li>
+<li><p>meta, data.frame - spectrometer metadata as extracted from individual <em>acqus</em> files, row-matched to X</p></li>
+</ul><p>Objects in the workspacce with the same variable names will be overwritten.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function imports TopSpin processed NMR spectra as well as spectrometer and processing parameters found in files <em>acqus</em> and <em>procs</em>. Experiments can be filtered according to acquisitoin variables using the <code>exp_type</code> argument: For example, to read in all standard 1D NMR experiments use <code>exp_type=list(exp='noesygppr1d')</code>. More than one argument can be provided as list element.</p>
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
 
     <p>NA</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
+    <div class='dont-index'><p><code><a href='read1d_raw.html'>Process raw FIDs</a></code></p>
+<p>Other NMR: 
+<code><a href='read1d_raw.html'>read1d_raw</a>()</code></p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>path</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/"</span>,  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"metabom8"</span>)
+<span class='fu'>read1d</span>(<span class='no'>path</span>,  <span class='kw'>exp_type</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>pulprog</span><span class='kw'>=</span><span class='st'>'noesygppr1d'</span>))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
       <li><a href="#"></a></li>
+      <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>

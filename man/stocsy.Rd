@@ -4,7 +4,7 @@
 \alias{stocsy}
 \title{Statistical Total Correlation Spectroscopy (STOCSY)}
 \usage{
-stocsy(X, ppm, driver, plotting = T, title = NULL, plotly = T)
+stocsy(X, ppm, driver, plotting = TRUE, title = NULL)
 }
 \arguments{
 \item{X}{Numeric matrix or dataframe where each row represents a NMR spectrum and each column a chemical shift variable.}
@@ -16,8 +16,6 @@ stocsy(X, ppm, driver, plotting = T, title = NULL, plotly = T)
 \item{plotting}{logical, indicing if results should be plotted}
 
 \item{title}{char, plot title}
-
-\item{plotly}{logic, interactive plottin using plotly}
 }
 \value{
 S4 object of class stocsy1d_metabom8

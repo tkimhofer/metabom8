@@ -1,0 +1,14 @@
+##TITLE= Audit trail, TopSpin 3.6.2
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= nmrsu
+$$ D:/IVDrData/data/COVID_Plasma_IVDR04_PN_100620/100/pdata/700/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2020-06-10 17:07:21.444 +0800>,<nmrsu>,<IVDR04>,<go4>,<TopSpin 3.6.2>,
+      <1H wobble curve at 600.213 MHz
+       data hash MD5: 1K
+       57 5F F7 7E 61 5B 33 34 DA 62 F0 59 FF 26 B9 41>)
+##END=
+
+$$ hash MD5
+$$ 94 A3 F2 26 38 44 A2 44 D5 18 CD D3 6B CD CB DE

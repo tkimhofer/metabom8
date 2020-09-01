@@ -21,3 +21,4 @@ Check dimension, NA and infinity
 NA
 }
 
+\keyword{internal}

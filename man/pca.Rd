@@ -4,7 +4,7 @@
 \alias{pca}
 \title{Perform Principal Component Analysis}
 \usage{
-pca(X, pc = 2, scale = "UV", center = T, method = "nipals")
+pca(X, pc = 2, scale = "UV", center = TRUE, method = "nipals")
 }
 \arguments{
 \item{X}{Numeric input matrix with each row representing an observation and each column a metabolic feature.}

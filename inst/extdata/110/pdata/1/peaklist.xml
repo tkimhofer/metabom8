@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PeakList>
+  <PeakList1D>
+    <PeakList1DHeader creator="nmrsu" date="2020-06-10T17:38:50.113+08:00" expNo="110" name="COVID_Plasma_IVDR04_PN_100620" owner="" procNo="1" source="D:\IVDrData\data">
+      <PeakPickDetails>F1=1.515814ppm, F2=1.503750ppm, MI=50.00cm, MAXI=10000.00cm, PC=4.000
+      </PeakPickDetails>
+    </PeakList1DHeader>
+    <Peak1D F1="1.509782" intensity="1.000000e+002" type="0"/>
+  </PeakList1D>
+</PeakList>

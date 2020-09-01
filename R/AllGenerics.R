@@ -1,11 +1,9 @@
-#' @title Check for missing values (PLS context)
+#' @title Check Y for missing values (PLS context)
 #' @description This function checks for missing values in Y (NA, NAN, infinite) and establishes analysis type accroding to the class of the input data Y: regression (R) or discriminant analysis (DA). It also converts Y to a matrix.
 #' @param Y Input data (uni or multivar) formatted as vector or matrix or data.frame
 #' @return List of i) Y matrix, ii) Y levels (empty if numeric Y), iii) Y type (R or DA)
 #' @keywords internal
 #' @section
-
-# check Y for regression or DA
 .checkYclassNas = function(Y) {
 
     if (any(!is(Y) %in% c("matrix", "data.frame"))) {
@@ -626,13 +624,32 @@
 
 }
 
-#' Find indices in ppm vector for respective chemical shift range
+
+#' Transform to row vec
+#' @param X Array or matrix - NMR data with spectra represented in rows.
+#' @keywords internal
+#' @section
+.dimX <- function(X){
+    if(is.null(ncol(X))) return(t(X))
+    return(X)
+}
+
+
+
+#' @title Return indices of chemical shift array mapping to a specific chemical shift range
 #' @export
-#' @param range num, range chemical shift (in ppm vector)
-#' @param ppm num, ppm vector
+#' @param range num array(2), range of chemical shift
+#' @param ppm num array, chemical shift vector
 #' @export
 #' @aliases get.idx
-#' @author Torben Kimhofer \email{tkimhofer@@gmail.com}
+#' @author \email{tkimhofer@@gmail.com}
+#' @examples
+#' load(covid)
+#' idx=get.idx(c(-0.1, 0.1), ppm)
+#' ppm[range(idx)]
+#' plot(ppm[idx], X[1,idx], type='l')
+#' lw(X, ppm) * meta$a_SFO1 # in Hz
+#' @family NMR
 #' @section
 get.idx <- function(range = c(1, 5), ppm) {
     range <- sort(range, decreasing = TRUE)
@@ -643,25 +660,33 @@ get.idx <- function(range = c(1, 5), ppm) {
 
 #' Min-max scaling
 #' @export
-#' @param x Numeric vector to be scaled.
-#' @return Scaled x vector.
-#' @details Data are scaled to range between zero and one:
-#' \deqn{X_{scaled}=\frac{x-x_{min}}{x_{max}-x_{min}}}
-#' @usage minmax(x)
-#' @author Torben Kimhofer \email{torben.kimhofer@@gmail.com}
+#' @param x num array to be scaled
+#' @return num array, same length as x
+#' @details Output values are scaled to range between 0 and 1
+#' \deqn{x_{s}=\frac{x-x_{min}}{x_{max}-x_{min}}}
+#' @examples
+#' x=rnorm(20, 0, 1)
+#' plot(x, type='l'); abline(h=range(x), lty=2)
+#' points(minmax(x), type='l', col='red'); abline(h=c(0,1), col='red', lty=2)
+#' @author \email{torben.kimhofer@@gmail.com}
 #' @section
 minmax <- function(x) {
     (x - min(x))/(max(x) - min(x))
 }
 
-#' Calculating full width at half max
+#' @title Calculating full width at half max
 #' @export
-#' @param X NMR matrix with rows representing spectra.
-#' @param ppm ppm vector with its length equals to \code{nrow(X)}.
-#' @param shift Signal shift to calculate line width
-#' @description Calculating full width at half maximum (FWHM, aka line width). This function simply returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in \code{shift}.
+#' @param X num matrix of NMR data, rows representing spectra.
+#' @param ppm num array describing chemical shift positions, its length equals to \code{nrow(X)}.
+#' @param shift num array(2), chemical shift range of singlet used to calculate line width
+#' @description Calculating full width at half maximum (FWHM, aka line width). This function returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in \code{shift}.
 #' @return Array of line widths in ppm. To convert from ppm to Hertz (Hz), multiply values with the spectrometer frequency (column \code{a_SF01} in \code{meta} data frame).
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @examples
+#' load(covid)
+#' lw(X, ppm) # in ppm
+#' lw(X, ppm) * meta$a_SFO1 # in Hz
+#' @family NMR
 #' @section
 lw <- function(X, ppm, shift = c(-0.01, 0.01)) {
     idx <- get.idx(shift, ppm)
@@ -681,21 +706,24 @@ lw <- function(X, ppm, shift = c(-0.01, 0.01)) {
 
 #' @title Estimation of noise level of 1D proton spectrum
 #' @export
-#' @param NMR Input matrix with rows representing spectra.
-#' @param ppm ppm vector with its length equals to \code{ncol(X)}.
+#' @inheritParams lw
 #' @param where Signal free region across all NMR spectra (see Details).
 #' @details Estimation of noise level in NMR spectra. This is useful for quality control checks (e.g., before and after spectral normalisation). Noise estimation requires a signal-free ppm region across all spectra, usually this is at the extreme ends or the spectrum. This function requires a minimum number of 50 data points to robustly estimate noise levels.
 #' @return Returned is a vector of noise levels for each spectrum.
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom ptw asysm
+#' @examples
+#' load(covid)
+#' noise.est(X, ppm)
+#' @family NMR
 #' @section
-noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
+noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
     # set ppm range where noise should be estimated, i.e., no signals
     idx <- get.idx(where, ppm)
     if (length(idx) < 50) {
         stop("No or too few data points for noise estimation!")
     }
-    noise <- apply(NMR[, idx], 1, function(x) {
+    noise <- apply(X[, idx], 1, function(x) {
         x_driftcorrected <- x - asysm(x, lambda = 1e+10)
         noi <- (max(x_driftcorrected) - min(x_driftcorrected))
         return(noi)
@@ -919,6 +947,8 @@ noise.est <- function(NMR, ppm, where = c(14.6, 14.7)) {
 
 
 # OPLS Y-oermutations
+#' @keywords internal
+#' @section
 .permYmod=function(Xs, Y, cv, type, nc_o){
 
     # remove orthogonal component(s)

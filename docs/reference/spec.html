@@ -92,9 +92,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/hi.html">hi</a>
-    </li>
-    <li>
       <a href="../articles/import-NMR-data.html">Import NMR data</a>
     </li>
   </ul>
@@ -131,8 +128,8 @@
   <span class='no'>x</span>,
   <span class='no'>ppm</span>,
   <span class='kw'>shift</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>11</span>),
-  <span class='kw'>add</span> <span class='kw'>=</span> <span class='no'>F</span>,
-  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='no'>T</span>,
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"A"</span>,
   <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"lines"</span>,
   <span class='no'>...</span>
@@ -160,6 +157,10 @@
     <tr>
       <th>interactive</th>
       <td><p>logical, interactive version (plotly package)</p></td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td><p>string, name of trace (only used in interactive mode)</p></td>
     </tr>
     <tr>
       <th>mode</th>

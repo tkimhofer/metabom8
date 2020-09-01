@@ -3,9 +3,9 @@
 \docType{class}
 \name{PCA_metabom8-class}
 \alias{PCA_metabom8-class}
-\title{An S4 class to represent an OPLS model constructed with MetaboMate}
+\title{An S4 class to represent an PCA model constructed with metabom8}
 \description{
-An S4 class to represent an OPLS model constructed with MetaboMate
+An S4 class to represent an PCA model constructed with metabom8
 }
 \section{}{
 NA

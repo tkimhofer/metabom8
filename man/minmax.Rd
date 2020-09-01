@@ -19,6 +19,10 @@ Min-max scaling
 Data are scaled to range between zero and one:
 \deqn{X_{scaled}=\frac{x-x_{min}}{x_{max}-x_{min}}}
 }
+\section{}{
+NA
+}
+
 \author{
 Torben Kimhofer \email{torben.kimhofer@gmail.com}
 }

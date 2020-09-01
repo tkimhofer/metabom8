@@ -1,44 +1,51 @@
 #### read fids
 
 
-#' @title Read-in 1D NMR spectra
+#' @title Read-in FIDs and process to spectra
 #' @export
-#' @param path char, File directory containing spectra
-#' @param n_max int, Maximum number of spectra to read-in
-#' @param filter lobic, filter for intact file systems (TRUE is recommended)
-#' @param apodisation list, apodisation type and parameter
-#' @param zerofil int, zero-filling, exponent summand of base 2
-#' @param return char, return mode: absorption, dispersion, magnitude
-#' @param exp_type list, specific acquisition paramters use to select spectra for read-in (e.g. experiment type or pulse sequence)
-#' @param verbose num, different verbose levels: 0 (no info), 1 (overview), 2 (detailed), 3 (debugging mode detail)
+#' @param path char, path to file directory containing spectra
+#' @param exp_type named list, filter for acquisition paramters of experiments to read-in (see Details)
+#' @param apodisation named list, apodisation function and its parameters (see Details)
+#' @param zerofil int, amount of zeros to append to FID given as exponent added of base 2 (see Details)
+#' @param return char, return mode of spectra: absorption, dispersion or magnitude mode
+#' @param verbose num, different verbose levels: 0 (no info), 1 (overview), 2 (detailed), 3 (step-by-step for debugging)
 #' @param recursive logic, if TRUE recursively search all subfolders of path for specified NMR files
-#' @return Three objects: NMR data matrix (2D: rows=spectra, cols=chem shift variables), ppm num vector matched to NMR data columns, meta data.frame containing spectrometer metadata
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @family Import NMR data functions
+#' @param n_max int, maximum number of experiments to read-in
+#' @param filter logic, remove experiments with incomplete file systems (TRUE is recommended)
+#' @details
+#' In the first step, read-in are FIDs generated with experimental condition(s) specified with the exp_type argument. This represents a list with each element representing a parameter condition, named according to spectrometer parameters listed in \emph{acqus} file. For example, to read standard 1D NMR experiments use \code{exp_type=list(exp='noesygppr1d')}. More than one argument can be provided as list element.
+#'
+#' The apodisation argument is a named list specifying the function name in element \emph{fun} and functions-specific paramter arguments. There are the following different apodisation functions and arguments:
+#' #' @return
+#' \itemize{
+#'   \item exponential, arguments: lb (line broadening factor)
+#'   \item cosine, no further arguments
+#'   \item sine, no further arguments
+#'   \item sem, combined sine-bell - exponential fct: arguments: lb (line broadening factor)
+#' }
+#'
+#' The zerofil argument specifies the amount of zeros to append to the FID and is expressed as exponent addand in the binary numeral system: \code{2^(1+x)}, with x being the zerofil parameter argument. Hence, \code{zerofil=1} doubles the amount of data points.
+#'
+# @return Three objects: NMR data matrix (2D: rows=spectra, cols=chem shift variables), ppm num vector matched to NMR data columns, meta data.frame containing spectrometer metadata
+#' @return
+#' The function exports the following three objects into the currently active R environment (no variable assignments needed):
+#' \itemize{
+#'   \item X, num matrix:  NMR data, spectra in rows
+#'   \item ppm, num array - chemical shift positions, length matches to columns in X
+#'   \item meta, data.frame - spectrometer metadata as extracted from individual \emph{acqus} files, row-matched to X
+#' }
+#' Objects in the R environment with the same variable names will be overwritten.
+#' @examples
+#' path<-system.file("extdata/",  package = "metabom8")
+#' read1d_raw(path,  exp_type=list(exp='PROF_PLASMA_NOESY'), apodisation=list(fun='exponential', lb=0.2), n_max=3)
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 # @seealso \code{\reference{read1d}}
 #' @importFrom stats approxfun
+#' @family NMR
+#' @seealso \code{\link[=read1d]{Import TopSpin processed spectra}}
 #' @section
 
-# read1d(path)
-# path='/Volumes/Torben Kimhofer/tutdata/'
-# #path='/Volumes/Torben_1 1/BariatS/BariatS/dat/Cohort1_NMR_Urine/'
-# path='/Volumes/Torben_1 1/Epi_data/airwave2/AIRWAVE_Urine_Rack01_RCM_061014/'
-# path='/Users/tk2812/Box Sync/Matt_cys/NMR Raw/NMR_COPIED/Cys_Urine_Rack1_SLL_270814/'
-# library(metabom8)
-# path='/Volumes/Torben_2/adjNS_LTRexp/'
-#
-# source('R/RawGenerics.R')
-#
-# a=Sys.time()
- # tt=read1d_raw(path,  n_max=50, filter=T, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', pulprog='<cpmgesgp1d>')
-# b=Sys.time()
-# as.numeric(b-a)/nrow(tt)
-#save(tt, file='Unphased1d_list.Rdata')
-
-# metabom8::matspec(X, ppm, shift=c(-0.1,0.1), main='None')
-
-# read Bruker 1d new
-read1d_raw<-function(path,  n_max=1000, filter=TRUE, apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption', exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_PLASMA_NOESY128_3mm'), pulprog=c('noesygppr1d')),  verbose=1, recursive=TRUE) {
+read1d_raw<-function(path, exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm'), pulprog=c('noesygppr1d')), apodisation=list(fun='exponential', lb=0.2), zerofil=1L, return='absorption',verbose=1, recursive=TRUE,  n_max=1000, filter=TRUE) {
 
   path=path.expand(path)
 

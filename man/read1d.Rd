@@ -2,26 +2,63 @@
 % Please edit documentation in R/read1d.R
 \name{read1d}
 \alias{read1d}
-\title{Read-in 1D NMR spectra}
+\title{Import 1D NMR spectra}
 \usage{
-read1d(path, procs_exp = 1, n_max = 1000, filter = T)
+read1d(
+  path,
+  exp_type = list(exp = c("PROF_PLASMA_CPMG128_3mm", "PROF_PLASMA_NOESY128_3mm")),
+  n_max = 1000,
+  filter = TRUE,
+  recursive = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
-\item{path}{char, File directory containing spectra}
+\item{path}{char, path to file directory containing spectra}
 
-\item{procs_exp}{num, Topspin processing experiment ID}
+\item{exp_type}{named list, filter for acquisition paramters of experiments to read-in (see Details)}
 
-\item{n_max}{int, Maximum number of spectra to read-in}
+\item{n_max}{int, maximum number of experiments to read-in}
 
-\item{filter}{lobic, filter for intact file systems (TRUE is recommended)}
+\item{filter}{logic, remove experiments with incomplete file systems (TRUE is recommended)}
+
+\item{recursive}{logic, if TRUE recursively search all subfolders of path for specified NMR files}
+
+\item{verbose}{num, different verbose levels: 0 (no info), 1 (overview), 2 (detailed), 3 (step-by-step for debugging)}
+}
+\value{
+The function exports the following three objects into the currently active R environment (no variable assignments needed):
+\itemize{
+\item X, num matrix:  NMR data, spectra in rows
+\item ppm, num array - chemical shift positions, length matches to columns in X
+\item meta, data.frame - spectrometer metadata as extracted from individual \emph{acqus} files, row-matched to X
+}
+Objects in the R environment with the same variable names will be overwritten.
 }
 \description{
-Read-in 1D NMR spectra
+Import 1D NMR spectra
+}
+\details{
+This function imports TopSpin processed NMR spectra as well as spectrometer and processing parameters found in files \emph{acqus} and \emph{procs}. Experiments can be filtered according to data acquisition variables using the \code{exp_type} argument: For example, to read standard 1D NMR experiments use \code{exp_type=list(exp='noesygppr1d')}. More than one argument can be provided as list element.
 }
 \section{}{
 NA
 }
 
+\examples{
+path<-system.file("extdata/",  package = "metabom8")
+read1d(path,  exp_type=list(pulprog='noesygppr1d'))
+}
+\seealso{
+\code{\link[=read1d_raw]{Process raw FIDs}}
+
+Other NMR: 
+\code{\link{binning}()},
+\code{\link{bline}()},
+\code{\link{ppick}()},
+\code{\link{read1d_raw}()}
+}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{NMR}

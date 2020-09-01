@@ -8,8 +8,8 @@ spec(
   x,
   ppm,
   shift = c(0, 11),
-  add = F,
-  interactive = T,
+  add = FALSE,
+  interactive = TRUE,
   name = "A",
   mode = "lines",
   ...

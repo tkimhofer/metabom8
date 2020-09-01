@@ -1,4 +1,4 @@
-#' @title An S4 class to represent an OPLS model constructed with MetaboMate
+#' @title An S4 class to represent an OPLS model constructed with metabom8
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
 
@@ -79,11 +79,9 @@ setClass("stocsy1d_metabom8", representation(
 # )
 
 
-#' @title An S4 class to represent an OPLS model constructed with MetaboMate
+#' @title An S4 class to represent an PCA model constructed with metabom8
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
-
-
 # define slots for PCA object
 setClass("PCA_metabom8", representation(
   type = "character",

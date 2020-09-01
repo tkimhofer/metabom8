@@ -4,7 +4,7 @@
 \alias{eruption}
 \title{Eruption plot}
 \usage{
-eruption(mod, pc = 1, p_adj = "BH", invert_es = F)
+eruption(mod, pc = 1, p_adj = "BH", invert_es = FALSE)
 }
 \arguments{
 \item{mod}{OPLS model generated with \code{metabom8}.}

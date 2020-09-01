@@ -4,7 +4,7 @@
 \alias{.check1d_files_fid}
 \title{Check for intact file systems - helper function read1d}
 \usage{
-.check1d_files_fid(datapath, n_max = 10, filter = T, recursive = recursive)
+.check1d_files_fid(datapath, n_max = 10, filter = TRUE, recursive, verbose)
 }
 \arguments{
 \item{datapath}{char, File directory containing spectra}
@@ -15,6 +15,9 @@
 
 \item{procs_exp}{num, Topspin processing experiment ID}
 }
+\value{
+List of strings, each one is a path to fid and experiment number
+}
 \description{
 Check for intact file systems - helper function read1d
 }
@@ -23,6 +26,6 @@ NA
 }
 
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
 \keyword{internal}

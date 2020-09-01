@@ -4,12 +4,10 @@
 \alias{.extract_pars1d}
 \title{Read Bruker NMR paramter files - helper function read1d}
 \usage{
-.extract_pars1d(f_list, procs_exp)
+.extract_pars1d(f_list)
 }
 \arguments{
 \item{f_list}{list, intact files system for NMR experiments. See fct checkFiles1d}
-
-\item{procs_exp}{num or char, which processing experiment should be extracted}
 }
 \description{
 Read Bruker NMR paramter files - helper function read1d
@@ -21,3 +19,4 @@ NA
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
+\keyword{internal}

@@ -21,3 +21,4 @@ This function checks for matching dimensions (X - Y).
 NA
 }
 
+\keyword{internal}

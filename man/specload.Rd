@@ -13,7 +13,7 @@ specload(
   pc = 1,
   type = "Backscaled",
   title = "",
-  r_scale = F
+  r_scale = FALSE
 )
 }
 \arguments{

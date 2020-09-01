@@ -1,0 +1,33 @@
+<NMR_Tube_Data>
+    <Dataset>D:\IVDrData\data\COVID_Plasma_IVDR04_PN_100620\110\pdata\1\1r</Dataset>
+    <Parameter_Set>PROF_PLASMA_NOESY</Parameter_Set>
+    <Sample_Holder>511</Sample_Holder>
+    <Tube_Type>5</Tube_Type>
+    <Calibration_Tube>
+        <NMR_Tube>
+            <Description>Wilmad</Description>
+            <Holder_min>1</Holder_min>
+            <Holder_max>99</Holder_max>
+            <OuterDiameter unit="mm">4.9635</OuterDiameter>
+            <InnerDiameter unit="mm">4.2065</InnerDiameter>
+            <Camber unit="um">25</Camber>
+            <Concentricity unit="um">51</Concentricity>
+            <Length unit="inch">7</Length>
+            <Thickness unit="mm">0.38</Thickness>
+        </NMR_Tube>
+    </Calibration_Tube>
+    <Sample_Tube>
+        <NMR_Tube>
+            <Description>SampleJet</Description>
+            <Holder_min>101</Holder_min>
+            <Holder_max>596</Holder_max>
+            <OuterDiameter unit="mm">4.97</OuterDiameter>
+            <InnerDiameter unit="mm">4.21</InnerDiameter>
+            <Camber unit="um">60</Camber>
+            <Concentricity unit="um">30</Concentricity>
+            <Length unit="inch">4</Length>
+            <Thickness unit="mm">0.38</Thickness>
+        </NMR_Tube>
+    </Sample_Tube>
+    <Tube_Correction_Factor>1.00166478359</Tube_Correction_Factor>
+</NMR_Tube_Data>

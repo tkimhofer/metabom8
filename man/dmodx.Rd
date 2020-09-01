@@ -4,7 +4,7 @@
 \alias{dmodx}
 \title{Calculating distance to the model in X space}
 \usage{
-dmodx(mod, plot = T)
+dmodx(mod, plot = TRUE)
 }
 \arguments{
 \item{mod}{OPLS model of type \code{OPLS_metabom8}.}

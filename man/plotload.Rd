@@ -10,7 +10,7 @@ plotload(
   pc = 1,
   type = "Backscaled",
   title = NULL,
-  r_scale = F
+  r_scale = FALSE
 )
 }
 \arguments{

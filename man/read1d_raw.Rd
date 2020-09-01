@@ -2,50 +2,83 @@
 % Please edit documentation in R/read1d_raw.R
 \name{read1d_raw}
 \alias{read1d_raw}
-\title{Read-in 1D NMR spectra}
+\title{Read-in FIDs and process to spectra}
 \usage{
 read1d_raw(
   path,
-  n_max = 1000,
-  filter = T,
+  exp_type = list(exp = c("PROF_PLASMA_CPMG128_3mm"), pulprog = c("noesygppr1d")),
   apodisation = list(fun = "exponential", lb = 0.2),
   zerofil = 1L,
   return = "absorption",
-  pulprog = "<noesygppr1d>",
-  verbose = TRUE,
-  recursive = TRUE
+  verbose = 1,
+  recursive = TRUE,
+  n_max = 1000,
+  filter = TRUE
 )
 }
 \arguments{
-\item{path}{char, File directory containing spectra}
+\item{path}{char, path to file directory containing spectra}
 
-\item{n_max}{int, Maximum number of spectra to read-in}
+\item{exp_type}{named list, filter for acquisition paramters of experiments to read-in (see Details)}
 
-\item{filter}{lobic, filter for intact file systems (TRUE is recommended)}
+\item{apodisation}{named list, apodisation function and its parameters (see Details)}
 
-\item{apodisation}{list, apodisation type and parameter}
+\item{zerofil}{int, amount of zeros to append to FID given as exponent added of base 2 (see Details)}
 
-\item{zerofil}{int, zero-filling, exponent summand of base 2}
+\item{return}{char, return mode of spectra: absorption, dispersion or magnitude mode}
 
-\item{return}{char, return mode: absorption, dispersion, magnitude}
-
-\item{pulprog}{char, experiment type to read-in as defined by TopSpin pulprog (e.g. \<noesygppr1d\>)}
-
-\item{verbose}{logic, if TRUE print function messages to console}
+\item{verbose}{num, different verbose levels: 0 (no info), 1 (overview), 2 (detailed), 3 (step-by-step for debugging)}
 
 \item{recursive}{logic, if TRUE recursively search all subfolders of path for specified NMR files}
+
+\item{n_max}{int, maximum number of experiments to read-in}
+
+\item{filter}{logic, remove experiments with incomplete file systems (TRUE is recommended)}
 }
 \value{
-Three objects: NMR data matrix (2D: rows=spectra, cols=chem shift variables), ppm num vector matched to NMR data columns, meta data.frame containing spectrometer metadata
+The function exports the following three objects into the currently active R environment (no variable assignments needed):
+\itemize{
+\item X, num matrix:  NMR data, spectra in rows
+\item ppm, num array - chemical shift positions, length matches to columns in X
+\item meta, data.frame - spectrometer metadata as extracted from individual \emph{acqus} files, row-matched to X
+}
+Objects in the R environment with the same variable names will be overwritten.
 }
 \description{
-Read-in 1D NMR spectra
+Read-in FIDs and process to spectra
+}
+\details{
+In the first step, read-in are FIDs generated with experimental condition(s) specified with the exp_type argument. This represents a list with each element representing a parameter condition, named according to spectrometer parameters listed in \emph{acqus} file. For example, to read standard 1D NMR experiments use \code{exp_type=list(exp='noesygppr1d')}. More than one argument can be provided as list element.
+
+The apodisation argument is a named list specifying the function name in element \emph{fun} and functions-specific paramter arguments. There are the following different apodisation functions and arguments:
+#' @return
+\itemize{
+\item exponential, arguments: lb (line broadening factor)
+\item cosine, no further arguments
+\item sine, no further arguments
+\item sem, combined sine-bell - exponential fct: arguments: lb (line broadening factor)
+}
+
+The zerofil argument specifies the amount of zeros to append to the FID and is expressed as exponent addand in the binary numeral system: \code{2^(1+x)}, with x being the zerofil parameter argument. Hence, \code{zerofil=1} doubles the amount of data points.
 }
 \section{}{
 NA
 }
 
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\examples{
+path<-system.file("extdata/",  package = "metabom8")
+read1d_raw(path,  exp_type=list(exp='PROF_PLASMA_NOESY'), apodisation=list(fun='exponential', lb=0.2), n_max=3)
 }
-\concept{Import NMR data functions}
+\seealso{
+\code{\link[=read1d]{Import TopSpin processed spectra}}
+
+Other NMR: 
+\code{\link{binning}()},
+\code{\link{bline}()},
+\code{\link{ppick}()},
+\code{\link{read1d}()}
+}
+\author{
+\email{torben.kimhofer@murdoch.edu.au}
+}
+\concept{NMR}

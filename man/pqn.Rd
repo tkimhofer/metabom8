@@ -8,7 +8,7 @@
 pqn(
   X,
   iref = NULL,
-  TArea = F,
+  TArea = FALSE,
   add_DilF = NULL,
   bin = list(ppm = NULL, width = 0.05, npoints = NULL)
 )

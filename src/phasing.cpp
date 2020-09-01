@@ -175,10 +175,11 @@ arma::vec defineChemShiftPpm(const float sf_mhz, const float sw_hz, const int n_
 // ppm=(pps-(pps[length(sp_re)/2]-(4.79 * pars$a_SFO1[s])))/pars$a_SFO1[s]
 
 //' @title Calibrate
+//' @value Shift-adjusted ppm vector
 //' @keywords internal
 //' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 // [[Rcpp::export(.calibTsp)]]
-arma::vec calibTsp(arma::vec spec,arma::vec ppm){
+arma::vec calibTsp(arma::vec spec, arma::vec ppm){
 
 // find max close to zero
   arma::uvec ids = find((ppm >= -0.1 && ppm <= 0.1));

@@ -1,28 +1,26 @@
-#' @title Read-in 1D NMR spectra
+#' @title Import 1D NMR spectra
 #' @export
-#' @param path char, File directory containing spectra
-#' @param exp_type list, specific acquisition paramters use to select spectra for read-in (e.g. experiment type or pulse sequence)
-#' @param n_max int, Maximum number of spectra to read-in
-#' @param filter lobic, filter for intact file systems (TRUE is recommended)
-#' @param verbose num, different verbose levels: 0 (no info), 1 (overview), 2 (detailed), 3 (debugging mode detail)
-#' @param recursive logic, if TRUE recursively search all subfolders of path for specified NMR files
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @inheritParams read1d_raw
+#' @details
+#' This function imports TopSpin processed NMR spectra as well as spectrometer and processing parameters found in files \emph{acqus} and \emph{procs}. Experiments can be filtered according to data acquisition variables using the \code{exp_type} argument: For example, to read standard 1D NMR experiments use \code{exp_type=list(exp='noesygppr1d')}. More than one argument can be provided as list element.
+#' @return
+#' The function exports the following three objects into the currently active R environment (no variable assignments needed):
+#' \itemize{
+#'   \item X, num matrix:  NMR data, spectra in rows
+#'   \item ppm, num array - chemical shift positions, length matches to columns in X
+#'   \item meta, data.frame - spectrometer metadata as extracted from individual \emph{acqus} files, row-matched to X
+#' }
+#' Objects in the R environment with the same variable names will be overwritten.
+#' @examples
+#' path<-system.file("extdata/",  package = "metabom8")
+#' read1d(path,  exp_type=list(pulprog='noesygppr1d'))
 # @importFrom base list.files readBin seq gsub
+#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @family NMR
 #' @importFrom stats approxfun
+#' @seealso \code{\link[=read1d_raw]{Process raw FIDs}}
 #' @section
-
-# path='/Users/TKimhofer/Desktop/COVID_plasma_DIRE_IVDR02_PN_170620/'
-# procs_exp = '1'
-# n_max = 2
-# filter = T
-#path='/Volumes/Torben Kimhofer/tutdata/'
-#read1d(path, n_max = 5)
-
-
-# read Bruker 1d new
 read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_PLASMA_NOESY128_3mm')), n_max=1000, filter=TRUE, recursive=TRUE, verbose=TRUE){
-
-
   path<-path.expand(path)
   # if(grepl('^~', path, fixed=F)){
   #   #getwd()
@@ -101,8 +99,6 @@ read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_P
   assign("X", out, envir = .GlobalEnv)
   assign("ppm", ppm_ref, envir = .GlobalEnv)
   assign("meta", pars, envir = .GlobalEnv)
-
-
 }
 
 

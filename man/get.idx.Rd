@@ -14,6 +14,10 @@ get.idx(range = c(1, 5), ppm)
 \description{
 Find indices in ppm vector for respective chemical shift range
 }
+\section{}{
+NA
+}
+
 \author{
 Torben Kimhofer \email{tkimhofer@gmail.com}
 }

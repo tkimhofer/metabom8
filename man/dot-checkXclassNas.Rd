@@ -19,3 +19,4 @@ This function checks for missing values in Y (NA, NAN, infinite), numeric variab
 NA
 }
 
+\keyword{internal}

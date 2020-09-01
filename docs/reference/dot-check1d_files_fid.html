@@ -92,9 +92,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/hi.html">hi</a>
-    </li>
-    <li>
       <a href="../articles/import-NMR-data.html">Import NMR data</a>
     </li>
   </ul>
@@ -127,7 +124,7 @@
     <p>Check for intact file systems - helper function read1d</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.check1d_files_fid</span>(<span class='no'>datapath</span>, <span class='kw'>n_max</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='no'>T</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>.check1d_files_fid</span>(<span class='no'>datapath</span>, <span class='kw'>n_max</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>recursive</span>, <span class='no'>verbose</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,6 +147,9 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>List of strings, each one is a path to fid and experiment number</p>
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
 
     <p>NA</p>
@@ -159,6 +159,7 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#"></a></li>
     </ul>
 

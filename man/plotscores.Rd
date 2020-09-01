@@ -4,7 +4,7 @@
 \alias{plotscores}
 \title{Plotting PCA or OPLS model scores}
 \usage{
-plotscores(obj, pc, an, title = "", qc, legend = "in", cv = T, ...)
+plotscores(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ...)
 }
 \arguments{
 \item{obj}{PCA, PLS or OPLS model of the package \emph{metabom8} or \emph{MetaboMate}.}
@@ -44,6 +44,6 @@ Hotelling, H. (1931) The generalization of Student’s ratio. \emph{Ann. Math. S
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{dataviz nmr functions msfunctions}
