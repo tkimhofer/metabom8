@@ -7,22 +7,38 @@
 minmax(x)
 }
 \arguments{
-\item{x}{Numeric vector to be scaled.}
+\item{x}{num array to be scaled}
 }
 \value{
-Scaled x vector.
+num array, same length as x
 }
 \description{
 Min-max scaling
 }
 \details{
-Data are scaled to range between zero and one:
-\deqn{X_{scaled}=\frac{x-x_{min}}{x_{max}-x_{min}}}
+Output values are scaled to range between 0 and 1
+\deqn{x_{s}=\frac{x-x_{min}}{x_{max}-x_{min}}}
 }
 \section{}{
 NA
 }
 
-\author{
-Torben Kimhofer \email{torben.kimhofer@gmail.com}
+\examples{
+x=rnorm(20, 0, 1)
+plot(x, type='l'); abline(h=range(x), lty=2)
+points(minmax(x), type='l', col='red'); abline(h=c(0,1), col='red', lty=2)
 }
+\seealso{
+Other NMR ++: 
+\code{\link{.hotellingsT2}()},
+\code{\link{cvanova}()},
+\code{\link{es_cdelta}()},
+\code{\link{opls_perm}()},
+\code{\link{plotscores}()},
+\code{\link{pqn}()},
+\code{\link{predict_opls}()}
+}
+\author{
+\email{torben.kimhofer@gmail.com}
+}
+\concept{NMR ++}

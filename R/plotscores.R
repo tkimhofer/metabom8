@@ -26,7 +26,11 @@
 #' @importFrom reshape2 melt
 #' @importFrom scales breaks_pretty
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
-#' @family dataviz nmr functions msfunctions
+#' @family NMR ++
+#' @examples
+#' data(covid)
+#' model=pca(X)
+#' plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))
 #' @section
 
 

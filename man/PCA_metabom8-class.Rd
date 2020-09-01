@@ -11,6 +11,11 @@ An S4 class to represent an PCA model constructed with metabom8
 NA
 }
 
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\seealso{
+Other NMR & MS: 
+\code{\link{OPLS_metabom8-class}}
 }
+\author{
+\email{torben.kimhofer@murdoch.edu.au}
+}
+\concept{NMR & MS}

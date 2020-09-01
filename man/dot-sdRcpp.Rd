@@ -16,6 +16,6 @@ list: 1. sd (num vec), 2. mean (sd vec)
 Column-wise standard deviation and mean for a matrix
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
 \keyword{internal}

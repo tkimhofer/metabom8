@@ -21,9 +21,18 @@ Non-linear baseline correction for NMR spectra. This function estimates smooth a
 
 Other NMR: 
 \code{\link{binning}()},
+\code{\link{get.idx}()},
+\code{\link{lw}()},
+\code{\link{matspec}()},
+\code{\link{noise.est}()},
+\code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},
-\code{\link{read1d}()}
+\code{\link{read1d}()},
+\code{\link{specload}()},
+\code{\link{spec}()},
+\code{\link{stocsy1d_metabom8-class}},
+\code{\link{stocsy}()}
 }
 \author{
 \email{torben.kimhofer@murdoch.edu.au}

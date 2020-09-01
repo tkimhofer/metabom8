@@ -6,6 +6,9 @@
 \usage{
 .calibTsp(spec, ppm)
 }
+\value{
+Shift-adjusted ppm vector
+}
 \description{
 Calibrate
 }

@@ -70,7 +70,7 @@
 }
 
 #' @title Calibrate
-#' @value Shift-adjusted ppm vector
+#' @return Shift-adjusted ppm vector
 #' @keywords internal
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .calibTsp <- function(spec, ppm) {
@@ -81,7 +81,7 @@
 #' @param X num matrix
 #' @keywords internal
 #' @return list: 1. sd (num vec), 2. mean (sd vec)
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 .sdRcpp <- function(X) {
     .Call(`_metabom8_sd_rcpp`, X)
 }
@@ -94,7 +94,7 @@
 #' @param scale_type int 0: no scaling, 1: SD scaling, 2: Pareto scaling
 #' @return list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
 #' @keywords internal
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 .scaleMatRcpp <- function(X, idc, center, scale_type) {
     .Call(`_metabom8_scale_rcpp`, X, idc, center, scale_type)
 }

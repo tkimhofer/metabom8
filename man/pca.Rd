@@ -32,4 +32,8 @@ Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tut
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{dataviz nmr functions, ms functions}
+\concept{NMR ++
+#' @example
+data(covid)
+model=pca(X)
+plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))}

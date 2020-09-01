@@ -42,8 +42,9 @@ This function fits Orthogonal-Partial Least Squares (O-PLS) models for regressio
 Models are fully statistically validated, currently only k-fold cross validation (CV) and class-balanced k-fold cross validation is implemented. Further extensions, e.g. Monte-Carlo CV, are work in progress. Although the algorithm accepts three and more levels as Y, model interpretation is more straightforward for pairwise group comparisons.
 }
 \examples{
-data(iris)
-smod=opls(X=iris[,seq_len(4)], Y=iris$Species=='setosa')
+data(covid)
+model=opls(X, Y=an$type)
+plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))
 }
 \references{
 Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
@@ -51,5 +52,5 @@ Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS)
 Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }

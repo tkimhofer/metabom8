@@ -2,7 +2,7 @@
 % Please edit documentation in R/eruption.R
 \name{eruption}
 \alias{eruption}
-\title{Eruption plot}
+\title{Eruption plot for OPLS-DA model visualisation}
 \usage{
 eruption(mod, pc = 1, p_adj = "BH", invert_es = FALSE)
 }

@@ -1,5 +1,6 @@
 #' @title An S4 class to represent an OPLS model constructed with metabom8
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @family NMR & MS
 #' @section
 
 
@@ -44,7 +45,8 @@ setClass("OPLS_metabom8", representation(
 
 
 #' @title An S4 class to represent STOCSY model constructed with metabom8
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @family NMR
 #' @section
 setClass("stocsy1d_metabom8", representation(
   version = "character",
@@ -80,7 +82,8 @@ setClass("stocsy1d_metabom8", representation(
 
 
 #' @title An S4 class to represent an PCA model constructed with metabom8
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @family NMR & MS
 #' @section
 # define slots for PCA object
 setClass("PCA_metabom8", representation(

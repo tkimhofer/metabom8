@@ -11,7 +11,7 @@
 #' @seealso \code{\link[signal]{sgolayfilt}}
 #' @family NMR
 #' @examples
-#' load(covid)
+#' data(covid)
 #' peaks=ppick(X, ppm)
 #' # Plotting first spectrum in reagion 3.0 to 3.15 ppm
 #' spec(X[1,], ppm, shift=c(4.2, 5.3))

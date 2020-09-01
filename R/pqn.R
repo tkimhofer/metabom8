@@ -10,7 +10,11 @@
 #' @references Dieterle, F., \emph{et al.} (2006), Probabilistic Quotient Normalization as Robust Method to Account for Dilution of Complex Biological Mixtures. Application in 1H NMR Metabonomics, \emph{Analytical Chemistry}, 78.3, 4281-90.
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @return Normalised spectral matrix of the same dimensions as input
-#' @family normalisation functions
+#' @examples
+#' data(covid)
+#' Xn=pqn(X, add_DilF='dilutionFactor') # Xn contain normalised spectra
+#' plot(dilutionFactor)
+#' @family NMR ++
 
 pqn <- function(X, iref = NULL, TArea = FALSE, add_DilF = NULL, bin=list(ppm=NULL, width=0.05, npoints=NULL)) {
 

@@ -55,8 +55,17 @@ read1d(path,  exp_type=list(pulprog='noesygppr1d'))
 Other NMR: 
 \code{\link{binning}()},
 \code{\link{bline}()},
+\code{\link{get.idx}()},
+\code{\link{lw}()},
+\code{\link{matspec}()},
+\code{\link{noise.est}()},
+\code{\link{plotload}()},
 \code{\link{ppick}()},
-\code{\link{read1d_raw}()}
+\code{\link{read1d_raw}()},
+\code{\link{specload}()},
+\code{\link{spec}()},
+\code{\link{stocsy1d_metabom8-class}},
+\code{\link{stocsy}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}

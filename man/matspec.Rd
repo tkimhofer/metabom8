@@ -27,13 +27,30 @@ Low-level plotting function for NMR spectra, interactive plotting with ggplotly
 NA
 }
 
+\examples{
+data(covid)
+matspec(X[1:2,], ppm) # interactive
+matspec(X[1:2,], ppm, interactive=F) # static
+}
 \seealso{
 \code{\link{spec}} \code{\link{plot}}
 
-Other visNMR: 
-\code{\link{spec}()}
+Other NMR: 
+\code{\link{binning}()},
+\code{\link{bline}()},
+\code{\link{get.idx}()},
+\code{\link{lw}()},
+\code{\link{noise.est}()},
+\code{\link{plotload}()},
+\code{\link{ppick}()},
+\code{\link{read1d_raw}()},
+\code{\link{read1d}()},
+\code{\link{specload}()},
+\code{\link{spec}()},
+\code{\link{stocsy1d_metabom8-class}},
+\code{\link{stocsy}()}
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{visNMR}
+\concept{NMR}

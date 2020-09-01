@@ -11,10 +11,15 @@
 #' @seealso  \code{\link{matspec}} \code{\link{plot}}
 #' @aliases spec
 #' @details Low-level plotting function for a single NMR spectrum (base graphics). Interactive visualisation in mode of markers or line+markers will take longer (mode='lines' is recommended).
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @examples
+#' data(covid)
+#' spec(X[1,], ppm) # interactive
+#' spec(X[2,], ppm, add=TRUE) # add trace
+#' spec(X[1,], ppm, interactive=FALSE) # static
 #' @importFrom graphics points
 #' @importFrom plotly plot_ly add_lines layout %>% add_trace
-#' @family visNMR
+#' @family NMR
 #' @section
 spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive=TRUE, name='A', mode='lines', ...) {
 
@@ -70,8 +75,12 @@ spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive=TRUE, name='
 #' @importFrom graphics matplot matpoints
 # #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRampPalette
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @family visNMR
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @family NMR
+#' @examples
+#' data(covid)
+#' matspec(X[1:2,], ppm) # interactive
+#' matspec(X[1:2,], ppm, interactive=F) # static
 #' @section
 matspec <- function(X, ppm, shift = c(0, 9.5), interactive=TRUE, ...) {
   if(is.null(ppm)){ppm=as.numeric(colnames(X)); } else{
@@ -122,7 +131,12 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive=TRUE, ...) {
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales breaks_pretty
 #' @importFrom stats as.formula
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @examples
+#' data(covid)
+#' panel=sample(c('A', 'B'), nrow(X), replace = TRUE)
+#' specOverlay(X, shift=c(5.15, 4.6), an=list(panel, Date=meta$a_DATE, AUNM=meta$a_AUNM))
+#' specOverlay(X, shift=c(5.15, 5.3), an=list(panel, RunOrder=as.numeric(meta$a_DATE), AUNM=meta$a_AUNM))
 #' @section
 specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", "col", "ltype"), alp = 0.7, size = 0.5, title = "", ...) {
 
@@ -186,7 +200,7 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
 #' @param alp Alpha value for spectral lines.
 #' @param title Plot title.
 #' @param size plot line width.
-#' @param r_scale logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)
+#' @param r_scale logical, adjust limits of color gradient to 0 and 1 (only applies for argument \code{type='stat reconstruction'})
 #' @description  Plotting overlayed NMR spectra. This function is based on ggplot2, a high-level plotting R package. For high ppm ranges computation time is relatively, so the range of input argument \code{shift} should be as small as possible. List argument \code{an} must have the first element define, even if it is only a single value. If colour and line width is specified, then at least one list elements of \code{an} must have the same length as \code{X}.
 #' @details OPLS: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical reconstruction.
 # @seealso \code{\link{plotload}} \code{\link{specOverlay}} \code{\link[=OPLS_MetaboMate-class]{OPLS_MetaboMate}} \code{\link{opls}} \code{\link[=PCA_MetaboMate-class]{PCA_MetaboMate}} \code{\link{pca}}
@@ -195,8 +209,12 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
 #' @importFrom ggplot2 aes_string scale_x_reverse ggtitle xlab ylab facet_grid theme_bw theme element_text geom_line scale_colour_gradientn
 #' @importFrom colorRamps matlab.like2
 #' @importFrom stats as.formula
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @family dataviz
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @examples
+#' data(covid)
+#' model=pca(X)
+#' specload(model, shift=c(1,2), an=list(an$type), pc=1, alp=0.8)
+#' @family NMR
 #' @section
 specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, type = "Backscaled", title = "", r_scale=FALSE) {
 
@@ -247,10 +265,6 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
     cols <- abs(df_l[,1])
 
   }
-#
-#
-#   #####################
-#   # plot specs
 
   specs <- X[, idx]
   limY <- range(specs)
@@ -309,7 +323,7 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
 
 
 
-#' Plotting PCA or OPLS loadings
+#' Visualising PCA or OPLS loadings for NMR data
 #' @export
 #' @param mod PCA or OPLS model generated via \emph{metabom8} package functions.
 #' @param shift ppm region to visualise.
@@ -317,15 +331,20 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
 #' @param type Type of loadings visualisation, either \code{'Statistical reconstruction'} or \code{'Backscaled'} (see Details).
 #' @param title Plot title.
 #' @param r_scale logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)
-#' @details OPLS: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical recostruction.
+#' @details OPLS loadinsg visualisatoin for NMR data: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical recostruction.
 #' @author Torben Kimhofer \email{tkimhofer@@gmail.com}
 #' @references Cloarec, O., \emph{et al.} (2005). Evaluation of the Orthogonal Projection on Latent Structure Model Limitations Caused by Chemical Shift Variability and Improved Visualization of Biomarker Changes in 1H NMR Spectroscopic Metabonomic Studies. \emph{Analytical Chemistry} 77.2, 517-26.
 #' @importFrom stats cor cov
 #' @importFrom ggplot2 ggplot geom_line scale_x_reverse ggtitle xlab ylab theme_bw ggtitle aes_string scale_colour_gradientn geom_point
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales breaks_pretty
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @family dataviz
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @seealso \code{\link{plotload_cat}}
+#' @examples
+#' data(covid)
+#' model=pca(X)
+#' plotload(model, pc=1)
+#' @family NMR
 #' @section
 
 plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title = NULL, r_scale=FALSE) {
@@ -394,8 +413,12 @@ plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title =
 #' @importFrom ggplot2 ggplot aes_string geom_point scale_colour_gradientn geom_hline xlab scale_y_continuous theme_bw theme element_blank element_text geom_segment
 #' @importFrom colorRamps matlab.like
 #' @importFrom stats t.test sd
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @family OPLS model validation functions
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @family NMR and other
+#' @examples
+#' data(covid)
+#' model=opls(X, Y=an$type)
+#' dmx=dmodx(model)
 #' @section
 # E=residual Matrix N=number of samples K=number of variables A=number of model components A0= (1 if mean centred, 0 otherwise)
 

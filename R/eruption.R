@@ -1,5 +1,4 @@
-
-#' @title Eruption plot
+#' @title Eruption plot for OPLS-DA model visualisation
 #' @export
 #' @description Visualise variable importances in OPLS context, p value is generated with Kruskal Walis rank sum test, effect size measure is Cliff's delta.
 #' @param mod OPLS model generated with \code{metabom8}.
@@ -13,9 +12,6 @@
 #' @importFrom stats p.adjust
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @section
-
-
-
 
 eruption <- function(mod, pc=1, p_adj='BH', invert_es=FALSE){
 

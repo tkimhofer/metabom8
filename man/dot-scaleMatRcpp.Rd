@@ -22,6 +22,6 @@ list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
 Column-wise matrix scaling
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
 \keyword{internal}

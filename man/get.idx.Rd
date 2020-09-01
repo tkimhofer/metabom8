@@ -2,22 +2,46 @@
 % Please edit documentation in R/AllGenerics.R
 \name{get.idx}
 \alias{get.idx}
-\title{Find indices in ppm vector for respective chemical shift range}
+\title{Return indices of chemical shift array mapping to a specific chemical shift range}
 \usage{
 get.idx(range = c(1, 5), ppm)
 }
 \arguments{
-\item{range}{num, range chemical shift (in ppm vector)}
+\item{range}{num array(2), range of chemical shift}
 
-\item{ppm}{num, ppm vector}
+\item{ppm}{num array, chemical shift vector}
 }
 \description{
-Find indices in ppm vector for respective chemical shift range
+Return indices of chemical shift array mapping to a specific chemical shift range
 }
 \section{}{
 NA
 }
 
-\author{
-Torben Kimhofer \email{tkimhofer@gmail.com}
+\examples{
+load(covid)
+idx=get.idx(c(-0.1, 0.1), ppm)
+ppm[range(idx)]
+plot(ppm[idx], X[1,idx], type='l')
+lw(X, ppm) * meta$a_SFO1 # in Hz
 }
+\seealso{
+Other NMR: 
+\code{\link{binning}()},
+\code{\link{bline}()},
+\code{\link{lw}()},
+\code{\link{matspec}()},
+\code{\link{noise.est}()},
+\code{\link{plotload}()},
+\code{\link{ppick}()},
+\code{\link{read1d_raw}()},
+\code{\link{read1d}()},
+\code{\link{specload}()},
+\code{\link{spec}()},
+\code{\link{stocsy1d_metabom8-class}},
+\code{\link{stocsy}()}
+}
+\author{
+\email{tkimhofer@gmail.com}
+}
+\concept{NMR}

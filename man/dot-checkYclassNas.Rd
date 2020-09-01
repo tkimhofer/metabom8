@@ -2,7 +2,7 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.checkYclassNas}
 \alias{.checkYclassNas}
-\title{Check for missing values (PLS context)}
+\title{Check Y for missing values (PLS context)}
 \usage{
 .checkYclassNas(Y)
 }

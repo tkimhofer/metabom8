@@ -32,11 +32,6 @@ NA
 \references{
 Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
 }
-\seealso{
-Other dataviz: 
-\code{\link{plotload}()},
-\code{\link{specload}()}
-}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 

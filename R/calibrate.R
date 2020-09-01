@@ -8,7 +8,7 @@
 #' @details Spectral calibration to a chemical shift reference. If \code{type='tsp'} calibration will be performed using highest peak in interval -0.2 ppm to +0.2 ppm 0 ppm (Trimethylsilylpropanoic acid resonance). If \code{type='glucose'}, the glucose doublet (alphanomeric proton with J const within 3.6 and 4.2 Hz) will be centered at 5.23 pmm , originating from the alpha anomer of glucose, will be used for calibration. \strong{Blood serum-derived spectra} can also be calibrated with input argument \code{type='Plasma'}.
 #' @return Returned is the calibrated NMR data matrix.
 #' @references Dona, A.C., \emph{et al.} (2014) Precision high-throughput proton NMR spectroscopy of human urine, serum, and plasma for large-scale metabolic phenotyping. \emph{Analytical Chemistry}. 86.19. 9887-94.
-#' @author Torben Kimhofer \email{torben.kimhofer@@gmail.com}
+#' @author \email{torben.kimhofer@@gmail.com}
 
 
 calibrate <- function(X, ppm, type = "glucose") {

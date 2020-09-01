@@ -36,14 +36,29 @@ Scores colouring is specified with the argument \code{an}, which is a list of th
 NA
 }
 
+\examples{
+data(covid)
+model=pca(X)
+plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))
+}
 \references{
 Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
 
 Hotelling, H. (1931) The generalization of Student’s ratio. \emph{Ann. Math. Stat.}, 2, 360-378.
+}
+\seealso{
+Other NMR ++: 
+\code{\link{.hotellingsT2}()},
+\code{\link{cvanova}()},
+\code{\link{es_cdelta}()},
+\code{\link{minmax}()},
+\code{\link{opls_perm}()},
+\code{\link{pqn}()},
+\code{\link{predict_opls}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 
 \email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{dataviz nmr functions msfunctions}
+\concept{NMR ++}

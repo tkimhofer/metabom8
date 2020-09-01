@@ -22,6 +22,17 @@ This function is used to calculate hotellings T2 ellipse
 \references{
 Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
 }
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\seealso{
+Other NMR ++: 
+\code{\link{cvanova}()},
+\code{\link{es_cdelta}()},
+\code{\link{minmax}()},
+\code{\link{opls_perm}()},
+\code{\link{plotscores}()},
+\code{\link{pqn}()},
+\code{\link{predict_opls}()}
 }
+\author{
+\email{torben.kimhofer@murdoch.edu.au}
+}
+\concept{NMR ++}

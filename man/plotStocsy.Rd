@@ -20,12 +20,13 @@ Plot Statistical Total Correlation Spectroscopy (STOCSY)
 NA
 }
 
-\seealso{
-Other metID functions: 
-\code{\link{stocsy}()}
+\examples{
+data(covid)
+stcy_glucose=stocsy(X, ppm, driver=5.233)
+plotStocsy(stcy_glucose, shift=c(5.15, 5.30), title='Alpha-anomeric proton of glucose (doublet)')
+points(speaks[[1]]$ppm, speaks[[1]]$Int, col=factor(speaks[[1]]$type))
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR functions}
-\concept{metID functions}

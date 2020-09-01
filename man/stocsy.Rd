@@ -27,12 +27,29 @@ Statistical Total Correlation Spectroscopy (STOCSY)
 NA
 }
 
+\examples{
+data(covid)
+stcy_glucose=stocsy(X, ppm, driver=5.233)
+plotStocsy(stcy_glucose, shift=c(5.15, 5.30), title='Alpha-anomeric proton of glucose (doublet)')
+points(speaks[[1]]$ppm, speaks[[1]]$Int, col=factor(speaks[[1]]$type))
+}
 \seealso{
-Other metID functions: 
-\code{\link{plotStocsy}()}
+Other NMR: 
+\code{\link{binning}()},
+\code{\link{bline}()},
+\code{\link{get.idx}()},
+\code{\link{lw}()},
+\code{\link{matspec}()},
+\code{\link{noise.est}()},
+\code{\link{plotload}()},
+\code{\link{ppick}()},
+\code{\link{read1d_raw}()},
+\code{\link{read1d}()},
+\code{\link{specload}()},
+\code{\link{spec}()},
+\code{\link{stocsy1d_metabom8-class}}
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{metID functions}
-\concept{nmr functions}
+\concept{NMR}

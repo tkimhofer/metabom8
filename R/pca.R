@@ -11,7 +11,11 @@
 #' @return This function returns a \emph{PCA_MetaboMate} S4 object.
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom pcaMethods pca
-#' @family dataviz nmr functions, ms functions
+#' @family NMR ++
+#' #' @example
+#' data(covid)
+#' model=pca(X)
+#' plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))
 
 pca <- function(X, pc = 2, scale = "UV", center = TRUE, method = "nipals") {
 

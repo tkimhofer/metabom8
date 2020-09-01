@@ -42,13 +42,31 @@ Low-level plotting function for a single NMR spectrum (base graphics). Interacti
 NA
 }
 
+\examples{
+data(covid)
+spec(X[1,], ppm) # interactive
+spec(X[2,], ppm, add=T) # add trace
+spec(X[1,], ppm, interactive=F) # static
+}
 \seealso{
 \code{\link{matspec}} \code{\link{plot}}
 
-Other visNMR: 
-\code{\link{matspec}()}
+Other NMR: 
+\code{\link{binning}()},
+\code{\link{bline}()},
+\code{\link{get.idx}()},
+\code{\link{lw}()},
+\code{\link{matspec}()},
+\code{\link{noise.est}()},
+\code{\link{plotload}()},
+\code{\link{ppick}()},
+\code{\link{read1d_raw}()},
+\code{\link{read1d}()},
+\code{\link{specload}()},
+\code{\link{stocsy1d_metabom8-class}},
+\code{\link{stocsy}()}
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{visNMR}
+\concept{NMR}

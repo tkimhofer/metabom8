@@ -33,10 +33,25 @@ Probabilistic quotient normalisation
 \details{
 It is sometimes favourable not to use all spectra to calculate a dilution reference (e.g. QC samples should generally be excluded). Therefore, a vector of indices can be specified with the parameter \code{reference.idx} and the respective spectra are used to calculate the median spectrum as a dilution reference. The parameter \code{reference.idx} can also be a single index, then the respective spectrum is used as a reference. If it is set \code{N/A}, all spectra in \code{X} are used to calculate the dilution reference spectrum. to Total area normalisation is integral part of the probabilistic quotient normalisation algorithm (see References), however, this sometimes distorts the spectra, i.e. is not suitable for normalisation. The parameter \code{TArea} can be set to TRUE or FALSE, depending if total area normalisation should be applied or not.
 }
+\examples{
+data(covid)
+Xn=pqn(X, add_DilF='dilutionFactor') # Xn contain normalised spectra
+plot(dilutionFactor)
+}
 \references{
 Dieterle, F., \emph{et al.} (2006), Probabilistic Quotient Normalization as Robust Method to Account for Dilution of Complex Biological Mixtures. Application in 1H NMR Metabonomics, \emph{Analytical Chemistry}, 78.3, 4281-90.
+}
+\seealso{
+Other NMR ++: 
+\code{\link{.hotellingsT2}()},
+\code{\link{cvanova}()},
+\code{\link{es_cdelta}()},
+\code{\link{minmax}()},
+\code{\link{opls_perm}()},
+\code{\link{plotscores}()},
+\code{\link{predict_opls}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{normalisation functions}
+\concept{NMR ++}

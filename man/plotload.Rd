@@ -2,7 +2,7 @@
 % Please edit documentation in R/AllViz.R
 \name{plotload}
 \alias{plotload}
-\title{Plotting PCA or OPLS loadings}
+\title{Visualising PCA or OPLS loadings for NMR data}
 \usage{
 plotload(
   mod,
@@ -27,26 +27,44 @@ plotload(
 \item{r_scale}{logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)}
 }
 \description{
-Plotting PCA or OPLS loadings
+Visualising PCA or OPLS loadings for NMR data
 }
 \details{
-OPLS: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical recostruction.
+OPLS loadinsg visualisatoin for NMR data: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical recostruction.
 }
 \section{}{
 NA
 }
 
+\examples{
+data(covid)
+model=pca(X)
+plotload(model, pc=1)
+}
 \references{
 Cloarec, O., \emph{et al.} (2005). Evaluation of the Orthogonal Projection on Latent Structure Model Limitations Caused by Chemical Shift Variability and Improved Visualization of Biomarker Changes in 1H NMR Spectroscopic Metabonomic Studies. \emph{Analytical Chemistry} 77.2, 517-26.
 }
 \seealso{
-Other dataviz: 
-\code{\link{plotload_cat}()},
-\code{\link{specload}()}
+\code{\link{plotload_cat}}
+
+Other NMR: 
+\code{\link{binning}()},
+\code{\link{bline}()},
+\code{\link{get.idx}()},
+\code{\link{lw}()},
+\code{\link{matspec}()},
+\code{\link{noise.est}()},
+\code{\link{ppick}()},
+\code{\link{read1d_raw}()},
+\code{\link{read1d}()},
+\code{\link{specload}()},
+\code{\link{spec}()},
+\code{\link{stocsy1d_metabom8-class}},
+\code{\link{stocsy}()}
 }
 \author{
 Torben Kimhofer \email{tkimhofer@gmail.com}
 
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{dataviz}
+\concept{NMR}

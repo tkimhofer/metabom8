@@ -6,10 +6,10 @@
 #' @param alpha num, probability level
 #' @references Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
 #' @return data.frame containing H.T2 ellipse cooredinates
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom ellipse ellipse
 #' @importFrom stats cov
-#
+#' @family NMR ++
 .hotellingsT2=function(x, y, alpha=0.95){
   SD <- cov(cbind(x, y), use='complete.obs')
   el <- ellipse(SD, centre = colMeans(cbind(x, y), na.rm = TRUE), level = alpha)

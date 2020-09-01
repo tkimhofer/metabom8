@@ -2,27 +2,36 @@
 % Please edit documentation in R/ppick.R
 \name{ppick}
 \alias{ppick}
-\title{Peak Picking}
+\title{Find local extrema in NMR spectra (peak picking)}
 \usage{
-ppick(X, ppm, fil_p = 3, fil_n = 5)
+ppick(X, ppm, fil_p = 3, fil_n = 5, type = "max")
 }
 \arguments{
 \item{X}{num matrix, NMR matrix with spectra in rows}
 
 \item{ppm}{num vec, chemical shift matching to X}
 
-\item{fil_p, }{filter order}
+\item{fil_p, }{SG filter order}
 
-\item{fil_n}{num, filter length (must be odd)}
+\item{fil_n}{num, SG filter length (must be odd)}
+
+\item{type}{str, return local extrema: maxima (\code{max}), minima (\code{min}), or \code{both}}
 }
 \value{
-Peak picked
+List of data frames for each spectrum. Each data frame has four columns: index in X col/ppm, ppm value, signal intensity and local extrema type (+1 for local min, -1 for local max). Number of rows match to all local extrema found within a spectrum.
 }
 \description{
-Peak Picking
+Find local extrema in NMR spectra (peak picking)
 }
 \details{
-Function smoothes the spectrum to de-emphasise the influence of noise and then identifies peak according to change of sign in adjacent points. Smoothing is performed with a Savitzki-Golay filter.
+Function first smoothes the spectrum to reduce extrema related to noise fluctuations using a Savitzki-Golay (SG) filter. Local extrema are identified according to sign change of adjacent points.
+}
+\examples{
+data(covid)
+peaks=ppick(X, ppm)
+# Plotting first spectrum in reagion 3.0 to 3.15 ppm
+spec(X[1,], ppm, shift=c(4.2, 5.3))
+points(speaks[[1]]$ppm, speaks[[1]]$Int, col=factor(speaks[[1]]$type))
 }
 \seealso{
 \code{\link[signal]{sgolayfilt}}
@@ -30,10 +39,19 @@ Function smoothes the spectrum to de-emphasise the influence of noise and then i
 Other NMR: 
 \code{\link{binning}()},
 \code{\link{bline}()},
+\code{\link{get.idx}()},
+\code{\link{lw}()},
+\code{\link{matspec}()},
+\code{\link{noise.est}()},
+\code{\link{plotload}()},
 \code{\link{read1d_raw}()},
-\code{\link{read1d}()}
+\code{\link{read1d}()},
+\code{\link{specload}()},
+\code{\link{spec}()},
+\code{\link{stocsy1d_metabom8-class}},
+\code{\link{stocsy}()}
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@gmail.com}
+\email{torben.kimhofer@gmail.com}
 }
 \concept{NMR}

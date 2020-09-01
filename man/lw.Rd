@@ -7,22 +7,44 @@
 lw(X, ppm, shift = c(-0.01, 0.01))
 }
 \arguments{
-\item{X}{NMR matrix with rows representing spectra.}
+\item{X}{num matrix of NMR data, rows representing spectra.}
 
-\item{ppm}{ppm vector with its length equals to \code{nrow(X)}.}
+\item{ppm}{num array describing chemical shift positions, its length equals to \code{nrow(X)}.}
 
-\item{shift}{Signal shift to calculate line width}
+\item{shift}{num array(2), chemical shift range of singlet used to calculate line width}
 }
 \value{
 Array of line widths in ppm. To convert from ppm to Hertz (Hz), multiply values with the spectrometer frequency (column \code{a_SF01} in \code{meta} data frame).
 }
 \description{
-Calculating full width at half maximum (FWHM, aka line width). This function simply returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in \code{shift}.
+Calculating full width at half maximum (FWHM, aka line width). This function returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in \code{shift}.
 }
 \section{}{
 NA
 }
 
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\examples{
+load(covid)
+lw(X, ppm) # in ppm
+lw(X, ppm) * meta$a_SFO1 # in Hz
 }
+\seealso{
+Other NMR: 
+\code{\link{binning}()},
+\code{\link{bline}()},
+\code{\link{get.idx}()},
+\code{\link{matspec}()},
+\code{\link{noise.est}()},
+\code{\link{plotload}()},
+\code{\link{ppick}()},
+\code{\link{read1d_raw}()},
+\code{\link{read1d}()},
+\code{\link{specload}()},
+\code{\link{spec}()},
+\code{\link{stocsy1d_metabom8-class}},
+\code{\link{stocsy}()}
+}
+\author{
+\email{torben.kimhofer@murdoch.edu.au}
+}
+\concept{NMR}

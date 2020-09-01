@@ -13,7 +13,11 @@
 #' @importFrom stats median
 #' @importFrom parallel detectCores
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @family OPLS model validation functions
+#' @family NMR ++
+#' @examples
+#' data(covid)
+#' model=opls(X, Y=an$type)
+#' perm=opls_perm(model)
 #' @section
 
 opls_perm <- function(smod, n=10, plot=TRUE, mc=FALSE){

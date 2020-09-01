@@ -11,14 +11,18 @@
 #' @param plotting logical, indicing if results should be plotted
 #' @param title char, plot title
 #' @return S4 object of class stocsy1d_metabom8
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @family metID functions
-#' @family nmr functions
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @family NMR
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_v_line scales_x_reverse scale_colour_gradientn labs theme_bw theme element_text
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales sapply breaks_pretty
 #' @importFrom methods hasArg
 #' @export
+#'@examples
+#' data(covid)
+#' stcy_glucose=stocsy(X, ppm, driver=5.233)
+#' plotStocsy(stcy_glucose, shift=c(5.15, 5.30), title='Alpha-anomeric proton of glucose (doublet)')
+#' points(speaks[[1]]$ppm, speaks[[1]]$Int, col=factor(speaks[[1]]$type))
 #' @section
 
 stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL){
@@ -93,12 +97,16 @@ stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL){
 #' @param stoc_mod STOCSY object, as created with function 'stocsy' ('see ?stocsy()')
 #' @param shift num array, chemical shift range defining plotting area
 #' @param title char, plot title
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @family metID functions
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @family NMR functions
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_v_line scales_x_reverse scale_colour_gradientn labs theme_bw theme element_text
 #' @importFrom colorRamps matlab.like2
 #' @export
+#'@examples
+#' data(covid)
+#' stcy_glucose=stocsy(X, ppm, driver=5.233)
+#' plotStocsy(stcy_glucose, shift=c(5.15, 5.30), title='Alpha-anomeric proton of glucose (doublet)')
+#' points(speaks[[1]]$ppm, speaks[[1]]$Int, col=factor(speaks[[1]]$type))
 #' @section
 
 plotStocsy=function(stoc_mod, shift=c(0,10), title=NULL){

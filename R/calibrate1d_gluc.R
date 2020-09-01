@@ -1,5 +1,4 @@
 # reference 1D NMR to glucose @ 5.233 (d)
-
 #' @title Calibrate 1D to glucose @ 5.233 (d)
 #' @param X num matrix, NMR matrix with spectra in rows
 #' @param ppm num vec, chemical shift matching to X

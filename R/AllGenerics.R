@@ -669,6 +669,7 @@ get.idx <- function(range = c(1, 5), ppm) {
 #' plot(x, type='l'); abline(h=range(x), lty=2)
 #' points(minmax(x), type='l', col='red'); abline(h=c(0,1), col='red', lty=2)
 #' @author \email{torben.kimhofer@@gmail.com}
+#' @family NMR ++
 #' @section
 minmax <- function(x) {
     (x - min(x))/(max(x) - min(x))

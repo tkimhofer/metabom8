@@ -4,12 +4,12 @@
 \alias{noise.est}
 \title{Estimation of noise level of 1D proton spectrum}
 \usage{
-noise.est(NMR, ppm, where = c(14.6, 14.7))
+noise.est(X, ppm, where = c(14.6, 14.7))
 }
 \arguments{
-\item{NMR}{Input matrix with rows representing spectra.}
+\item{X}{num matrix of NMR data, rows representing spectra.}
 
-\item{ppm}{ppm vector with its length equals to \code{ncol(X)}.}
+\item{ppm}{num array describing chemical shift positions, its length equals to \code{nrow(X)}.}
 
 \item{where}{Signal free region across all NMR spectra (see Details).}
 }
@@ -26,6 +26,27 @@ Estimation of noise level in NMR spectra. This is useful for quality control che
 NA
 }
 
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\examples{
+load(covid)
+noise.est(X, ppm)
 }
+\seealso{
+Other NMR: 
+\code{\link{binning}()},
+\code{\link{bline}()},
+\code{\link{get.idx}()},
+\code{\link{lw}()},
+\code{\link{matspec}()},
+\code{\link{plotload}()},
+\code{\link{ppick}()},
+\code{\link{read1d_raw}()},
+\code{\link{read1d}()},
+\code{\link{specload}()},
+\code{\link{spec}()},
+\code{\link{stocsy1d_metabom8-class}},
+\code{\link{stocsy}()}
+}
+\author{
+\email{torben.kimhofer@murdoch.edu.au}
+}
+\concept{NMR}

@@ -25,14 +25,24 @@ Model validation using Y-permutations
 NA
 }
 
+\examples{
+data(covid)
+model=opls(X, Y=an$type)
+perm=opls_perm(model)
+}
 \seealso{
-Other OPLS model validation functions: 
+Other NMR ++: 
+\code{\link{.hotellingsT2}()},
 \code{\link{cvanova}()},
-\code{\link{dmodx}()}
+\code{\link{es_cdelta}()},
+\code{\link{minmax}()},
+\code{\link{plotscores}()},
+\code{\link{pqn}()},
+\code{\link{predict_opls}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{OPLS model validation functions}
+\concept{NMR ++}

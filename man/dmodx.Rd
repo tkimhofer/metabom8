@@ -21,6 +21,11 @@ Calculating distance to the model in X space
 NA
 }
 
+\examples{
+data(covid)
+model=opls(X, Y=an$type)
+dmx=dmodx(model)
+}
 \references{
 Bylesjö M., \emph{et al.} (2002) OPLS discriminant analysis: combining the strengths of PLS-DA and SIMCA classification. \emph{Journal of Chemometrics}, 20, 341-51.
 
@@ -28,12 +33,8 @@ Wold S. (1976) Pattern recognition by means of disjoint principal components mod
 }
 \seealso{
 \code{\link{opls}}
-
-Other OPLS model validation functions: 
-\code{\link{cvanova}()},
-\code{\link{opls_perm}()}
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{OPLS model validation functions}
+\concept{NMR and other}

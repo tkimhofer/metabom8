@@ -26,19 +26,29 @@ The CV-ANOVA diagnostic formally compares the fit of two models to the same data
 
 The CV-ANOVA diagnostic formally compares the fit of two models to the same data by the size of their residuals. The function tests the residuals of the linear regression between cross-validated scores of the predictive O-PLS component and the response Y, with the variation of Y around its mean. The p value is derived from an F-test with the null hypothesis of equal residuals of the two models. For detailed information  on p value colculation see refrence further below.
 }
+\examples{
+data(covid)
+model=opls(X, Y=an$type)
+cvanova(model)
+}
 \references{
 Eriksson, L, et al. (2008) CV-ANOVA for significance testing of PLS and OPLS models. \emph{Journal of Chemometrics}, 22, 594-600.
 
 Eriksson, L, et al. (2008) CV-ANOVA for significance testing of PLS and OPLS models. \emph{Journal of Chemometrics}, 22, 594-600.
 }
 \seealso{
-Other OPLS model validation functions: 
-\code{\link{dmodx}()},
-\code{\link{opls_perm}()}
+Other NMR ++: 
+\code{\link{.hotellingsT2}()},
+\code{\link{es_cdelta}()},
+\code{\link{minmax}()},
+\code{\link{opls_perm}()},
+\code{\link{plotscores}()},
+\code{\link{pqn}()},
+\code{\link{predict_opls}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{OPLS model validation functions}
+\concept{NMR ++}

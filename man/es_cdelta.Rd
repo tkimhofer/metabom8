@@ -15,22 +15,33 @@ es_cdelta(ref, comp)
 This function returns Cliff's delta effect size ranging from -1 to 1
 }
 \description{
-Non-parametric effect size estimate used to quantify the degree to which one population's variable distribution lies to the right or left of a reference group distribution.
+Non-parametric effect size estimate used to quantify the degree to which two variable distributions overlap. Output is scaled to range between -1 to 1, with the arithmetic sign indicating if the comparator group lies to the right (higher) or left (lower) to a the reference.
 }
 \examples{
 # define two distrubutions
-ref=rnorm(100, mean=0, sd=1)
-comp=rnorm(100, mean=2, sd=1)
+a=rnorm(100, mean=0, sd=1)
+b=rnorm(100, mean=2, sd=1)
 
 # Cliff's delta
- es_cdelta(comp, ref)
- es_cdelta(ref, comp)
+ es_cdelta(ref=a, comp=b)
+ es_cdelta(ref=b, comp=a)
 }
 \references{
 Cliff, N (1993), Dominance statistics: Ordinal analyses to answer ordinal quetsions \emph{Psychological Bulletin}, 114.(3), 494-509.\url{https://doi.org/10.1037\%2F0033-2909.114.3.494}
 }
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\seealso{
+Other NMR ++: 
+\code{\link{.hotellingsT2}()},
+\code{\link{cvanova}()},
+\code{\link{minmax}()},
+\code{\link{opls_perm}()},
+\code{\link{plotscores}()},
+\code{\link{pqn}()},
+\code{\link{predict_opls}()}
 }
+\author{
+\email{torben.kimhofer@murdoch.edu.au}
+
+\email{torben.kimhofer@murdoch.edu.au}
+}
+\concept{NMR ++}

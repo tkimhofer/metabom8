@@ -12,12 +12,12 @@
 #' @details Models are fully statistically validated, currently only k-fold cross validation (CV) and class-balanced k-fold cross validation is implemented. Further extensions, e.g. Monte-Carlo CV, are work in progress. Although the algorithm accepts three and more levels as Y, model interpretation is more straightforward for pairwise group comparisons.
 #' @references Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
 #' @references Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
-#' @return This function returns an OplsMate object (S4).
-## #' @seealso \code{\link{OPLS_MetaboMate-class}} \code{\link{dmodx}} \code{\link{plotscores}} \code{\link{plotload}} \code{\link{specload}}
+#' @return This function returns an metabom8 object (S4).
 #' @examples
-#' data(iris)
-#' smod=opls(X=iris[,seq_len(4)], Y=iris$Species=='setosa')
-#' @author Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+#' data(covid)
+#' model=opls(X, Y=an$type)
+#' plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))
+#' @author \email{torben.kimhofer@murdoch.edu.au}
 #' @importFrom graphics plot
 #' @importFrom methods getSlots new representation setClass
 #' @importFrom stats cov sd var

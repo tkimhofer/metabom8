@@ -29,6 +29,12 @@ Calculation of OPLS model predictions using new data
 \details{
 Class predictions for discriminant analysis are not adjusted for unbalanced sample sizes and therefore, predictions can be biased towards the group with the largest number of samples. The list element \code{t_orth_pca} represent scores of the first principal component of a PCA model caclulated with all orthogonal components, therefore, summarises all orthogonal components into a single one. This can only be done if there are more than one orthogonal components in \code{opls_modelel}, otherwise this list element is \code{NULL}.
 }
+\examples{
+data(covid)
+model=opls(X, Y=an$type)
+preds=predict_opls(model, X)
+table(preds$Y_predicted, an$type)
+}
 \references{
 Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
 
@@ -36,7 +42,17 @@ Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tut
 }
 \seealso{
 \code{\link{opls}}
+
+Other NMR ++: 
+\code{\link{.hotellingsT2}()},
+\code{\link{cvanova}()},
+\code{\link{es_cdelta}()},
+\code{\link{minmax}()},
+\code{\link{opls_perm}()},
+\code{\link{plotscores}()},
+\code{\link{pqn}()}
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
+\concept{NMR ++}

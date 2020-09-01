@@ -26,5 +26,5 @@ Spectral calibration to a chemical shift reference. If \code{type='tsp'} calibra
 Dona, A.C., \emph{et al.} (2014) Precision high-throughput proton NMR spectroscopy of human urine, serum, and plasma for large-scale metabolic phenotyping. \emph{Analytical Chemistry}. 86.19. 9887-94.
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@gmail.com}
+\email{torben.kimhofer@gmail.com}
 }
