@@ -9,6 +9,9 @@
 \arguments{
 \item{f_list}{list, intact files system for NMR experiments. See fct checkFiles1d}
 }
+\value{
+data frame of spectrometer acquisition metadata
+}
 \description{
 Read Bruker NMR paramter files - helper function read1d
 }
@@ -17,6 +20,6 @@ NA
 }
 
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
 \keyword{internal}

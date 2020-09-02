@@ -2,32 +2,43 @@
 #' @title Calibrate 1D to glucose @ 5.233 (d)
 #' @param X num matrix, NMR matrix with spectra in rows
 #' @param ppm num vec, chemical shift matching to X
+#' @param sg_length int, nb of data points to cacl 2nd degree estimation with savitzki-golay (higher number -> smoother)
 #' @return Calibrated X matrix
 #' @author Torben Kimhofer \email{torben.kimhofer@@gmail.com}
 #' @import signal sgolayfilt
 #' @keywords internal
-.calibrate1d_gluc <- function(X, ppm) {
+.calibrate1d_gluc <- function(X, ppm, sg_length=13) {
 
   # pick peaks glucose reagion
   idx=get.idx(c(5.15, 5.3), ppm)
-  test=ppick(X[,idx], ppm[idx], type='max')
+
+  # remove broad signals and smooth
+  test <- apply(X[,idx], 1, function(x, pp=ppm[idx]) {
+    xs=sgolayfilt(x - asysm(x, lambda=100), p = 3, n=sg_length)
+   ppick(xs, pp, type='max')[[1]]
+  })
+
+  #test=ppick(X[,idx], ppm[idx], type='max')
   #browser()
   # remove peaks below noise
-  noi=noise.est(X, ppm)
+  #noi=noise.est(X, ppm)
+
+
+  #noi=0
 
   # spec(ppm[idx], X[61,idx])
   # points(test[[61]]$ppm, test[[61]]$Int)
 
   # calculate J const
-  s=lapply(seq(length(test)), function(i, nn=noi){
+  s=lapply(seq(length(test)), function(i){
 
-    ptab=test[[i]][test[[i]]$Int>nn[i]*3 & test[[i]]$Etype>0,]
+    ptab=test[[i]][test[[i]]$Etype>0,]
     ii=combn(seq(nrow(test[[i]])), 2)
     ii_d=apply(ii, 2, function(id, pp=test[[i]]$ppm){
       abs(diff(pp[id]))
     })
 
-    ii_idx=which(ii_d>0.006 & ii_d<0.007)
+    ii_idx=which(ii_d>0.006 & ii_d<0.007) # glucose doublet has J-cons of 3.85 Hz
 
     if(length(ii_idx)==1){
 

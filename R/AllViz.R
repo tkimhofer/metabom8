@@ -8,6 +8,7 @@
 #' @param name string, name of trace (only used in interactive mode)
 #' @param mode string, plot mode for interactive version: 'lines', 'lines+markers' or 'markers' (see Details)
 #' @param ... Additional parameters to be passed on to the graphics generic plot function.
+#' @return Plot showing NMR spectrum
 #' @seealso  \code{\link{matspec}} \code{\link{plot}}
 #' @aliases spec
 #' @details Low-level plotting function for a single NMR spectrum (base graphics). Interactive visualisation in mode of markers or line+markers will take longer (mode='lines' is recommended).
@@ -72,6 +73,7 @@ spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive=TRUE, name='
 #' @seealso \code{\link{spec}} \code{\link{plot}}
 #' @aliases matspec
 #' @details Low-level plotting function for NMR spectra, interactive plotting with ggplotly
+#' @return Plot showing NMR spectra
 #' @importFrom graphics matplot matpoints
 # #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRampPalette
@@ -80,7 +82,7 @@ spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive=TRUE, name='
 #' @examples
 #' data(covid)
 #' matspec(X[1:2,], ppm) # interactive
-#' matspec(X[1:2,], ppm, interactive=F) # static
+#' matspec(X[1:2,], ppm, interactive=FALSE) # static
 #' @section
 matspec <- function(X, ppm, shift = c(0, 9.5), interactive=TRUE, ...) {
   if(is.null(ppm)){ppm=as.numeric(colnames(X)); } else{
@@ -131,6 +133,7 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive=TRUE, ...) {
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales breaks_pretty
 #' @importFrom stats as.formula
+#' @return ggplot2 plot object
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @examples
 #' data(covid)
@@ -209,6 +212,7 @@ specOverlay <- function(X, ppm=NULL, shift = c(-0.01, 0.01), an = list("facet", 
 #' @importFrom ggplot2 aes_string scale_x_reverse ggtitle xlab ylab facet_grid theme_bw theme element_text geom_line scale_colour_gradientn
 #' @importFrom colorRamps matlab.like2
 #' @importFrom stats as.formula
+#' @return ggplot2 plot object
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @examples
 #' data(covid)
@@ -338,6 +342,7 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
 #' @importFrom ggplot2 ggplot geom_line scale_x_reverse ggtitle xlab ylab theme_bw ggtitle aes_string scale_colour_gradientn geom_point
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales breaks_pretty
+#' @return ggplot2 plot object
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @seealso \code{\link{plotload_cat}}
 #' @examples

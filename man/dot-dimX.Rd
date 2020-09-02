@@ -9,6 +9,9 @@
 \arguments{
 \item{X}{Array or matrix - NMR data with spectra represented in rows.}
 }
+\value{
+X as row-matrix with dimeniosn 1xlength(X)
+}
 \description{
 Transform to row vec
 }

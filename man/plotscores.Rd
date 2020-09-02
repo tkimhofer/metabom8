@@ -53,11 +53,12 @@ Other NMR ++:
 \code{\link{es_cdelta}()},
 \code{\link{minmax}()},
 \code{\link{opls_perm}()},
+\code{\link{pca}()},
 \code{\link{pqn}()},
 \code{\link{predict_opls}()}
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 
 \email{torben.kimhofer@murdoch.edu.au}
 }

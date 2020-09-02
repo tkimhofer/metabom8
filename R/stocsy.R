@@ -101,6 +101,7 @@ stocsy<-function(X, ppm, driver, plotting=TRUE, title=NULL){
 #' @family NMR functions
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_v_line scales_x_reverse scale_colour_gradientn labs theme_bw theme element_text
 #' @importFrom colorRamps matlab.like2
+#' @return ggplot2 object, stocsy plot
 #' @export
 #'@examples
 #' data(covid)

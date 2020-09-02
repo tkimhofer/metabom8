@@ -36,6 +36,7 @@ Other NMR ++:
 \code{\link{cvanova}()},
 \code{\link{es_cdelta}()},
 \code{\link{minmax}()},
+\code{\link{pca}()},
 \code{\link{plotscores}()},
 \code{\link{pqn}()},
 \code{\link{predict_opls}()}

@@ -13,6 +13,9 @@ plotStocsy(stoc_mod, shift = c(0, 10), title = NULL)
 
 \item{title}{char, plot title}
 }
+\value{
+ggplot2 object, stocsy plot
+}
 \description{
 Plot Statistical Total Correlation Spectroscopy (STOCSY)
 }

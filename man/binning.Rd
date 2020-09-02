@@ -17,14 +17,22 @@ binning(X, ppm, width = 0.001, npoints = NULL)
 \item{npoints}{num, desired number of bins per spectrum or NULL in case  \code{width} is specified}
 }
 \value{
-Numeric matrix whith spectra in rows and chemical shift bins in columns.
+Numeric matrix whith spectra in rows and chemical shift information in columns.
 }
 \description{
 NMR data binning
 Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.
 }
 \details{
-Specify either \code{width} or \code{npoints} argument - if both are fiven, \code{npoints} is used. Input argument \code{ppm} can be omitted if chemical shift infomration is encoded in the column names of the NMR matrix \code{X}.
+Specify either \code{width} or \code{npoints} argument - if both are fiven, \code{npoints} is used. Input argument \code{ppm} can be omitted if chemical shift infomration is encoded in the column names of the NMR matrix \code{X}. The returne matrix encodes chemical shift information as column names.
+}
+\examples{
+load(covid)
+Xb=binning(X, ppm, width=0.005)
+ppm_bin=as.numeric(colnames(Xb))
+par(mfrow=c(2,1))
+spec(X[1,], ppm, shift=c(5.15, 5.3), interactive=FALSE)
+spec(Xb[1,], ppm_bin,  shift=c(5.15, 5.3), interactive=FALSE)
 }
 \seealso{
 Other NMR: 

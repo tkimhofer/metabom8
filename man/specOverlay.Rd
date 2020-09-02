@@ -32,6 +32,9 @@ specOverlay(
 
 \item{...}{Additional paramters passed on to ggplot's facet function.}
 }
+\value{
+ggplot2 plot object
+}
 \description{
 Plotting overlayed NMR specra. This function is based on ggplot2, a high-level plotting R package. For large ppm ranges the computation time is relatively long, so the chemical \code{shift} range should be as small as possible. For list argument \code{an}, the first element describes the colour and must be defined (even if it is only a single value). If colour and line width are specified, then at least one list elements of \code{an} must have the same length as \code{X}.
 }
@@ -41,7 +44,7 @@ NA
 
 \examples{
 data(covid)
-panel=sample(c('A', 'B'), nrow(X), replace = T)
+panel=sample(c('A', 'B'), nrow(X), replace = TRUE)
 specOverlay(X, shift=c(5.15, 4.6), an=list(panel, Date=meta$a_DATE, AUNM=meta$a_AUNM))
 specOverlay(X, shift=c(5.15, 5.3), an=list(panel, RunOrder=as.numeric(meta$a_DATE), AUNM=meta$a_AUNM))
 }

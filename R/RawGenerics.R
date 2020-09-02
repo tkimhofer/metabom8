@@ -93,7 +93,8 @@
 #' @title Read Bruker NMR paramter files - helper function read1d
 #' @param f_list list, intact files system for NMR experiments. See fct checkFiles1d
 #' @param procs_exp num or char, which processing experiment should be extracted
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @return data frame of spectrometer acquisition parameters
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 # @importFrom base sapply
 #' @section
 #' @keywords internal

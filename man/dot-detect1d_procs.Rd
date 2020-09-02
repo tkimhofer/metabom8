@@ -15,6 +15,10 @@
 
 \item{procs_exp}{num, Topspin processing experiment ID}
 }
+\value{
+list of file descriptors: experiment folder path, folder id, procs file, acqus file, 1r file.
+list(path=p_intact, exp_no=exp_no, f_procs=f_procs, f_acqus=f_acqus, f_1r=f_1r)
+}
 \description{
 Check for intact file systems - helper function read1d!
 }
@@ -23,6 +27,6 @@ NA
 }
 
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
 \keyword{internal}

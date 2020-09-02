@@ -6,6 +6,9 @@
 \usage{
 .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
 }
+\value{
+data frame with column cor, cov, ppm
+}
 \description{
 cor / cov model scores and NMR data
 }

@@ -26,14 +26,26 @@ This function is used to perform Principal Component Analysis (PCA).
 \details{
 Other PCA methods: These rely on implementation inf the pcaMethods R package and include 'svd', 'ppca', 'svdImpute', 'robustPca', 'nlpca'. For complete list of available methods see pca function documentation of the \code{pcaMethods} package.
 }
+\examples{
+data(covid)
+model=pca(X)
+plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))
+}
 \references{
 Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
+}
+\seealso{
+Other NMR ++: 
+\code{\link{.hotellingsT2}()},
+\code{\link{cvanova}()},
+\code{\link{es_cdelta}()},
+\code{\link{minmax}()},
+\code{\link{opls_perm}()},
+\code{\link{plotscores}()},
+\code{\link{pqn}()},
+\code{\link{predict_opls}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{NMR ++
-#' @example
-data(covid)
-model=pca(X)
-plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))}
+\concept{NMR ++}

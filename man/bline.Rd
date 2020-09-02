@@ -16,6 +16,12 @@ Baseline corrected NMR matrix an with same dimension as input matrix.
 \description{
 Non-linear baseline correction for NMR spectra. This function estimates smooth and non-linear baseline trends for each spectrum based on a asymmetric least squares method. The estimated baseline is subtracted from each spectrum and the remainder is returned.
 }
+\examples{
+data(covid_raw)
+X1_bc=bline(X[1,])
+spec(X[1,], ppm, shift=c(3,4))
+spec(X1_bc[1,], ppm, shift=c(3,4), add=TRUE)
+}
 \seealso{
 \code{\link[ptw]{asysm}}
 

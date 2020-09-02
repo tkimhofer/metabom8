@@ -35,6 +35,9 @@ specload(
 
 \item{r_scale}{logical, adjust limits of color gradient to 0 and 1 (only applies for argument \code{type='stat reconstruction'})}
 }
+\value{
+ggplot2 plot object
+}
 \description{
 Plotting overlayed NMR spectra. This function is based on ggplot2, a high-level plotting R package. For high ppm ranges computation time is relatively, so the range of input argument \code{shift} should be as small as possible. List argument \code{an} must have the first element define, even if it is only a single value. If colour and line width is specified, then at least one list elements of \code{an} must have the same length as \code{X}.
 }

@@ -28,6 +28,7 @@ Other NMR ++:
 \code{\link{es_cdelta}()},
 \code{\link{minmax}()},
 \code{\link{opls_perm}()},
+\code{\link{pca}()},
 \code{\link{plotscores}()},
 \code{\link{pqn}()},
 \code{\link{predict_opls}()}

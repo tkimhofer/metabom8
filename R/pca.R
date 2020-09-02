@@ -12,7 +12,7 @@
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom pcaMethods pca
 #' @family NMR ++
-#' #' @example
+#' @examples
 #' data(covid)
 #' model=pca(X)
 #' plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))

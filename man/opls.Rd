@@ -33,7 +33,7 @@ opls(
 \item{plotting}{Logical value (TRUE or FALSE) indicating if model parameters (R2X, Q2, etc) should be visualised once the model is trained.}
 }
 \value{
-This function returns an OplsMate object (S4).
+This function returns an metabom8 object (S4).
 }
 \description{
 This function fits Orthogonal-Partial Least Squares (O-PLS) models for regression (R) or discriminant analysis (DA). The optimal number of components is determined automatically using automated stop criteria based on statistical cross validation indices.

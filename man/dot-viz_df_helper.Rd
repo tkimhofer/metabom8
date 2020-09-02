@@ -6,6 +6,9 @@
 \usage{
 .viz_df_helper(obj, pc, an, type = "p")
 }
+\value{
+list of data frame containing plotting data and number of cols of df
+}
 \description{
 Prep data.frame for plotting functions
 }

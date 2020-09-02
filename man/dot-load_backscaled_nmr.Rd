@@ -6,6 +6,9 @@
 \usage{
 .load_backscaled_nmr(mod, pc, idx, ppm)
 }
+\value{
+data frame with backscaled loadings
+}
 \description{
 Backscaling for NMR data
 }

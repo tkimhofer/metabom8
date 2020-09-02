@@ -4,12 +4,14 @@
 \alias{.calibrate1d_gluc}
 \title{Calibrate 1D to glucose @ 5.233 (d)}
 \usage{
-.calibrate1d_gluc(X, ppm)
+.calibrate1d_gluc(X, ppm, sg_length = 13)
 }
 \arguments{
 \item{X}{num matrix, NMR matrix with spectra in rows}
 
 \item{ppm}{num vec, chemical shift matching to X}
+
+\item{sg_length}{int, nb of data points to cacl 2nd degree estimation with savitzki-golay (higher number -> smoother)}
 }
 \value{
 Calibrated X matrix

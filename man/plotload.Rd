@@ -26,6 +26,9 @@ plotload(
 
 \item{r_scale}{logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)}
 }
+\value{
+ggplot2 plot object
+}
 \description{
 Visualising PCA or OPLS loadings for NMR data
 }

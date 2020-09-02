@@ -32,6 +32,9 @@ spec(
 
 \item{...}{Additional parameters to be passed on to the graphics generic plot function.}
 }
+\value{
+Plot showing NMR spectrum
+}
 \description{
 Simple plotting of a single NMR spectrum
 }
@@ -45,8 +48,8 @@ NA
 \examples{
 data(covid)
 spec(X[1,], ppm) # interactive
-spec(X[2,], ppm, add=T) # add trace
-spec(X[1,], ppm, interactive=F) # static
+spec(X[2,], ppm, add=TRUE) # add trace
+spec(X[1,], ppm, interactive=FALSE) # static
 }
 \seealso{
 \code{\link{matspec}} \code{\link{plot}}

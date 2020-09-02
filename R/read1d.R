@@ -106,7 +106,8 @@ read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_P
 
 #' @title Read Bruker NMR paramter files - helper function read1d
 #' @param f_list list, intact files system for NMR experiments. See fct checkFiles1d
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @return data frame of spectrometer acquisition metadata
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 # @importFrom base vapply
 #' @keywords internal
 #' @section
@@ -200,7 +201,9 @@ read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_P
 #' @param procs_exp num, Topspin processing experiment ID
 #' @param n_max int, Maximum number of spectra to read-in
 #' @param filter lobic, filter for intact file systems (TRUE is recommended)
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @return list of file descriptors: experiment folder path, folder id, procs file, acqus file, 1r file.
+#' list(path=p_intact, exp_no=exp_no, f_procs=f_procs, f_acqus=f_acqus, f_1r=f_1r)
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @keywords internal
 #' @section
 
@@ -290,6 +293,7 @@ read1d <- function(path,  exp_type=list(exp=c('PROF_PLASMA_CPMG128_3mm', 'PROF_P
 
 
 #' @title Calculate chemical shift axis
+#' @return num array, chemical shift for resp experiment
 #' @keywords internal
 #' @section
 .chemShift <- function(swidth, offset, si){

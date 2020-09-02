@@ -11,6 +11,9 @@
 
 \item{procs_exp}{num or char, which processing experiment should be extracted}
 }
+\value{
+data frame of spectrometer acquisition parameters
+}
 \description{
 Read Bruker NMR paramter files - helper function read1d
 }
@@ -19,6 +22,6 @@ Read Bruker NMR paramter files - helper function read1d
 }
 
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\email{torben.kimhofer@murdoch.edu.au}
 }
 \keyword{internal}

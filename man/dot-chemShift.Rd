@@ -6,6 +6,9 @@
 \usage{
 .chemShift(swidth, offset, si)
 }
+\value{
+num array, chemical shift for resp experiment
+}
 \description{
 Calculate chemical shift axis
 }

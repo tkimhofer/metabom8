@@ -15,7 +15,7 @@
 #' @references Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
 #' @references Hotelling, H. (1931) The generalization of Student’s ratio. \emph{Ann. Math. Stat.}, 2, 360-378.
 #' @return This function returns a \emph{ggplot2} object.
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom stats cov
 #' @importFrom ellipse ellipse
 #' @importFrom RColorBrewer brewer.pal

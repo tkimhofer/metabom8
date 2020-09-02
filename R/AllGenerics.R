@@ -628,6 +628,7 @@
 #' Transform to row vec
 #' @param X Array or matrix - NMR data with spectra represented in rows.
 #' @keywords internal
+#' @return X as row-matrix with dimeniosn 1xlength(X)
 #' @section
 .dimX <- function(X){
     if(is.null(ncol(X))) return(t(X))
@@ -640,6 +641,7 @@
 #' @export
 #' @param range num array(2), range of chemical shift
 #' @param ppm num array, chemical shift vector
+#' @return array int, indices of ppm for shift range
 #' @export
 #' @aliases get.idx
 #' @author \email{tkimhofer@@gmail.com}
@@ -725,7 +727,7 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
         stop("No or too few data points for noise estimation!")
     }
     noise <- apply(X[, idx], 1, function(x) {
-        x_driftcorrected <- x - asysm(x, lambda = 1e+10)
+        x_driftcorrected <- x - asysm(x, lambda = 10000)
         noi <- (max(x_driftcorrected) - min(x_driftcorrected))
         return(noi)
     })
@@ -737,6 +739,7 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 #' @title Prep data.frame for plotting functions
 # @importFrom ptw asysm
 #' @keywords internal
+#' @return list of data frame containing plotting data and number of cols of df
 #' @section
 .viz_df_helper=function(obj, pc, an, type='p'){
 
@@ -881,6 +884,7 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 
 
 #' @title Backscaling for NMR data
+#' @return data frame with backscaled loadings
 #' @keywords internal
 #' @section
 .load_backscaled_nmr=function(mod, pc, idx, ppm){
@@ -902,6 +906,7 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 
 #' @title cor / cov model scores and NMR data
 #' @keywords internal
+#' @return data frame with column cor, cov, ppm
 #' @section
 .load_stat_reconstr_nmr=function(mod, pc, X, idx, ppm){
     t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')

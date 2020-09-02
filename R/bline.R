@@ -7,6 +7,11 @@
 #' @importFrom ptw asysm
 #' @seealso \code{\link[ptw]{asysm}}
 #' @family NMR
+#' @examples
+#' data(covid_raw)
+#' X1_bc=bline(X[1,])
+#' spec(X[1,], ppm, shift=c(3,4))
+#' spec(X1_bc[1,], ppm, shift=c(3,4), add=TRUE)
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 bline <- function(X) {
   X<-.dimX(X)

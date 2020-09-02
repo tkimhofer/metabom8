@@ -11,6 +11,9 @@ get.idx(range = c(1, 5), ppm)
 
 \item{ppm}{num array, chemical shift vector}
 }
+\value{
+array int, indices of ppm for shift range
+}
 \description{
 Return indices of chemical shift array mapping to a specific chemical shift range
 }

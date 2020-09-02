@@ -17,6 +17,9 @@ matspec(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...)
 
 \item{...}{Additional parameters to be passed on to the graphics generic plot function.}
 }
+\value{
+Plot showing NMR spectra
+}
 \description{
 Simple plotting of multiple NMR spectra overlayed
 }
@@ -30,7 +33,7 @@ NA
 \examples{
 data(covid)
 matspec(X[1:2,], ppm) # interactive
-matspec(X[1:2,], ppm, interactive=F) # static
+matspec(X[1:2,], ppm, interactive=FALSE) # static
 }
 \seealso{
 \code{\link{spec}} \code{\link{plot}}
