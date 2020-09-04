@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Equidistant binning of spectra — binning • metabom8</title>
+<title>NMR data binning
+Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins. — binning • metabom8</title>
 
 
 <!-- jquery -->
@@ -35,8 +36,10 @@
 
 
 
-<meta property="og:title" content="Equidistant binning of spectra — binning" />
-<meta property="og:description" content="Equidistant binning of spectra" />
+<meta property="og:title" content="NMR data binning
+Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins. — binning" />
+<meta property="og:description" content="NMR data binning
+Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,13 +118,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Equidistant binning of spectra</h1>
+    <h1>NMR data binning
+Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.</h1>
     
     <div class="hidden name"><code>binning.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Equidistant binning of spectra</p>
+    <p>NMR data binning
+Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.</p>
     </div>
 
     <pre class="usage"><span class='fu'>binning</span>(<span class='no'>X</span>, <span class='no'>ppm</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>0.001</span>, <span class='kw'>npoints</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
@@ -131,32 +136,60 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>NMR matrix (spectra in rows)</p></td>
+      <td><p>num matrix, NMR data with spectra in rows</p></td>
     </tr>
     <tr>
       <th>ppm</th>
-      <td><p>num ppm vector</p></td>
+      <td><p>num array, chemical shift positions, length matches to columns in X</p></td>
     </tr>
     <tr>
       <th>width</th>
-      <td><p>num, bin size</p></td>
+      <td><p>num, bin size in ppm or NULL in case <code>npoints</code> is specified</p></td>
     </tr>
     <tr>
       <th>npoints</th>
-      <td><p>num, desired number of bins per spectrum</p></td>
+      <td><p>num, desired number of bins per spectrum or NULL in case  <code>width</code> is specified</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Use either width or npoints argument. Function returns is a matrix (rows = spectra, columns=bins).</p>
+    <p>Numeric matrix whith spectra in rows and chemical shift information in columns.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>Specify either <code>width</code> or <code>npoints</code> argument - if both are fiven, <code>npoints</code> is used. Input argument <code>ppm</code> can be omitted if chemical shift infomration is encoded in the column names of the NMR matrix <code>X</code>. The returne matrix encodes chemical shift information as column names.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>Other NMR: 
+<code><a href='bline.html'>bline</a>()</code>,
+<code><a href='get.idx.html'>get.idx</a>()</code>,
+<code><a href='lw.html'>lw</a>()</code>,
+<code><a href='matspec.html'>matspec</a>()</code>,
+<code><a href='noise.est.html'>noise.est</a>()</code>,
+<code><a href='plotload.html'>plotload</a>()</code>,
+<code><a href='ppick.html'>ppick</a>()</code>,
+<code><a href='read1d_raw.html'>read1d_raw</a>()</code>,
+<code><a href='read1d.html'>read1d</a>()</code>,
+<code><a href='specload.html'>specload</a>()</code>,
+<code><a href='spec.html'>spec</a>()</code>,
+<code><a href='stocsy1d_metabom8-class.html'>stocsy1d_metabom8-class</a></code>,
+<code><a href='stocsy.html'>stocsy</a>()</code></p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/load.html'>load</a></span>(<span class='no'>covid</span>)</div><div class='output co'>#&gt; <span class='error'>Error in load(covid): object 'covid' not found</span></div><div class='input'><span class='no'>Xb</span><span class='kw'>=</span><span class='fu'>binning</span>(<span class='no'>X</span>, <span class='no'>ppm</span>, <span class='kw'>width</span><span class='kw'>=</span><span class='fl'>0.005</span>)
+<span class='no'>ppm_bin</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>Xb</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>1</span>))
+<span class='fu'><a href='spec.html'>spec</a></span>(<span class='no'>X</span>[<span class='fl'>1</span>,], <span class='no'>ppm</span>, <span class='kw'>shift</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.15</span>, <span class='fl'>5.3</span>), <span class='kw'>interactive</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
+<span class='fu'><a href='spec.html'>spec</a></span>(<span class='no'>Xb</span>[<span class='fl'>1</span>,], <span class='no'>ppm_bin</span>,  <span class='kw'>shift</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.15</span>, <span class='fl'>5.3</span>), <span class='kw'>interactive</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='img'><img src='binning-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>

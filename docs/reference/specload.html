@@ -173,10 +173,13 @@
     </tr>
     <tr>
       <th>r_scale</th>
-      <td><p>logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)</p></td>
+      <td><p>logical, adjust limits of color gradient to 0 and 1 (only applies for argument <code>type='stat reconstruction'</code>)</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>ggplot2 plot object</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>OPLS: If <code>type='Statistical reconstruction'</code> the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If <code>type='Backscaled'</code> the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical reconstruction.</p>
@@ -185,23 +188,39 @@
     <p>NA</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other dataviz: 
-<code><a href='plotload_cat.html'>plotload_cat</a>()</code>,
-<code><a href='plotload.html'>plotload</a>()</code></p></div>
+    <div class='dont-index'><p>Other NMR: 
+<code><a href='binning.html'>binning</a>()</code>,
+<code><a href='bline.html'>bline</a>()</code>,
+<code><a href='get.idx.html'>get.idx</a>()</code>,
+<code><a href='lw.html'>lw</a>()</code>,
+<code><a href='matspec.html'>matspec</a>()</code>,
+<code><a href='noise.est.html'>noise.est</a>()</code>,
+<code><a href='plotload.html'>plotload</a>()</code>,
+<code><a href='ppick.html'>ppick</a>()</code>,
+<code><a href='read1d_raw.html'>read1d_raw</a>()</code>,
+<code><a href='read1d.html'>read1d</a>()</code>,
+<code><a href='spec.html'>spec</a>()</code>,
+<code><a href='stocsy1d_metabom8-class.html'>stocsy1d_metabom8-class</a></code>,
+<code><a href='stocsy.html'>stocsy</a>()</code></p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>covid</span>)
+<span class='no'>model</span><span class='kw'>=</span><span class='fu'><a href='pca.html'>pca</a></span>(<span class='no'>X</span>)</div><div class='output co'>#&gt; <span class='message'>Too many number of components, setting pc to 2</span></div><div class='input'><span class='fu'>specload</span>(<span class='no'>model</span>, <span class='kw'>shift</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>), <span class='kw'>an</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>an</span>$<span class='no'>type</span>), <span class='kw'>pc</span><span class='kw'>=</span><span class='fl'>1</span>, <span class='kw'>alp</span><span class='kw'>=</span><span class='fl'>0.8</span>)</div><div class='img'><img src='specload-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#details">Details</a></li>
       <li><a href="#"></a></li>
       <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
     <p>Torben Kimhofer <a href='mailto:tkimhofer@gmail.com'>tkimhofer@gmail.com</a></p>
-<p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+<p><a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
   </div>
 </div>
 

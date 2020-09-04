@@ -143,25 +143,28 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>ggplot2 object, stocsy plot</p>
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
 
     <p>NA</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other metID functions: 
-<code><a href='stocsy.html'>stocsy</a>()</code></p></div>
-
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>covid</span>)
+<span class='no'>stcy_glucose</span><span class='kw'>=</span><span class='fu'><a href='stocsy.html'>stocsy</a></span>(<span class='no'>X</span>, <span class='no'>ppm</span>, <span class='kw'>driver</span><span class='kw'>=</span><span class='fl'>5.233</span>)</div><div class='img'><img src='plotStocsy-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plotStocsy</span>(<span class='no'>stcy_glucose</span>, <span class='kw'>shift</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.15</span>, <span class='fl'>5.30</span>), <span class='kw'>title</span><span class='kw'>=</span><span class='st'>'Alpha-anomeric proton of glucose (doublet)'</span>)</div><div class='img'><img src='plotStocsy-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span>(<span class='no'>speaks</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>ppm</span>, <span class='no'>speaks</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>Int</span>, <span class='kw'>col</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>speaks</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>type</span>))</div><div class='output co'>#&gt; <span class='error'>Error in points(speaks[[1]]$ppm, speaks[[1]]$Int, col = factor(speaks[[1]]$type)): object 'speaks' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#"></a></li>
-      <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+    <p><a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
   </div>
 </div>
 

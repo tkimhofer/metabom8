@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Find indices in ppm vector for respective chemical shift range — get.idx • metabom8</title>
+<title>Return indices of chemical shift array mapping to a specific chemical shift range — get.idx • metabom8</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Find indices in ppm vector for respective chemical shift range — get.idx" />
-<meta property="og:description" content="Find indices in ppm vector for respective chemical shift range" />
+<meta property="og:title" content="Return indices of chemical shift array mapping to a specific chemical shift range — get.idx" />
+<meta property="og:description" content="Return indices of chemical shift array mapping to a specific chemical shift range" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,13 +115,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Find indices in ppm vector for respective chemical shift range</h1>
+    <h1>Return indices of chemical shift array mapping to a specific chemical shift range</h1>
     
     <div class="hidden name"><code>get.idx.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Find indices in ppm vector for respective chemical shift range</p>
+    <p>Return indices of chemical shift array mapping to a specific chemical shift range</p>
     </div>
 
     <pre class="usage"><span class='fu'>get.idx</span>(<span class='kw'>range</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>5</span>), <span class='no'>ppm</span>)</pre>
@@ -131,28 +131,54 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>range</th>
-      <td><p>num, range chemical shift (in ppm vector)</p></td>
+      <td><p>num array(2), range of chemical shift</p></td>
     </tr>
     <tr>
       <th>ppm</th>
-      <td><p>num, ppm vector</p></td>
+      <td><p>num array, chemical shift vector</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>array int, indices of ppm for shift range</p>
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
 
     <p>NA</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
+    <div class='dont-index'><p>Other NMR: 
+<code><a href='binning.html'>binning</a>()</code>,
+<code><a href='bline.html'>bline</a>()</code>,
+<code><a href='lw.html'>lw</a>()</code>,
+<code><a href='matspec.html'>matspec</a>()</code>,
+<code><a href='noise.est.html'>noise.est</a>()</code>,
+<code><a href='plotload.html'>plotload</a>()</code>,
+<code><a href='ppick.html'>ppick</a>()</code>,
+<code><a href='read1d_raw.html'>read1d_raw</a>()</code>,
+<code><a href='read1d.html'>read1d</a>()</code>,
+<code><a href='specload.html'>specload</a>()</code>,
+<code><a href='spec.html'>spec</a>()</code>,
+<code><a href='stocsy1d_metabom8-class.html'>stocsy1d_metabom8-class</a></code>,
+<code><a href='stocsy.html'>stocsy</a>()</code></p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/load.html'>load</a></span>(<span class='no'>covid</span>)</div><div class='output co'>#&gt; <span class='error'>Error in load(covid): object 'covid' not found</span></div><div class='input'><span class='no'>idx</span><span class='kw'>=</span><span class='fu'>get.idx</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>0.1</span>, <span class='fl'>0.1</span>), <span class='no'>ppm</span>)
+<span class='no'>ppm</span>[<span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span>(<span class='no'>idx</span>)]</div><div class='output co'>#&gt; [1]  0.09999952 -0.09983441</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>ppm</span>[<span class='no'>idx</span>], <span class='no'>X</span>[<span class='fl'>1</span>,<span class='no'>idx</span>], <span class='kw'>type</span><span class='kw'>=</span><span class='st'>'l'</span>)</div><div class='img'><img src='get.idx-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='lw.html'>lw</a></span>(<span class='no'>X</span>, <span class='no'>ppm</span>) * <span class='no'>meta</span>$<span class='no'>a_SFO1</span> <span class='co'># in Hz</span></div><div class='output co'>#&gt;         1         2 
+#&gt; 0.1320468 0.3181128 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#"></a></li>
+      <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Torben Kimhofer <a href='mailto:tkimhofer@gmail.com'>tkimhofer@gmail.com</a></p>
+    <p><a href='mailto:tkimhofer@gmail.com'>tkimhofer@gmail.com</a></p>
   </div>
 </div>
 

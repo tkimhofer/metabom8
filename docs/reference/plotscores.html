@@ -176,7 +176,21 @@
 
     <p>Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). <em>Journal of Chemometrics</em>, 16.3, 119-128.</p>
 <p>Hotelling, H. (1931) The generalization of Student’s ratio. <em>Ann. Math. Stat.</em>, 2, 360-378.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
+    <div class='dont-index'><p>Other NMR ++: 
+<code><a href='dot-hotellingsT2.html'>.hotellingsT2</a>()</code>,
+<code><a href='cvanova.html'>cvanova</a>()</code>,
+<code><a href='es_cdelta.html'>es_cdelta</a>()</code>,
+<code><a href='minmax.html'>minmax</a>()</code>,
+<code><a href='opls_perm.html'>opls_perm</a>()</code>,
+<code><a href='pca.html'>pca</a>()</code>,
+<code><a href='pqn.html'>pqn</a>()</code>,
+<code><a href='predict_opls.html'>predict_opls</a>()</code></p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>covid</span>)
+<span class='no'>model</span><span class='kw'>=</span><span class='fu'><a href='pca.html'>pca</a></span>(<span class='no'>X</span>)</div><div class='output co'>#&gt; <span class='message'>Too many number of components, setting pc to 2</span></div><div class='input'><span class='fu'>plotscores</span>(<span class='no'>model</span>, <span class='kw'>an</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>Class</span><span class='kw'>=</span><span class='no'>an</span>$<span class='no'>type</span>, <span class='kw'>Clinic</span><span class='kw'>=</span><span class='no'>an</span>$<span class='no'>hospital</span>, <span class='kw'>id</span><span class='kw'>=</span><span class='fl'>1</span>:<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>an</span>)), <span class='kw'>pc</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>))</div><div class='output co'>#&gt; <span class='error'>Error in names(x) &lt;- value: 'names' attribute [3] must be the same length as the vector [0]</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -186,11 +200,13 @@
       <li><a href="#details">Details</a></li>
       <li><a href="#"></a></li>
       <li><a href="#references">References</a></li>
+      <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
-<p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+    <p><a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+<p><a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
   </div>
 </div>
 

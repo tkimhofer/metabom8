@@ -124,7 +124,7 @@
     <p>Calibrate 1D to glucose @ 5.233 (d)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.calibrate1d_gluc</span>(<span class='no'>X</span>, <span class='no'>ppm</span>)</pre>
+    <pre class="usage"><span class='fu'>.calibrate1d_gluc</span>(<span class='no'>X</span>, <span class='no'>ppm</span>, <span class='kw'>sg_length</span> <span class='kw'>=</span> <span class='fl'>13</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,6 +136,10 @@
     <tr>
       <th>ppm</th>
       <td><p>num vec, chemical shift matching to X</p></td>
+    </tr>
+    <tr>
+      <th>sg_length</th>
+      <td><p>int, nb of data points to cacl 2nd degree estimation with savitzki-golay (higher number -&gt; smoother)</p></td>
     </tr>
     </table>
 

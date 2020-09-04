@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="Cliff's delta (effect size) — es_cdelta" />
-<meta property="og:description" content="Non-parametric effect size estimate used to quantify the degree to which one population's variable distribution lies to the right or left of a reference group distribution." />
+<meta property="og:description" content="Non-parametric effect size estimate used to quantify the degree to which two variable distributions overlap. Output is scaled to range between -1 to 1, with the arithmetic sign indicating if the comparator group lies to the right (higher) or left (lower) to a the reference." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -121,7 +121,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Non-parametric effect size estimate used to quantify the degree to which one population's variable distribution lies to the right or left of a reference group distribution.</p>
+    <p>Non-parametric effect size estimate used to quantify the degree to which two variable distributions overlap. Output is scaled to range between -1 to 1, with the arithmetic sign indicating if the comparator group lies to the right (higher) or left (lower) to a the reference.</p>
     </div>
 
     <pre class="usage"><span class='fu'>es_cdelta</span>(<span class='no'>ref</span>, <span class='no'>comp</span>)</pre>
@@ -145,14 +145,25 @@
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Cliff, N (1993), Dominance statistics: Ordinal analyses to answer ordinal quetsions <em>Psychological Bulletin</em>, 114.(3), 494-509.<a href='https://doi.org/10.1037%2F0033-2909.114.3.494'>https://doi.org/10.1037%2F0033-2909.114.3.494</a></p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>Other NMR ++: 
+<code><a href='dot-hotellingsT2.html'>.hotellingsT2</a>()</code>,
+<code><a href='cvanova.html'>cvanova</a>()</code>,
+<code><a href='minmax.html'>minmax</a>()</code>,
+<code><a href='opls_perm.html'>opls_perm</a>()</code>,
+<code><a href='pca.html'>pca</a>()</code>,
+<code><a href='plotscores.html'>plotscores</a>()</code>,
+<code><a href='pqn.html'>pqn</a>()</code>,
+<code><a href='predict_opls.html'>predict_opls</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># define two distrubutions</span>
-<span class='no'>ref</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>, <span class='kw'>mean</span><span class='kw'>=</span><span class='fl'>0</span>, <span class='kw'>sd</span><span class='kw'>=</span><span class='fl'>1</span>)
-<span class='no'>comp</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>, <span class='kw'>mean</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>sd</span><span class='kw'>=</span><span class='fl'>1</span>)
+<span class='no'>a</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>, <span class='kw'>mean</span><span class='kw'>=</span><span class='fl'>0</span>, <span class='kw'>sd</span><span class='kw'>=</span><span class='fl'>1</span>)
+<span class='no'>b</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>, <span class='kw'>mean</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>sd</span><span class='kw'>=</span><span class='fl'>1</span>)
 
 <span class='co'># Cliff's delta</span>
- <span class='fu'>es_cdelta</span>(<span class='no'>comp</span>, <span class='no'>ref</span>)</div><div class='output co'>#&gt; [1] 0.8494</div><div class='input'> <span class='fu'>es_cdelta</span>(<span class='no'>ref</span>, <span class='no'>comp</span>)</div><div class='output co'>#&gt; [1] -0.8494</div></pre>
+ <span class='fu'>es_cdelta</span>(<span class='kw'>ref</span><span class='kw'>=</span><span class='no'>a</span>, <span class='kw'>comp</span><span class='kw'>=</span><span class='no'>b</span>)</div><div class='output co'>#&gt; [1] 0.8494</div><div class='input'> <span class='fu'>es_cdelta</span>(<span class='kw'>ref</span><span class='kw'>=</span><span class='no'>b</span>, <span class='kw'>comp</span><span class='kw'>=</span><span class='no'>a</span>)</div><div class='output co'>#&gt; [1] -0.8494</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -160,12 +171,13 @@
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#references">References</a></li>
+      <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
-<p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+    <p><a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+<p><a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
   </div>
 </div>
 

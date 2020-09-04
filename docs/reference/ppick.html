@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Backscaling for NMR data — .load_backscaled_nmr • metabom8</title>
+<title>Find local extrema in NMR spectra (peak picking) — ppick • metabom8</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Backscaling for NMR data — .load_backscaled_nmr" />
-<meta property="og:description" content="Backscaling for NMR data" />
+<meta property="og:title" content="Find local extrema in NMR spectra (peak picking) — ppick" />
+<meta property="og:description" content="Find local extrema in NMR spectra (peak picking)" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,33 +115,85 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Backscaling for NMR data</h1>
+    <h1>Find local extrema in NMR spectra (peak picking)</h1>
     
-    <div class="hidden name"><code>dot-load_backscaled_nmr.Rd</code></div>
+    <div class="hidden name"><code>ppick.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Backscaling for NMR data</p>
+    <p>Find local extrema in NMR spectra (peak picking)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.load_backscaled_nmr</span>(<span class='no'>mod</span>, <span class='no'>pc</span>, <span class='no'>idx</span>, <span class='no'>ppm</span>)</pre>
+    <pre class="usage"><span class='fu'>ppick</span>(<span class='no'>X</span>, <span class='no'>ppm</span>, <span class='kw'>fil_p</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>fil_n</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"max"</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>X</th>
+      <td><p>num matrix, NMR matrix with spectra in rows</p></td>
+    </tr>
+    <tr>
+      <th>ppm</th>
+      <td><p>num vec, chemical shift matching to X</p></td>
+    </tr>
+    <tr>
+      <th>fil_p, </th>
+      <td><p>SG filter order</p></td>
+    </tr>
+    <tr>
+      <th>fil_n</th>
+      <td><p>num, SG filter length (must be odd)</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>str, return local extrema: maxima (<code>max</code>), minima (<code>min</code>), or <code>both</code></p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame with backscaled loadings</p>
-    <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
+    <p>List of data frames for each spectrum. Each data frame has four columns: index in X col/ppm, ppm value, signal intensity and local extrema type (+1 for local min, -1 for local max). Number of rows match to all local extrema found within a spectrum.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>NA</p>
+    <p>Function first smoothes the spectrum to reduce extrema related to noise fluctuations using a Savitzki-Golay (SG) filter. Local extrema are identified according to sign change of adjacent points.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
+    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/signal/man/sgolayfilt.html'>sgolayfilt</a></code></p>
+<p>Other NMR: 
+<code><a href='binning.html'>binning</a>()</code>,
+<code><a href='bline.html'>bline</a>()</code>,
+<code><a href='get.idx.html'>get.idx</a>()</code>,
+<code><a href='lw.html'>lw</a>()</code>,
+<code><a href='matspec.html'>matspec</a>()</code>,
+<code><a href='noise.est.html'>noise.est</a>()</code>,
+<code><a href='plotload.html'>plotload</a>()</code>,
+<code><a href='read1d_raw.html'>read1d_raw</a>()</code>,
+<code><a href='read1d.html'>read1d</a>()</code>,
+<code><a href='specload.html'>specload</a>()</code>,
+<code><a href='spec.html'>spec</a>()</code>,
+<code><a href='stocsy1d_metabom8-class.html'>stocsy1d_metabom8-class</a></code>,
+<code><a href='stocsy.html'>stocsy</a>()</code></p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>covid</span>)
+<span class='no'>peaks</span><span class='kw'>=</span><span class='fu'>ppick</span>(<span class='no'>X</span>, <span class='no'>ppm</span>)
+<span class='co'># Plotting first spectrum in reagion 3.0 to 3.15 ppm</span>
+<span class='fu'><a href='spec.html'>spec</a></span>(<span class='no'>X</span>[<span class='fl'>1</span>,], <span class='no'>ppm</span>, <span class='kw'>shift</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4.2</span>, <span class='fl'>5.3</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span>(<span class='no'>speaks</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>ppm</span>, <span class='no'>speaks</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>Int</span>, <span class='kw'>col</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>speaks</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>type</span>))</div><div class='output co'>#&gt; <span class='error'>Error in points(speaks[[1]]$ppm, speaks[[1]]$Int, col = factor(speaks[[1]]$type)): object 'speaks' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
-      <li><a href="#"></a></li>
+      <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
+    <h2>Author</h2>
+    <p><a href='mailto:torben.kimhofer@gmail.com'>torben.kimhofer@gmail.com</a></p>
   </div>
 </div>
 

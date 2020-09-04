@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read-in FIDs and process spectra — read1d_raw • metabom8</title>
+<title>Read-in FIDs and process to spectra — read1d_raw • metabom8</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Read-in FIDs and process spectra — read1d_raw" />
-<meta property="og:description" content="Read-in FIDs and process spectra" />
+<meta property="og:title" content="Read-in FIDs and process to spectra — read1d_raw" />
+<meta property="og:description" content="Read-in FIDs and process to spectra" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,19 +115,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read-in FIDs and process spectra</h1>
+    <h1>Read-in FIDs and process to spectra</h1>
     
     <div class="hidden name"><code>read1d_raw.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Read-in FIDs and process spectra</p>
+    <p>Read-in FIDs and process to spectra</p>
     </div>
 
     <pre class="usage"><span class='fu'>read1d_raw</span>(
   <span class='no'>path</span>,
-  <span class='kw'>exp_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>exp</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PROF_PLASMA_CPMG128_3mm"</span>, <span class='st'>"PROF_PLASMA_NOESY128_3mm"</span>),
-    <span class='kw'>pulprog</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"noesygppr1d"</span>)),
+  <span class='kw'>exp_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>exp</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PROF_PLASMA_CPMG128_3mm"</span>), <span class='kw'>pulprog</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"noesygppr1d"</span>)),
   <span class='kw'>apodisation</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>fun</span> <span class='kw'>=</span> <span class='st'>"exponential"</span>, <span class='kw'>lb</span> <span class='kw'>=</span> <span class='fl'>0.2</span>),
   <span class='kw'>zerofil</span> <span class='kw'>=</span> <span class='fl'>1L</span>,
   <span class='kw'>return</span> <span class='kw'>=</span> <span class='st'>"absorption"</span>,
@@ -184,10 +183,10 @@
 <li><p>X, num matrix:  NMR data, spectra in rows</p></li>
 <li><p>ppm, num array - chemical shift positions, length matches to columns in X</p></li>
 <li><p>meta, data.frame - spectrometer metadata as extracted from individual <em>acqus</em> files, row-matched to X</p></li>
-</ul><p>Objects in the workspacce with the same variable names will be overwritten.</p>
+</ul><p>Objects in the R environment with the same variable names will be overwritten.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>In the first step, read-in are FIDs generated with experimental condition(s) specified with the exp_type argument. This represents a list with each element representing paramter condition, named according to spectrometer paramters liste in <em>acqus</em> file. For example, to read in all standard 1D NMR experiments use <code>exp_type=list(exp='noesygppr1d')</code>. More than one argument can be provided as list element.</p>
+    <p>In the first step, read-in are FIDs generated with experimental condition(s) specified with the exp_type argument. This represents a list with each element representing a parameter condition, named according to spectrometer parameters listed in <em>acqus</em> file. For example, to read standard 1D NMR experiments use <code>exp_type=list(exp='noesygppr1d')</code>. More than one argument can be provided as list element.</p>
 <p>The apodisation argument is a named list specifying the function name in element <em>fun</em> and functions-specific paramter arguments. There are the following different apodisation functions and arguments:
 #' @return</p><ul>
 <li><p>exponential, arguments: lb (line broadening factor)</p></li>
@@ -204,11 +203,23 @@
 
     <div class='dont-index'><p><code><a href='read1d.html'>Import TopSpin processed spectra</a></code></p>
 <p>Other NMR: 
-<code><a href='read1d.html'>read1d</a>()</code></p></div>
+<code><a href='binning.html'>binning</a>()</code>,
+<code><a href='bline.html'>bline</a>()</code>,
+<code><a href='get.idx.html'>get.idx</a>()</code>,
+<code><a href='lw.html'>lw</a>()</code>,
+<code><a href='matspec.html'>matspec</a>()</code>,
+<code><a href='noise.est.html'>noise.est</a>()</code>,
+<code><a href='plotload.html'>plotload</a>()</code>,
+<code><a href='ppick.html'>ppick</a>()</code>,
+<code><a href='read1d.html'>read1d</a>()</code>,
+<code><a href='specload.html'>specload</a>()</code>,
+<code><a href='spec.html'>spec</a>()</code>,
+<code><a href='stocsy1d_metabom8-class.html'>stocsy1d_metabom8-class</a></code>,
+<code><a href='stocsy.html'>stocsy</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>path</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/"</span>,  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"metabom8"</span>)
-<span class='fu'>read1d_raw</span>(<span class='no'>path</span>,  <span class='kw'>exp_type</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>au</span><span class='kw'>=</span><span class='st'>'au_ivdr_noesy'</span>, <span class='kw'>pulprog</span><span class='kw'>=</span><span class='st'>'noesygppr1d'</span>), <span class='kw'>apodisation</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>fun</span><span class='kw'>=</span><span class='st'>'exponential'</span>, <span class='kw'>lb</span><span class='kw'>=</span><span class='fl'>0.2</span>), <span class='kw'>n_max</span><span class='kw'>=</span><span class='fl'>3</span>)</div><div class='output co'>#&gt; <span class='message'>Reached n_max - not all spectra read-in.</span></div><div class='output co'>#&gt; <span class='message'>Experiment filter au not in NMR acquisition list. Using remaining arguments to filter : pulprog</span></div><div class='output co'>#&gt; <span class='error'>Error in .filterExp_files(pars, exp_type, f_list): No files found that match the specified parameter specification levels.</span></div></pre>
+<span class='fu'>read1d_raw</span>(<span class='no'>path</span>,  <span class='kw'>exp_type</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>exp</span><span class='kw'>=</span><span class='st'>'PROF_PLASMA_NOESY'</span>), <span class='kw'>apodisation</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>fun</span><span class='kw'>=</span><span class='st'>'exponential'</span>, <span class='kw'>lb</span><span class='kw'>=</span><span class='fl'>0.2</span>), <span class='kw'>n_max</span><span class='kw'>=</span><span class='fl'>3</span>)</div><div class='output co'>#&gt; <span class='message'>Reading 2 experiments.</span></div><div class='output co'>#&gt; <span class='message'>Apd fct mismatch in length w spec</span></div><div class='output co'>#&gt; <span class='warning'>Warning: longer object length is not a multiple of shorter object length</span></div><div class='output co'>#&gt; <span class='message'>Apd fct mismatch in length w spec</span></div><div class='output co'>#&gt; <span class='warning'>Warning: longer object length is not a multiple of shorter object length</span></div><div class='output co'>#&gt; <span class='message'>Returning spectral varaibles X, ppm, meta</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -222,7 +233,7 @@
     </ul>
 
     <h2>Author</h2>
-    <p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+    <p><a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
   </div>
 </div>
 

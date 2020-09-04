@@ -81,8 +81,9 @@
   }, FUN.VALUE = pars[,1])
   idx_filt=apply(fmat==1, 1, all)
   if(!any(idx_filt)){stop('No files found that match the specified parameter specification levels.')}
-  f_list[[1]]=f_list[[1]][idx_filt]
-  f_list[[2]]=f_list[[2]][idx_filt]
+  f_list=lapply(f_list, function(x){
+    x[idx_filt]
+    })
   pars=pars[idx_filt,]
 
   return(list(f_list, pars))

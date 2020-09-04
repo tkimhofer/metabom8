@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read-in 1D NMR spectra — read1d • metabom8</title>
+<title>Import 1D NMR spectra — read1d • metabom8</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Read-in 1D NMR spectra — read1d" />
-<meta property="og:description" content="Read-in 1D NMR spectra" />
+<meta property="og:title" content="Import 1D NMR spectra — read1d" />
+<meta property="og:description" content="Import 1D NMR spectra" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,13 +115,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read-in 1D NMR spectra</h1>
+    <h1>Import 1D NMR spectra</h1>
     
     <div class="hidden name"><code>read1d.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Read-in 1D NMR spectra</p>
+    <p>Import 1D NMR spectra</p>
     </div>
 
     <pre class="usage"><span class='fu'>read1d</span>(
@@ -168,10 +168,10 @@
 <li><p>X, num matrix:  NMR data, spectra in rows</p></li>
 <li><p>ppm, num array - chemical shift positions, length matches to columns in X</p></li>
 <li><p>meta, data.frame - spectrometer metadata as extracted from individual <em>acqus</em> files, row-matched to X</p></li>
-</ul><p>Objects in the workspacce with the same variable names will be overwritten.</p>
+</ul><p>Objects in the R environment with the same variable names will be overwritten.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function imports TopSpin processed NMR spectra as well as spectrometer and processing parameters found in files <em>acqus</em> and <em>procs</em>. Experiments can be filtered according to acquisitoin variables using the <code>exp_type</code> argument: For example, to read in all standard 1D NMR experiments use <code>exp_type=list(exp='noesygppr1d')</code>. More than one argument can be provided as list element.</p>
+    <p>This function imports TopSpin processed NMR spectra as well as spectrometer and processing parameters found in files <em>acqus</em> and <em>procs</em>. Experiments can be filtered according to data acquisition variables using the <code>exp_type</code> argument: For example, to read standard 1D NMR experiments use <code>exp_type=list(exp='noesygppr1d')</code>. More than one argument can be provided as list element.</p>
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
 
     <p>NA</p>
@@ -179,7 +179,19 @@
 
     <div class='dont-index'><p><code><a href='read1d_raw.html'>Process raw FIDs</a></code></p>
 <p>Other NMR: 
-<code><a href='read1d_raw.html'>read1d_raw</a>()</code></p></div>
+<code><a href='binning.html'>binning</a>()</code>,
+<code><a href='bline.html'>bline</a>()</code>,
+<code><a href='get.idx.html'>get.idx</a>()</code>,
+<code><a href='lw.html'>lw</a>()</code>,
+<code><a href='matspec.html'>matspec</a>()</code>,
+<code><a href='noise.est.html'>noise.est</a>()</code>,
+<code><a href='plotload.html'>plotload</a>()</code>,
+<code><a href='ppick.html'>ppick</a>()</code>,
+<code><a href='read1d_raw.html'>read1d_raw</a>()</code>,
+<code><a href='specload.html'>specload</a>()</code>,
+<code><a href='spec.html'>spec</a>()</code>,
+<code><a href='stocsy1d_metabom8-class.html'>stocsy1d_metabom8-class</a></code>,
+<code><a href='stocsy.html'>stocsy</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>path</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/"</span>,  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"metabom8"</span>)

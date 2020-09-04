@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plotting PCA or OPLS loadings — plotload • metabom8</title>
+<title>Visualising PCA or OPLS loadings for NMR data — plotload • metabom8</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Plotting PCA or OPLS loadings — plotload" />
-<meta property="og:description" content="Plotting PCA or OPLS loadings" />
+<meta property="og:title" content="Visualising PCA or OPLS loadings for NMR data — plotload" />
+<meta property="og:description" content="Visualising PCA or OPLS loadings for NMR data" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,13 +115,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plotting PCA or OPLS loadings</h1>
+    <h1>Visualising PCA or OPLS loadings for NMR data</h1>
     
     <div class="hidden name"><code>plotload.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plotting PCA or OPLS loadings</p>
+    <p>Visualising PCA or OPLS loadings for NMR data</p>
     </div>
 
     <pre class="usage"><span class='fu'>plotload</span>(
@@ -162,9 +162,12 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>ggplot2 plot object</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>OPLS: If <code>type='Statistical reconstruction'</code> the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If <code>type='Backscaled'</code> the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical recostruction.</p>
+    <p>OPLS loadinsg visualisatoin for NMR data: If <code>type='Statistical reconstruction'</code> the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If <code>type='Backscaled'</code> the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical recostruction.</p>
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
 
     <p>NA</p>
@@ -173,24 +176,41 @@
     <p>Cloarec, O., <em>et al.</em> (2005). Evaluation of the Orthogonal Projection on Latent Structure Model Limitations Caused by Chemical Shift Variability and Improved Visualization of Biomarker Changes in 1H NMR Spectroscopic Metabonomic Studies. <em>Analytical Chemistry</em> 77.2, 517-26.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other dataviz: 
-<code><a href='plotload_cat.html'>plotload_cat</a>()</code>,
-<code><a href='specload.html'>specload</a>()</code></p></div>
+    <div class='dont-index'><p><code><a href='plotload_cat.html'>plotload_cat</a></code></p>
+<p>Other NMR: 
+<code><a href='binning.html'>binning</a>()</code>,
+<code><a href='bline.html'>bline</a>()</code>,
+<code><a href='get.idx.html'>get.idx</a>()</code>,
+<code><a href='lw.html'>lw</a>()</code>,
+<code><a href='matspec.html'>matspec</a>()</code>,
+<code><a href='noise.est.html'>noise.est</a>()</code>,
+<code><a href='ppick.html'>ppick</a>()</code>,
+<code><a href='read1d_raw.html'>read1d_raw</a>()</code>,
+<code><a href='read1d.html'>read1d</a>()</code>,
+<code><a href='specload.html'>specload</a>()</code>,
+<code><a href='spec.html'>spec</a>()</code>,
+<code><a href='stocsy1d_metabom8-class.html'>stocsy1d_metabom8-class</a></code>,
+<code><a href='stocsy.html'>stocsy</a>()</code></p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>covid</span>)
+<span class='no'>model</span><span class='kw'>=</span><span class='fu'><a href='pca.html'>pca</a></span>(<span class='no'>X</span>)</div><div class='output co'>#&gt; <span class='message'>Too many number of components, setting pc to 2</span></div><div class='input'><span class='fu'>plotload</span>(<span class='no'>model</span>, <span class='kw'>pc</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='img'><img src='plotload-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#details">Details</a></li>
       <li><a href="#"></a></li>
       <li><a href="#references">References</a></li>
       <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
     <p>Torben Kimhofer <a href='mailto:tkimhofer@gmail.com'>tkimhofer@gmail.com</a></p>
-<p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+<p><a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
   </div>
 </div>
 

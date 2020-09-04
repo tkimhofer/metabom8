@@ -174,7 +174,7 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>This function returns an OplsMate object (S4).</p>
+    <p>This function returns an metabom8 object (S4).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Models are fully statistically validated, currently only k-fold cross validation (CV) and class-balanced k-fold cross validation is implemented. Further extensions, e.g. Monte-Carlo CV, are work in progress. Although the algorithm accepts three and more levels as Y, model interpretation is more straightforward for pairwise group comparisons.</p>
@@ -184,8 +184,8 @@
 <p>Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. <em>Analytica Chimica Acta</em>, 185, 1-17.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>iris</span>)
-<span class='no'>smod</span><span class='kw'>=</span><span class='fu'>opls</span>(<span class='kw'>X</span><span class='kw'>=</span><span class='no'>iris</span>[,<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='fl'>4</span>)], <span class='kw'>Y</span><span class='kw'>=</span><span class='no'>iris</span>$<span class='no'>Species</span><span class='kw'>==</span><span class='st'>'setosa'</span>)</div><div class='output co'>#&gt; <span class='message'>Performing discriminant analysis.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Deprecated use a matrix as predictor. Unexpected results may be produced, please pass a numeric vector.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Deprecated use a matrix as predictor. Unexpected results may be produced, please pass a numeric vector.</span></div><div class='output co'>#&gt; <span class='message'>An O-PLS-DA model with 1 predictive and 1 orthogonal components was fitted.</span></div><div class='img'><img src='opls-1.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>covid</span>)
+<span class='no'>model</span><span class='kw'>=</span><span class='fu'>opls</span>(<span class='no'>X</span>, <span class='kw'>Y</span><span class='kw'>=</span><span class='no'>an</span>$<span class='no'>type</span>)</div><div class='output co'>#&gt; <span class='message'>Performing discriminant analysis.</span></div><div class='output co'>#&gt; <span class='error'>Error in .checkDimXY(X, y_check[[1]]): Error: Dimensions of input X and Y do not match.</span></div><div class='input'><span class='fu'><a href='plotscores.html'>plotscores</a></span>(<span class='no'>model</span>, <span class='kw'>an</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>Class</span><span class='kw'>=</span><span class='no'>an</span>$<span class='no'>type</span>, <span class='kw'>Clinic</span><span class='kw'>=</span><span class='no'>an</span>$<span class='no'>hospital</span>, <span class='kw'>id</span><span class='kw'>=</span><span class='fl'>1</span>:<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>an</span>)), <span class='kw'>pc</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>))</div><div class='output co'>#&gt; <span class='error'>Error in grepl("OPLS", class(obj)[1]): object 'model' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -198,7 +198,7 @@
     </ul>
 
     <h2>Author</h2>
-    <p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+    <p><a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
   </div>
 </div>
 

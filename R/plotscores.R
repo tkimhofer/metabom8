@@ -132,7 +132,7 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ..
 
   # prep sub-df for QC samples
   if (!missing(qc) && all(!is.na(qc)) && is.numeric(qc)) {
-    df_qc <- data.frame(x = sc[qc,1], y = sc[qc,1])
+    df_qc <- data.frame(x = sc[qc,1], y = sc[qc,2])
     g <- g +
       geom_point(data = df_qc, aes_string("x", "y"), alpha = 0.7, colour = "black")
   }

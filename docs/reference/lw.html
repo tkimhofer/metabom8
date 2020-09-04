@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="Calculating full width at half max — lw" />
-<meta property="og:description" content="Calculating full width at half maximum (FWHM, aka line width). This function simply returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in shift." />
+<meta property="og:description" content="Calculating full width at half maximum (FWHM, aka line width). This function returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in shift." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -121,7 +121,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Calculating full width at half maximum (FWHM, aka line width). This function simply returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in <code>shift</code>.</p>
+    <p>Calculating full width at half maximum (FWHM, aka line width). This function returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in <code>shift</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>lw</span>(<span class='no'>X</span>, <span class='no'>ppm</span>, <span class='kw'>shift</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>0.01</span>, <span class='fl'>0.01</span>))</pre>
@@ -131,15 +131,15 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>NMR matrix with rows representing spectra.</p></td>
+      <td><p>num matrix of NMR data, rows representing spectra.</p></td>
     </tr>
     <tr>
       <th>ppm</th>
-      <td><p>ppm vector with its length equals to <code><a href='https://rdrr.io/r/base/nrow.html'>nrow(X)</a></code>.</p></td>
+      <td><p>num array describing chemical shift positions, its length equals to <code><a href='https://rdrr.io/r/base/nrow.html'>nrow(X)</a></code>.</p></td>
     </tr>
     <tr>
       <th>shift</th>
-      <td><p>Signal shift to calculate line width</p></td>
+      <td><p>num array(2), chemical shift range of singlet used to calculate line width</p></td>
     </tr>
     </table>
 
@@ -149,7 +149,27 @@
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
 
     <p>NA</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
+    <div class='dont-index'><p>Other NMR: 
+<code><a href='binning.html'>binning</a>()</code>,
+<code><a href='bline.html'>bline</a>()</code>,
+<code><a href='get.idx.html'>get.idx</a>()</code>,
+<code><a href='matspec.html'>matspec</a>()</code>,
+<code><a href='noise.est.html'>noise.est</a>()</code>,
+<code><a href='plotload.html'>plotload</a>()</code>,
+<code><a href='ppick.html'>ppick</a>()</code>,
+<code><a href='read1d_raw.html'>read1d_raw</a>()</code>,
+<code><a href='read1d.html'>read1d</a>()</code>,
+<code><a href='specload.html'>specload</a>()</code>,
+<code><a href='spec.html'>spec</a>()</code>,
+<code><a href='stocsy1d_metabom8-class.html'>stocsy1d_metabom8-class</a></code>,
+<code><a href='stocsy.html'>stocsy</a>()</code></p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/load.html'>load</a></span>(<span class='no'>covid</span>)</div><div class='output co'>#&gt; <span class='error'>Error in load(covid): object 'covid' not found</span></div><div class='input'><span class='fu'>lw</span>(<span class='no'>X</span>, <span class='no'>ppm</span>) <span class='co'># in ppm</span></div><div class='output co'>#&gt;       1       2 
+#&gt; 0.00022 0.00053 </div><div class='input'><span class='fu'>lw</span>(<span class='no'>X</span>, <span class='no'>ppm</span>) * <span class='no'>meta</span>$<span class='no'>a_SFO1</span> <span class='co'># in Hz</span></div><div class='output co'>#&gt;         1         2 
+#&gt; 0.1320468 0.3181128 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -157,10 +177,12 @@
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#"></a></li>
+      <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
+    <p><a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>
   </div>
 </div>
 
