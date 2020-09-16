@@ -693,14 +693,16 @@ minmax <- function(x) {
 #' @section
 lw <- function(X, ppm, shift = c(-0.1, 0.1)) {
     idx <- get.idx(shift, ppm)
-    fwhm <- apply(X[, idx], 1, function(x, pp = ppm[idx]) {
+    asign=sign(diff(ppm[1:2]))
+    fwhm <- apply(X[, idx], 1, function(x, pp = ppm[idx], as=asign) {
         if(min(x)<0){ x <- x + abs(min(x)); baseline=0} else{baseline <- min(x)}  # no negative values}
         height <- max(x) - baseline
         hw <- baseline + (0.5 * height)
         f <- approxfun(pp, x)
-        x_new <- seq(-0.01, 0.01, by = 1e-05)
+
+        x_new <- seq(pp[1], pp[length(pp)], by = 1e-05*as)
         y_new <- f(x_new)
-        diff(abs(x_new[range(which(y_new > hw))]))
+        diff(sort(abs(x_new[range(which(y_new > hw))])))
     })
     return(fwhm)
 }

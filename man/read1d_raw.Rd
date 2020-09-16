@@ -66,7 +66,7 @@ NA
 }
 
 \examples{
-path<-system.file("extdata/",  package = "metabom8")
+path<-system.file('extdata/',  package = 'metabom8')
 read1d_raw(path,  exp_type=list(exp='PROF_PLASMA_NOESY'), apodisation=list(fun='exponential', lb=0.2), n_max=3)
 }
 \seealso{

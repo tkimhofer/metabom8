@@ -10,18 +10,16 @@
 #' @importFrom ellipse ellipse
 #' @importFrom stats cov
 #' @family NMR ++
-.hotellingsT2=function(x, y, alpha=0.95){
-  SD <- cov(cbind(x, y), use='complete.obs')
-  el <- ellipse(SD, centre = colMeans(cbind(x, y), na.rm = TRUE), level = alpha)
-  colnames(el) <- c("V1", "V2")
-  xlim <- c(min((c(el[, 1], x))), max((c(el[, 1], x))))
-  xlim <- xlim + c(diff(range(xlim)) * -0.05, diff(range(xlim)) *
-                     +0.05)
-  ylim <- c(min((c(el[, 2], y))), max((c(el[, 2], y))))
-  ylim <- ylim + c(diff(range(ylim)) * -0.05, diff(range(ylim)) *
-                     +0.05)
-  df <- as.data.frame(el)
-
-  return(df)
+.hotellingsT2 <- function(x, y, alpha = 0.95) {
+    SD <- cov(cbind(x, y), use = "complete.obs")
+    el <- ellipse(SD, centre = colMeans(cbind(x, y), na.rm = TRUE), level = alpha)
+    colnames(el) <- c("V1", "V2")
+    xlim <- c(min((c(el[, 1], x))), max((c(el[, 1], x))))
+    xlim <- xlim + c(diff(range(xlim)) * -0.05, diff(range(xlim)) * +0.05)
+    ylim <- c(min((c(el[, 2], y))), max((c(el[, 2], y))))
+    ylim <- ylim + c(diff(range(ylim)) * -0.05, diff(range(ylim)) * +0.05)
+    df <- as.data.frame(el)
+    
+    return(df)
 }
 

@@ -16,31 +16,32 @@
 #' # Plotting first spectrum in reagion 3.0 to 3.15 ppm
 #' spec(X[1,], ppm, shift=c(4.2, 5.3))
 #' points(speaks[[1]]$ppm, speaks[[1]]$Int, col=factor(speaks[[1]]$type))
-ppick=function(X, ppm, fil_p=3, fil_n=5, type='max'){
-  X<-.dimX(X)
-  if(!.check_X_ppm(X, ppm)){stop('Dimensions of X and ppm don\'t match or contain non-numeric values.')}
-  in_red=ncol(X)-1
-  apply(X, 1, function(x, ic=in_red, pp=ppm){
-    x[is.na(x)]=0
-    # get noise level (3*sd)
-    # idx=get.idx(c(9.8, 10), pp)
-    # if(length(idx)>100){
-    #   offset=mean(x[idx])
-    #   noi=(sd(x[idx]-offset)*200)+offset
-    # }else{noi=median(x)}
-    x_smooth=sgolayfilt(x, p = fil_p, n = fil_n)
-    xd_sign=sign(diff(x_smooth))
-    ids=which(xd_sign[-ic]!=xd_sign[-1] )+1
-    idx=seq(ids)
-    out=data.frame(idc=ids[idx], ppm=pp[ids[idx]], Int=x[ids[idx]], Etype=xd_sign[ids[idx]])
-    rownames(out)=NULL
-
-    switch(type,
-           'max'={out[out$Etype<0,]},
-           'min'={out[out$Etype>0,]},
-           'both'={out}
-           )
-
-  })
-
+ppick <- function(X, ppm, fil_p = 3, fil_n = 5, type = "max") {
+    X <- .dimX(X)
+    if (!.check_X_ppm(X, ppm)) {
+        stop("Dimensions of X and ppm don't match or contain non-numeric values.")
+    }
+    in_red <- ncol(X) - 1
+    apply(X, 1, function(x, ic = in_red, pp = ppm) {
+        x[is.na(x)] <- 0
+        # get noise level (3*sd) idx=get.idx(c(9.8, 10), pp) if(length(idx)>100){
+        # offset=mean(x[idx]) noi=(sd(x[idx]-offset)*200)+offset }else{noi=median(x)}
+        x_smooth <- sgolayfilt(x, p = fil_p, n = fil_n)
+        xd_sign <- sign(diff(x_smooth))
+        ids <- which(xd_sign[-ic] != xd_sign[-1]) + 1
+        idx <- seq(ids)
+        out <- data.frame(idc = ids[idx], ppm = pp[ids[idx]], Int = x[ids[idx]], 
+            Etype = xd_sign[ids[idx]])
+        rownames(out) <- NULL
+        
+        switch(type, max = {
+            out[out$Etype < 0, ]
+        }, min = {
+            out[out$Etype > 0, ]
+        }, both = {
+            out
+        })
+        
+    })
+    
 }

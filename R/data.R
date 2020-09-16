@@ -15,7 +15,7 @@
 #' @source Australian National Phenome Centre (ANPC) @ Murdoch University \url[https://www.murdoch.edu.au/research/institutes-centres/health-futures-institute/australian-national-phenome-centre/covid-19-critical-research-programme]{ANPC}
 #' @examples
 #' data(covid)
-#"covid"
+#'covid'
 
 
 
@@ -36,4 +36,4 @@
 #' @source Australian National Phenome Centre (ANPC) @ Murdoch University \url[https://www.murdoch.edu.au/research/institutes-centres/health-futures-institute/australian-national-phenome-centre/covid-19-critical-research-programme]{ANPC}
 #' @examples
 #' data(covid_raw)
-#"covid_raw"
+#'covid_raw'

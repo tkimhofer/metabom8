@@ -9,7 +9,7 @@ eruption(mod, pc = 1, p_adj = "BH", invert_es = FALSE)
 \arguments{
 \item{mod}{OPLS model generated with \code{metabom8}.}
 
-\item{pc}{num or char, indicating OPLS component to visualise (1 for predictive component, prefix 'o' for orthogonal components, e.g., pc="o1" for first orthogonal component)}
+\item{pc}{num or char, indicating OPLS component to visualise (1 for predictive component, prefix 'o' for orthogonal components, e.g., pc='o1' for first orthogonal component)}
 
 \item{p_adj}{str, p value adjustment method, see \code{?p.adjust}}
 

@@ -88,8 +88,8 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
     xy_check<-.checkDimXY(X, y_check[[1]])
     type<-y_check[[3]]
 
-    msd_y<-.sdRcpp(y_check[[1]]);
-    msd_x<-.sdRcpp(X); # returns list with elements mean and sd
+    msd_y<-.sdRcpp(y_check[[1]])
+    msd_x<-.sdRcpp(X)
     XcsTot<-.scaleMatRcpp(X, 0:(nrow(X)-1), center=TRUE, scale_type = sc_num)[[1]]
     YcsTot<-.scaleMatRcpp(y_check[[1]], 0:(nrow(y_check[[1]])-1), center=TRUE, scale_type = sc_num)[[1]]
 

@@ -4,7 +4,7 @@
 \alias{lw}
 \title{Calculating full width at half max}
 \usage{
-lw(X, ppm, shift = c(-0.01, 0.01))
+lw(X, ppm, shift = c(-0.1, 0.1))
 }
 \arguments{
 \item{X}{num matrix of NMR data, rows representing spectra.}

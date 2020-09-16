@@ -14,9 +14,9 @@
 #' spec(X1_bc[1,], ppm, shift=c(3,4), add=TRUE)
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 bline <- function(X) {
-  X<-.dimX(X)
-  X.bl <- t(apply(X, 1, function(x) {
-    x - asysm(x)
-  }))
-  return(X.bl)
+    X <- .dimX(X)
+    X.bl <- t(apply(X, 1, function(x) {
+        x - asysm(x)
+    }))
+    return(X.bl)
 }

@@ -185,7 +185,6 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ..
              }
            }
          },
-
          'OPLS_metabom8' = {
            if (ncol(obj@t_orth) > 1) {
              comp <- "orthogonal components"

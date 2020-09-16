@@ -16,53 +16,59 @@
 #' plot(dilutionFactor)
 #' @family NMR ++
 
-pqn <- function(X, iref = NULL, TArea = FALSE, add_DilF = NULL, bin=list(ppm=NULL, width=0.05, npoints=NULL)) {
-
-  nams <- rownames(X)
-
-  # bin specs
-  if(!is.null(bin)){
-
-    if( !any(names(bin) %in% c('width', 'npoints'))) stop('Define width or npoints binning argument.')
-    if(is.null(bin$ppm)){ppm=as.numeric(colnames(X)); } else{
-      if(!.check_X_ppm(X, ppm)) stop('Non-matching dimensions X matrix and ppm vector or missing values in ppm.')
+pqn <- function(X, iref = NULL, TArea = FALSE, add_DilF = NULL, bin = list(ppm = NULL, 
+    width = 0.05, npoints = NULL)) {
+    
+    nams <- rownames(X)
+    
+    # bin specs
+    if (!is.null(bin)) {
+        
+        if (!any(names(bin) %in% c("width", "npoints"))) 
+            stop("Define width or npoints binning argument.")
+        if (is.null(bin$ppm)) {
+            ppm <- as.numeric(colnames(X))
+        } else {
+            if (!.check_X_ppm(X, ppm)) 
+                stop("Non-matching dimensions X matrix and ppm vector or missing values in ppm.")
+        }
+        
+        X1 <- binning(X, ppm, unlist(bin))
     }
-
-    X1 <- binning(X, ppm, unlist(bin))
-  }
-  # apply total area normalisation
-  if(TArea) {
-    X1 <- t(apply(X1, 1, function(x) x/sum(x, na.rm = TRUE) * 100))
-  }
-
-  le.ref <- length(iref)
-
-  if(is.null(iref)){
-
-    ref <- apply(X1, 2, median, na.rm=TRUE)
-
-  }else{
-
-    iref=as.integer(iref)
-
-    if( any(is.na(iref) | is.infinite(iref)) ) stop('Index vector iref contains NAs.')
-
-    if (le.ref == 1 ) {
-      ref <- X1[iref, ]
-    }else{
-      ref <- apply(X1[iref, ], 2, median, na.rm=TRUE)
+    # apply total area normalisation
+    if (TArea) {
+        X1 <- t(apply(X1, 1, function(x) x/sum(x, na.rm = TRUE) * 100))
     }
-  }
-
-  ref[ref == 0] <- 1e-04
-
-  dil_F <- 1/apply(X1, 1, function(x) median(x/ref, na.rm = TRUE))
-  X_pqn <- t(apply(rbind(seq_len(nrow(X))), 2, function(i) {
-    X[i, ] * dil_F[i]
-  }))
-  if (!is.null(add_DilF)) {
-    assign(add_DilF, dil_F, envir = .GlobalEnv)
-  }
-  rownames(X_pqn) <- nams
-  return(X_pqn)
+    
+    le.ref <- length(iref)
+    
+    if (is.null(iref)) {
+        
+        ref <- apply(X1, 2, median, na.rm = TRUE)
+        
+    } else {
+        
+        iref <- as.integer(iref)
+        
+        if (any(is.na(iref) | is.infinite(iref))) 
+            stop("Index vector iref contains NAs.")
+        
+        if (le.ref == 1) {
+            ref <- X1[iref, ]
+        } else {
+            ref <- apply(X1[iref, ], 2, median, na.rm = TRUE)
+        }
+    }
+    
+    ref[ref == 0] <- 1e-04
+    
+    dil_F <- 1/apply(X1, 1, function(x) median(x/ref, na.rm = TRUE))
+    X_pqn <- t(apply(rbind(seq_len(nrow(X))), 2, function(i) {
+        X[i, ] * dil_F[i]
+    }))
+    if (!is.null(add_DilF)) {
+        assign(add_DilF, dil_F, envir = .GlobalEnv)
+    }
+    rownames(X_pqn) <- nams
+    return(X_pqn)
 }

@@ -6,7 +6,7 @@
 \usage{
 read1d(
   path,
-  exp_type = list(exp = c("PROF_PLASMA_CPMG128_3mm", "PROF_PLASMA_NOESY128_3mm")),
+  exp_type = list(exp = c("PROF_PLASMA_CPMG")),
   n_max = 1000,
   filter = TRUE,
   recursive = TRUE,
@@ -46,7 +46,7 @@ NA
 }
 
 \examples{
-path<-system.file("extdata/",  package = "metabom8")
+path<-system.file('extdata/',  package = 'metabom8')
 read1d(path,  exp_type=list(pulprog='noesygppr1d'))
 }
 \seealso{

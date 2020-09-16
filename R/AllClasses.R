@@ -8,40 +8,29 @@
 setClass("OPLS_metabom8", representation(
   type = "character",
   t_pred = "matrix",
-
   p_pred = "matrix",
   w_pred = "matrix",
-
   betas_pred = "numeric",
   Qpc = "matrix",
-
   t_pred_cv = "matrix",
   t_orth_cv = "matrix",
-
   t_orth = "matrix",
   p_orth = "matrix",
-
   nPC = "numeric",
-
   summary = "data.frame",
   X_orth = "matrix",
-
   Y_res = "matrix",
   X_res = "matrix",
-
   X_mean = "numeric",
   X_sd = "numeric",
-
   Y_mean = "numeric",
   Y_sd = "numeric",
-
   Parameters = "list",
-
   X = "matrix",
   X_scaled = "matrix",
   Y = "list"
-  )
-  )
+)
+)
 
 
 #' @title An S4 class to represent STOCSY model constructed with metabom8
@@ -88,17 +77,12 @@ setClass("stocsy1d_metabom8", representation(
 # define slots for PCA object
 setClass("PCA_metabom8", representation(
   type = "character",
-
   t = "matrix",
   p = "matrix",
-
   nPC = "numeric",
-
   X_mean = "numeric",
   X_sd = "numeric",
-
   Parameters = "list",
-
   X = "matrix"
   )
 )

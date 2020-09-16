@@ -18,55 +18,66 @@
 #' @section
 
 ## loadiings function
-plotload_cat=function(obj, pc, an, title=NULL, legend=TRUE, ...){
-
-  if(missing(pc)){
-    if(grepl('PCA', class(obj)[1])){pc=c(1,2)}
-    if(grepl('PLS', class(obj)[1])){pc=c('1', 'o1')}
-  }
-  if (missing(an)) {
-    if(class(obj)[1]=='OPLS_metabom8') {if(ncol(obj@X)<150) an <- list('All', 'All', colnames(obj@X))}
-    if(class(obj)[1]=='PCA_metabom8') {if(ncol(obj@X)<150) an <- list('All', 'All', colnames(obj@X))}
-  }
-  res=.viz_df_helper(obj, pc, an, type='p')
-  if( is.null(res$an_le) || is.na(res$an_le) ) {stop('Check helper function .viz_df_helper')}
-  melted=res$df
-  if(res$an_le==1){
-    ### ploting
-    d=ggplot(data=melted, aes_string(x= colnames(melted)[1], y= colnames(melted)[2], colour=names(an)[1]))+
-      geom_hline(yintercept = 0, colour = "gray70") +
-      geom_vline(xintercept = 0, colour = "gray70") +
-      geom_point(...)+
-      labs(colour=names(an)[1], title = title, x=paste(colnames(melted)[1], sep="" ), y=paste(colnames(melted)[2], sep="" ))+
-      theme_bw()
-  }
-
-  if(res$an_le==2){
-    d=ggplot(data=melted, aes_string(x= colnames(melted)[1], y= colnames(melted)[2], colour=colnames(melted)[3], shape=colnames(melted)[4]))+
-      geom_hline(yintercept = 0, colour = "gray70") +
-      geom_vline(xintercept = 0, colour = "gray70") +
-      geom_point(...)+
-      labs(shape=names(an)[2], colour=names(an)[1], title = title, x=paste(colnames(melted)[1], sep="" ), y=paste(colnames(melted)[2], sep="" ))+
-      theme_bw()
-  }
-
-  if(res$an_le==3){
-    d=ggplot(data=melted, aes_string(x= colnames(melted)[1], y= colnames(melted)[2], colour=colnames(melted)[3], shape=colnames(melted)[4]))+
-      geom_hline(yintercept = 0, colour = "gray70") +
-      geom_vline(xintercept = 0, colour = "gray70") +
-      geom_point(...)+
-      labs(shape=names(an)[2], colour=names(an)[1], title = title, x=paste(colnames(melted)[1], sep="" ), y=paste(colnames(melted)[2], sep="" ))+
-      geom_label_repel( aes_string(label=colnames(melted)[5]))+
-      theme_bw()
-  }
-
-
-  if(legend==FALSE){
-    d=d+guides(colour=FALSE)+theme(panel.grid.minor = element_blank())
-  }
-
-
-  return(d)
+plotload_cat <- function(obj, pc, an, title = NULL, legend = TRUE, ...) {
+    
+    if (missing(pc)) {
+        if (grepl("PCA", class(obj)[1])) {
+            pc <- c(1, 2)
+        }
+        if (grepl("PLS", class(obj)[1])) {
+            pc <- c("1", "o1")
+        }
+    }
+    if (missing(an)) {
+        if (class(obj)[1] == "OPLS_metabom8") {
+            if (ncol(obj@X) < 150) 
+                an <- list("All", "All", colnames(obj@X))
+        }
+        if (class(obj)[1] == "PCA_metabom8") {
+            if (ncol(obj@X) < 150) 
+                an <- list("All", "All", colnames(obj@X))
+        }
+    }
+    res <- .viz_df_helper(obj, pc, an, type = "p")
+    if (is.null(res$an_le) || is.na(res$an_le)) {
+        stop("Check helper function .viz_df_helper")
+    }
+    melted <- res$df
+    if (res$an_le == 1) {
+        ### ploting
+        d <- ggplot(data = melted, aes_string(x = colnames(melted)[1], y = colnames(melted)[2], 
+            colour = names(an)[1])) + geom_hline(yintercept = 0, colour = "gray70") + 
+            geom_vline(xintercept = 0, colour = "gray70") + geom_point(...) + labs(colour = names(an)[1], 
+            title = title, x = paste(colnames(melted)[1], sep = ""), y = paste(colnames(melted)[2], 
+                sep = "")) + theme_bw()
+    }
+    
+    if (res$an_le == 2) {
+        d <- ggplot(data = melted, aes_string(x = colnames(melted)[1], y = colnames(melted)[2], 
+            colour = colnames(melted)[3], shape = colnames(melted)[4])) + geom_hline(yintercept = 0, 
+            colour = "gray70") + geom_vline(xintercept = 0, colour = "gray70") + 
+            geom_point(...) + labs(shape = names(an)[2], colour = names(an)[1], title = title, 
+            x = paste(colnames(melted)[1], sep = ""), y = paste(colnames(melted)[2], 
+                sep = "")) + theme_bw()
+    }
+    
+    if (res$an_le == 3) {
+        d <- ggplot(data = melted, aes_string(x = colnames(melted)[1], y = colnames(melted)[2], 
+            colour = colnames(melted)[3], shape = colnames(melted)[4])) + geom_hline(yintercept = 0, 
+            colour = "gray70") + geom_vline(xintercept = 0, colour = "gray70") + 
+            geom_point(...) + labs(shape = names(an)[2], colour = names(an)[1], title = title, 
+            x = paste(colnames(melted)[1], sep = ""), y = paste(colnames(melted)[2], 
+                sep = "")) + geom_label_repel(aes_string(label = colnames(melted)[5])) + 
+            theme_bw()
+    }
+    
+    
+    if (legend == FALSE) {
+        d <- d + guides(colour = FALSE) + theme(panel.grid.minor = element_blank())
+    }
+    
+    
+    return(d)
 }
 
 

@@ -45,12 +45,8 @@
   switch(pars$fun,
          'uniform'={afun<-rep(1, n)},
          'exponential'={ if( 'lb' %in% names(pars)) {afun<-.em(n, pars$lb)} else{stop('Check aposation fct arguments: Exponention function requires lb parameter')}},
-         #'modGauss'={},
-         #'expDampJmod'={},
          'cosine'={afun<-.cosine(n)},
          'sine'={afun<-.sine(n)},
-         #'sineShift'={if( all(c('offs', 'end', 'exp') %in% names(pars))){afun<-.sineMod(n, pars$offs, pars$end, pars$exp)} else{stop('Check aposation fct arguments: sineShift function requires offs, end, exp parameters')}},
-         #'triangle'={},
          'sem'={if( 'lb' %in% names(pars)) {afun<-.sem(n, pars$lb)} else{ stop('Check aposation fct arguments: SEM function requires lb parameter')}}
          )
 

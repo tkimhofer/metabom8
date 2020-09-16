@@ -24,38 +24,38 @@
 
 
 calibrate <- function(X, ppm, type = "glucose") {
-
-  rnam<-rownames(X)
-  cnam<-colnames(X)
-
-    if (type=="tsp") {
-      idx<-get.idx(c(-0.2, 0.2), ppm)
-      zero.ppm<-which.min(abs(ppm[idx]))
-      maxInt<-array()
-      for (i in seq_len(nrow(X))) {
-        maxInt[i]<-which.max(X[i, idx])
-      }
-
-      Int.corr<-zero.ppm - maxInt
-      # if Int.corr<0: shift is > zero
-      for (i in seq_len(nrow(X))) {
-        x <- X[i, ]
-        if (Int.corr[i] < 0) {
-          x <- c(x[-c(seq_len(abs(Int.corr[i])))], rep(0, abs(Int.corr[i])))
+    
+    rnam <- rownames(X)
+    cnam <- colnames(X)
+    
+    if (type == "tsp") {
+        idx <- get.idx(c(-0.2, 0.2), ppm)
+        zero.ppm <- which.min(abs(ppm[idx]))
+        maxInt <- array()
+        for (i in seq_len(nrow(X))) {
+            maxInt[i] <- which.max(X[i, idx])
         }
-        if (Int.corr[i] > 0) {
-          x<-c(rep(0, abs(Int.corr[i])), x)
+        
+        Int.corr <- zero.ppm - maxInt
+        # if Int.corr<0: shift is > zero
+        for (i in seq_len(nrow(X))) {
+            x <- X[i, ]
+            if (Int.corr[i] < 0) {
+                x <- c(x[-c(seq_len(abs(Int.corr[i])))], rep(0, abs(Int.corr[i])))
+            }
+            if (Int.corr[i] > 0) {
+                x <- c(rep(0, abs(Int.corr[i])), x)
+            }
+            X[i, ] <- x[seq_len(length(ppm))]
         }
-        X[i, ] <- x[seq_len(length(ppm))]
-      }
     }
-
-
-
+    
+    
+    
     if (type == "glucose") {
-      X<-.calibrate1d_gluc(X, ppm)
+        X <- .calibrate1d_gluc(X, ppm)
     }
-  rownames(X)<-rnam
-  colnames(X)<-cnam
-  return(X)
+    rownames(X) <- rnam
+    colnames(X) <- cnam
+    return(X)
 }
