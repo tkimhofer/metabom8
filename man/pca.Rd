@@ -43,7 +43,8 @@ Other NMR ++:
 \code{\link{opls_perm}()},
 \code{\link{plotscores}()},
 \code{\link{pqn}()},
-\code{\link{predict_opls}()}
+\code{\link{predict_opls}()},
+\code{\link{scRange}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}

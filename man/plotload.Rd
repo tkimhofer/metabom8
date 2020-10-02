@@ -51,6 +51,7 @@ Cloarec, O., \emph{et al.} (2005). Evaluation of the Orthogonal Projection on La
 \code{\link{plotload_cat}}
 
 Other NMR: 
+\code{\link{alignSegment}()},
 \code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{get.idx}()},

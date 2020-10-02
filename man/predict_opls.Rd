@@ -51,7 +51,8 @@ Other NMR ++:
 \code{\link{opls_perm}()},
 \code{\link{pca}()},
 \code{\link{plotscores}()},
-\code{\link{pqn}()}
+\code{\link{pqn}()},
+\code{\link{scRange}()}
 }
 \author{
 \email{torben.kimhofer@murdoch.edu.au}

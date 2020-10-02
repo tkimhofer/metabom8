@@ -13,6 +13,7 @@ NA
 
 \seealso{
 Other NMR: 
+\code{\link{alignSegment}()},
 \code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{get.idx}()},

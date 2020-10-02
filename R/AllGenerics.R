@@ -659,6 +659,24 @@ get.idx <- function(range = c(1, 5), ppm) {
 }
 
 
+#' Min-max scaling
+#' @export
+#' @param x num array to be scaled
+#' @param x num array, desired value range of the scaled variable
+#' @return num array, same length as x
+#' @details Output values are scaled to range between 0 and 1
+#' @examples
+#' x=rnorm(20, 0, 1)
+#' plot(x, type='l'); abline(h=range(x), lty=2)
+#' points(scRange(x, ra=c(5,15)), type='l', col='red'); abline(h=c(0,1), col='red', lty=2)
+#' @author \email{torben.kimhofer@@gmail.com}
+#' @family NMR ++
+#' @section
+scRange <- function(x, ra) {
+    ra=sort(ra)
+    (ra[2]-ra[1]) * (x - min(x))/(max(x) - min(x)) + ra[1]
+}
+
 
 #' Min-max scaling
 #' @export

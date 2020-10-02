@@ -53,6 +53,7 @@ read1d(path,  exp_type=list(pulprog='noesygppr1d'))
 \code{\link[=read1d_raw]{Process raw FIDs}}
 
 Other NMR: 
+\code{\link{alignSegment}()},
 \code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{get.idx}()},

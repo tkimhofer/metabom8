@@ -73,6 +73,7 @@ read1d_raw(path,  exp_type=list(exp='PROF_PLASMA_NOESY'), apodisation=list(fun='
 \code{\link[=read1d]{Import TopSpin processed spectra}}
 
 Other NMR: 
+\code{\link{alignSegment}()},
 \code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{get.idx}()},

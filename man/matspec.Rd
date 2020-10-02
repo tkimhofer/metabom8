@@ -39,6 +39,7 @@ matspec(X[1:2,], ppm, interactive=FALSE) # static
 \code{\link{spec}} \code{\link{plot}}
 
 Other NMR: 
+\code{\link{alignSegment}()},
 \code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{get.idx}()},

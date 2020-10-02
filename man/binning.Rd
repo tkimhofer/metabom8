@@ -36,6 +36,7 @@ spec(Xb[1,], ppm_bin,  shift=c(5.15, 5.3), interactive=FALSE)
 }
 \seealso{
 Other NMR: 
+\code{\link{alignSegment}()},
 \code{\link{bline}()},
 \code{\link{get.idx}()},
 \code{\link{lw}()},

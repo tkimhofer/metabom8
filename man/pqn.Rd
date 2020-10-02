@@ -50,7 +50,8 @@ Other NMR ++:
 \code{\link{opls_perm}()},
 \code{\link{pca}()},
 \code{\link{plotscores}()},
-\code{\link{predict_opls}()}
+\code{\link{predict_opls}()},
+\code{\link{scRange}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
