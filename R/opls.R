@@ -186,10 +186,12 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
         opls_filt <- .nipOplsRcpp(X = XcsTot, Y = YcsTot)
         t_orth<-opls_filt$t_o
         p_orth<-opls_filt$p_o
+        w_orth<-opls_filt$w_o
       }else{
         opls_filt <- .nipOplsRcpp(X = opls_filt$X_res, Y = YcsTot)
         t_orth<-cbind(t_orth, opls_filt$t_o)
         p_orth<-rbind(p_orth, opls_filt$p_o)
+        w_orth<-rbind(w_orth, opls_filt$w_o)
       }
       pred_comp <- .nipPlsCompRcpp(X = opls_filt$X_res, Y = YcsTot)
       r2x_comp[nc-1]<-.r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, NULL)
@@ -247,6 +249,7 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
                   t_pred_cv = pred_comp$t_cv,
                   t_orth_cv = pred_comp$t_o_cv,
                   t_orth = t_orth,
+                  w_orth = w_orth,
                   p_orth = p_orth,
                   nPC = nc - 1,
                   summary = m_summary[[1]],

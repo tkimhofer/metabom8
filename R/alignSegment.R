@@ -15,15 +15,11 @@
 alignSegment=function(seg, idx_ref=1, clim=0.7, med=T, norm=F){
 
   if(is.null(nrow(seg)) || nrow(seg)<2) {stop('Check input dimensions.')}
-
-
   if(med[1]){seg=rbind(apply(seg, 2, median), seg); idx_ref=1}
-
   if(norm){require(metabom8); seg=t(apply(seg, 1, minmax))}
 
   out=vapply(seq(nrow(seg)), function(i, le=ncol(seg)){
 
-    #browser()
     cc_mod=ccf(seg[i,], seg[idx_ref,], type='correlation', plot = F)
     acf=as.vector(cc_mod$acf)
     idx<-which.max(acf)

@@ -16,6 +16,7 @@ setClass("OPLS_metabom8", representation(
   t_orth_cv = "matrix",
   t_orth = "matrix",
   p_orth = "matrix",
+  w_orth = "matrix",
   nPC = "numeric",
   summary = "data.frame",
   X_orth = "matrix",

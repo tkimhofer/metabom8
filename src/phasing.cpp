@@ -202,3 +202,27 @@ arma::vec calibTsp(arma::vec spec, arma::vec ppm){
 //   Int.corr <- zero.ppm - maxInt
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -39,9 +39,7 @@
 
 #' @section
 .fidApodisationFct<-function(n, pars){
-
   if(is.null(pars$fun) || !pars$fun %in% c('uniform', 'exponential', 'cosine', 'sine', 'sem', 'expGaus_resyG')){stop('Check apodisation function argument (fun).')}
-
   switch(pars$fun,
          'uniform'={afun<-rep(1, n)},
          'exponential'={ if( 'lb' %in% names(pars)) {afun<-.em(n, pars$lb)} else{stop('Check aposation fct arguments: Exponention function requires lb parameter')}},
@@ -49,27 +47,28 @@
          'sine'={afun<-.sine(n)},
          'sem'={if( 'lb' %in% names(pars)) {afun<-.sem(n, pars$lb)} else{ stop('Check aposation fct arguments: SEM function requires lb parameter')}}
          )
-
   if(!is.null(pars$plot) && pars$plot && exists('afun')){ plot(afun, type='l', main=paste('Apodisation function:', pars$fun))}
-
   return(afun)
-
   }
-
-
-
 
 
 
 # filter experiments
 .filterExp_files<-function(pars, exp_type, f_list){
+
+  browser()
   idx<-match(toupper(names(exp_type)), toupper(gsub('[ap]_', '', colnames(pars))))
   if(length(idx)==0){stop('No files found that match the specified parameter specification. Check input argument exp_type.') }
 
+  #browser()
   idx_na<-which(is.na(idx))
   if(length(idx_na)>0){
-    message(paste('Experiment filter', names(exp_type)[idx_na]  , 'not in NMR acquisition list. Using remaining arguments to filter :', names(exp_type)[-idx_na]))
-    idx=idx[-idx_na]
+    if(length(idx_na)==length(idx)){
+      stop('No matching paramter names found. Check input argument exp_type.')
+    }else{
+      message(paste('Experiment filter', names(exp_type)[idx_na]  , 'not in NMR acquisition list. Using remaining arguments to filter :', names(exp_type)[-idx_na]))
+      idx=idx[-idx_na]
+    }
   }
   fmat<-vapply(seq(length(idx)), function(i){
     vars=gsub('^<|>$', '', pars[,idx[i]])
