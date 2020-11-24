@@ -91,7 +91,8 @@ predict_opls <- function(opls_model, newdata, idx_scale = NULL) {
     }
 
     # calc predictive component score predictions and residuals
-    t_pred <- e_new_orth %*% t(opls_model@p_pred)
+    #browser()
+    t_pred <- e_new_orth %*% (opls_model@w_pred)
     # E_h <- e_new_orth - (t_pred %*% opls_model@p_pred)
     betas <- opls_model@betas_pred
     q_h <- opls_model@Qpc
