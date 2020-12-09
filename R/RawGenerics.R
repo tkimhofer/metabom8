@@ -52,15 +52,13 @@
   }
 
 
-
 # filter experiments
-.filterExp_files<-function(pars, exp_type, f_list){
+.filterExp_files<-function(pars, exp_type, f_list, n_max){
 
-  browser()
+
   idx<-match(toupper(names(exp_type)), toupper(gsub('[ap]_', '', colnames(pars))))
-  if(length(idx)==0){stop('No files found that match the specified parameter specification. Check input argument exp_type.') }
+  if(length(idx)==0){stop('No parameter(s) found that that match the specification. Check for exp_type argument for typos and parameter choices in acqus and procs files.')}
 
-  #browser()
   idx_na<-which(is.na(idx))
   if(length(idx_na)>0){
     if(length(idx_na)==length(idx)){
@@ -79,7 +77,64 @@
   f_list=lapply(f_list, function(x){
     x[idx_filt]
     })
-  pars=pars[idx_filt,]
+
+
+
+  idx_filt=which(idx_filt)
+  if(length(idx_filt)>n_max){
+
+    idx_filt=idx_filt[1:n_max]
+    f_list=lapply(f_list, function(x,  idx=1:n_max){
+      x[idx]
+    })
+
+  }else{
+    pars<-pars[idx_filt,]
+  }
+
+  # order and add rownames
+  fnam <- strsplit(f_list$f_1r, .Platform$file.sep)
+  idx_keep <- which((apply(do.call(rbind, fnam), 2, function(x) length(unique(x)))) > 1)
+
+  # find order of racks
+  if(length(idx_keep)>1){
+
+    rack_<-t(vapply(1:length(fnam), function(i, iid=idx_keep[length(idx_keep)-1]){
+      c(fnam[[i]][iid], pars$a_DATE[i])
+    }, FUN.VALUE = c('', '')))
+    colnames(rack_)<-c('a', 'b')
+    rack_order_<-ddply(as.data.frame(rack_), .(a), function(x){
+      mean(as.POSIXct(x$b))
+    })
+    rord_fac<-order(rack_order_$V1)*1e5
+
+    fnam1 <- vapply(fnam, function(x, st = idx_keep[length(idx_keep)-1]) {
+      x[st]
+    }, FUN.VALUE = "")
+
+    rord_fac=rord_fac[match(fnam1, rack_order_$a)]
+
+
+    exp_ <- vapply(fnam, function(x, st = idx_keep[length(idx_keep)]) {
+      x[st]
+    }, FUN.VALUE = "")
+    rr<-order(as.numeric(exp_)+rord_fac)
+
+  }else{
+    exp_ <- vapply(fnam, function(x, st = idx_keep) {
+      x[st]
+    }, FUN.VALUE = "")
+    rr<-order(as.numeric(exp_))
+  }
+
+  #browser()
+
+
+  # re-order f_list and pars according to rr
+  pars=pars[rr,]
+  f_list=lapply(f_list, function(x){
+    x[rr]
+  })
 
   return(list(f_list, pars))
 }

@@ -71,19 +71,23 @@ predict_opls <- function(opls_model, newdata, idx_scale = NULL) {
     # scale=opls_model@Xscale) iteratively remove all orthogonal components from
     # prediction data set
     e_new_orth <- X
-    t_orth <- matrix(NA, nrow = nrow(X), ncol = opls_model@nPC - 1)
+    #browser()
+
+    n_pcOorth=opls_model@nPC - 1
+    t_orth <- matrix(NA, nrow = nrow(X), ncol = n_pcOorth)
+
     # use weights (not loadings to produce scores)
-    for (i in seq_len(opls_model@nPC - 1)) {
+    for (i in seq_len(n_pcOorth)) {
         # t_orth[, i] <- e_new_orth %*% t(t(opls_model@p_orth[i, ]))/drop(crossprod(t(t(opls_model@p_orth[i,
         #     ]))))
         # e_new_orth <- e_new_orth - (cbind(t_orth[, i]) %*% t(opls_model@p_orth[i,
         #     ]))
 
-        t_orth[, i] <- e_new_orth %*% t(t(opls_model@w_orth[,i ]))/drop(crossprod(t(t(opls_model@w_orth[,i]))))
+        t_orth[, i] <- e_new_orth %*% t(t(opls_model@w_orth[i,]))/drop(crossprod(t(t(opls_model@w_orth[i,]))))
         e_new_orth <- e_new_orth - (cbind(t_orth[, i]) %*% t(opls_model@p_orth[i,]))
     }
     # summarise orth component in case nc_orth > 2
-    if ((opls_model@nPC - 1) > 1) {
+    if ((n_pcOorth) > 1) {
         pc.orth <- pca(t_orth, pc = 1, scale = "UV")
         t_orth_pca <- pc.orth@t[, 1]
     } else {

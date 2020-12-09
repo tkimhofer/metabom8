@@ -70,7 +70,7 @@
 # test=opls_rcpp(X, Y, t_pred = 1, center = T, scale = "UV", plotting = T, maxPCo = 5, cv=list(method='k-fold_stratified', split=2/3, k=20))
 
 
-opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='k-fold_stratified', k=7, split=2/3), maxPCo = 5, plotting = TRUE) {
+opls <- function(X, Y, center = TRUE, scale = 'UV', cv=list(method='k-fold_stratified', k=7, split=2/3), maxPCo = 5, plotting = TRUE) {
 
   {
 
@@ -108,6 +108,7 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
   while (overfitted == FALSE) {
 
     if(nc == 1){ tt<-.oplsComponentCv(X, Y=y_check[[1]], cv$cv_sets, nc,  mod.cv=NULL)
+    #browser()
     }else{
       tt<-.oplsComponentCv(X=NA, Y=y_check[[1]], cv$cv_sets, nc,  mod.cv=tt)
       }
@@ -186,12 +187,12 @@ opls <- function(X, Y, t_pred = 1, center = TRUE, scale = 'UV', cv=list(method='
         opls_filt <- .nipOplsRcpp(X = XcsTot, Y = YcsTot)
         t_orth<-opls_filt$t_o
         p_orth<-opls_filt$p_o
-        w_orth<-opls_filt$w_o
+        w_orth<-t(opls_filt$w_o)
       }else{
         opls_filt <- .nipOplsRcpp(X = opls_filt$X_res, Y = YcsTot)
         t_orth<-cbind(t_orth, opls_filt$t_o)
         p_orth<-rbind(p_orth, opls_filt$p_o)
-        w_orth<-rbind(w_orth, opls_filt$w_o)
+        w_orth<-rbind(w_orth, t(opls_filt$w_o))
       }
       pred_comp <- .nipPlsCompRcpp(X = opls_filt$X_res, Y = YcsTot)
       r2x_comp[nc-1]<-.r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, NULL)

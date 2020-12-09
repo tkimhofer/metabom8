@@ -20,13 +20,15 @@
 #' @importFrom stats approxfun
 #' @seealso \code{\link[=read1d_raw]{Process raw FIDs}}
 #' @section
+
 read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
     n_max = 1000, filter = TRUE, recursive = TRUE, verbose = TRUE) {
     path <- path.expand(path)
-    f_list <- .detect1d_procs(path, n_max, filter, recursive, verbose)
+
+    f_list <- .detect1d_procs(path, n_max = 1e6, filter, recursive, verbose)
     # extract parameters from acqus and procs (for f1 and f2)
-    pars <- .extract_pars1d(f_list)
-    exp_filt <- .filterExp_files(pars, exp_type, f_list)
+    pars <- .extract_pars1d(f_list) # prob need to include n max here too
+    exp_filt <- .filterExp_files(pars, exp_type, f_list, n_max)
     # exp_filt<-.filterExp_files(pars, exp_type, f_list)
     f_list <- exp_filt[[1]]
     pars <- exp_filt[[2]]
@@ -66,6 +68,7 @@ read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
     rownames(out) <- fnam
     rownames(pars) <- fnam
 
+
     X[is.na(X)]=0
     assign("X", out, envir = .GlobalEnv)
     assign("ppm", ppm_ref, envir = .GlobalEnv)
@@ -82,6 +85,7 @@ read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
 # @importFrom base vapply
 #' @keywords internal
 #' @section
+
 .extract_pars1d <- function(f_list) {
     out <- lapply(seq(f_list[[1]]), function(i) {
         f_procs <- f_list$f_procs[i]
@@ -138,6 +142,7 @@ read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
     if (is.list(out)) {
         out <- do.call(rbind, out)
     }
+    #browser()
     if (nrow(out) != length(f_list[[1]])) {
         out <- t(out)
     }
