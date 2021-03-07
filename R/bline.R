@@ -19,7 +19,7 @@ bline <- function(X, lambda=1e7, iter_max=30) {
     if(any(is.na(X))){message('X contains missing values, replacing with zeros.')}
     X <- .dimX(X)
     X.bl <- t(apply(X, 1, function(x) {
-        x - asysm(x, iter_max, lambda)
+        x - asysm(x, maxit=iter_max, lambda=lambda)
     }))
     return(X.bl)
 }
