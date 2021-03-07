@@ -130,16 +130,16 @@ read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
 
     out_le <- vapply(out, length, FUN.VALUE = 1)
     if (length(unique(out_le)) > 1) {
-        cnam <- unique(as.vector(vapply(out, names, FUN.VALUE = out[[1]])))
+        cnam <- unique(as.vector(unlist(lapply(out, names))))
         out_df <- matrix(NA, nrow = 1, ncol = length(cnam))
-        out <- as.data.frame(t(vapply(out, function(x, odf = out_df, cc = cnam) {
+        out <- as.data.frame(t(sapply(out, function(x, odf = out_df, cc = cnam) {
             odf[1, match(names(x), cnam)] <- x
             return(odf)
-        }, FUN.VALUE = out[[1]])))
+        })))
         colnames(out) <- cnam
     }
 
-    if (is.list(out)) {
+    if (!is.data.frame(out)) {
         out <- do.call(rbind, out)
     }
     #browser()
