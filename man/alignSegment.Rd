@@ -34,6 +34,7 @@ NA
 Other NMR: 
 \code{\link{binning}()},
 \code{\link{bline}()},
+\code{\link{excise1d}()},
 \code{\link{get.idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},

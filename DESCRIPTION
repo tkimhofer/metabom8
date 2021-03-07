@@ -1,7 +1,7 @@
 Package: metabom8
 Type: Package
 Title: All you need for NMR-based metabolic profling 
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: person("Torben", "Kimhofer", email = "torben.kimhofer@murdoch.edu.au", 
   role = c("aut", "cre"))
 Description: From NMR data read-in, statistical analysis to metabolite identification, this R package does it all!

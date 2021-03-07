@@ -25,70 +25,78 @@
 #' @family NMR ++
 #' @export
 predict_opls <- function(opls_model, newdata, idx_scale = NULL) {
-    
+
     if (!"OPLS_metabom8" %in% is(opls_model)) {
         stop("Model input does not belong to class OPLS_Torben!")
         return(NULL)
     }
-    
-    
+
+
     if (length(unique(opls_model@Y$ori)) != 2) {
         stop("Predictions implemented only for regression or 2-class outcomes.")
         return(NULL)
     }
-    
+
     # In case of one sample scenario: define X as column vector
     if (is.null(ncol(newdata))) {
         X <- rbind(newdata)
     } else {
         X <- newdata
     }
-    
+
     # check if dimensions X match to opls_model X
     if (length(opls_model@X_mean) != ncol(newdata)) {
         stop("Newdata argument does not match training data.")
     }
-    
-    
+
+
     if (!is.null(idx_scale)) {
         # use provided scaling vector define scale type
         map_scale <- c(none = 0L, UV = 1L)
         map_scale[match(opls_model@Parameters$scale, names(map_scale))]
         # browser()
-        sc_res <- .scaleMatRcpp(X, idx_scale - 1, center = opls_model@Parameters$center, 
+        sc_res <- .scaleMatRcpp(X, idx_scale - 1, center = opls_model@Parameters$center,
             scale_type = map_scale[match(opls_model@Parameters$scale, names(map_scale))])
         X <- sc_res$X_prep
     } else {
         # use model paramters for scaling
-        if (all(!is.null(opls_model@X_mean) & !is.na(opls_model@X_mean)) && all(!is.null(opls_model@X_sd) & 
+        if (all(!is.null(opls_model@X_mean) & !is.na(opls_model@X_mean)) && all(!is.null(opls_model@X_sd) &
             !is.na(opls_model@X_sd))) {
             Xmc <- sweep(X, 2, opls_model@X_mean, FUN = "-")
             X <- sweep(Xmc, 2, opls_model@X_sd, FUN = "/")
         }
     }
-    
+
     # center and scale X<-scale(newdata, center=opls_model@Xcenter,
     # scale=opls_model@Xscale) iteratively remove all orthogonal components from
     # prediction data set
     e_new_orth <- X
-    
-    t_orth <- matrix(NA, nrow = nrow(X), ncol = opls_model@nPC - 1)
-    for (i in seq_len(opls_model@nPC - 1)) {
-        t_orth[, i] <- e_new_orth %*% t(t(opls_model@p_orth[i, ]))/drop(crossprod(t(t(opls_model@p_orth[i, 
-            ]))))
-        e_new_orth <- e_new_orth - (cbind(t_orth[, i]) %*% t(opls_model@p_orth[i, 
-            ]))
+    #browser()
+
+    n_pcOorth=opls_model@nPC - 1
+    t_orth <- matrix(NA, nrow = nrow(X), ncol = n_pcOorth)
+
+    # use weights (not loadings to produce scores)
+    for (i in seq_len(n_pcOorth)) {
+        # t_orth[, i] <- e_new_orth %*% t(t(opls_model@p_orth[i, ]))/drop(crossprod(t(t(opls_model@p_orth[i,
+        #     ]))))
+        # e_new_orth <- e_new_orth - (cbind(t_orth[, i]) %*% t(opls_model@p_orth[i,
+        #     ]))
+
+        t_orth[, i] <- e_new_orth %*% t(t(opls_model@w_orth[i,]))/drop(crossprod(t(t(opls_model@w_orth[i,]))))
+        e_new_orth <- e_new_orth - (cbind(t_orth[, i]) %*% t(opls_model@p_orth[i,]))
     }
     # summarise orth component in case nc_orth > 2
-    if ((opls_model@nPC - 1) > 1) {
+    if ((n_pcOorth) > 1) {
         pc.orth <- pca(t_orth, pc = 1, scale = "UV")
         t_orth_pca <- pc.orth@t[, 1]
     } else {
         t_orth_pca <- NULL
     }
-    
+
     # calc predictive component score predictions and residuals
-    t_pred <- e_new_orth %*% t(opls_model@p_pred)
+    #browser()
+    t_pred <- e_new_orth %*% (opls_model@w_pred)
     # E_h <- e_new_orth - (t_pred %*% opls_model@p_pred)
     betas <- opls_model@betas_pred
     q_h <- opls_model@Qpc
@@ -100,18 +108,18 @@ predict_opls <- function(opls_model, newdata, idx_scale = NULL) {
     totalPrediction <- apply(res, 1, sum)  # sum over all components
     Y_predicted <- (totalPrediction * opls_model@Y_sd) + opls_model@Y_mean
     if (opls_model@type == "DA") {
-        
+
         # TODO: adjust class predictions to unequal group sizes of training set (decision
         # boundary shifting)
         cs <- table(opls_model@Y$ori, opls_model@Y$dummy)
-        levs <- data.frame(Original = rownames(cs), Numeric = as.numeric(colnames(cs)), 
+        levs <- data.frame(Original = rownames(cs), Numeric = as.numeric(colnames(cs)),
             stringsAsFactors = FALSE, row.names = NULL)
         Y_predicted <- levs$Original[apply(vapply(levs$Numeric, function(x, y = Y_predicted) {
             abs(x - y)
         }, Y_predicted), 1, which.min)]
     }
-    
-    
+
+
     out <- list(Y_predicted = Y_predicted, t_pred = t_pred, t_orth = t_orth, t_orth_pca = t_orth_pca)
     return(out)
 }

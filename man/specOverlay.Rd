@@ -49,7 +49,5 @@ specOverlay(X, shift=c(5.15, 4.6), an=list(panel, Date=meta$a_DATE, AUNM=meta$a_
 specOverlay(X, shift=c(5.15, 5.3), an=list(panel, RunOrder=as.numeric(meta$a_DATE), AUNM=meta$a_AUNM))
 }
 \author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-
 \email{torben.kimhofer@murdoch.edu.au}
 }

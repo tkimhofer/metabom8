@@ -9,7 +9,7 @@ pqn(
   X,
   iref = NULL,
   TArea = FALSE,
-  add_DilF = NULL,
+  add_DilF = "dquot",
   bin = list(ppm = NULL, width = 0.05, npoints = NULL)
 )
 }

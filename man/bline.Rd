@@ -5,16 +5,20 @@
 \alias{blcor}
 \title{Baseline correction for 1D NMR spectra}
 \usage{
-bline(X)
+bline(X, lambda = 1e+07, iter_max = 30)
 }
 \arguments{
 \item{X}{num matrix or data.frame, NMR data with rows representing spectra}
+
+\item{lambda, }{num smoothing paramter}
+
+\item{iter_max}{num, maximum number of iterations}
 }
 \value{
 Baseline corrected NMR matrix an with same dimension as input matrix.
 }
 \description{
-Non-linear baseline correction for NMR spectra. This function estimates smooth and non-linear baseline trends for each spectrum based on a asymmetric least squares method. The estimated baseline is subtracted from each spectrum and the remainder is returned.
+Non-linear baseline correction for NMR spectra based on asymetric least squares. This function estimates smooth and non-linear baseline trends for each spectrum. The baseline is then subtracted from a spectrum and the remainder is returned. For more infor on smoothing parameter \emph{lambda}, check out \code{\link[ptw]{asysm}}.
 }
 \examples{
 data(covid_raw)
@@ -28,6 +32,7 @@ spec(X1_bc[1,], ppm, shift=c(3,4), add=TRUE)
 Other NMR: 
 \code{\link{alignSegment}()},
 \code{\link{binning}()},
+\code{\link{excise1d}()},
 \code{\link{get.idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
