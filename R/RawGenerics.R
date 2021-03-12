@@ -88,10 +88,10 @@
       idx=idx[-idx_na]
     }
   }
-  fmat<-vapply(seq(length(idx)), function(i){
+  fmat<-sapply(seq(length(idx)), function(i){
     vars=gsub('^<|>$', '', pars[,idx[i]])
     vars %in% exp_type[[i]]
-  }, FUN.VALUE = pars[,1])
+  })
   idx_filt=apply(fmat==1, 1, all)
   if(!any(idx_filt)){stop('No files found that match the specified parameter specification levels.')}
   f_list=lapply(f_list, function(x){
