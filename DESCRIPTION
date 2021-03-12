@@ -21,6 +21,7 @@ Imports:
     parallel,
     pcaMethods,
     plotly,
+    plyr,
     pROC, 
     ptw,
     RColorBrewer,

@@ -18,6 +18,7 @@
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @family NMR
 #' @importFrom stats approxfun
+#' @importFrom plyr ddply
 #' @seealso \code{\link[=read1d_raw]{Process raw FIDs}}
 #' @section
 
@@ -41,7 +42,7 @@ read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
     # !any(is.na(suppressWarnings(as.numeric(x)))) }) pars<-as.data.frame(pars)
     # pars[,dtype_num]<-apply(pars[,dtype_num], 2, as.numeric)
     # rownames(pars)<-f_list[[2]]
-    # chem shift
+        # chem shift
     ppm_ref <- .chemShift(swidth = pars$a_SW[1], offset = pars$p_OFFSET[1], si = pars$p_SI[1])
     # read binary file (=spectrum)
     out <- vapply(seq_along(f_list[[1]]), function(s, ppref = ppm_ref) {
