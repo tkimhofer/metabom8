@@ -74,7 +74,6 @@ read1d_raw(path,  exp_type=list(exp='PROF_PLASMA_NOESY'), apodisation=list(fun='
 
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{excise1d}()},
 \code{\link{get.idx}()},

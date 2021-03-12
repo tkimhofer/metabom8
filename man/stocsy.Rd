@@ -36,7 +36,6 @@ points(speaks[[1]]$ppm, speaks[[1]]$Int, col=factor(speaks[[1]]$type))
 \seealso{
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{excise1d}()},
 \code{\link{get.idx}()},

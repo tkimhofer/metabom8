@@ -56,7 +56,6 @@ specload(model, shift=c(1,2), an=list(an$type), pc=1, alp=0.8)
 \seealso{
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{excise1d}()},
 \code{\link{get.idx}()},

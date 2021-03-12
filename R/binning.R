@@ -9,29 +9,29 @@
 #' @return Numeric matrix whith spectra in rows and chemical shift information in columns.
 #' @import stats approxfun
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @examples
-#' load(covid)
-#' Xb=binning(X, ppm, width=0.005)
-#' ppm_bin=as.numeric(colnames(Xb))
-#' par(mfrow=c(2,1))
-#' spec(X[1,], ppm, shift=c(5.15, 5.3), interactive=FALSE)
-#' spec(Xb[1,], ppm_bin,  shift=c(5.15, 5.3), interactive=FALSE)
-#' @family NMR
+# @examples
+# load(covid)
+# Xb=binning(X, ppm, width=0.005)
+# ppm_bin=as.numeric(colnames(Xb))
+# par(mfrow=c(2,1))
+# spec(X[1,], ppm, shift=c(5.15, 5.3), interactive=FALSE)
+# spec(Xb[1,], ppm_bin,  shift=c(5.15, 5.3), interactive=FALSE)
+# @family NMR
 binning <- function(X, ppm, width = 0.001, npoints = NULL) {
     if (is.null(ppm) && (is.matrix(X) | is.data.frame(X)) && !is.null(colnames(X))) {
         ppm <- as.numeric(colnames(X))
     } else {
-        if (!.check_X_ppm(X, ppm)) 
+        if (!.check_X_ppm(X, ppm))
             stop("Non-matching dimensions X matrix and ppm vector or missing values in ppm.")
     }
     if (is.vector(X)) {
         X <- t(X)
     }
-    
+
     # if (ppm[1] < ppm[length(ppm)]) { stop('Let's stick to the convention: Revert
     # the order of ppm and NMR matrix, so that the chemical shift decreases with
     # increasing indices!') }
-    
+
     if (is.null(width) & is.null(npoints)) {
         stop("Pleas specify spectral bin width or the desired number of data points per spectrum.\n")
     }
@@ -50,7 +50,7 @@ binning <- function(X, ppm, width = 0.001, npoints = NULL) {
         }
         ppm_bin <- seq(max(ppm), min(ppm), length.out = npoints)
     }
-    
+
     quot <- ceiling(width/(ppm[1] - ppm[2]))
     rr <- ceiling(length(ppm)/quot)
     x <- rep(seq_len(200), each = rr)

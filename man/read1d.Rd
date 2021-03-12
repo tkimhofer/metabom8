@@ -54,7 +54,6 @@ read1d(path,  exp_type=list(pulprog='noesygppr1d'))
 
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{excise1d}()},
 \code{\link{get.idx}()},

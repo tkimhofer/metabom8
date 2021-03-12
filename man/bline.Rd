@@ -31,7 +31,6 @@ spec(X1_bc[1,], ppm, shift=c(3,4), add=TRUE)
 
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{excise1d}()},
 \code{\link{get.idx}()},
 \code{\link{lw}()},

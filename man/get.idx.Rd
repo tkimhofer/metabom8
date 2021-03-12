@@ -31,7 +31,6 @@ lw(X, ppm) * meta$a_SFO1 # in Hz
 \seealso{
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{excise1d}()},
 \code{\link{lw}()},

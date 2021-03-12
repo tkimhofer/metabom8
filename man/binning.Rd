@@ -26,33 +26,6 @@ Equidistant binning of spectra based on either a specified bin witdth or the num
 \details{
 Specify either \code{width} or \code{npoints} argument - if both are fiven, \code{npoints} is used. Input argument \code{ppm} can be omitted if chemical shift infomration is encoded in the column names of the NMR matrix \code{X}. The returne matrix encodes chemical shift information as column names.
 }
-\examples{
-load(covid)
-Xb=binning(X, ppm, width=0.005)
-ppm_bin=as.numeric(colnames(Xb))
-par(mfrow=c(2,1))
-spec(X[1,], ppm, shift=c(5.15, 5.3), interactive=FALSE)
-spec(Xb[1,], ppm_bin,  shift=c(5.15, 5.3), interactive=FALSE)
-}
-\seealso{
-Other NMR: 
-\code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
-\code{\link{lw}()},
-\code{\link{matspec}()},
-\code{\link{noise.est}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
-\code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
-\code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()}
-}
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{NMR}
