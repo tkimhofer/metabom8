@@ -38,6 +38,8 @@
 }
 
 # lb to the negative of the peak width
+#' @keywords internal
+#' @section
 .gauss<-function(n, lb=-1.2, gb=0.3,  para){
   sw_hz=para$a_SW_h
   AQ=para$a_TD/(2*sw_hz)
@@ -71,7 +73,7 @@
 # filter experiments
 #' @keywords internal
 #' @section
-#' @importFrom plyr ddply
+#' @importFrom plyr ddply .
 .filterExp_files<-function(pars, exp_type, f_list, n_max){
 
 
@@ -103,8 +105,8 @@
   idx_filt=which(idx_filt)
   if(length(idx_filt)>n_max){
 
-    idx_filt=idx_filt[1:n_max]
-    f_list=lapply(f_list, function(x,  idx=1:n_max){
+    idx_filt=idx_filt[seq_len(n_max)]
+    f_list=lapply(f_list, function(x,  idx=seq_len(n_max)){
       x[idx]
     })
 
@@ -119,7 +121,7 @@
   # find order of racks
   if(length(idx_keep)>1){
 
-    rack_<-t(vapply(1:length(fnam), function(i, iid=idx_keep[length(idx_keep)-1]){
+    rack_<-t(vapply(seq_len(length(fnam)), function(i, iid=idx_keep[length(idx_keep)-1]){
       c(fnam[[i]][iid], pars$a_DATE[i])
     }, FUN.VALUE = c('', '')))
     colnames(rack_)<-c('a', 'b')

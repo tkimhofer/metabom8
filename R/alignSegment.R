@@ -12,15 +12,15 @@
 #' @family NMR
 #' @section
 
-alignSegment=function(seg, idx_ref=1, clim=0.7, med=T, norm=F){
+alignSegment=function(seg, idx_ref=1, clim=0.7, med=TRUE, norm=FALSE){
 
   if(is.null(nrow(seg)) || nrow(seg)<2) {stop('Check input dimensions.')}
   if(med[1]){seg=rbind(apply(seg, 2, median), seg); idx_ref=1}
-  if(norm){require(metabom8); seg=t(apply(seg, 1, minmax))}
+  if(norm){seg=t(apply(seg, 1, minmax))}
 
   out=vapply(seq(nrow(seg)), function(i, le=ncol(seg)){
 
-    cc_mod=ccf(seg[i,], seg[idx_ref,], type='correlation', plot = F)
+    cc_mod=ccf(seg[i,], seg[idx_ref,], type='correlation', plot = FALSE)
     acf=as.vector(cc_mod$acf)
     idx<-which.max(acf)
     cval<-acf[idx]
@@ -28,18 +28,18 @@ alignSegment=function(seg, idx_ref=1, clim=0.7, med=T, norm=F){
 
     if(cval > clim ){
       if(xlag>0){
-        dd=c(seg[i, -(1:abs(xlag))], rep(0, abs(xlag)))
+        dd=c(seg[i, -seq_len(abs(xlag))], rep(0, abs(xlag)))
       }
       if(xlag<0){
-        dd=c(rep(0, abs(xlag)), seg[i,-((le-abs(xlag)+1):le)])
+        dd=c(rep(0, abs(xlag)), seg[i,-seq((le-abs(xlag)+1),le)])
       }
 
       if(xlag==0){dd=seg[i,]}
 
       return(dd)
     } else{
-      print(i)
-      print(cval)
+      # print(i)
+      # print(cval)
       seg[i,]
     }
   }, FUN.VALUE = seg[1,])

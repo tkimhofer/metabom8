@@ -4,7 +4,7 @@
 \alias{alignSegment}
 \title{Align NMR segment to refrerence based on maximum cross-correlation}
 \usage{
-alignSegment(seg, idx_ref = 1, clim = 0.7, med = T, norm = F)
+alignSegment(seg, idx_ref = 1, clim = 0.7, med = TRUE, norm = FALSE)
 }
 \arguments{
 \item{seg}{matrix or data frame, NMR submatrix containing segments (spectra in rows)}

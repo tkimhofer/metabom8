@@ -2,6 +2,7 @@
 #' @description This function checks for missing values in Y (NA, NAN, infinite) and establishes analysis type accroding to the class of the input data Y: regression (R) or discriminant analysis (DA). It also converts Y to a matrix.
 #' @param Y Input data (uni or multivar) formatted as vector or matrix or data.frame
 #' @return List of i) Y matrix, ii) Y levels (empty if numeric Y), iii) Y type (R or DA)
+#' @import methods is
 #' @keywords internal
 #' @section
 .checkYclassNas = function(Y) {
@@ -113,14 +114,14 @@
                    stop(paste("Something went wrong: Q2 is NA"))
                }
                if (nc == 1 && cv_est < 0.05) stop(paste0("No significant component (r2=", round(cv_est, 2), ")"))
-               if (nc > 1 && (diff(cv_est[(nc - 1):nc]) < 0.05 | cv_est[nc] > 0.98)) return(TRUE)
+               if (nc > 1 && (diff(cv_est[seq((nc - 1),nc)]) < 0.05 | cv_est[nc] > 0.98)) return(TRUE)
            },
            DA = {
                if (any(is.na(cv_est))) {
                    stop(paste("Something went wrong: Q2 is NA"))
                }
                if (nc == 1 && cv_est < 0.6) stop(paste0("No significant component (AUROC_cv=", round(cv_est, 2), ")"))
-               if (nc > 1 && (diff(cv_est[(nc - 1):nc]) < 0.05 | cv_est[nc] > 0.97)) return(TRUE)
+               if (nc > 1 && (diff(cv_est[seq((nc - 1), nc)]) < 0.05 | cv_est[nc] > 0.97)) return(TRUE)
            })
 
     return(FALSE)
@@ -711,7 +712,7 @@ minmax <- function(x) {
 #' @section
 lw <- function(X, ppm, shift = c(-0.1, 0.1)) {
     idx <- get.idx(shift, ppm)
-    asign=sign(diff(ppm[1:2]))
+    asign=sign(diff(ppm[seq_len(2)]))
     fwhm <- apply(X[, idx], 1, function(x, pp = ppm[idx], as=asign) {
         if(min(x)<0){ x <- x + abs(min(x)); baseline=0} else{baseline <- min(x)}  # no negative values}
         height <- max(x) - baseline
