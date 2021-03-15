@@ -581,7 +581,7 @@
 
     g <- ggplot(mm, aes_string("PC", " value", fill = "variable")) +
         geom_bar(stat = "identity", position = "dodge", colour = NA, aes_string(alpha = "alph")) +
-        scale_fill_manual(values = c(R2X = "lightgreen", R2Y = "lightblue", Q2 = "red", AUROC = "black", AUROC_CV = "red"), labels = c(expression(R^2 * X), expression(R^{2} * Y), expression(Q^2), expression(AUROC[cv])), name = "") +
+        scale_fill_manual(values = c(R2X = "lightgreen", R2Y = "lightblue", Q2 = "red", AUROC = "black", AUROC_CV = "red"), labels = c(R2X =expression(R^2 * X), R2Y =expression(R^{2} * Y), Q2 =expression(Q^2), AUROC = expression(AUROC), AUROC_CV =expression(AUROC[cv])), name = "") +
         scale_alpha(guide = FALSE, limits = c(0, 1)) +
         labs(x = "Predictive + Orthogonal Component(s)",
              y = "",
