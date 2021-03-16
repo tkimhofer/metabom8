@@ -5,7 +5,7 @@
 #' @param iref num or int vector of X row indices, used to calculate the reference spectrum (see Details). Set to NULL if all samples should be use to calculate reference index
 #' @param TArea logical indicating if total area normalisation should be applied first (see Details).
 #' @param add_DilF char string, defining name of variable exported to global namespace and containing dilution factor information  Can be set to NULL if dilution factor should not be exported.
-#' @param bin named list: ppm and binning function parameters width or npoints
+#' @param bin either NULL or named list: ppm and binning function parameters width or npoints
 #' @details It is sometimes favourable not to use all spectra to calculate a dilution reference (e.g. QC samples should generally be excluded). Therefore, a vector of indices can be specified with the parameter \code{reference.idx} and the respective spectra are used to calculate the median spectrum as a dilution reference. The parameter \code{reference.idx} can also be a single index, then the respective spectrum is used as a reference. If it is set \code{N/A}, all spectra in \code{X} are used to calculate the dilution reference spectrum. to Total area normalisation is integral part of the probabilistic quotient normalisation algorithm (see References), however, this sometimes distorts the spectra, i.e. is not suitable for normalisation. The parameter \code{TArea} can be set to TRUE or FALSE, depending if total area normalisation should be applied or not.
 #' @references Dieterle, F., \emph{et al.} (2006), Probabilistic Quotient Normalization as Robust Method to Account for Dilution of Complex Biological Mixtures. Application in 1H NMR Metabonomics, \emph{Analytical Chemistry}, 78.3, 4281-90.
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
@@ -15,9 +15,9 @@
 #' Xn=pqn(X, add_DilF='dilutionFactor') # Xn contain normalised spectra
 #' plot(dilutionFactor)
 #' @family NMR ++
+# list(ppm = NULL, width = 0.05, npoints = NULL)
 
-pqn <- function(X, iref = NULL, TArea = FALSE, add_DilF = 'dquot', bin = list(ppm = NULL,
-    width = 0.05, npoints = NULL)) {
+pqn <- function(X, iref = NULL, TArea = FALSE, add_DilF = 'dquot', bin = NULL) {
 
     nams <- rownames(X)
 
