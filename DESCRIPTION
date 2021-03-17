@@ -26,7 +26,6 @@ Imports:
     ptw,
     RColorBrewer,
     Rcpp (>= 1.0.4.6), 
-    RcppArmadillo,
     reshape2, 
     scales, 
     signal,
