@@ -2,8 +2,8 @@
 exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp, sourceCpp)
 importFrom(Rcpp, evalCpp)
-import(RcppArmadillo)
-import(RcppEigen)
+#import(RcppArmadillo)
+#import(RcppEigen)
 
 
 importFrom(signal,sgolayfilt)
