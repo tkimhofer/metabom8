@@ -40,7 +40,7 @@ Rcpp::List nip_pca_comp_rcpp(Eigen::MatrixXd X) {
     }
     t_xold = t_x;
     if ( count > 500 ) {
-      Rcpp::Rcout << 'NIPALS failed to converge after 500 iterations!\n';
+      Rcpp::Rcout << "NIPALS failed to converge after 500 iterations!\n";
       break;
     }
     count += 1;
@@ -94,7 +94,7 @@ Eigen::MatrixXd multiY_Tw_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y) {
     T_w.conservativeResize(Eigen::NoChange, (T_w.cols()+1));
     T_w.col(T_w.cols()-1) = t_w;
     if( count > 300 ) {
-      Rcpp::Rcout << 'NIPALS failed to converge after 300 iterations!\n';
+      Rcpp::Rcout << "NIPALS failed to converge after 300 iterations!\n";
       break;
     }
     ss_T = t_w.squaredNorm();
@@ -151,7 +151,7 @@ Rcpp::List nip_PLS_comp_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y) {
     }
     t_yold=t_y;
     if( count > 300 ) {
-      Rcpp::Rcout << 'NIPALS failed to converge after 300 iterations!\n';
+      Rcpp::Rcout << "NIPALS failed to converge after 300 iterations!\n";
       break;
     }
     count += 1;
