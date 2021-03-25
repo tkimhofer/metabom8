@@ -17,7 +17,7 @@
 # spec(X[1,], ppm, shift=c(5.15, 5.3), interactive=FALSE)
 # spec(Xb[1,], ppm_bin,  shift=c(5.15, 5.3), interactive=FALSE)
 # @family NMR
-binning <- function (X, ppm, width = 0.01, npoints=NULL)
+binning <- function (X, ppm, width = NULL, npoints=NULL)
 {
     if (is.null(ppm) && (is.matrix(X) | is.data.frame(X)) &&
         !is.null(colnames(X))) {
@@ -51,15 +51,11 @@ binning <- function (X, ppm, width = 0.01, npoints=NULL)
         Xb <- t(apply(X, 1, function(x, ppmt = ppm_new, ppm_fres = ppm, yb=ybin) {
             sInter <- approxfun(ppm_fres, x)
             s=sInter(ppmt)
-
-            #browser()
             out=sapply(seq(max(yb)), function(i){
                 iidx=which(yb==i)
                 sum(s[iidx])
             })
-
             return(out)
-
         }))
 
         ppm_bin=sapply(seq(max(ybin)), function(i){
@@ -95,7 +91,7 @@ binning <- function (X, ppm, width = 0.01, npoints=NULL)
 
         ppm_bin=sapply(seq(max(ybin)), function(i){
             iidx=which(ybin==i)
-            mean(ppm_new[iidx])
+            mean(ppm[iidx])
         })
 
         colnames(Xb) <- ppm_bin
@@ -103,10 +99,6 @@ binning <- function (X, ppm, width = 0.01, npoints=NULL)
         return(Xb)
 
     }
-
-    # estimate line at lower resolution than current (to not loose peaks) but at multiple of width, so that sum can be accurately estimated
-
-    return(NULL)
-
-
+   return(NULL)
 }
+

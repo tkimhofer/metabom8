@@ -5,7 +5,7 @@
 \title{NMR data binning
 Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.}
 \usage{
-binning(X, ppm, width = 0.01, npoints = NULL)
+binning(X, ppm, width = NULL, npoints = NULL)
 }
 \arguments{
 \item{X}{num matrix, NMR data with spectra in rows}

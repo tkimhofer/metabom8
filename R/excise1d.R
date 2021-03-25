@@ -11,7 +11,7 @@
 #'   \item 9.7 to max(ppm)  (no signal downfield)
 #' }
 #' @return
-#' The function exports the following three objects into the currently active R environment (no variable assignments needed):
+#' The function exports the following two objects into the currently active R environment (no variable assignments needed):
 #' \itemize{
 #'   \item Xc, num matrix: column reduced
 #'   \item ppc, num array - chemical shift positions, length is equal to ncol(X_c)
