@@ -4,7 +4,7 @@
 #' @param X num matrix or data.frame, NMR data with rows representing spectra
 #' @param lambda, num smoothing paramter
 #' @param iter_max num, maximum number of iterations
-#' @description Non-linear baseline correction for NMR spectra based on asymetric least squares. This function estimates smooth and non-linear baseline trends for each spectrum. The baseline is then subtracted from a spectrum and the remainder is returned. For more infor on smoothing parameter *lambda*, check out \code{\link[ptw]{asysm}}.
+#' @description Non-linear baseline correction for NMR spectra based on asymetric least squares. This function estimates smooth and non-linear baseline trends for each spectrum. The baseline is then subtracted from the respective spectrum and the remainder is returned. For more infor on smoothing parameter *lambda*, check out \code{\link[ptw]{asysm}}.
 #' @return Baseline corrected NMR matrix an with same dimension as input matrix.
 #' @importFrom ptw asysm
 #' @seealso \code{\link[ptw]{asysm}}

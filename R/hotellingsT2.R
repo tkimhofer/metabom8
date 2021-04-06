@@ -10,6 +10,7 @@
 #' @importFrom ellipse ellipse
 #' @importFrom stats cov
 #' @family NMR ++
+#' @keywords internal
 .hotellingsT2 <- function(x, y, alpha = 0.95) {
     SD <- cov(cbind(x, y), use = "complete.obs")
     el <- ellipse(SD, centre = colMeans(cbind(x, y), na.rm = TRUE), level = alpha)
@@ -19,7 +20,7 @@
     ylim <- c(min((c(el[, 2], y))), max((c(el[, 2], y))))
     ylim <- ylim + c(diff(range(ylim)) * -0.05, diff(range(ylim)) * +0.05)
     df <- as.data.frame(el)
-    
+
     return(df)
 }
 

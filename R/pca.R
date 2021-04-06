@@ -1,14 +1,14 @@
-#' Perform Principal Component Analysis
+#' Principal Component Analysis
 #' @export
 #' @description This function is used to perform Principal Component Analysis (PCA).
-#' @param X Numeric input matrix with each row representing an observation and each column a metabolic feature.
+#' @param X Numeric input matrix with each row representing an observation and each column a metabolic variable.
 #' @param pc Desired number of principal components.
 #' @param scale Desired scaling method: \code{None}, \code{UV} (unit variance) or \code{Pareto} (Pareto scaling).
-#' @param method Algorithm for computing PCA. NIPALS is standard and usually fine, see Details for other methods.
-#' @details Other PCA methods: These rely on implementation inf the pcaMethods R package and include 'svd', 'ppca', 'svdImpute', 'robustPca', 'nlpca'. For complete list of available methods see pca function documentation of the \code{pcaMethods} package.
-#' @param center Logical indicating if data should be mean centered.
+#' #' @param center Logical indicating if data should be mean centered.
+#' @param method Algorithm for computing PCA. NIPALS is default and usually fine, see Details for other methods.
+#' @details Other PCA algorithms build on the pcaMethods R package and include: 'svd', 'ppca', 'svdImpute', 'robustPca', 'nlpca'. For complete list of available methods see \code{?pcaMethods::pca} documentation.
 #' @references Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
-#' @return This function returns a \emph{PCA_MetaboMate} S4 object.
+#' @return This function returns a \emph{PCA_metabom8} S4 object.
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom pcaMethods pca
 #' @family NMR ++
@@ -65,14 +65,8 @@ pca <- function(X, pc = 2, scale = "UV", center = TRUE, method = "nipals") {
 
     mod <- pcaMethods::pca(X, nPcs = pc, scale = "none", center = FALSE, method = method)
     r2 <- mod@R2cum
-    for (i in seq_len(pc)) {
-      if (i == 1) {
-        next
-      } else {
-        r2[i] <- r2[i] - cumsum(r2[seq_len((i - 1))])
-      }
-    }
-
+    r2[-1]=diff(mod@R2cum)
+    tssx<-.tssRcpp(XcsTot)
     pars=list(
       'center'= center,
       'scale'= scale,
