@@ -26,7 +26,7 @@ NA
 
 \examples{
 load(covid)
-idx_tsp=get.idx(c(-0.1, 0.1), ppm)
+idx_tsp=get_idx(c(-0.1, 0.1), ppm)
 ppm[range(idx_tsp)]
 plot(ppm[idx_tsp], X[1,idx_tsp], type='l')
 }

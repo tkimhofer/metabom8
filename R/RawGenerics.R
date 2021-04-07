@@ -158,6 +158,8 @@
     x[rr]
   })
 
+  pars$a_DATE=as.POSIXct(pars$a_DATE)
+
   return(list(f_list, pars))
 }
 

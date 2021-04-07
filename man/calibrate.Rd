@@ -2,7 +2,7 @@
 % Please edit documentation in R/calibrate.R
 \name{calibrate}
 \alias{calibrate}
-\title{Spectral calibration to a chemical shift reference (1D NMR)}
+\title{Chemical shift calibration}
 \usage{
 calibrate(X, ppm, type = c("tsp", "glucose", "alanine"))
 }
@@ -17,7 +17,7 @@ calibrate(X, ppm, type = c("tsp", "glucose", "alanine"))
 num matrix X, calibrated NMR data matrix.
 }
 \description{
-Spectral calibration to a chemical shift reference.
+Chemical shift calibration with a reference signal.
 }
 \details{
 Spectral calibration to a selected chemical shift reference signal.
