@@ -12,7 +12,7 @@
 #' @keywords internal
 .calibrate_doub <- function(X, ppm, type=c('glu', 'ala'), j_const=c(0.006, 0.007), sg_length = 13) {
 
-    if(type[1] =='gluc')  idx <- get_idx(c(5.15, 5.3), ppm); cent_loc=5.233; j_const=c(0.006, 0.007)
+    if(type[1] =='glu')  idx <- get_idx(c(5.15, 5.3), ppm); cent_loc=5.233; j_const=c(0.006, 0.007)
     if(type[1] =='ala')  idx <- get_idx(c(1.4, 1.56), ppm); cent_loc=1.48
     if(is.numeric(type[1]))  idx <- get_idx(type, ppm)
 
