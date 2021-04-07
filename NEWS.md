@@ -1,11 +1,11 @@
 # metabom8 0.4.4
 
-* Updated PCA convergence threhold
-* Added alignSegment fct to manually align urine spectra
+* Added `alignSegment()` for aligning spectral regions with peak shift
+* Updated NIPALS convergence threhold for PCA (eps<10^-6^)
 
 
 # metabom8 0.4.3
 
-* Updated binning function
-* Added excise1d function for easy 1D chemical shift excision
-* Added normQref function to normalise noesy-presat spec with quantRef integral
+* Updated `binning()` function
+* Added `excise1d()` for automated 1D chemical shift excision (capping, water, urea)
+* Added `normErectic()` to normalise std 1D spec with the ERECTIC integral (Bruker IVDr method)

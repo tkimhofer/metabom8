@@ -2,16 +2,18 @@
 % Please edit documentation in R/AllGenerics.R
 \name{lw}
 \alias{lw}
-\title{Calculating full width at half max}
+\title{Full width at half-maximum (fwhm)}
 \usage{
-lw(X, ppm, shift = c(-0.1, 0.1))
+lw(X, ppm, shift = c(-0.1, 0.1), sf)
 }
 \arguments{
-\item{X}{num matrix of NMR data, rows representing spectra.}
+\item{X}{num matrix, NMR data with rows representing spectra.}
 
 \item{ppm}{num array describing chemical shift positions, its length equals to \code{nrow(X)}.}
 
-\item{shift}{num array(2), chemical shift range of singlet used to calculate line width}
+\item{shift}{num array(2), chemical shift range of a singlet for which fwhm is calculated}
+
+\item{sf}{num, operating frequency of the spectrometer (meta$SFO1)}
 }
 \value{
 Array of line widths in ppm. To convert from ppm to Hertz (Hz), multiply values with the spectrometer frequency (column \code{a_SF01} in \code{meta} data frame).
@@ -36,7 +38,7 @@ Other NMR:
 \code{\link{get.idx}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{normqref}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},

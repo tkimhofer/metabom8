@@ -86,6 +86,21 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -113,17 +128,17 @@
 <h1 class="page-header" data-toc-text="0.4.4">
 <a href="#metabom8-0-4-4" class="anchor"></a>metabom8 0.4.4</h1>
 <ul>
-<li>Updated PCA convergence threhold</li>
-<li>Added alignSegment fct to manually align urine spectra</li>
+<li>Added <code><a href="../reference/alignSegment.html">alignSegment()</a></code> for aligning spectral regions with peak shift</li>
+<li>Updated NIPALS convergence threhold for PCA (eps&lt;10^-6^)</li>
 </ul>
 </div>
     <div id="metabom8-0-4-3" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.3">
 <a href="#metabom8-0-4-3" class="anchor"></a>metabom8 0.4.3</h1>
 <ul>
-<li>Updated binning function</li>
-<li>Added excise1d function for easy 1D chemical shift excision</li>
-<li>Added normQref function to normalise noesy-presat spec with quantRef integral</li>
+<li>Updated <code><a href="../reference/binning.html">binning()</a></code> function</li>
+<li>Added <code><a href="../reference/excise1d.html">excise1d()</a></code> for automated 1D chemical shift excision (capping, water, urea)</li>
+<li>Added <code><a href="../reference/normErectic.html">normErectic()</a></code> to normalise std 1D spec with the ERECTIC integral (Bruker IVDr method)</li>
 </ul>
 </div>
   </div>

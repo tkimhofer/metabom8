@@ -1,7 +1,7 @@
 #### read fids
 
 
-#' @title Read-in FIDs and process to spectra
+#' @title Read-in 1D NMR FIDs and process to spectra
 #' @export
 #' @param path char, path to file directory containing spectra
 #' @param exp_type named list, filter for acquisition paramters of experiments to read-in (see Details)

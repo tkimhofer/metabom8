@@ -1,4 +1,4 @@
-#' @title Cross-validated ANOVA
+#' @title Cross-validated ANOVA for O-PLS models
 #' @export
 #' @description Significance testing for OPLS models
 #' @param smod OPLS_metabom8 object of the package \emph{metabom8}.

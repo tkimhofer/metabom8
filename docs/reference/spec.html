@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Simple plotting of a single NMR spectrum — spec • metabom8</title>
+<title>Plot single NMR spectrum — spec • metabom8</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Simple plotting of a single NMR spectrum — spec" />
-<meta property="og:description" content="Simple plotting of a single NMR spectrum" />
+<meta property="og:title" content="Plot single NMR spectrum — spec" />
+<meta property="og:description" content="Plot single NMR spectrum" />
 
 
 
@@ -87,6 +87,21 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -106,13 +121,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Simple plotting of a single NMR spectrum</h1>
+    <h1>Plot single NMR spectrum</h1>
     
     <div class="hidden name"><code>spec.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Simple plotting of a single NMR spectrum</p>
+    <p>Plot single NMR spectrum</p>
     </div>
 
     <pre class="usage"><span class='fu'>spec</span>(
@@ -131,19 +146,19 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>NMR spectrum.</p></td>
+      <td><p>num array, NMR spectrum.</p></td>
     </tr>
     <tr>
       <th>ppm</th>
-      <td><p>ppm vector.</p></td>
+      <td><p>num array, ppm vector.</p></td>
     </tr>
     <tr>
       <th>shift</th>
-      <td><p>chemical shift region to be plotted.</p></td>
+      <td><p>num array, chemical shift region to be plotted.</p></td>
     </tr>
     <tr>
       <th>add</th>
-      <td><p>Logical indicating if spectrum should be added to a current plot generated with <code>spec()</code> or <code><a href='matspec.html'>matspec()</a></code>.</p></td>
+      <td><p>logical, indicating if spectrum should be added to a current plot generated with <code>spec()</code> or <code><a href='matspec.html'>matspec()</a></code>.</p></td>
     </tr>
     <tr>
       <th>interactive</th>
@@ -155,7 +170,7 @@
     </tr>
     <tr>
       <th>mode</th>
-      <td><p>string, plot mode for interactive version: 'lines', 'lines+markers' or 'markers' (see Details)</p></td>
+      <td><p>string, plot mode for interactive version: 'lines' (recommended), 'lines+markers' or 'markers'</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -163,12 +178,9 @@
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Plot showing NMR spectrum</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Low-level plotting function for a single NMR spectrum (base graphics). Interactive visualisation in mode of markers or line+markers will take longer (mode='lines' is recommended).</p>
+    <p>Non-interactive mode: Base graphics for single NMR spectrum. Interactive mode: Plotly graphics.</p>
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
 
     <p>NA</p>
@@ -183,7 +195,7 @@
 <code><a href='lw.html'>lw</a>()</code>,
 <code><a href='matspec.html'>matspec</a>()</code>,
 <code><a href='noise.est.html'>noise.est</a>()</code>,
-<code><a href='normqref.html'>normqref</a>()</code>,
+<code><a href='normErectic.html'>normErectic</a>()</code>,
 <code><a href='plotload.html'>plotload</a>()</code>,
 <code><a href='ppick.html'>ppick</a>()</code>,
 <code><a href='read1d_raw.html'>read1d_raw</a>()</code>,

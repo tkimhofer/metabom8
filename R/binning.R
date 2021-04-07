@@ -1,12 +1,11 @@
-#' @title NMR data binning
-#' Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.
+#' @title Spectral data binning
 #' @export
 #' @param X num matrix, NMR data with spectra in rows
 #' @param ppm num array, chemical shift positions, length matches to columns in X
 #' @param width num, bin size in ppm or NULL in case \code{npoints} is specified
 #' @param npoints num, desired number of bins per spectrum or NULL in case  \code{width} is specified
-#' @details Specify either \code{width} or \code{npoints} argument - if both are fiven, \code{npoints} is used. Input argument \code{ppm} can be omitted if chemical shift infomration is encoded in the column names of the NMR matrix \code{X}. The returne matrix encodes chemical shift information as column names.
-#' @return Numeric matrix whith spectra in rows and chemical shift information in columns.
+#' @details #' Equidistant binning of spectra. Specify either \code{width} or \code{npoints} argument - if both are provided, \code{npoints} is used. Input argument \code{ppm} can be omitted if chemical shift information is encoded in the column names of the NMR matrix \code{X}.
+#' @return Numeric matrix with spectra in rows and chemical shift variables in columns.
 #' @import stats approxfun
 #' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 # @examples

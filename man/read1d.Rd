@@ -2,9 +2,19 @@
 % Please edit documentation in R/read1d.R
 \name{read1d}
 \alias{read1d}
+\alias{read1d_proc}
 \title{Import 1D NMR spectra}
 \usage{
 read1d(
+  path,
+  exp_type = list(exp = c("PROF_PLASMA_CPMG")),
+  n_max = 1000,
+  filter = TRUE,
+  recursive = TRUE,
+  verbose = TRUE
+)
+
+read1d_proc(
   path,
   exp_type = list(exp = c("PROF_PLASMA_CPMG")),
   n_max = 1000,
@@ -60,7 +70,7 @@ Other NMR:
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{normqref}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},

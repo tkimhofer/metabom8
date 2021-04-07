@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculating full width at half max — lw • metabom8</title>
+<title>Full width at half-maximum (fwhm) — lw • metabom8</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Calculating full width at half max — lw" />
+<meta property="og:title" content="Full width at half-maximum (fwhm) — lw" />
 <meta property="og:description" content="Calculating full width at half maximum (FWHM, aka line width). This function returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in shift." />
 
 
@@ -87,6 +87,21 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -106,7 +121,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculating full width at half max</h1>
+    <h1>Full width at half-maximum (fwhm)</h1>
     
     <div class="hidden name"><code>lw.Rd</code></div>
     </div>
@@ -115,14 +130,14 @@
     <p>Calculating full width at half maximum (FWHM, aka line width). This function returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in <code>shift</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>lw</span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>, shift = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='op'>-</span><span class='fl'>0.1</span>, <span class='fl'>0.1</span>))</pre>
+    <pre class="usage"><span class='fu'>lw</span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>, shift = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='op'>-</span><span class='fl'>0.1</span>, <span class='fl'>0.1</span>), <span class='kw'>sf</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>num matrix of NMR data, rows representing spectra.</p></td>
+      <td><p>num matrix, NMR data with rows representing spectra.</p></td>
     </tr>
     <tr>
       <th>ppm</th>
@@ -130,7 +145,11 @@
     </tr>
     <tr>
       <th>shift</th>
-      <td><p>num array(2), chemical shift range of singlet used to calculate line width</p></td>
+      <td><p>num array(2), chemical shift range of a singlet for which fwhm is calculated</p></td>
+    </tr>
+    <tr>
+      <th>sf</th>
+      <td><p>num, operating frequency of the spectrometer (meta$SFO1)</p></td>
     </tr>
     </table>
 
@@ -149,7 +168,7 @@
 <code><a href='get.idx.html'>get.idx</a>()</code>,
 <code><a href='matspec.html'>matspec</a>()</code>,
 <code><a href='noise.est.html'>noise.est</a>()</code>,
-<code><a href='normqref.html'>normqref</a>()</code>,
+<code><a href='normErectic.html'>normErectic</a>()</code>,
 <code><a href='plotload.html'>plotload</a>()</code>,
 <code><a href='ppick.html'>ppick</a>()</code>,
 <code><a href='read1d_raw.html'>read1d_raw</a>()</code>,
@@ -166,10 +185,8 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/load.html'>load</a></span>(<span class='kw'>covid</span>)
 </div><div class='output co'>#&gt; <span class='error'>Error in load(covid): object 'covid' not found</span></div><div class='input'><span class='fu'>lw</span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>) <span class='co'># in ppm</span>
-</div><div class='output co'>#&gt;            1            2 
-#&gt; 0.0005290349 0.0005290349 </div><div class='input'><span class='fu'>lw</span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>) <span class='op'>*</span> <span class='kw'>meta</span><span class='op'>$</span><span class='kw'>a_SFO1</span> <span class='co'># in Hz</span>
-</div><div class='output co'>#&gt;         1         2 
-#&gt; 0.3175335 0.3175335 </div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in lw(X, ppm): argument "sf" is missing, with no default</span></div><div class='input'><span class='fu'>lw</span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>) <span class='op'>*</span> <span class='kw'>meta</span><span class='op'>$</span><span class='kw'>a_SFO1</span> <span class='co'># in Hz</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in lw(X, ppm): argument "sf" is missing, with no default</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -44,7 +44,7 @@ Other NMR:
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{normqref}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{read1d_raw}()},
 \code{\link{read1d}()},

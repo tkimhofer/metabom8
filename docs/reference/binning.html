@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NMR data binning
-Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins. — binning • metabom8</title>
+<title>Spectral data binning — binning • metabom8</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ Equidistant binning of spectra based on either a specified bin witdth or the num
 
 
 
-<meta property="og:title" content="NMR data binning
-Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins. — binning" />
-<meta property="og:description" content="NMR data binning
-Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins." />
+<meta property="og:title" content="Spectral data binning — binning" />
+<meta property="og:description" content="Spectral data binning" />
 
 
 
@@ -90,6 +87,21 @@ Equidistant binning of spectra based on either a specified bin witdth or the num
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -109,15 +121,13 @@ Equidistant binning of spectra based on either a specified bin witdth or the num
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>NMR data binning
-Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.</h1>
+    <h1>Spectral data binning</h1>
     
     <div class="hidden name"><code>binning.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>NMR data binning
-Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.</p>
+    <p>Spectral data binning</p>
     </div>
 
     <pre class="usage"><span class='fu'>binning</span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>, width = <span class='kw'>NULL</span>, npoints = <span class='kw'>NULL</span>)</pre>
@@ -145,10 +155,10 @@ Equidistant binning of spectra based on either a specified bin witdth or the num
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Numeric matrix whith spectra in rows and chemical shift information in columns.</p>
+    <p>Numeric matrix with spectra in rows and chemical shift variables in columns.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Specify either <code>width</code> or <code>npoints</code> argument - if both are fiven, <code>npoints</code> is used. Input argument <code>ppm</code> can be omitted if chemical shift infomration is encoded in the column names of the NMR matrix <code>X</code>. The returne matrix encodes chemical shift information as column names.</p>
+    <p>#' Equidistant binning of spectra. Specify either <code>width</code> or <code>npoints</code> argument - if both are provided, <code>npoints</code> is used. Input argument <code>ppm</code> can be omitted if chemical shift information is encoded in the column names of the NMR matrix <code>X</code>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Torben Kimhofer <a href='mailto:torben.kimhofer@murdoch.edu.au'>torben.kimhofer@murdoch.edu.au</a></p>

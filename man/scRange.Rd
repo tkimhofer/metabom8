@@ -2,21 +2,23 @@
 % Please edit documentation in R/AllGenerics.R
 \name{scRange}
 \alias{scRange}
-\title{Min-max scaling}
+\title{Range scaling}
 \usage{
 scRange(x, ra)
 }
 \arguments{
-\item{x}{num array, desired value range of the scaled variable}
+\item{x}{num array to be scaled}
+
+\item{ra}{num array, desired value range}
 }
 \value{
 num array, same length as x
 }
 \description{
-Min-max scaling
+Range scaling
 }
 \details{
-Output values are scaled to range between 0 and 1
+x-scaled, so that values fall between range of \code{ra}
 }
 \section{}{
 NA

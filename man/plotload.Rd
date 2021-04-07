@@ -58,7 +58,7 @@ Other NMR:
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{normqref}()},
+\code{\link{normErectic}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},
 \code{\link{read1d}()},

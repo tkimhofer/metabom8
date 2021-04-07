@@ -2,7 +2,7 @@
 % Please edit documentation in R/AllViz.R
 \name{spec}
 \alias{spec}
-\title{Simple plotting of a single NMR spectrum}
+\title{Plot single NMR spectrum}
 \usage{
 spec(
   x,
@@ -16,30 +16,27 @@ spec(
 )
 }
 \arguments{
-\item{x}{NMR spectrum.}
+\item{x}{num array, NMR spectrum.}
 
-\item{ppm}{ppm vector.}
+\item{ppm}{num array, ppm vector.}
 
-\item{shift}{chemical shift region to be plotted.}
+\item{shift}{num array, chemical shift region to be plotted.}
 
-\item{add}{Logical indicating if spectrum should be added to a current plot generated with \code{spec()} or \code{matspec()}.}
+\item{add}{logical, indicating if spectrum should be added to a current plot generated with \code{spec()} or \code{matspec()}.}
 
 \item{interactive}{logical, interactive version (plotly package)}
 
 \item{name}{string, name of trace (only used in interactive mode)}
 
-\item{mode}{string, plot mode for interactive version: 'lines', 'lines+markers' or 'markers' (see Details)}
+\item{mode}{string, plot mode for interactive version: 'lines' (recommended), 'lines+markers' or 'markers'}
 
 \item{...}{Additional parameters to be passed on to the graphics generic plot function.}
 }
-\value{
-Plot showing NMR spectrum
-}
 \description{
-Simple plotting of a single NMR spectrum
+Plot single NMR spectrum
 }
 \details{
-Low-level plotting function for a single NMR spectrum (base graphics). Interactive visualisation in mode of markers or line+markers will take longer (mode='lines' is recommended).
+Non-interactive mode: Base graphics for single NMR spectrum. Interactive mode: Plotly graphics.
 }
 \section{}{
 NA
@@ -62,7 +59,7 @@ Other NMR:
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{normqref}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},

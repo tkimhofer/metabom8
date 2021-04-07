@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Excise 1H  chemical shift reagions for 1D small molecule reserach — excise1d • metabom8</title>
+<title>Excise standard chemical shift regions — excise1d • metabom8</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Excise 1H  chemical shift reagions for 1D small molecule reserach — excise1d" />
-<meta property="og:description" content="Excise 1H  chemical shift reagions for 1D small molecule reserach" />
+<meta property="og:title" content="Excise standard chemical shift regions — excise1d" />
+<meta property="og:description" content="Excise standard chemical shift regions" />
 
 
 
@@ -87,6 +87,21 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -106,13 +121,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Excise 1H  chemical shift reagions for 1D small molecule reserach</h1>
+    <h1>Excise standard chemical shift regions</h1>
     
     <div class="hidden name"><code>excise1d.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Excise 1H  chemical shift reagions for 1D small molecule reserach</p>
+    <p>Excise standard chemical shift regions</p>
     </div>
 
     <pre class="usage"><span class='fu'>excise1d</span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>)</pre>
@@ -140,10 +155,10 @@
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Function removes the following chemical shift reagions from 1H NMR spectra acquired for small molecule research:</p><ul>
-<li><p>min(ppm) to 0.25 ppm  (no signal upfield)</p></li>
+<li><p>min(ppm) to 0.25 ppm  (cap upfield)</p></li>
 <li><p>4.5 - 5.2 ppm (residual water)</p></li>
 <li><p>5.5 - 6.0 ppm (urea)</p></li>
-<li><p>9.7 to max(ppm)  (no signal downfield)</p></li>
+<li><p>9.7 to max(ppm)  (cap downfield)</p></li>
 </ul>
 
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
@@ -158,7 +173,7 @@
 <code><a href='lw.html'>lw</a>()</code>,
 <code><a href='matspec.html'>matspec</a>()</code>,
 <code><a href='noise.est.html'>noise.est</a>()</code>,
-<code><a href='normqref.html'>normqref</a>()</code>,
+<code><a href='normErectic.html'>normErectic</a>()</code>,
 <code><a href='plotload.html'>plotload</a>()</code>,
 <code><a href='ppick.html'>ppick</a>()</code>,
 <code><a href='read1d_raw.html'>read1d_raw</a>()</code>,

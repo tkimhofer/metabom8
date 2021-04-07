@@ -1,4 +1,4 @@
-#' Align NMR segment to refrerence based on maximum cross-correlation
+#' Align an NMR spectra to a reference spectrum (cross-correlation)
 #' @export
 #' @param seg matrix or data frame, NMR submatrix containing segments (spectra in rows)
 #' @param idx_ref int, rown index of reference spectrum

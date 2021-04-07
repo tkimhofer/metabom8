@@ -86,6 +86,21 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -119,7 +134,7 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-importing-d-nmr-data" class="hasAnchor"><a href="#section-importing-d-nmr-data" class="anchor"></a>Importing 1D NMR data</h2>
+          <h2 id="section-import-d-nmr-data" class="hasAnchor"><a href="#section-import-d-nmr-data" class="anchor"></a>Import 1D NMR data</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -131,7 +146,7 @@
       <tr>
         
         <td>
-          <p><code><a href="read1d.html">read1d()</a></code> </p>
+          <p><code><a href="read1d.html">read1d()</a></code> <code><a href="read1d.html">read1d_proc()</a></code> </p>
         </td>
         <td><p>Import 1D NMR spectra</p></td>
       </tr><tr>
@@ -139,12 +154,12 @@
         <td>
           <p><code><a href="read1d_raw.html">read1d_raw()</a></code> </p>
         </td>
-        <td><p>Read-in FIDs and process to spectra</p></td>
+        <td><p>Read-in 1D NMR FIDs and process to spectra</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-visualising-nmr-data" class="hasAnchor"><a href="#section-visualising-nmr-data" class="anchor"></a>Visualising NMR data</h2>
+          <h2 id="section-visualising-spectra" class="hasAnchor"><a href="#section-visualising-spectra" class="anchor"></a>Visualising spectra</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -158,13 +173,13 @@
         <td>
           <p><code><a href="matspec.html">matspec()</a></code> </p>
         </td>
-        <td><p>Simple plotting of multiple NMR spectra overlayed</p></td>
+        <td><p>Plot overlayed NMR spectra</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="spec.html">spec()</a></code> </p>
         </td>
-        <td><p>Simple plotting of a single NMR spectrum</p></td>
+        <td><p>Plot single NMR spectrum</p></td>
       </tr><tr>
         
         <td>
@@ -175,7 +190,7 @@
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-pre-processing-and-analytical-quality-control" class="hasAnchor"><a href="#section-pre-processing-and-analytical-quality-control" class="anchor"></a>Pre-processing and analytical quality control</h2>
+          <h2 id="section-pre-processing-and-quality-control" class="hasAnchor"><a href="#section-pre-processing-and-quality-control" class="anchor"></a>Pre-processing and quality control</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -189,18 +204,17 @@
         <td>
           <p><code><a href="alignSegment.html">alignSegment()</a></code> </p>
         </td>
-        <td><p>Align NMR segment to refrerence based on maximum cross-correlation</p></td>
+        <td><p>Align an NMR segment to a reference spectrum (cross-correlation)</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="binning.html">binning()</a></code> </p>
         </td>
-        <td><p>NMR data binning
-Equidistant binning of spectra based on either a specified bin witdth or the number of desired bins.</p></td>
+        <td><p>Spectral data binning</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="bline.html">bline()</a></code> </p>
+          <p><code><a href="bline.html">bline()</a></code> <code><a href="bline.html">bcor()</a></code> </p>
         </td>
         <td><p>Baseline correction for 1D NMR spectra</p></td>
       </tr><tr>
@@ -214,31 +228,31 @@ Equidistant binning of spectra based on either a specified bin witdth or the num
         <td>
           <p><code><a href="excise1d.html">excise1d()</a></code> </p>
         </td>
-        <td><p>Excise 1H  chemical shift reagions for 1D small molecule reserach</p></td>
+        <td><p>Excise standard chemical shift regions</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="get.idx.html">get.idx()</a></code> </p>
+          <p><code><a href="get.idx.html">get.idx()</a></code> <code><a href="get.idx.html">get_idx()</a></code> </p>
         </td>
-        <td><p>Return indices of chemical shift array mapping to a specific chemical shift range</p></td>
+        <td><p>Select indices of the chemical shift array taht corresponding to a chemical shift region</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="lw.html">lw()</a></code> </p>
         </td>
-        <td><p>Calculating full width at half max</p></td>
+        <td><p>Full width at half-maximum (fwhm)</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="noise.est.html">noise.est()</a></code> </p>
         </td>
-        <td><p>Estimation of noise level of 1D proton spectrum</p></td>
+        <td><p>Estimation of noise level of 1D spectrum</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="normqref.html">normqref()</a></code> </p>
+          <p><code><a href="normErectic.html">normErectic()</a></code> </p>
         </td>
-        <td><p>Normalise with quantRef</p></td>
+        <td><p>Normalise by the ERETIC signal</p></td>
       </tr><tr>
         
         <td>
@@ -249,7 +263,7 @@ Equidistant binning of spectra based on either a specified bin witdth or the num
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-scalings-effect-sizes" class="hasAnchor"><a href="#section-scalings-effect-sizes" class="anchor"></a>Scalings, effect sizes</h2>
+          <h2 id="section-scalings-effect-size" class="hasAnchor"><a href="#section-scalings-effect-size" class="anchor"></a>Scalings, effect size</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -275,7 +289,7 @@ Equidistant binning of spectra based on either a specified bin witdth or the num
         <td>
           <p><code><a href="scRange.html">scRange()</a></code> </p>
         </td>
-        <td><p>Min-max scaling</p></td>
+        <td><p>Range scaling</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -294,7 +308,7 @@ Equidistant binning of spectra based on either a specified bin witdth or the num
         <td>
           <p><code><a href="cvanova.html">cvanova()</a></code> </p>
         </td>
-        <td><p>Cross-validated ANOVA</p></td>
+        <td><p>Cross-validated ANOVA for O-PLS models</p></td>
       </tr><tr>
         
         <td>
@@ -396,7 +410,7 @@ Equidistant binning of spectra based on either a specified bin witdth or the num
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-objects" class="hasAnchor"><a href="#section-objects" class="anchor"></a>Objects</h2>
+          <h2 id="section-class-definitions" class="hasAnchor"><a href="#section-class-definitions" class="anchor"></a>Class definitions</h2>
           <p class="section-desc"></p>
         </th>
       </tr>

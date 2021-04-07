@@ -26,6 +26,10 @@ read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
     n_max = 1000, filter = TRUE, recursive = TRUE, verbose = TRUE) {
     path <- path.expand(path)
 
+    if (as.character(match.call()[[1]]) == "read1d") {
+        warning("read1d` will be removed in future versions, please use `read1d_proc` instead.", call. = FALSE)
+    }
+
     f_list <- .detect1d_procs(path, n_max = 1e6, filter, recursive, verbose)
     # extract parameters from acqus and procs (for f1 and f2)
     pars <- .extract_pars1d(f_list) # prob need to include n max here too
@@ -76,7 +80,9 @@ read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
     assign("meta", pars, envir = .GlobalEnv)
 }
 
-
+#' @export
+#' @rdname read1d
+read1d_proc <- read1d
 
 
 #' @title Read Bruker NMR paramter files - helper function read1d

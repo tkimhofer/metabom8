@@ -2,10 +2,12 @@
 % Please edit documentation in R/bline.R
 \name{bline}
 \alias{bline}
-\alias{blcor}
+\alias{bcor}
 \title{Baseline correction for 1D NMR spectra}
 \usage{
 bline(X, lambda = 1e+07, iter_max = 30)
+
+bcor(X, lambda = 1e+07, iter_max = 30)
 }
 \arguments{
 \item{X}{num matrix or data.frame, NMR data with rows representing spectra}
@@ -36,7 +38,7 @@ Other NMR:
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{normqref}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},

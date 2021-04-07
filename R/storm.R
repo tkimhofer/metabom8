@@ -1,10 +1,3 @@
-# Function performs STORM analysis (NMR) Input: driver peak (ppm value), ppm
-# vector, NMR matrix with samples in rows and variables in columns, TRUE/FALSE
-# for stocsy graph output: data frame with correlation, covariance and ppm value
-# OR if plotting=TRUE: list of length two with [[1]] data frame and [[2]] ggplot2
-# object R-code written by Torben Kimhofer, Imperial College London (15/03/2015)
-
-
 #' @title Subset Optimisation by Reference Matching (STORM)
 #' @param X  Numeric matrix or dataframe where each row represents a NMR spectrum and each column a chemical shift variable.
 #' @param ppm num array of chemical shift variables, matched to columns in X
@@ -17,19 +10,17 @@
 #' @return Vector of row indices that define the optimal subset.
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @family NMR
+#' @seealso stocsy
 #' @importFrom stats pt cor cov
 #' @importFrom colorRamps cor cov
 #' @importFrom scales sapply breaks_pretty
 #' @importFrom methods hasArg is
-#' @seealso stocsy
 #' @author torben.kimhofer@@murdoch.edu.au
 #' @export
 # @examples
 # data(covid)
 # stcy_glucose=stocsy(X, ppm, driver=5.233)
 # plotStocsy(stcy_glucose, shift=c(5.15, 5.30), title='Alpha-anomeric proton of glucose (doublet)')
-
-#' @section
 
 storm=function(X=bbin[[1]], ppm=bbin[[2]], b=30, q=0.05, idx.refSpec=NULL, shift=c(1.117,1.25)){
 

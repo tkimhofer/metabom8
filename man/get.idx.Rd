@@ -2,9 +2,12 @@
 % Please edit documentation in R/AllGenerics.R
 \name{get.idx}
 \alias{get.idx}
-\title{Return indices of chemical shift array mapping to a specific chemical shift range}
+\alias{get_idx}
+\title{Select indices of the chemical shift array taht corresponding to a chemical shift region}
 \usage{
 get.idx(range = c(1, 5), ppm)
+
+get_idx(range = c(1, 5), ppm)
 }
 \arguments{
 \item{range}{num array(2), range of chemical shift}
@@ -15,7 +18,7 @@ get.idx(range = c(1, 5), ppm)
 array int, indices of ppm for shift range
 }
 \description{
-Return indices of chemical shift array mapping to a specific chemical shift range
+Select indices of the chemical shift array taht corresponding to a chemical shift region
 }
 \section{}{
 NA
@@ -23,10 +26,9 @@ NA
 
 \examples{
 load(covid)
-idx=get.idx(c(-0.1, 0.1), ppm)
-ppm[range(idx)]
-plot(ppm[idx], X[1,idx], type='l')
-lw(X, ppm) * meta$a_SFO1 # in Hz
+idx_tsp=get.idx(c(-0.1, 0.1), ppm)
+ppm[range(idx_tsp)]
+plot(ppm[idx_tsp], X[1,idx_tsp], type='l')
 }
 \seealso{
 Other NMR: 
@@ -36,7 +38,7 @@ Other NMR:
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{normqref}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},
@@ -48,6 +50,6 @@ Other NMR:
 \code{\link{storm}()}
 }
 \author{
-\email{tkimhofer@gmail.com}
+\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR}

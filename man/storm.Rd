@@ -35,10 +35,6 @@ Subset Optimisation by Reference Matching (STORM)
 \details{
 The STORM algorithm can be used to subselect NMR spectra based on a spectrocopic target signal to match multiplicity and chemical shift position. The output are row-indices for X, defining the optimal spectral subset that is typically used as input for STOCSY.
 }
-\section{}{
-NA
-}
-
 \references{
 Posma, Joram M., et al. "Subset optimization by reference matching (STORM): an optimized statistical approach for recovery of metabolic biomarker structural information from 1H NMR spectra of biofluids." Analytical chemistry 84.24 (2012): 10694-10701.
 }
@@ -53,7 +49,7 @@ Other NMR:
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{normqref}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},

@@ -2,7 +2,7 @@
 % Please edit documentation in R/read1d_raw.R
 \name{read1d_raw}
 \alias{read1d_raw}
-\title{Read-in FIDs and process to spectra}
+\title{Read-in 1D NMR FIDs and process to spectra}
 \usage{
 read1d_raw(
   path,
@@ -45,7 +45,7 @@ The function exports the following three objects into the currently active R env
 Objects in the R environment with the same variable names will be overwritten.
 }
 \description{
-Read-in FIDs and process to spectra
+Read-in 1D NMR FIDs and process to spectra
 }
 \details{
 In the first step, read-in are FIDs generated with experimental condition(s) specified with the exp_type argument. This represents a list with each element representing a parameter condition, named according to spectrometer parameters listed in \emph{acqus} file. For example, to read standard 1D NMR experiments use \code{exp_type=list(exp='noesygppr1d')}. More than one argument can be provided as list element.
@@ -80,7 +80,7 @@ Other NMR:
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{normqref}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d}()},

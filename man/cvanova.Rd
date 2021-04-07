@@ -2,7 +2,7 @@
 % Please edit documentation in R/cvanova.R
 \name{cvanova}
 \alias{cvanova}
-\title{Cross-validated ANOVA}
+\title{Cross-validated ANOVA for O-PLS models}
 \usage{
 cvanova(smod)
 }

@@ -87,6 +87,21 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -115,7 +130,9 @@
     <p>Non-linear baseline correction for NMR spectra based on asymetric least squares. This function estimates smooth and non-linear baseline trends for each spectrum. The baseline is then subtracted from the respective spectrum and the remainder is returned. For more infor on smoothing parameter <em>lambda</em>, check out <code><a href='https://rdrr.io/pkg/ptw/man/asysm.html'>asysm</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bline</span>(<span class='kw'>X</span>, lambda = <span class='fl'>1e+07</span>, iter_max = <span class='fl'>30</span>)</pre>
+    <pre class="usage"><span class='fu'>bline</span>(<span class='kw'>X</span>, lambda = <span class='fl'>1e+07</span>, iter_max = <span class='fl'>30</span>)
+
+<span class='fu'>bcor</span>(<span class='kw'>X</span>, lambda = <span class='fl'>1e+07</span>, iter_max = <span class='fl'>30</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,7 +164,7 @@
 <code><a href='lw.html'>lw</a>()</code>,
 <code><a href='matspec.html'>matspec</a>()</code>,
 <code><a href='noise.est.html'>noise.est</a>()</code>,
-<code><a href='normqref.html'>normqref</a>()</code>,
+<code><a href='normErectic.html'>normErectic</a>()</code>,
 <code><a href='plotload.html'>plotload</a>()</code>,
 <code><a href='ppick.html'>ppick</a>()</code>,
 <code><a href='read1d_raw.html'>read1d_raw</a>()</code>,
@@ -164,7 +181,7 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>covid_raw</span>)
 <span class='kw'>X1_bc</span><span class='op'>=</span><span class='fu'>bline</span>(<span class='kw'>X</span>[<span class='fl'>1</span>,])
-<span class='fu'><a href='spec.html'>spec</a></span>(<span class='kw'>X</span>[<span class='fl'>1</span>,], <span class='kw'>ppm</span>, shift=<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>,<span class='fl'>4</span>))
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `bline` will be removed in future versions, please use `bcor` instead.</span></div><div class='input'><span class='fu'><a href='spec.html'>spec</a></span>(<span class='kw'>X</span>[<span class='fl'>1</span>,], <span class='kw'>ppm</span>, shift=<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>,<span class='fl'>4</span>))
 </div><div class='output co'>#&gt; <span class='warning'>Warning: `arrange_()` is deprecated as of dplyr 0.7.0.</span>
 #&gt; <span class='warning'>Please use `arrange()` instead.</span>
 #&gt; <span class='warning'>See vignette('programming') for more help</span>

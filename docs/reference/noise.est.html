@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Estimation of noise level of 1D proton spectrum — noise.est • metabom8</title>
+<title>Estimation of noise level of 1D spectrum — noise.est • metabom8</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Estimation of noise level of 1D proton spectrum — noise.est" />
-<meta property="og:description" content="Estimation of noise level of 1D proton spectrum" />
+<meta property="og:title" content="Estimation of noise level of 1D spectrum — noise.est" />
+<meta property="og:description" content="Estimation of noise level of 1D spectrum" />
 
 
 
@@ -87,6 +87,21 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -106,13 +121,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Estimation of noise level of 1D proton spectrum</h1>
+    <h1>Estimation of noise level of 1D spectrum</h1>
     
     <div class="hidden name"><code>noise.est.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Estimation of noise level of 1D proton spectrum</p>
+    <p>Estimation of noise level of 1D spectrum</p>
     </div>
 
     <pre class="usage"><span class='fu'>noise.est</span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>, where = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>14.6</span>, <span class='fl'>14.7</span>))</pre>
@@ -122,7 +137,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>num matrix of NMR data, rows representing spectra.</p></td>
+      <td><p>num matrix, NMR data with rows representing spectra.</p></td>
     </tr>
     <tr>
       <th>ppm</th>
@@ -136,10 +151,10 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returned is a vector of noise levels for each spectrum.</p>
+    <p>Array of noise level for each spectrum.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Estimation of noise level in NMR spectra. This is useful for quality control checks (e.g., before and after spectral normalisation). Noise estimation requires a signal-free ppm region across all spectra, usually this is at the extreme ends or the spectrum. This function requires a minimum number of 50 data points to robustly estimate noise levels.</p>
+    <p>Estimation of noise level in NMR spectra. This is useful for quality control checks (e.g., before and after spectral normalisation). Noise estimation requires a signal-free ppm region, usually this is the extreme ends of the spectra. Noise is estimated after baseline correction using the 95th quantile. The function requires a minimum number of 50 data points.</p>
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
 
     <p>NA</p>
@@ -152,7 +167,7 @@
 <code><a href='get.idx.html'>get.idx</a>()</code>,
 <code><a href='lw.html'>lw</a>()</code>,
 <code><a href='matspec.html'>matspec</a>()</code>,
-<code><a href='normqref.html'>normqref</a>()</code>,
+<code><a href='normErectic.html'>normErectic</a>()</code>,
 <code><a href='plotload.html'>plotload</a>()</code>,
 <code><a href='ppick.html'>ppick</a>()</code>,
 <code><a href='read1d_raw.html'>read1d_raw</a>()</code>,

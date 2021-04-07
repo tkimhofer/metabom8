@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Min-max scaling — scRange • metabom8</title>
+<title>Range scaling — scRange • metabom8</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Min-max scaling — scRange" />
-<meta property="og:description" content="Min-max scaling" />
+<meta property="og:title" content="Range scaling — scRange" />
+<meta property="og:description" content="Range scaling" />
 
 
 
@@ -87,6 +87,21 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -106,13 +121,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Min-max scaling</h1>
+    <h1>Range scaling</h1>
     
     <div class="hidden name"><code>scRange.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Min-max scaling</p>
+    <p>Range scaling</p>
     </div>
 
     <pre class="usage"><span class='fu'>scRange</span>(<span class='kw'>x</span>, <span class='kw'>ra</span>)</pre>
@@ -122,7 +137,11 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>num array, desired value range of the scaled variable</p></td>
+      <td><p>num array to be scaled</p></td>
+    </tr>
+    <tr>
+      <th>ra</th>
+      <td><p>num array, desired value range</p></td>
     </tr>
     </table>
 
@@ -131,7 +150,7 @@
     <p>num array, same length as x</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Output values are scaled to range between 0 and 1</p>
+    <p>x-scaled, so that values fall between range of <code>ra</code></p>
     <h2 class="hasAnchor" id=""><a class="anchor" href="#"></a></h2>
 
     <p>NA</p>

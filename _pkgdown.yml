@@ -1,27 +1,27 @@
 destination: docs
 reference:
-- title: Importing 1D NMR data
+- title: Import 1D NMR data
   contents:
-  - '`read1d`'
+  - '`read1d_proc`'
   - '`read1d_raw`'
-- title: Visualising NMR data
+- title: Visualising spectra
   contents:
   - '`matspec`'
   - '`spec`'
   - '`specOverlay`'
-- title: Pre-processing and analytical quality control
+- title: Pre-processing and quality control
   contents:
   - '`alignSegment`'
   - '`binning`'
-  - '`bline`'
+  - '`bcor`'
   - '`calibrate`'
   - '`excise1d`'
-  - '`get.idx`'
+  - '`get_idx`'
   - '`lw`'
   - '`noise.est`'
-  - '`normqref`'
+  - '`normErectic`'
   - '`pqn`'
-- title: Scalings, effect sizes
+- title: Scalings, effect size
   contents:
   - '`es_cdelta`'
   - '`minmax`'
@@ -45,7 +45,7 @@ reference:
    - '`stocsy`'
    - '`storm`'
    - '`plotStocsy`'
-- title: Objects
+- title: Class definitions
   contents:
   - '`OPLS_metabom8-class`'
   - '`PCA_metabom8-class`'
