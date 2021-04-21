@@ -16,17 +16,16 @@
 #' # Cliff's delta
 #'  es_cdelta(ref=a, comp=b)
 #'  es_cdelta(ref=b, comp=a)
-#' @author \email{torben.kimhofer@murdoch.edu.au}
 #' @family NMR ++
 #' @importFrom base sapply length
 es_cdelta <- function(ref, comp) {
-    
-    if (!is.numeric(ref) | !is.numeric(comp)) 
+
+    if (!is.numeric(ref) | !is.numeric(comp))
         stop("Input not numeric")
-    
+
     ind_ref <- is.na(ref) | is.infinite(ref)
     ind_comp <- is.na(comp) | is.infinite(comp)
-    
+
     if (any(ind_ref)) {
         ref <- ref[!ind_ref]
         message("Removing NA or infinite values from reference group.")
@@ -35,16 +34,16 @@ es_cdelta <- function(ref, comp) {
         comp <- comp[!ind_comp]
         message("Removing NA or infinite values from comparator group.")
     }
-    
-    if (length(ref) < 5 | length(comp) < 5) 
+
+    if (length(ref) < 5 | length(comp) < 5)
         stop("Low number of values (< 5)")
-    
+
     top_counts <- vapply(ref, function(x, y = comp) {
         names(x) <- NULL
         names(y) <- NULL
         c(length(which(x > y)), length(which(x < y)))
     }, FUN.VALUE = c(2, length(ref)))
-    out <- ((sum(top_counts[1, ]) - sum(top_counts[2, ]))/(length(ref) * length(comp))) * 
+    out <- ((sum(top_counts[1, ]) - sum(top_counts[2, ]))/(length(ref) * length(comp))) *
         (-1)
     return(out)
 }

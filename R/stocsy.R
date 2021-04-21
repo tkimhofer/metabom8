@@ -145,7 +145,7 @@ plotStocsy <- function(stoc_mod, shift = c(0, 10), title = NULL) {
     }
 
     shift <- sort(shift)
-    idx <- get.idx(shift, ds$ppm)
+    idx <- get_idx(shift, ds$ppm)
     if (length(idx) == 0)
         stop("Check chemical shift argument")
     ds <- ds[idx, ]
