@@ -1,6 +1,8 @@
 pandoc: 2.3.1
-pkgdown: 1.4.1
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  import-NMR-data: import-NMR-data.html
+  MVA: MVA.html
+  PreProc: PreProc.html
+last_built: 2021-04-07T08:48Z
 

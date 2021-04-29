@@ -5,13 +5,7 @@
 \alias{pqn_normalisation}
 \title{Probabilistic quotient normalisation}
 \usage{
-pqn(
-  X,
-  iref = NULL,
-  TArea = FALSE,
-  add_DilF = "dquot",
-  bin = list(ppm = NULL, width = 0.05, npoints = NULL)
-)
+pqn(X, iref = NULL, TArea = FALSE, add_DilF = "dquot", bin = NULL)
 }
 \arguments{
 \item{X}{num matrix or data.frame, metabolite data with rows representing spectra and column spectral variables}
@@ -22,7 +16,7 @@ pqn(
 
 \item{add_DilF}{char string, defining name of variable exported to global namespace and containing dilution factor information  Can be set to NULL if dilution factor should not be exported.}
 
-\item{bin}{named list: ppm and binning function parameters width or npoints}
+\item{bin}{either NULL or named list: ppm and binning function parameters width or npoints}
 }
 \value{
 Normalised spectral matrix of the same dimensions as input

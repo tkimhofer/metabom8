@@ -37,15 +37,33 @@
   minmax(out)
 }
 
+# lb to the negative of the peak width
+#' @keywords internal
+#' @section
+.gauss<-function(n, lb=-1.2, gb=0.3,  para){
+  sw_hz=para$a_SW_h
+  AQ=para$a_TD/(2*sw_hz)
+  idx=seq(n)-1
+  e=(-pi*idx*lb) / sw_hz
+  g=((lb*pi) / (2*gb*AQ)) * (idx / sw_hz)
+  out<-exp(e-g^2)
+  minmax(out)
+}
+
+#test=.gauss(n=length(fid), lb=-0.65, gb=0.3,sw_hz = 12019.23, para)
+#plot(test, type='l')
+
+# pars is list
 #' @section
 .fidApodisationFct<-function(n, pars){
-  if(is.null(pars$fun) || !pars$fun %in% c('uniform', 'exponential', 'cosine', 'sine', 'sem', 'expGaus_resyG')){stop('Check apodisation function argument (fun).')}
+  if(is.null(pars$fun) || !pars$fun %in% c('uniform', 'exponential', 'cosine', 'sine', 'sem', 'expGaus_resyG', 'gauss')){stop('Check apodisation function argument (fun).')}
   switch(pars$fun,
          'uniform'={afun<-rep(1, n)},
          'exponential'={ if( 'lb' %in% names(pars)) {afun<-.em(n, pars$lb)} else{stop('Check aposation fct arguments: Exponention function requires lb parameter')}},
          'cosine'={afun<-.cosine(n)},
          'sine'={afun<-.sine(n)},
-         'sem'={if( 'lb' %in% names(pars)) {afun<-.sem(n, pars$lb)} else{ stop('Check aposation fct arguments: SEM function requires lb parameter')}}
+         'sem'={if( 'lb' %in% names(pars)) {afun<-.sem(n, pars$lb)} else{ stop('Check aposation fct arguments: SEM function requires lb parameter')}},
+         'gauss'={afun<-.gauss(n, pars$lb, pars$gb, para)},
          )
   if(!is.null(pars$plot) && pars$plot && exists('afun')){ plot(afun, type='l', main=paste('Apodisation function:', pars$fun))}
   return(afun)
@@ -53,12 +71,16 @@
 
 
 # filter experiments
+#' @keywords internal
+#' @section
+#' @importFrom plyr ddply .
 .filterExp_files<-function(pars, exp_type, f_list, n_max){
 
 
   idx<-match(toupper(names(exp_type)), toupper(gsub('[ap]_', '', colnames(pars))))
   if(length(idx)==0){stop('No parameter(s) found that that match the specification. Check for exp_type argument for typos and parameter choices in acqus and procs files.')}
 
+  #browser()
   idx_na<-which(is.na(idx))
   if(length(idx_na)>0){
     if(length(idx_na)==length(idx)){
@@ -68,10 +90,10 @@
       idx=idx[-idx_na]
     }
   }
-  fmat<-vapply(seq(length(idx)), function(i){
+  fmat<-sapply(seq(length(idx)), function(i){
     vars=gsub('^<|>$', '', pars[,idx[i]])
     vars %in% exp_type[[i]]
-  }, FUN.VALUE = pars[,1])
+  })
   idx_filt=apply(fmat==1, 1, all)
   if(!any(idx_filt)){stop('No files found that match the specified parameter specification levels.')}
   f_list=lapply(f_list, function(x){
@@ -83,8 +105,8 @@
   idx_filt=which(idx_filt)
   if(length(idx_filt)>n_max){
 
-    idx_filt=idx_filt[1:n_max]
-    f_list=lapply(f_list, function(x,  idx=1:n_max){
+    idx_filt=idx_filt[seq_len(n_max)]
+    f_list=lapply(f_list, function(x,  idx=seq_len(n_max)){
       x[idx]
     })
 
@@ -99,7 +121,7 @@
   # find order of racks
   if(length(idx_keep)>1){
 
-    rack_<-t(vapply(1:length(fnam), function(i, iid=idx_keep[length(idx_keep)-1]){
+    rack_<-t(vapply(seq_len(length(fnam)), function(i, iid=idx_keep[length(idx_keep)-1]){
       c(fnam[[i]][iid], pars$a_DATE[i])
     }, FUN.VALUE = c('', '')))
     colnames(rack_)<-c('a', 'b')
@@ -135,6 +157,8 @@
   f_list=lapply(f_list, function(x){
     x[rr]
   })
+
+  pars$a_DATE=as.POSIXct(pars$a_DATE)
 
   return(list(f_list, pars))
 }

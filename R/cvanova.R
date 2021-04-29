@@ -1,4 +1,4 @@
-#' @title Cross-validated ANOVA
+#' @title Cross-validated ANOVA for O-PLS models
 #' @export
 #' @description Significance testing for OPLS models
 #' @param smod OPLS_metabom8 object of the package \emph{metabom8}.
@@ -7,48 +7,48 @@
 #' @return \emph{data.frame} describing ANOVA stats incl, p value
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @family NMR ++
-#' @examples
-#' data(covid)
-#' model=opls(X, Y=an$type)
-#' cvanova(model)
+# @examples
+# data(covid)
+# model=opls(X, Y=factor(an$type))
+# cvanova(model)
 #' @importFrom stats lm pf
 cvanova <- function(smod) {
-    
+
     if (class(smod)[1] != "OPLS_metabom8") {
         stop("Function requires OPLS_metabom8 object.")
     }
-    
+
     # calculate degrees of freedom
     df_total <- nrow(smod@Y$dummy) - 1
     df_reg <- (smod@nPC) * 2
     df_res <- df_total - df_reg
-    
+
     # cacl linear models
     lm2 <- lm(smod@Y$dummy[, 1] ~ 1)
     res2 <- lm2$residuals
-    
+
     # calc sum or squares of residuals
     lm1 <- lm(smod@Y$dummy[, 1] ~ 1 + smod@t_pred_cv[, 1])
     res1 <- lm1$residuals
-    
+
     ss_total <- sum(res2^2)
     ss_reg <- sum(res1^2)
     ss_res <- ss_total - ss_reg
-    
+
     df <- c(df_total, df_reg, df_res)
     ss <- c(ss_total, ss_reg, ss_res)
-    
+
     # ss normalised by df
     ms <- ss/df
-    
+
     F_val <- ms[2]/ms[3]
-    
+
     p_val <- 1 - pf(F_val, df[2], df[3])
-    
-    out <- data.frame(SS = c(format(ss, scientific = TRUE), NA), DF = c(df, NA), 
-        MS = c(format(ms, scientific = TRUE), NA), F_value = c(rep(NA, 3), F_val), 
-        p_value = c(rep(NA, 3), format(p_val, scientific = TRUE)), row.names = c("Total corrected", 
+
+    out <- data.frame(SS = c(format(ss, scientific = TRUE), NA), DF = c(df, NA),
+        MS = c(format(ms, scientific = TRUE), NA), F_value = c(rep(NA, 3), F_val),
+        p_value = c(rep(NA, 3), format(p_val, scientific = TRUE)), row.names = c("Total corrected",
             "Regression", "Residual", "RESULT"))
-    
+
     return(out)
 }

@@ -2,6 +2,7 @@
 #' @description This function checks for missing values in Y (NA, NAN, infinite) and establishes analysis type accroding to the class of the input data Y: regression (R) or discriminant analysis (DA). It also converts Y to a matrix.
 #' @param Y Input data (uni or multivar) formatted as vector or matrix or data.frame
 #' @return List of i) Y matrix, ii) Y levels (empty if numeric Y), iii) Y type (R or DA)
+#' @import methods is
 #' @keywords internal
 #' @section
 .checkYclassNas = function(Y) {
@@ -113,14 +114,14 @@
                    stop(paste("Something went wrong: Q2 is NA"))
                }
                if (nc == 1 && cv_est < 0.05) stop(paste0("No significant component (r2=", round(cv_est, 2), ")"))
-               if (nc > 1 && (diff(cv_est[(nc - 1):nc]) < 0.05 | cv_est[nc] > 0.98)) return(TRUE)
+               if (nc > 1 && (diff(cv_est[seq((nc - 1),nc)]) < 0.05 | cv_est[nc] > 0.98)) return(TRUE)
            },
            DA = {
                if (any(is.na(cv_est))) {
                    stop(paste("Something went wrong: Q2 is NA"))
                }
                if (nc == 1 && cv_est < 0.6) stop(paste0("No significant component (AUROC_cv=", round(cv_est, 2), ")"))
-               if (nc > 1 && (diff(cv_est[(nc - 1):nc]) < 0.05 | cv_est[nc] > 0.97)) return(TRUE)
+               if (nc > 1 && (diff(cv_est[seq((nc - 1), nc)]) < 0.05 | cv_est[nc] > 0.97)) return(TRUE)
            })
 
     return(FALSE)
@@ -580,7 +581,7 @@
 
     g <- ggplot(mm, aes_string("PC", " value", fill = "variable")) +
         geom_bar(stat = "identity", position = "dodge", colour = NA, aes_string(alpha = "alph")) +
-        scale_fill_manual(values = c(R2X = "lightgreen", R2Y = "lightblue", Q2 = "red", AUROC = "black", AUROC_CV = "red"), labels = c(expression(R^2 * X), expression(R^{2} * Y), expression(Q^2), expression(AUROC[cv])), name = "") +
+        scale_fill_manual(values = c(R2X = "lightgreen", R2Y = "lightblue", Q2 = "red", AUROC = "black", AUROC_CV = "red"), labels = c(R2X =expression(R^2 * X), R2Y =expression(R^{2} * Y), Q2 =expression(Q^2), AUROC = expression(AUROC), AUROC_CV =expression(AUROC[cv])), name = "") +
         scale_alpha(guide = FALSE, limits = c(0, 1)) +
         labs(x = "Predictive + Orthogonal Component(s)",
              y = "",
@@ -637,34 +638,43 @@
 
 
 
-#' @title Return indices of chemical shift array mapping to a specific chemical shift range
+#' @title Select indices of the chemical shift array taht corresponding to a chemical shift region
 #' @export
 #' @param range num array(2), range of chemical shift
 #' @param ppm num array, chemical shift vector
 #' @return array int, indices of ppm for shift range
 #' @export
-#' @aliases get.idx
-#' @author \email{tkimhofer@@gmail.com}
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @examples
 #' load(covid)
-#' idx=get.idx(c(-0.1, 0.1), ppm)
-#' ppm[range(idx)]
-#' plot(ppm[idx], X[1,idx], type='l')
-#' lw(X, ppm) * meta$a_SFO1 # in Hz
+#' idx_tsp=get_idx(c(-0.1, 0.1), ppm)
+#' ppm[range(idx_tsp)]
+#' plot(ppm[idx_tsp], X[1,idx_tsp], type='l')
 #' @family NMR
 #' @section
 get.idx <- function(range = c(1, 5), ppm) {
+    if (as.character(match.call()[[1]]) == "get.idx") {
+        warning("`get.idx` will be removed in future versions, please use `get_idx` instead.", call. = FALSE)
+    }
+
     range <- sort(range, decreasing = TRUE)
     which(ppm <= range[1] & ppm >= range[2])
 }
 
 
-#' Min-max scaling
+#' @export
+#' @rdname get.idx
+get_idx <- get.idx
+
+
+
+
+#' Range scaling
 #' @export
 #' @param x num array to be scaled
-#' @param x num array, desired value range of the scaled variable
+#' @param ra num array, desired value range
 #' @return num array, same length as x
-#' @details Output values are scaled to range between 0 and 1
+#' @details x-scaled, so that values fall between range of \code{ra}
 #' @examples
 #' x=rnorm(20, 0, 1)
 #' plot(x, type='l'); abline(h=range(x), lty=2)
@@ -695,11 +705,12 @@ minmax <- function(x) {
     (x - min(x))/(max(x) - min(x))
 }
 
-#' @title Calculating full width at half max
+#' @title Full width at half-maximum (fwhm)
 #' @export
-#' @param X num matrix of NMR data, rows representing spectra.
+#' @param X num matrix, NMR data with rows representing spectra.
 #' @param ppm num array describing chemical shift positions, its length equals to \code{nrow(X)}.
-#' @param shift num array(2), chemical shift range of singlet used to calculate line width
+#' @param shift num array(2), chemical shift range of a singlet for which fwhm is calculated
+#' @param sf num, operating frequency of the spectrometer (meta$SFO1)
 #' @description Calculating full width at half maximum (FWHM, aka line width). This function returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in \code{shift}.
 #' @return Array of line widths in ppm. To convert from ppm to Hertz (Hz), multiply values with the spectrometer frequency (column \code{a_SF01} in \code{meta} data frame).
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
@@ -709,9 +720,9 @@ minmax <- function(x) {
 #' lw(X, ppm) * meta$a_SFO1 # in Hz
 #' @family NMR
 #' @section
-lw <- function(X, ppm, shift = c(-0.1, 0.1)) {
-    idx <- get.idx(shift, ppm)
-    asign=sign(diff(ppm[1:2]))
+lw <- function(X, ppm, shift = c(-0.1, 0.1), sf) {
+    idx <- get_idx(shift, ppm)
+    asign=sign(diff(ppm[seq_len(2)]))
     fwhm <- apply(X[, idx], 1, function(x, pp = ppm[idx], as=asign) {
         if(min(x)<0){ x <- x + abs(min(x)); baseline=0} else{baseline <- min(x)}  # no negative values}
         height <- max(x) - baseline
@@ -722,16 +733,16 @@ lw <- function(X, ppm, shift = c(-0.1, 0.1)) {
         y_new <- f(x_new)
         diff(sort(abs(x_new[range(which(y_new > hw))])))
     })
-    return(fwhm)
+    return(fwhm*sf)
 }
 
 
-#' @title Estimation of noise level of 1D proton spectrum
+#' @title Estimation of noise level of 1D spectrum
 #' @export
 #' @inheritParams lw
 #' @param where Signal free region across all NMR spectra (see Details).
-#' @details Estimation of noise level in NMR spectra. This is useful for quality control checks (e.g., before and after spectral normalisation). Noise estimation requires a signal-free ppm region across all spectra, usually this is at the extreme ends or the spectrum. This function requires a minimum number of 50 data points to robustly estimate noise levels.
-#' @return Returned is a vector of noise levels for each spectrum.
+#' @details Estimation of noise level in NMR spectra. This is useful for quality control checks (e.g., before and after spectral normalisation). Noise estimation requires a signal-free ppm region, usually this is the extreme ends of the spectra. Noise is estimated after baseline correction using the 95th quantile. The function requires a minimum number of 50 data points.
+#' @return Array of noise level for each spectrum.
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @importFrom ptw asysm
 #' @examples
@@ -741,13 +752,14 @@ lw <- function(X, ppm, shift = c(-0.1, 0.1)) {
 #' @section
 noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
     # set ppm range where noise should be estimated, i.e., no signals
-    idx <- get.idx(where, ppm)
+    idx <- get_idx(where, ppm)
     if (length(idx) < 50) {
         stop("No or too few data points for noise estimation!")
     }
     noise <- apply(X[, idx], 1, function(x) {
         x_driftcorrected <- x - asysm(x, lambda = 10000)
-        noi <- (max(x_driftcorrected) - min(x_driftcorrected))
+        #noi <- (max(x_driftcorrected) - min(x_driftcorrected))
+        noi <- quantile(x_driftcorrected, p=0.95)
         return(noi)
     })
     return(noise)

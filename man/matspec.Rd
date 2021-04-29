@@ -2,29 +2,26 @@
 % Please edit documentation in R/AllViz.R
 \name{matspec}
 \alias{matspec}
-\title{Simple plotting of multiple NMR spectra overlayed}
+\title{Plot overlayed NMR spectra}
 \usage{
 matspec(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...)
 }
 \arguments{
-\item{X}{NMR matrix with spectra represented in rows.}
+\item{X}{num matrix, NMR matrix with spectra represented in rows.}
 
-\item{ppm}{ppm vector.}
+\item{ppm}{num array, ppm vector.}
 
-\item{shift}{Chemical shift region to be plotted (in ppm).}
+\item{shift}{num array, hemical shift region to be plotted (in ppm).}
 
 \item{interactive}{logical, interactive version (plotly package)}
 
-\item{...}{Additional parameters to be passed on to the graphics generic plot function.}
-}
-\value{
-Plot showing NMR spectra
+\item{...}{additional parameters to be passed on to the graphics generic plot function.}
 }
 \description{
-Simple plotting of multiple NMR spectra overlayed
+Plot overlayed NMR spectra
 }
 \details{
-Low-level plotting function for NMR spectra, interactive plotting with ggplotly
+Non-interactive mode: Base graphics for NMR spectra. Interactive mode: Plotly graphics.
 }
 \section{}{
 NA
@@ -40,12 +37,12 @@ matspec(X[1:2,], ppm, interactive=FALSE) # static
 
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{excise1d}()},
 \code{\link{get.idx}()},
 \code{\link{lw}()},
 \code{\link{noise.est}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},
@@ -53,7 +50,8 @@ Other NMR:
 \code{\link{specload}()},
 \code{\link{spec}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()}
+\code{\link{stocsy}()},
+\code{\link{storm}()}
 }
 \author{
 \email{torben.kimhofer@murdoch.edu.au}

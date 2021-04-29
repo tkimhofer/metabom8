@@ -2,9 +2,9 @@
 % Please edit documentation in R/alignSegment.R
 \name{alignSegment}
 \alias{alignSegment}
-\title{Align NMR segment to refrerence based on maximum cross-correlation}
+\title{Align an NMR spectra to a reference spectrum (cross-correlation)}
 \usage{
-alignSegment(seg, idx_ref = 1, clim = 0.7, med = T, norm = F)
+alignSegment(seg, idx_ref = 1, clim = 0.7, med = TRUE, norm = FALSE)
 }
 \arguments{
 \item{seg}{matrix or data frame, NMR submatrix containing segments (spectra in rows)}
@@ -21,7 +21,7 @@ alignSegment(seg, idx_ref = 1, clim = 0.7, med = T, norm = F)
 Matrix of aligned spectral segments
 }
 \description{
-Align NMR segment to refrerence based on maximum cross-correlation
+Align an NMR spectra to a reference spectrum (cross-correlation)
 }
 \details{
 Spectral alignment is obtained by x-positional shifting a spectral segment. The extend of the shift is determined by maximising the cross-correlation with a refrence segment. The refernce can either be a spectrum in \emph{seg} or the segment median spectrum (parameter \emph{idx_ref} is ignored then). Non-matching spectral segments, defined by \emph{clim} (cross-corrleation upper limit, similarity score) are not aligned.
@@ -32,13 +32,13 @@ NA
 
 \seealso{
 Other NMR: 
-\code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{excise1d}()},
 \code{\link{get.idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},
@@ -46,7 +46,8 @@ Other NMR:
 \code{\link{specload}()},
 \code{\link{spec}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()}
+\code{\link{stocsy}()},
+\code{\link{storm}()}
 }
 \author{
 \email{torben.kimhofer@murdoch.edu.au}

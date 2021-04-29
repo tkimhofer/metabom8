@@ -1,17 +1,17 @@
-#' @title Excise 1H  chemical shift reagions for 1D small molecule reserach
+#' @title Excise standard chemical shift regions
 #' @export
 #' @param X num matrix:  NMR data, spectra in rows
 #' @param ppm ppm, num array - chemical shift positions, length matches to columns in X
 #' @details
 #' Function removes the following chemical shift reagions from 1H NMR spectra acquired for small molecule research:
 #' \itemize{
-#'   \item min(ppm) to 0.25 ppm  (no signal upfield)
+#'   \item min(ppm) to 0.25 ppm  (cap upfield)
 #'   \item 4.5 - 5.2 ppm (residual water)
 #'   \item 5.5 - 6.0 ppm (urea)
-#'   \item 9.7 to max(ppm)  (no signal downfield)
+#'   \item 9.7 to max(ppm)  (cap downfield)
 #' }
 #' @return
-#' The function exports the following three objects into the currently active R environment (no variable assignments needed):
+#' The function exports the following two objects into the currently active R environment (no variable assignments needed):
 #' \itemize{
 #'   \item Xc, num matrix: column reduced
 #'   \item ppc, num array - chemical shift positions, length is equal to ncol(X_c)

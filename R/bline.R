@@ -1,10 +1,10 @@
 #' @title Baseline correction for 1D NMR spectra
 #' @export
-#' @aliases blcor
+#' @aliases bcor
 #' @param X num matrix or data.frame, NMR data with rows representing spectra
 #' @param lambda, num smoothing paramter
 #' @param iter_max num, maximum number of iterations
-#' @description Non-linear baseline correction for NMR spectra based on asymetric least squares. This function estimates smooth and non-linear baseline trends for each spectrum. The baseline is then subtracted from a spectrum and the remainder is returned. For more infor on smoothing parameter *lambda*, check out \code{\link[ptw]{asysm}}.
+#' @description Non-linear baseline correction for NMR spectra based on asymetric least squares. This function estimates smooth and non-linear baseline trends for each spectrum. The baseline is then subtracted from the respective spectrum and the remainder is returned. For more infor on smoothing parameter *lambda*, check out \code{\link[ptw]{asysm}}.
 #' @return Baseline corrected NMR matrix an with same dimension as input matrix.
 #' @importFrom ptw asysm
 #' @seealso \code{\link[ptw]{asysm}}
@@ -17,9 +17,18 @@
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 bline <- function(X, lambda=1e7, iter_max=30) {
     if(any(is.na(X))){message('X contains missing values, replacing with zeros.')}
+    if (as.character(match.call()[[1]]) == "bline") {
+        warning("`bline` will be removed in future versions, please use `bcor` instead.", call. = FALSE)
+    }
+
     X <- .dimX(X)
     X.bl <- t(apply(X, 1, function(x) {
         x - asysm(x, maxit=iter_max, lambda=lambda)
     }))
     return(X.bl)
 }
+
+
+#' @export
+#' @rdname bline
+bcor <- bline

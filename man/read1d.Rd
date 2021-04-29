@@ -2,9 +2,19 @@
 % Please edit documentation in R/read1d.R
 \name{read1d}
 \alias{read1d}
+\alias{read1d_proc}
 \title{Import 1D NMR spectra}
 \usage{
 read1d(
+  path,
+  exp_type = list(exp = c("PROF_PLASMA_CPMG")),
+  n_max = 1000,
+  filter = TRUE,
+  recursive = TRUE,
+  verbose = TRUE
+)
+
+read1d_proc(
   path,
   exp_type = list(exp = c("PROF_PLASMA_CPMG")),
   n_max = 1000,
@@ -54,20 +64,21 @@ read1d(path,  exp_type=list(pulprog='noesygppr1d'))
 
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{excise1d}()},
 \code{\link{get.idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},
 \code{\link{specload}()},
 \code{\link{spec}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()}
+\code{\link{stocsy}()},
+\code{\link{storm}()}
 }
 \author{
 Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}

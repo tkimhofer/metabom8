@@ -1,1 +1,67 @@
 destination: docs
+reference:
+- title: Import 1D NMR data
+  contents:
+  - '`read1d_proc`'
+  - '`read1d_raw`'
+- title: Visualising spectra
+  contents:
+  - '`matspec`'
+  - '`spec`'
+  - '`specOverlay`'
+- title: Pre-processing and quality control
+  contents:
+  - '`alignSegment`'
+  - '`binning`'
+  - '`bcor`'
+  - '`calibrate`'
+  - '`excise1d`'
+  - '`get_idx`'
+  - '`lw`'
+  - '`noise.est`'
+  - '`normErectic`'
+  - '`pqn`'
+- title: Scalings, effect size
+  contents:
+  - '`es_cdelta`'
+  - '`minmax`'
+  - '`scRange`'
+- title: PCA and O-PLS modelling and model interpretation
+  contents:
+  - '`cvanova`'
+  - '`dmodx`'
+  - '`eruption`'
+  - '`opls`'
+  - '`opls_perm`'
+  - '`pca`'
+  - '`ppick`'
+  - '`plotload`'
+  - '`plotload_cat`'
+  - '`plotscores`'
+  - '`predict_opls`'
+  - '`specload`'
+- title: Metabolite ID-ing
+  contents:
+   - '`stocsy`'
+   - '`storm`'
+   - '`plotStocsy`'
+- title: Class definitions
+  contents:
+  - '`OPLS_metabom8-class`'
+  - '`PCA_metabom8-class`'
+  - '`stocsy1d_metabom8-class`'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

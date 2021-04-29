@@ -2,7 +2,7 @@
 % Please edit documentation in R/excise1d.R
 \name{excise1d}
 \alias{excise1d}
-\title{Excise 1H  chemical shift reagions for 1D small molecule reserach}
+\title{Excise standard chemical shift regions}
 \usage{
 excise1d(X, ppm)
 }
@@ -12,7 +12,7 @@ excise1d(X, ppm)
 \item{ppm}{ppm, num array - chemical shift positions, length matches to columns in X}
 }
 \value{
-The function exports the following three objects into the currently active R environment (no variable assignments needed):
+The function exports the following two objects into the currently active R environment (no variable assignments needed):
 \itemize{
 \item Xc, num matrix: column reduced
 \item ppc, num array - chemical shift positions, length is equal to ncol(X_c)
@@ -20,15 +20,15 @@ The function exports the following three objects into the currently active R env
 }
 }
 \description{
-Excise 1H  chemical shift reagions for 1D small molecule reserach
+Excise standard chemical shift regions
 }
 \details{
 Function removes the following chemical shift reagions from 1H NMR spectra acquired for small molecule research:
 \itemize{
-\item min(ppm) to 0.25 ppm  (no signal upfield)
+\item min(ppm) to 0.25 ppm  (cap upfield)
 \item 4.5 - 5.2 ppm (residual water)
 \item 5.5 - 6.0 ppm (urea)
-\item 9.7 to max(ppm)  (no signal downfield)
+\item 9.7 to max(ppm)  (cap downfield)
 }
 }
 \section{}{
@@ -38,12 +38,12 @@ NA
 \seealso{
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{get.idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},
@@ -51,7 +51,8 @@ Other NMR:
 \code{\link{specload}()},
 \code{\link{spec}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()}
+\code{\link{stocsy}()},
+\code{\link{storm}()}
 }
 \author{
 \email{torben.kimhofer@murdoch.edu.au}

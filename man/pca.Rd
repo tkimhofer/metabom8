@@ -2,29 +2,28 @@
 % Please edit documentation in R/pca.R
 \name{pca}
 \alias{pca}
-\title{Perform Principal Component Analysis}
+\title{Principal Component Analysis}
 \usage{
 pca(X, pc = 2, scale = "UV", center = TRUE, method = "nipals")
 }
 \arguments{
-\item{X}{Numeric input matrix with each row representing an observation and each column a metabolic feature.}
+\item{X}{Numeric input matrix with each row representing an observation and each column a metabolic variable.}
 
 \item{pc}{Desired number of principal components.}
 
-\item{scale}{Desired scaling method: \code{None}, \code{UV} (unit variance) or \code{Pareto} (Pareto scaling).}
+\item{scale}{Desired scaling method: \code{None}, \code{UV} (unit variance) or \code{Pareto} (Pareto scaling).
+#' @param center Logical indicating if data should be mean centered.}
 
-\item{center}{Logical indicating if data should be mean centered.}
-
-\item{method}{Algorithm for computing PCA. NIPALS is standard and usually fine, see Details for other methods.}
+\item{method}{Algorithm for computing PCA. NIPALS is default and usually fine, see Details for other methods.}
 }
 \value{
-This function returns a \emph{PCA_MetaboMate} S4 object.
+This function returns a \emph{PCA_metabom8} S4 object.
 }
 \description{
 This function is used to perform Principal Component Analysis (PCA).
 }
 \details{
-Other PCA methods: These rely on implementation inf the pcaMethods R package and include 'svd', 'ppca', 'svdImpute', 'robustPca', 'nlpca'. For complete list of available methods see pca function documentation of the \code{pcaMethods} package.
+Other PCA algorithms build on the pcaMethods R package and include: 'svd', 'ppca', 'svdImpute', 'robustPca', 'nlpca'. For complete list of available methods see \code{?pcaMethods::pca} documentation.
 }
 \examples{
 data(covid)

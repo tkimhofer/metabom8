@@ -1,56 +1,52 @@
-# reference 1D NMR to glucose @ 5.233 (d)
-#' @title Calibrate 1D to glucose @ 5.233 (d)
+# Calibrate 1D NMR to glucose @ 5.233 (d)
+#' @title Calibrate spectra to a doublet signal
 #' @param X num matrix, NMR matrix with spectra in rows
 #' @param ppm num vec, chemical shift matching to X
+#' @param type string/num vec, either glu or ala for glucose and alanine calibration, respectively, or num array defining chem shift of doublet to be used for calibratoin
+#' @param j_const num array, range of J constant values used to identify doublet signal (ppm), default is for glucose
 #' @param sg_length int, nb of data points to cacl 2nd degree estimation with savitzki-golay (higher number -> smoother)
 #' @return Calibrated X matrix
 #' @author Torben Kimhofer \email{torben.kimhofer@@gmail.com}
 #' @import signal sgolayfilt
+#' @import utils combn
 #' @keywords internal
-.calibrate1d_gluc <- function(X, ppm, sg_length = 13) {
-    
-    # pick peaks glucose reagion
-    idx <- get.idx(c(5.15, 5.3), ppm)
-    
+.calibrate_doub <- function(X, ppm, type=c('glu', 'ala'), j_const=c(0.006, 0.007), sg_length = 13) {
+
+    if(type[1] =='glu')  idx <- get_idx(c(5.15, 5.3), ppm); cent_loc=5.233; j_const=c(0.006, 0.007)
+    if(type[1] =='ala')  idx <- get_idx(c(1.4, 1.56), ppm); cent_loc=1.48
+    if(is.numeric(type[1]))  idx <- get_idx(type, ppm)
+
     # remove broad signals and smooth
     test <- apply(X[, idx], 1, function(x, pp = ppm[idx]) {
         xs <- sgolayfilt(x - asysm(x, lambda = 100), p = 3, n = sg_length)
         ppick(xs, pp, type = "max")[[1]]
     })
-    
-    # test=ppick(X[,idx], ppm[idx], type='max') browser() remove peaks below noise
-    # noi=noise.est(X, ppm)
-    
-    
-    # noi=0
-    
-    # spec(ppm[idx], X[61,idx]) points(test[[61]]$ppm, test[[61]]$Int)
-    
+
     # calculate J const
     s <- lapply(seq(length(test)), function(i) {
-        
+
         ptab <- test[[i]][test[[i]]$Etype > 0, ]
         ii <- combn(seq(nrow(test[[i]])), 2)
         ii_d <- apply(ii, 2, function(id, pp = test[[i]]$ppm) {
             abs(diff(pp[id]))
         })
-        
+
         ii_idx <- which(ii_d > 0.006 & ii_d < 0.007)  # glucose doublet has J-cons of 3.85 Hz
-        
+
         if (length(ii_idx) == 1) {
-            
+
             out <- test[[i]][ii[, ii_idx], ]
             out$diff <- diff(out$ppm)
             out$mm <- mean(out$ppm)
             return(out)
         }
-        
+
         if (length(ii_idx) > 1) {
-            if (is.matrix(ii[, ii_idx])) 
+            if (is.matrix(ii[, ii_idx]))
                 crit <- apply(ii[, ii_idx], 2, function(id) {
                   c(max = mean(test[[i]]$Int[id]), ratio = max(test[[i]]$Int)/min(test[[i]]$Int[2]))
                 })
-            
+
             # doubl=order(crit[1,], decreasing = T)
             doubl <- which.max(crit[1, ])
             out <- test[[i]][ii[, ii_idx[doubl]], ]
@@ -62,7 +58,7 @@
             NULL
         }
     })
-    
+
     Xc <- vapply(seq(nrow(X)), function(i) {
         if (is.null(s[[i]]) && nrow(s[[i]]) > 2) {
             message(paste("Could not calibrate spectrum", i))
@@ -72,7 +68,9 @@
             return(news)
         }
     }, FUN.VALUE = X[1, ])
+
     Xc <- t(Xc)
+
     return(Xc)
 }
 

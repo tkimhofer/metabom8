@@ -56,20 +56,21 @@ specload(model, shift=c(1,2), an=list(an$type), pc=1, alp=0.8)
 \seealso{
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{bline}()},
 \code{\link{excise1d}()},
 \code{\link{get.idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},
 \code{\link{read1d}()},
 \code{\link{spec}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()}
+\code{\link{stocsy}()},
+\code{\link{storm}()}
 }
 \author{
 Torben Kimhofer \email{tkimhofer@gmail.com}

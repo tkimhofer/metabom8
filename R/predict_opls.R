@@ -23,6 +23,7 @@
 #' preds=predict_opls(model, X)
 #' table(preds$Y_predicted, an$type)
 #' @family NMR ++
+#' @import methods is
 #' @export
 predict_opls <- function(opls_model, newdata, idx_scale = NULL) {
 

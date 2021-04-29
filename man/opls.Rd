@@ -7,7 +7,6 @@
 opls(
   X,
   Y,
-  t_pred = 1,
   center = TRUE,
   scale = "UV",
   cv = list(method = "k-fold_stratified", k = 7, split = 2/3),
@@ -20,8 +19,6 @@ opls(
 
 \item{Y}{Response vector or matrix with same length or number of columns than rows in X, respectively. Y have multiple columns.}
 
-\item{t_pred}{Parameter specifying the maximum number of predictive components (needed only for multi-factor Y)}
-
 \item{center}{Logical value (TRUE or FALSE) indicating if features should be mean centered.}
 
 \item{scale}{Desired scaling method (currently only no or unit variance scaling (UV) implemented).}
@@ -31,6 +28,8 @@ opls(
 \item{maxPCo}{The maximum number of orthogonal components (in case stop criteria fail).}
 
 \item{plotting}{Logical value (TRUE or FALSE) indicating if model parameters (R2X, Q2, etc) should be visualised once the model is trained.}
+
+\item{t_pred}{Parameter specifying the maximum number of predictive components (needed only for multi-factor Y)}
 }
 \value{
 This function returns an metabom8 object (S4).

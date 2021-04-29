@@ -2,9 +2,9 @@
 % Please edit documentation in R/calibrate.R
 \name{calibrate}
 \alias{calibrate}
-\title{Spectral calibration to a chemical shift reference (1D NMR)}
+\title{Chemical shift calibration}
 \usage{
-calibrate(X, ppm, type = "glucose")
+calibrate(X, ppm, type = c("tsp", "glucose", "alanine"))
 }
 \arguments{
 \item{X}{num matrix, NMR data matrix with rows representing spectra and columns representing chemical shift position}
@@ -17,10 +17,16 @@ calibrate(X, ppm, type = "glucose")
 num matrix X, calibrated NMR data matrix.
 }
 \description{
-Spectral calibration to a chemical shift reference.
+Chemical shift calibration with a reference signal.
 }
 \details{
-Spectral calibration to a chemical shift reference. If \code{type='tsp'} calibration will be performed using highest peak in interval -0.2 ppm to +0.2 ppm 0 ppm (Trimethylsilylpropanoic acid resonance). If \code{type='glucose'}, the glucose doublet (alphanomeric proton with J const within 3.6 and 4.2 Hz) will be centered at 5.23 pmm , originating from the alpha anomer of glucose, will be used for calibration. \strong{Blood serum-derived spectra} can also be calibrated with input argument \code{type='Plasma'}.
+Spectral calibration to a selected chemical shift reference signal.
+\itemize{
+\item{\code{type='tsp'}{calibration to 0 ppm using the highest peak located in interval 0 +/- 0.20 ppm (Trimethylsilylpropanoic acid resonance)}}
+\item{\code{type='glucose'}{calibration to 5.23 ppm using the glucose doublet located in interval 5.15 ppm to 5.30 ppm}}
+\item{\code{type='alanine'}{calibration to 1.48 ppm using the alanine doublet located in interval 1.4 ppm to 1.53 ppm}}
+\item{\code{type=ppm_range}{ppm_range is numeric array, calibration to mean(ppm_range) using a maximum signal located in interval ppm_range}}
+}
 }
 \examples{
 data(covid_raw)
@@ -38,5 +44,5 @@ matspec(X, ppm, shift=c(5.15, 5.3))
 Dona, A.C., \emph{et al.} (2014) Precision high-throughput proton NMR spectroscopy of human urine, serum, and plasma for large-scale metabolic phenotyping. \emph{Analytical Chemistry}. 86.19. 9887-94.
 }
 \author{
-\email{torben.kimhofer@gmail.com}
+\email{torben.kimhofer@murdoch.edu.au}
 }

@@ -2,10 +2,12 @@
 % Please edit documentation in R/bline.R
 \name{bline}
 \alias{bline}
-\alias{blcor}
+\alias{bcor}
 \title{Baseline correction for 1D NMR spectra}
 \usage{
 bline(X, lambda = 1e+07, iter_max = 30)
+
+bcor(X, lambda = 1e+07, iter_max = 30)
 }
 \arguments{
 \item{X}{num matrix or data.frame, NMR data with rows representing spectra}
@@ -18,7 +20,7 @@ bline(X, lambda = 1e+07, iter_max = 30)
 Baseline corrected NMR matrix an with same dimension as input matrix.
 }
 \description{
-Non-linear baseline correction for NMR spectra based on asymetric least squares. This function estimates smooth and non-linear baseline trends for each spectrum. The baseline is then subtracted from a spectrum and the remainder is returned. For more infor on smoothing parameter \emph{lambda}, check out \code{\link[ptw]{asysm}}.
+Non-linear baseline correction for NMR spectra based on asymetric least squares. This function estimates smooth and non-linear baseline trends for each spectrum. The baseline is then subtracted from the respective spectrum and the remainder is returned. For more infor on smoothing parameter \emph{lambda}, check out \code{\link[ptw]{asysm}}.
 }
 \examples{
 data(covid_raw)
@@ -31,12 +33,12 @@ spec(X1_bc[1,], ppm, shift=c(3,4), add=TRUE)
 
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{binning}()},
 \code{\link{excise1d}()},
 \code{\link{get.idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
+\code{\link{normErectic}()},
 \code{\link{plotload}()},
 \code{\link{ppick}()},
 \code{\link{read1d_raw}()},
@@ -44,7 +46,8 @@ Other NMR:
 \code{\link{specload}()},
 \code{\link{spec}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()}
+\code{\link{stocsy}()},
+\code{\link{storm}()}
 }
 \author{
 \email{torben.kimhofer@murdoch.edu.au}

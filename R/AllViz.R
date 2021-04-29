@@ -1,17 +1,16 @@
-#' Simple plotting of a single NMR spectrum
+#' Plot single NMR spectrum
 #' @export
-#' @param ppm ppm vector.
-#' @param x NMR spectrum.
-#' @param shift chemical shift region to be plotted.
-#' @param add Logical indicating if spectrum should be added to a current plot generated with \code{spec()} or \code{matspec()}.
+#' @param ppm num array, ppm vector.
+#' @param x num array, NMR spectrum.
+#' @param shift num array, chemical shift region to be plotted.
+#' @param add logical, indicating if spectrum should be added to a current plot generated with \code{spec()} or \code{matspec()}.
 #' @param interactive logical, interactive version (plotly package)
 #' @param name string, name of trace (only used in interactive mode)
-#' @param mode string, plot mode for interactive version: 'lines', 'lines+markers' or 'markers' (see Details)
+#' @param mode string, plot mode for interactive version: 'lines' (recommended), 'lines+markers' or 'markers'
 #' @param ... Additional parameters to be passed on to the graphics generic plot function.
-#' @return Plot showing NMR spectrum
+#' @return NULL
 #' @seealso  \code{\link{matspec}} \code{\link{plot}}
-#' @aliases spec
-#' @details Low-level plotting function for a single NMR spectrum (base graphics). Interactive visualisation in mode of markers or line+markers will take longer (mode='lines' is recommended).
+#' @details Non-interactive mode: Base graphics for single NMR spectrum. Interactive mode: Plotly graphics.
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @examples
 #' data(covid)
@@ -31,7 +30,7 @@ spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive = TRUE, name
     if (length(x) != length(ppm)) {
         stop("X and ppm don't match.")
     }
-    idx <- get.idx(shift, ppm)
+    idx <- get_idx(shift, ppm)
 
     if (interactive) {
         sp <- data.frame(ppm = ppm[idx], spec = x[idx])
@@ -40,7 +39,7 @@ spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive = TRUE, name
                 stop("First create interactive plot (set add=FALSE), then add desired spectrum")
             }
             p <- get(".p", envir = parent.frame())
-            p <- p %>% add_trace(data = sp, y = ~spec, name = "trace 1", mode = mode)
+            p <- suppressWarnings(p %>% add_trace(data = sp, y = ~spec, name = "trace 1", mode = mode))
             assign(".p", p, envir = parent.frame())
             return(p)
         } else {
@@ -49,9 +48,9 @@ spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive = TRUE, name
             assign(".ind_interactive", TRUE, envir = globalenv())
             x <- list(title = "&delta;<sup>1</sup>H (ppm)", autorange = "reversed")
             y <- list(title = "Intensity")
-            p <- plot_ly(data = sp, x = ~ppm, y = ~spec, name = "A", type = "scatter",
+            p <- suppressWarnings(plot_ly(data = sp, x = ~ppm, y = ~spec, name = "A", type = "scatter",
                 mode = mode, hovertemplate = "%{x} ppm<extra></extra>") %>% layout(xaxis = x,
-                yaxis = y)
+                yaxis = y))
             assign(".p", p, envir = parent.frame())
         }
         return(p)
@@ -76,17 +75,16 @@ spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive = TRUE, name
 
 
 
-#' Simple plotting of multiple NMR spectra overlayed
+#' Plot overlayed NMR spectra
 #' @export
-#' @param ppm ppm vector.
-#' @param X NMR matrix with spectra represented in rows.
-#' @param shift Chemical shift region to be plotted (in ppm).
+#' @param ppm  num array, ppm vector.
+#' @param X num matrix, NMR matrix with spectra represented in rows.
+#' @param shift num array, hemical shift region to be plotted (in ppm).
 #' @param interactive logical, interactive version (plotly package)
-#' @param ... Additional parameters to be passed on to the graphics generic plot function.
+#' @param ... additional parameters to be passed on to the graphics generic plot function.
 #' @seealso \code{\link{spec}} \code{\link{plot}}
-#' @aliases matspec
-#' @details Low-level plotting function for NMR spectra, interactive plotting with ggplotly
-#' @return Plot showing NMR spectra
+#' @details Non-interactive mode: Base graphics for NMR spectra. Interactive mode: Plotly graphics.
+#' @return NULL
 #' @importFrom graphics matplot matpoints
 # #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRampPalette
@@ -105,7 +103,7 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...) {
             stop("Non-matching dimensions X matrix and ppm vector or missing values in ppm.")
     }
 
-    idx <- get.idx(shift, ppm)
+    idx <- get_idx(shift, ppm)
 
     if (interactive) {
         df <- melt(X[, idx])
@@ -126,8 +124,6 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...) {
 
 }
 
-# # Xb=bline(X) # matspec(Xb, ppm, shift=c(-0.5,4), interactive=T)
-# idx=get.idx(c(6,8), ppm) plot(apply(Xb[,idx], 1, sum))
 
 
 
@@ -176,7 +172,7 @@ specOverlay <- function(X, ppm = NULL, shift = c(-0.01, 0.01), an = list("facet"
         names(an)[idx] <- paste("an", idx, sep = "")
     }
     names(an) <- gsub(" ", ".", names(an))
-    idx <- get.idx(shift, ppm)
+    idx <- get_idx(shift, ppm)
     specs <- X[, idx]
     colnames(specs) <- paste("Idx", idx, sep = "_")
     # create dataframe for ggplot function
@@ -265,14 +261,14 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, t
     ppm <- as.numeric(colnames(mod@X))
 
 
-    idx <- get.idx(shift, ppm)
+    idx <- get_idx(shift, ppm)
     if (length(idx) < 3) {
         stop("Shift area not in ppm variable.")
     }
 
 
 
-    idx <- get.idx(shift, ppm)
+    idx <- get_idx(shift, ppm)
 
 
     if (type == "Statistical reconstruction") {
@@ -403,7 +399,7 @@ plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title =
     X <- mod@X
     ppm <- as.numeric(colnames(mod@X))
 
-    idx <- get.idx(shift, ppm)
+    idx <- get_idx(shift, ppm)
 
 
     if (type == "Statistical reconstruction") {
