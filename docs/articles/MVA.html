@@ -218,9 +218,9 @@
 <a href="#unsupervised-vs-supervised-analysis" class="anchor"></a>Unsupervised vs Supervised Analysis</h2>
 <p>A scores clustering trend according to surgery type is visible in PCA scores plot. However, PCA is an unsupervised analysis method and is not designed to tease out data patterns related to group effects (eg., sham vs RYGB surgery) or numeric trends related to an outcome variable (eg., recovery time after surgery). Performing PCA with NMR spectra derived from human urine samples typically highlights environmental effects (e.g., diet and drug metabolites) in the first few principal components. In contrast, the murine individuals were housed in a controlled enviroment (with defined diet and day/night cycle), which greately reduces the metabolic variation so that the treatment effects can already be observed in the first two PCA components.</p>
 <p>To explicitly model study group effects, sham vs RYGB surgery, we use an extension of a supervised analysis method called Orthogonal-Projections to Latent Structures or also known as <strong>Orthogonal Partial Least Squares (O-PLS)</strong>.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
-<div id="pls-and-o-pls" class="section level3">
+<div id="o-pls" class="section level3">
 <h3 class="hasAnchor">
-<a href="#pls-and-o-pls" class="anchor"></a>PLS and O-PLS</h3>
+<a href="#o-pls" class="anchor"></a>O-PLS</h3>
 <p>O-PLS can be seen as a supervised extension of PCA, where the NMR data matrix (usually termed <em>X</em>) is related to an external variable (usually termed <em>Y</em>) that encodes study outcome information (eg. Sham vs RYGB surgery). O-PLS is separating systematic data variation into Y-predictive and Y-orthogonal, creating a single predictive component and one or more orthogonal components. Consequently, only the predictive component is interpreted in relation to Y. The orthogonal component(s) often encode(s) information related to technical matters (eg., analytical batch effects).</p>
 </div>
 <div id="model-overfitting-and-underfitting" class="section level3">
