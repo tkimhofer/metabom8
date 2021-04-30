@@ -54,7 +54,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+      <a href="../articles/MVA.html">Multivariate Analysis and Metabolite ID-ing</a>
     </li>
     <li>
       <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
@@ -132,8 +132,8 @@
 <span class="fu"><a href="../reference/read1d.html">read1d_proc</a></span>(<span class="kw">path</span>, exp_type=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(PULPROG=<span class="st">'noesypr1d'</span>))
 </pre></div>
 <p>Three spectral variables are routinely imported into the R workspace upon execution of the <code><a href="../reference/read1d.html">read1d_proc()</a></code> function:</p>
-<div id="htmlwidget-7ad790b242892a52138b" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7ad790b242892a52138b">{"x":{"filter":"none","data":[["X","ppm","meta"],["Matrix of NMR data (rows = spectra, columns = spectral variables (ppm))","Array of chemical shift information (ppm)","Dataframe of spectrometer metadata"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Variable Name<\/th>\n      <th>Description<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p>The rownames of <em>X</em> indicate the folder location of individual experiments, which can further be used to match sample annotation data (e.g., group-memberships). The dataframe <em><code>meta</code></em> is row-matched to the NMR data matrix (<em><code>X</code></em>) and contains information relating to spectrometer acquisition and TopSpin software processing parameters, including the acquistion date. See <code>?read1d()</code> for more information.</p>
+<div id="htmlwidget-0b72710debf47e71b63d" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0b72710debf47e71b63d">{"x":{"filter":"none","data":[["X","ppm","meta"],["Matrix of NMR data (rows = spectra, columns = spectral variables (ppm))","Array of chemical shift information (ppm)","Dataframe of spectrometer metadata"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Variable Name<\/th>\n      <th>Description<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p>The rownames of <em>X</em> indicate the folder location of individual experiments, which can further be used to match sample annotation data (e.g., group-memberships). The dataframe <em><code>meta</code></em> is row-matched to the NMR data matrix (<em><code>X</code></em>) and contains information relating to spectrometer acquisition and TopSpin software processing parameters, including the acquistion date. See <code>?read1d()</code> for more information.</p>
 <p> </p>
 </div>
 <div id="visualisation-of-nmr-spectra" class="section level2">

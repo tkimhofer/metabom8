@@ -142,7 +142,7 @@ A scores clustering trend according to surgery type is visible in PCA scores plo
 To explicitly model study group effects, sham vs RYGB surgery, we use an extension of a supervised analysis method called Orthogonal-Projections to Latent Structures or also known as **Orthogonal Partial Least Squares (O-PLS)**.^[Trygg, J., *et al.* (2002). Orthogonal projections to latent structures (O-PLS). *Journal of Chemometrics*, 16.3, 119-28.]
 
 
-### PLS and O-PLS
+### O-PLS
 O-PLS can be seen as a supervised extension of PCA, where the NMR data matrix (usually termed *X*) is related to an external variable (usually termed *Y*) that encodes study outcome information (eg. Sham vs RYGB surgery). O-PLS is separating systematic data variation into Y-predictive and Y-orthogonal, creating a single predictive component and one or more orthogonal components. Consequently, only the predictive component is interpreted in relation to Y. The orthogonal component(s) often encode(s) information related to technical matters (eg., analytical batch effects). 
 
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Spectral calibration to a chemical shift reference (1D NMR) — calibrate • metabom8</title>
+<title>Chemical shift calibration — calibrate • metabom8</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Spectral calibration to a chemical shift reference (1D NMR) — calibrate" />
-<meta property="og:description" content="Spectral calibration to a chemical shift reference." />
+<meta property="og:title" content="Chemical shift calibration — calibrate" />
+<meta property="og:description" content="Chemical shift calibration with a reference signal." />
 
 
 
@@ -95,7 +95,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+      <a href="../articles/MVA.html">Multivariate Analysis and Metabolite ID-ing</a>
     </li>
     <li>
       <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
@@ -121,13 +121,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Spectral calibration to a chemical shift reference (1D NMR)</h1>
+    <h1>Chemical shift calibration</h1>
     
     <div class="hidden name"><code>calibrate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Spectral calibration to a chemical shift reference.</p>
+    <p>Chemical shift calibration with a reference signal.</p>
     </div>
 
     <pre class="usage"><span class='fu'>calibrate</span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>, type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"tsp"</span>, <span class='st'>"glucose"</span>, <span class='st'>"alanine"</span>))</pre>
@@ -177,7 +177,7 @@
 <span class='co'># calibrate with glucose (blood plasma)</span>
 <span class='fu'><a href='matspec.html'>matspec</a></span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>, shift=<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.15</span>, <span class='fl'>5.3</span>))
 </div><div class='output co'>#&gt; <span class='warning'>Warning: minimal value for n is 3, returning requested palette with 3 different levels</span></div><div class='output co'>#&gt; <span class='warning'>Warning: minimal value for n is 3, returning requested palette with 3 different levels</span></div><div class='input'><span class='kw'>X_tsp</span><span class='op'>=</span><span class='fu'>calibrate</span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>, type=<span class='st'>'glucose'</span>)
-</div><div class='output co'>#&gt; <span class='error'>Error in apply(X[, idx], 1, function(x, pp = ppm[idx]) {    xs &lt;- sgolayfilt(x - asysm(x, lambda = 100), p = 3, n = sg_length)    ppick(xs, pp, type = "max")[[1]]}): object 'idx' not found</span></div><div class='input'><span class='fu'><a href='matspec.html'>matspec</a></span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>, shift=<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.15</span>, <span class='fl'>5.3</span>))
+<span class='fu'><a href='matspec.html'>matspec</a></span>(<span class='kw'>X</span>, <span class='kw'>ppm</span>, shift=<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.15</span>, <span class='fl'>5.3</span>))
 </div><div class='output co'>#&gt; <span class='warning'>Warning: minimal value for n is 3, returning requested palette with 3 different levels</span></div><div class='output co'>#&gt; <span class='warning'>Warning: minimal value for n is 3, returning requested palette with 3 different levels</span></div><div class='input'>
 </div></pre>
   </div>

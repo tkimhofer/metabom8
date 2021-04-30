@@ -95,7 +95,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/MVA.html">Mutivariate Data Analysis</a>
+      <a href="../articles/MVA.html">Multivariate Analysis and Metabolite ID-ing</a>
     </li>
     <li>
       <a href="../articles/PreProc.html">Data Import and Preprocessing</a>
@@ -193,7 +193,7 @@
 <span class='kw'>panel</span><span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'A'</span>, <span class='st'>'B'</span>), <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='kw'>X</span>), replace = <span class='fl'>TRUE</span>)
 <span class='fu'>specOverlay</span>(<span class='kw'>X</span>, shift=<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.15</span>, <span class='fl'>4.6</span>), an=<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>panel</span>, Date=<span class='kw'>meta</span><span class='op'>$</span><span class='kw'>a_DATE</span>, AUNM=<span class='kw'>meta</span><span class='op'>$</span><span class='kw'>a_AUNM</span>))
 </div><div class='output co'>#&gt; <span class='error'>Error in seq.default(shift[1], shift[2], by = abs(diff(shift))/20): wrong sign in 'by' argument</span></div><div class='input'><span class='fu'>specOverlay</span>(<span class='kw'>X</span>, shift=<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5.15</span>, <span class='fl'>5.3</span>), an=<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>panel</span>, RunOrder=<span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span>(<span class='kw'>meta</span><span class='op'>$</span><span class='kw'>a_DATE</span>), AUNM=<span class='kw'>meta</span><span class='op'>$</span><span class='kw'>a_AUNM</span>))
-</div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='img'><img src='specOverlay-1.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='img'><img src='specOverlay-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
