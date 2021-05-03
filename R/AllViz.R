@@ -39,7 +39,7 @@ spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive = TRUE, name
                 stop("First create interactive plot (set add=FALSE), then add desired spectrum")
             }
             p <- get(".p", envir = parent.frame())
-            p <- suppressWarnings(p %>% add_trace(data = sp, y = ~spec, name = "trace 1", mode = mode))
+            p <- suppressWarnings(p %>% add_trace(data = sp, y = ~spec, name = name, mode = mode))
             assign(".p", p, envir = parent.frame())
             return(p)
         } else {
@@ -48,7 +48,7 @@ spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive = TRUE, name
             assign(".ind_interactive", TRUE, envir = globalenv())
             x <- list(title = "&delta;<sup>1</sup>H (ppm)", autorange = "reversed")
             y <- list(title = "Intensity")
-            p <- suppressWarnings(plot_ly(data = sp, x = ~ppm, y = ~spec, name = "A", type = "scatter",
+            p <- suppressWarnings(plot_ly(data = sp, x = ~ppm, y = ~spec, name = name, type = "scatter",
                 mode = mode, hovertemplate = "%{x} ppm<extra></extra>") %>% layout(xaxis = x,
                 yaxis = y))
             assign(".p", p, envir = parent.frame())
@@ -110,12 +110,12 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...) {
         x <- list(title = "&delta;<sup>1</sup>H (ppm)", autorange = "reversed")
         y <- list(title = "Intensity")
 
-        cols <- colorRampPalette(brewer.pal(8, "Set2"))(nrow(X))
+        cols <- suppressWarnings(colorRampPalette(brewer.pal(8, "Set2"))(nrow(X)))
         df$col <- rep(cols, length(idx))
 
-        p <- plot_ly(data = df, x = ~Var2, y = ~value, color = ~col, name = ~Var1,
+        p <-suppressWarnings(plot_ly(data = df, x = ~Var2, y = ~value, color = ~I(col), name = ~Var1,
             hovertemplate = "%{x} ppm<extra></extra>") %>% layout(xaxis = x, yaxis = y) %>%
-            add_lines()
+            add_lines())
         return(p)
     }
 

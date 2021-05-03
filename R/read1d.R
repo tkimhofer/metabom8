@@ -53,10 +53,10 @@ read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
         # chem shift
         csF2_ppm <- .chemShift(swidth = pars$a_SW[s], offset = pars$p_OFFSET[s],
             si = pars$p_SI[s])
-        byteorda <- c(little = 0, big = 1)
-        spec <- readBin(f_list$f_1r[s], what = "int", n = pars$p_FTSIZE[s], size = 4,
-            signed = TRUE, endian = names(byteorda)[match(pars$a_BYTORDA[s], byteorda)])
-        spec <- (spec * (2^pars$p_NC_proc[s]))
+        byteord <- c(little = 0, big = 1)
+        spec <- readBin(f_list$f_1r[s], what = "int", n = pars$p_FTSIZE[s], size=4,
+            signed = TRUE, endian = names(byteord)[match(pars$p_BYTORDP[s], byteord)])
+        spec <- (spec * (2^(pars$p_NC_proc[s]*-1)))
         nspec <- length(spec)
         f_spec <- approxfun(x = csF2_ppm, y = spec)
         spec_inter <- f_spec(ppref)
