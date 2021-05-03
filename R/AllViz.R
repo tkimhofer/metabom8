@@ -46,7 +46,7 @@ spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive = TRUE, name
             # if(!exists('mm8_plot', mode='environment')) mm8_plot <- new.env(parent =
             # globalenv())
             assign(".ind_interactive", TRUE, envir = globalenv())
-            x <- list(title = "&delta;<sup>1</sup>H (ppm)", autorange = "reversed")
+            x <- list(title = "ppm", autorange = "reversed")
             y <- list(title = "Intensity")
             p <- suppressWarnings(plot_ly(data = sp, x = ~ppm, y = ~spec, name = name, type = "scatter",
                 mode = mode, hovertemplate = "%{x} ppm<extra></extra>") %>% layout(xaxis = x,
@@ -107,7 +107,7 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...) {
 
     if (interactive) {
         df <- melt(X[, idx])
-        x <- list(title = "&delta;<sup>1</sup>H (ppm)", autorange = "reversed")
+        x <- list(title = "ppm", autorange = "reversed")
         y <- list(title = "Intensity")
 
         cols <- suppressWarnings(colorRampPalette(brewer.pal(8, "Set2"))(nrow(X)))

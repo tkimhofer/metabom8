@@ -4,7 +4,7 @@ author: "Torben Kimhofer"
 date: "March 2021"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Data pre-processing}
+  %\VignetteIndexEntry{Data Import and Preprocessing}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -201,7 +201,7 @@ idx_tsp=get_idx(range=c(min(ppm), 0.5), ppm)
 # ... water region...
 idx_water=get_idx(range=c(4.6, 5), ppm)
 # ... as well as downfield noise regions
-idx_noise=get.idx(range=c(9.5, max(ppm)), ppm)
+idx_noise=get_idx(range=c(9.5, max(ppm)), ppm)
 
 idx_rm=c(idx_tsp, idx_water, idx_noise)
 

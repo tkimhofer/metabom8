@@ -129,17 +129,17 @@ opls <- function(X, Y, center = TRUE, scale = 'UV', cv=list(method='k-fold_strat
                if ( grepl('mY', type) ) {                           # multi Y DA using MCCV
                  pred_mean=preds_test[1,,]
                  colnames(pred_mean)=colnames(y_check[[1]])
-                 mod <- multiclass.roc(response = factor(Y), predictor = pred_mean)
+                 mod <- suppressWarnings(multiclass.roc(response = factor(Y), predictor = pred_mean))
                  aucs_te[nc] <- mod$auc
                  pred_tr_mean=preds_train[1,,]
                  colnames(pred_tr_mean)=colnames(y_check[[1]])
-                 mod <- multiclass.roc(response = factor(Y), predictor = pred_tr_mean)
+                 mod <- suppressWarnings(multiclass.roc(response = factor(Y), predictor = pred_tr_mean))
                  aucs_tr[nc] <- mod$auc
                }else{                                             # single Y DA using MCCV
                  # need the same decision boundary
-                 mod <- roc(response = Y, predictor = preds_test[1,], quiet = TRUE)
+                 mod <- suppressWarnings(roc(response = Y, predictor = preds_test[1,], quiet = TRUE))
                  aucs_te[nc] <- mod$auc
-                 mod <- roc(response = Y, predictor = preds_train[1,], quiet = TRUE)
+                 mod <- suppressWarnings(roc(response = Y, predictor = preds_train[1,], quiet = TRUE))
                  aucs_tr[nc] <- mod$auc
                  }
                } else{
@@ -158,16 +158,16 @@ opls <- function(X, Y, center = TRUE, scale = 'UV', cv=list(method='k-fold_strat
              if( grepl('DA', type) ) {
                if ( grepl('mY', type) ) {
                  colnames(preds_test)=colnames(y_check[[1]])
-                 mod <- multiclass.roc(response = Y, predictor = apply(preds_test, 2, as.numeric))
+                 mod <- suppressWarnings(multiclass.roc(response = Y, predictor = apply(preds_test, 2, as.numeric)))
                  aucs_te[nc] <- mod$auc
                  preds_te = preds_train[1,,] # this extracts mean values
                  colnames(preds_te)=colnames(y_check[[1]])
-                 mod <- multiclass.roc(response = Y, predictor = preds_te, quiet = TRUE)
+                 mod <- suppressWarnings(multiclass.roc(response = Y, predictor = preds_te, quiet = TRUE))
                  aucs_tr[nc] <- mod$auc
                }else{
-                 mod <- roc(response = Y, predictor = preds_test, quiet = TRUE)
+                 mod <- suppressWarnings(roc(response = Y, predictor = preds_test, quiet = TRUE))
                  aucs_te[nc] <- mod$auc
-                 mod <- roc(response = Y, predictor = preds_train[1,], quiet = TRUE)
+                 mod <- suppressWarnings(roc(response = Y, predictor = preds_train[1,], quiet = TRUE))
                  aucs_tr[nc] <- mod$auc
                }
              }else{

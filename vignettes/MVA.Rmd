@@ -4,7 +4,7 @@ author: "Torben Kimhofer"
 date: "March 2021"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{MVA and metabolite identification}
+  %\VignetteIndexEntry{Multivariate Analysis and Metabolite ID-ing}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---

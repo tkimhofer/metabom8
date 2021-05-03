@@ -117,7 +117,7 @@ read1d_raw <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG128_3mm"),
         fid <- readBin(paste0(f_list[[1]][s], .Platform$file.sep, "fid"), what = names(dtypa)[match(pars$a_DTYPA[s],
             dtypa)], n = pars$a_TD[s], size = 4L, endian = names(byteorda)[match(pars$a_BYTORDA[s],
             byteorda)])
-        fid <- (fid * (2^pars$a_NC[s]))
+        fid <- (fid * (2^(-1*pars$a_NC[s])))
 
         # remove group delay points
         if (verbose == 3) {
