@@ -56,7 +56,7 @@ read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
         byteord <- c(little = 0, big = 1)
         spec <- readBin(f_list$f_1r[s], what = "int", n = pars$p_FTSIZE[s], size=4,
             signed = TRUE, endian = names(byteord)[match(pars$p_BYTORDP[s], byteord)])
-        spec <- (spec * (2^(pars$p_NC_proc[s]*-1)))
+        spec <- (spec * (2^(pars$p_NC_proc[s])))
         nspec <- length(spec)
         f_spec <- approxfun(x = csF2_ppm, y = spec)
         spec_inter <- f_spec(ppref)
