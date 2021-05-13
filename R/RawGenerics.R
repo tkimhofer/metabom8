@@ -110,9 +110,10 @@
       x[idx]
     })
 
-  }else{
-    pars<-pars[idx_filt,]
   }
+
+  pars<-pars[idx_filt,]
+
 
   # order and add rownames
   fnam <- strsplit(f_list$f_1r, .Platform$file.sep)
@@ -140,12 +141,18 @@
     exp_ <- vapply(fnam, function(x, st = idx_keep[length(idx_keep)]) {
       x[st]
     }, FUN.VALUE = "")
+    if (any(is.na(suppressWarnings(as.numeric(exp_))))) { # Is there at least one non-numeric ID?
+      exp_ <- factor(exp_)
+    }
     rr<-order(as.numeric(exp_)+rord_fac)
 
   }else{
     exp_ <- vapply(fnam, function(x, st = idx_keep) {
       x[st]
     }, FUN.VALUE = "")
+    if (any(is.na(suppressWarnings(as.numeric(exp_))))) { # Is there at least one non-numeric ID?
+      exp_ <- factor(exp_)
+    }
     rr<-order(as.numeric(exp_))
   }
 
