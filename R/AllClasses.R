@@ -34,6 +34,37 @@ setClass("OPLS_metabom8", representation(
 )
 
 
+#' @title An S4 class to represent a PLS model constructed with metabom8
+#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @family NMR & MS
+#' @section
+
+# define slots for OPLS_Torben object
+setClass("PLS_metabom8", representation(
+  type = "character",
+  t_pred = "matrix",
+  p_pred = "matrix",
+  w_pred = "matrix",
+  betas_pred = "numeric",
+  Qpc = "matrix",
+  t_pred_cv = "matrix",
+  nPC = "numeric",
+  summary = "data.frame",
+  Y_res = "matrix",
+  X_res = "matrix",
+  X_mean = "numeric",
+  X_sd = "numeric",
+  Y_mean = "numeric",
+  Y_sd = "numeric",
+  Parameters = "list",
+  X = "matrix",
+  X_scaled = "matrix",
+  Y = "list"
+)
+)
+
+
+
 #' @title An S4 class to represent STOCSY model constructed with metabom8
 #' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @family NMR

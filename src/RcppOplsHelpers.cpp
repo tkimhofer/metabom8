@@ -123,7 +123,7 @@ Eigen::MatrixXd multiY_Tw_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y) {
 // idx=which(Y<4)
 // X1=scale(X[idx,])
 // Y1=MetaboMate:::create_dummy_Y(iris[idx,5])[[1]]
-// out = nip_PLS_comp_rcpp(X1, Y1)
+// out = .nipPlsCompRcpp(X1, Y1)
 // [[Rcpp::export(.nipPlsCompRcpp)]]
 Rcpp::List nip_PLS_comp_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y) {
 
@@ -140,6 +140,10 @@ Rcpp::List nip_PLS_comp_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y) {
   Eigen::MatrixXd y_pred(X.rows(),1);    // x scores
   Eigen::MatrixXd t_yold(X.rows(),1); // x scores (i-1)
   Eigen::MatrixXd inter;// store interim results
+
+  Eigen::MatrixXd x_pred(X.rows(),X.cols());  ; // t*p
+  Eigen::MatrixXd x_res(X.rows(), X.cols());  ; // X where component rm
+
   double dd = 1;
   int count = 0;
 
@@ -171,6 +175,10 @@ Rcpp::List nip_PLS_comp_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y) {
 
   y_pred = b(0,0) * t_x * p_y.transpose();
 
+  x_pred = t_x * p_x;
+  x_res = X - x_pred;
+
+
   return  Rcpp::List::create(
     Rcpp::_["w_x"] = w_x,
     Rcpp::_["t_x"] = t_x,
@@ -179,6 +187,7 @@ Rcpp::List nip_PLS_comp_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y) {
     Rcpp::_["t_y"] = t_y,
     Rcpp::_["p_y"] = p_y,
     Rcpp::_["y_pred"] = y_pred,
+    Rcpp::_["x_res"] = x_res,
     Rcpp::_["b"] = b);
 
 }
@@ -334,7 +343,7 @@ Rcpp::NumericVector tss_rcpp(Eigen::MatrixXd X) {
 
 // [[Rcpp::export(.plsPredRcpp)]]
 Rcpp::List pls_pred_rcpp(Rcpp::List pls_mod, Eigen::MatrixXd Xnew) {
-
+  // this returns pls predictions from a single component PLS that was calculated before
   Eigen::MatrixXd w_x = pls_mod["w_x"];
   Eigen::MatrixXd p_x =  pls_mod["p_x"];
   Eigen::MatrixXd p_y =  pls_mod["p_y"];

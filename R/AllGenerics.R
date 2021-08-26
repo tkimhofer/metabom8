@@ -479,13 +479,14 @@
 #' @importFrom stats sd
 #' @keywords internal
 #' @section
-#'
+
 # this has to be adjusted from multi-column Y
 .extMeanCvFeat=function(cv_obj, feat='t_xp', cv_type, model_type){
 
     if(!feat %in% names(cv_obj[[1]])) stop('Feature name not in feature list')
     inter <- lapply(cv_obj, '[[', feat)
 
+    #browser()
 
     if( grepl('MC', cv_type) | (grepl('k-fold', cv_type) & grepl('train', feat )) ) {
         if(grepl('mY', model_type)){
@@ -505,9 +506,11 @@
             })
         }
     }else{
+        #browser()
         if(grepl('mY', model_type) | !grepl('mY', model_type) ){
             f_mat=abind(inter, along=3);
             fout=apply(f_mat, c(1,2), function(x){
+                #browser()
                 idx=which(!is.na(x))
                 x[idx]
             })
@@ -525,6 +528,8 @@
 
     return(fout)
 }
+
+
 
 #' @title R2 and Q2
 #' @param Y num matrix Y: OPLS outcome, dummy matrix in case it is categorical
