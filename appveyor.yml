@@ -20,12 +20,12 @@ environment:
     PKGTYPE: both
 
   matrix:
-    - R_VERSION: devel
+    - R_VERSION: 4.1.0
       R_ARCH: x64
       GCC_PATH: mingw_64
       BIOC_USE_DEVEL: TRUE
 
-    - R_VERSION: release
+    - R_VERSION: 4.1.0
       R_ARCH: x64
       GCC_PATH: mingw_64
       BIOC_USE_DEVEL: FALSE
