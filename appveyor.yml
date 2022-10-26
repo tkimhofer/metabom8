@@ -39,7 +39,7 @@ environment:
 build_script:
   # Installs packages biocon
   #- ./travis-tool.sh install_bioc GenomeInfoDbData
-  - travis-tool.sh github_package tkimhofer/msbrowser
+  #- travis-tool.sh github_package tkimhofer/msbrowser
   # Installs all packages in the DESCRIPTION file.
   - ./travis-tool.sh install_bioc_deps
   - travis-tool.sh install_deps
