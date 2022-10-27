@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 
 # metabom8
 

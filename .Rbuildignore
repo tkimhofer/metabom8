@@ -3,3 +3,4 @@
 ^appveyor\.yml$
 ^doc$
 ^Meta$
+^\.github$
