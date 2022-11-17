@@ -11,7 +11,7 @@ LazyData: true
 Depends: R (>= 4.0)
 Imports: 
     abind, 
-    BiocManager (=3.16),
+    BiocManager,
     colorRamps,
     ellipse,
     ggplot2, 
