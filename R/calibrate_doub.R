@@ -1,9 +1,9 @@
-# Calibrate 1D NMR to glucose @ 5.233 (d)
+# Calibrate 1D NMR to doublet signal
 #' @title Calibrate spectra to a doublet signal
 #' @param X num matrix, NMR matrix with spectra in rows
 #' @param ppm num vec, chemical shift matching to X
-#' @param type string/num vec, either glu or ala for glucose and alanine calibration, respectively, or num array defining chem shift of doublet to be used for calibratoin
-#' @param j_const num array, range of J constant values used to identify doublet signal (ppm), default is for glucose
+#' @param type string/num vec, either glu or ala for glucose and alanine calibration, respectively, or num array defining chem shift of doublet to be used for calibration
+#' @param j_const num array, range of J constant values used to identify doublet signal (ppm), default is for glucose (doublet has J-cons of 3.85 Hz)
 #' @param sg_length int, nb of data points to cacl 2nd degree estimation with savitzki-golay (higher number -> smoother)
 #' @return Calibrated X matrix
 #' @author Torben Kimhofer \email{torben.kimhofer@@gmail.com}
@@ -12,9 +12,20 @@
 #' @keywords internal
 .calibrate_doub <- function(X, ppm, type=c('glu', 'ala'), j_const=c(0.006, 0.007), sg_length = 13) {
 
-    if(type[1] =='glu')  idx <- get_idx(c(5.15, 5.3), ppm); cent_loc=5.233; j_const=c(0.006, 0.007)
-    if(type[1] =='ala')  idx <- get_idx(c(1.4, 1.56), ppm); cent_loc=1.48
-    if(is.numeric(type[1]))  idx <- get_idx(type, ppm)
+    if(type[1] =='glu') {
+        idx <- get_idx(c(5.15, 5.3), ppm);
+        cent_loc=5.233;
+        j_const=c(0.006, 0.007)
+    }
+    if(type[1] =='ala') {
+        idx <- get_idx(c(1.4, 1.56), ppm);
+        cent_loc=1.48
+        j_const = c(0.0115, 0.0135)
+    }
+    if(is.numeric(type[1])) {
+        idx <- get_idx(type, ppm)
+        cent_loc = mean(type)
+    }
 
     # remove broad signals and smooth
     test <- apply(X[, idx], 1, function(x, pp = ppm[idx]) {
@@ -31,7 +42,7 @@
             abs(diff(pp[id]))
         })
 
-        ii_idx <- which(ii_d > 0.006 & ii_d < 0.007)  # glucose doublet has J-cons of 3.85 Hz
+        ii_idx <- which(ii_d > j_const[1] & ii_d < j_const[2])
 
         if (length(ii_idx) == 1) {
 
@@ -63,7 +74,7 @@
         if (is.null(s[[i]]) && nrow(s[[i]]) > 2) {
             message(paste("Could not calibrate spectrum", i))
         } else {
-            ff <- approxfun(x = ppm - (max(s[[i]]$ppm) - 5.233), y = X[i, ])
+            ff <- approxfun(x = ppm - (max(s[[i]]$ppm) - cent_loc), y = X[i, ])
             news <- ff(ppm)
             return(news)
         }

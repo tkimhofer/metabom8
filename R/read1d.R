@@ -74,7 +74,7 @@ read1d <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG")),
     rownames(pars) <- fnam
 
 
-    X[is.na(X)]=0
+    out[is.na(out)]=0
     assign("X", out, envir = .GlobalEnv)
     assign("ppm", ppm_ref, envir = .GlobalEnv)
     assign("meta", pars, envir = .GlobalEnv)
