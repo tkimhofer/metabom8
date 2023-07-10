@@ -116,7 +116,7 @@
 
 
   # order and add rownames
-  fnam <- strsplit(f_list$f_1r, .Platform$file.sep)
+  fnam <- strsplit(ifelse(!is.na(f_list$f_1r), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
   idx_keep <- which((apply(do.call(rbind, fnam), 2, function(x) length(unique(x)))) > 1)
 
   # find order of racks
@@ -285,7 +285,7 @@
   }
   p_intact=gsub('/acqus$', '', f_acqus)
   exp_no=id_fid
-  return(list(path=p_intact, exp_no=exp_no))
+  return(list(path=p_intact, exp_no=exp_no, f_acqus = f_acqus, f_fid = f_fid))
 }
 
 
