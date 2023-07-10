@@ -43,7 +43,5 @@ Other NMR ++:
 }
 \author{
 \email{torben.kimhofer@murdoch.edu.au}
-
-\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR ++}

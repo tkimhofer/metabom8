@@ -17,9 +17,9 @@
 
 \item{ppm}{num vec, chemical shift matching to X}
 
-\item{type}{string/num vec, either glu or ala for glucose and alanine calibration, respectively, or num array defining chem shift of doublet to be used for calibratoin}
+\item{type}{string/num vec, either glu or ala for glucose and alanine calibration, respectively, or num array defining chem shift of doublet to be used for calibration}
 
-\item{j_const}{num array, range of J constant values used to identify doublet signal (ppm), default is for glucose}
+\item{j_const}{num array, range of J constant values used to identify doublet signal (ppm), default is for glucose (doublet has J-cons of 3.85 Hz)}
 
 \item{sg_length}{int, nb of data points to cacl 2nd degree estimation with savitzki-golay (higher number -> smoother)}
 }

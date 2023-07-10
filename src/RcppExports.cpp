@@ -7,6 +7,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // nip_pca_comp_rcpp
 Rcpp::List nip_pca_comp_rcpp(Eigen::MatrixXd X);
 RcppExport SEXP _metabom8_nip_pca_comp_rcpp(SEXP XSEXP) {

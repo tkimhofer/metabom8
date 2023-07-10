@@ -113,14 +113,14 @@
                if (any(is.na(cv_est))) {
                    stop(paste("Something went wrong: Q2 is NA"))
                }
-               if (nc == 1 && cv_est < 0.05) stop(paste0("No significant component (r2=", round(cv_est, 2), ")"))
+               #if (nc == 1 && cv_est < 0.05) stop(paste0("No significant component (r2=", round(cv_est, 2), ")"))
                if (nc > 1 && (diff(cv_est[seq((nc - 1),nc)]) < 0.05 | cv_est[nc] > 0.98)) return(TRUE)
            },
            DA = {
                if (any(is.na(cv_est))) {
                    stop(paste("Something went wrong: Q2 is NA"))
                }
-               if (nc == 1 && cv_est < 0.6) stop(paste0("No significant component (AUROC_cv=", round(cv_est, 2), ")"))
+               #if (nc == 1 && cv_est < 0.6) stop(paste0("No significant component (AUROC_cv=", round(cv_est, 2), ")"))
                if (nc > 1 && (diff(cv_est[seq((nc - 1), nc)]) < 0.05 | cv_est[nc] > 0.97)) return(TRUE)
            })
 
