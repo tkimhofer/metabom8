@@ -33,7 +33,7 @@ predict_opls <- function(opls_model, newdata, idx_scale = NULL) {
     }
 
 
-    if (length(unique(opls_model@Y$ori)) != 2) {
+    if (opls_model@type == "DA" & length(unique(opls_model@Y$ori)) != 2) {
         stop("Predictions implemented only for regression or 2-class outcomes.")
         return(NULL)
     }
