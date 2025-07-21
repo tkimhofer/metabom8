@@ -100,7 +100,7 @@ If you find `metabom8` useful, please consider giving it a ⭐ — it makes it e
 ## 📝 License & Citation
 
 MIT License © Torben Kimhofer  
-Please cite `metabom8` if you use it in academic work. See [`CITATION.cff`](https://github.com/tkimhofer/metabom8/blob/master/CITATION.cff) for citation info.
+If `metabom8` or any of its components contributes to your work, please ensure appropriate citation. See [`CITATION.cff`](https://github.com/tkimhofer/metabom8/blob/master/CITATION.cff) for citation details.
 
 ---
 
