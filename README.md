@@ -1,7 +1,7 @@
 
 # metabom8 ![R-C++](https://img.shields.io/badge/R-C%2B%2B-blue)
 
-**An R library for NMR/MS-based metabolic profiling**  
+**An R library for NMR-based metabolic profiling**  
 `metabom8` provides pipelines for 1D NMR data import, preprocessing, multivariate modeling (PCA, O-PLS), metabolite identification, and visualization — with core functions accelerated using C++ (`Rcpp`, `Armadillo`, `Eigen`) for improved computational performance.
 
 ---
