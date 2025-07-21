@@ -46,7 +46,7 @@ jobs:
       # If any errors or failures occurred, upload the check artifacts (logs, etc.)
       - name: Upload check artifacts
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "${{ matrix.os }}-R${{ matrix.r }}-check-artifacts"
           path: "*.Rcheck/**"
