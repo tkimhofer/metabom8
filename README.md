@@ -1,3 +1,4 @@
+[![Install from GitHub](https://img.shields.io/badge/install%20from-GitHub-blue.svg)](https://github.com/tkimhofer/metabom8)
 
 
 # metabom8
