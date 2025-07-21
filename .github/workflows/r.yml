@@ -30,6 +30,11 @@ jobs:
         with:
           r-version: ${{ matrix.r }}
           use-public-rspm: true  # Use RStudio Package Manager on Linux for binaries:contentReference[oaicite:4]{index=4}
+          
+      # Install nmrdata (from GitHub) before dependency resolution
+      - name: Install nmrdata from GitHub
+        run: remotes::install_github("tkimhofer/nmrdata")
+        shell: Rscript {0}
 
       # Install package dependencies (with caching) and additional tools
       - uses: r-lib/actions/setup-r-dependencies@v2
