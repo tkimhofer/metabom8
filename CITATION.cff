@@ -4,7 +4,7 @@ authors:
 - family-names: "Kimhofer"
   given-names: "Torben"
   orcid: "https://orcid.org/0000-0001-7158-9930"
-title: "metabom8"
+title: "metabom8: A High-Performance R Package for Metabolomics Modeling and Analysis"
 version: 1.0.0
 date-released: 2021-09-05
 url: "https://github.com/tkimhofer/metabom8"
