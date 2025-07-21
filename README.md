@@ -35,17 +35,18 @@ library(nmrdata)
 
 # Load example data
 data(bariatric, package = "nmrdata")
-X <- bariatric$X.pqn[bariatric$an$Class %in% c("Pre-op", "RYGB"), ]
-Y <- bariatric$an$Class[bariatric$an$Class %in% c("Pre-op", "RYGB")]
 
-# Fit an OPLS model
+idx <- bariatric$an$Class %in% c("Pre-op", "RYGB")
+X <- bariatric$X.pqn[idx, ]
+Y <- bariatric$an$Class[idx]
+
+# Fit an OPLS model using Monte Carlo Cross-Valdation
 model <- opls(
   X = X,
   Y = Y,
   center = TRUE,
   scale = "UV",
-  maxPCo = 2,
-  cv = list(method = "k-fold_stratified", k = 7, split = 2/3)
+  cv = list(method = "MC", k = 7, split=2/3)
 )
 
 # Plot scores and loadings
@@ -74,7 +75,7 @@ bench::mark(
 
 > `metabom8` provides a ~2.5× speed-up using C++ linear algebra (Eigen, Armadillo) when compared to widely used implementations [^1].
 
-[^1]: Benchmark comparison uses the [`ropls`](https://bioconductor.org/packages/ropls) package (Bioconductor), a widely used OPLS implementation.
+[^1]: Benchmark comparison uses the [`ropls`](https://bioconductor.org/packages/ropls) package (Bioconductor), a widely used OPLS implementation (parameters: uv scaling, 7-fold CV, 1 predictive + 1 orthogonal component).
 ---
 
 ## 📘 Documentation
@@ -90,7 +91,8 @@ Comprehensive documentation and vignettes are available at:
 
 ## 🔗 Related Packages
 
-- [`nmrdata`](https://github.com/tkimhofer/nmrdata): Datasets for NMR spectral analysis (used in examples)
+- [`nmrdata`](https://github.com/tkimhofer/nmrdata): Example dataset for NMR spectral analysis (used in examples)
+  
 If you find `metabom8` useful, please consider giving it a ⭐ — it makes it easier for others to discover the project!
 
 ---
