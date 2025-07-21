@@ -1,4 +1,8 @@
-[![Install from GitHub](https://img.shields.io/badge/install%20from-GitHub-blue.svg)](https://github.com/tkimhofer/metabom8)
+<!-- badges: start -->
+  [![Install from GitHub](https://img.shields.io/badge/install%20from-GitHub-blue.svg)](https://github.com/tkimhofer/metabom8)
+  [![R-CMD-check](https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 
 
 # metabom8
