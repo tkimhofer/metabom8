@@ -63,7 +63,7 @@ read1d_raw <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG128_3mm"),
         message("Searching for spectral data...")
     }
     # check file system intact
-    f_list <- .check1d_files_fid(path, n_max, filter, recursive, verbose)
+    f_list <- .check1d_files_fid(path, n_max = 1e6, filter, recursive, verbose)
     if (verbose > 1) {
         message("Found", paste(length(f_list[[1]]), "experiments files in path."))
     }
@@ -76,7 +76,7 @@ read1d_raw <- function(path, exp_type = list(exp = c("PROF_PLASMA_CPMG128_3mm"),
     if (verbose > 1) {
         message("Filtering for experiments using user-defined parameters (ext_type argument)")
     }
-    exp_filt <- .filterExp_files(pars, exp_type, f_list)
+    exp_filt <- .filterExp_files(pars, exp_type, f_list, n_max)
     f_list <- exp_filt[[1]]
     pars <- exp_filt[[2]]
     if (verbose > 0) {
