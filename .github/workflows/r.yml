@@ -30,6 +30,10 @@ jobs:
         with:
           r-version: ${{ matrix.r }}
           use-public-rspm: true  # Use RStudio Package Manager on Linux for binaries:contentReference[oaicite:4]{index=4}
+
+      - name: Install remotes
+        run: install.packages("remotes")
+        shell: Rscript {0}
           
       # Install nmrdata (from GitHub) before dependency resolution
       - name: Install nmrdata from GitHub
