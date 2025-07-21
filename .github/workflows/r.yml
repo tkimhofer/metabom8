@@ -37,7 +37,7 @@ jobs:
           
       # Install nmrdata (from GitHub) before dependency resolution
       - name: Install nmrdata from GitHub
-        run: remotes::install_github("tkimhofer/nmrdata")
+        run: remotes::install_github("tkimhofer/nmrdata", ref = "master")
         shell: Rscript {0}
 
       # Install package dependencies (with caching) and additional tools
