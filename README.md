@@ -1,8 +1,9 @@
 <!-- badges: start -->
   [![Install from GitHub](https://img.shields.io/badge/install%20from-GitHub-blue.svg)](https://github.com/tkimhofer/metabom8)
   [![pages-build-deployment](https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment)
+<!-- badges: 
   [![R-CMD-check](https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-check.yaml)
-<!-- badges: end -->
+end -->
 
 
 
