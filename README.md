@@ -91,7 +91,7 @@ Comprehensive documentation and vignettes are available at:
 
 ## 🔗 Related Packages
 
-- [`nmrdata`](https://github.com/tkimhofer/nmrdata): Example dataset for NMR spectral analysis (used in examples)
+- [`nmrdata`](https://github.com/tkimhofer/nmrdata): Example dataset for NMR spectral analysis (used for performance comparison)
   
 If you find `metabom8` useful, please consider giving it a ⭐ — it makes it easier for others to discover the project!
 
