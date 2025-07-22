@@ -1,5 +1,8 @@
 
-# metabom8 ![R-C++](https://img.shields.io/badge/R-C%2B%2B-blue)
+# metabom8 
+
+![R-C++](https://img.shields.io/badge/R-C%2B%2B-blue)
+[![pages-build-deployment](https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment)
 
 **An R library for NMR-based metabolic profiling**  
 
