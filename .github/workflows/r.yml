@@ -38,18 +38,11 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
-      - name: Install suggest from Bioconductor
-        run: |
-          install.packages("BiocManager")
-          BiocManager::install(c("xcms"))
-        shell: Rscript {0}
-
       - name: Install suggest from GH
         env:
           GITHUB_PAT: ${{ secrets.GH_PAT }}
         run: |
-          install.packages("remotes")
-          remotes::install_github("tkimhofer/msbrowser")
+          remotes::install_github("tkimhofer/nmrdata")
         shell: Rscript {0}
 
       - name: List installed packages
