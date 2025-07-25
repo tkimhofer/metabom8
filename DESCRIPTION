@@ -42,7 +42,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Suggests: 
     knitr,
-    nmrdata
+    nmrdata,
     rmarkdown,
     testthat
 VignetteBuilder: knitr
