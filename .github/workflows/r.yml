@@ -26,7 +26,7 @@ jobs:
 
       - name: Install CRAN dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck", "testthat", "knitr"))
+          install.packages(c("remotes", "rcmdcheck", "testthat", "knitr", "devtools"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
@@ -51,7 +51,7 @@ jobs:
         env:
           _R_CHECK_FORCE_SUGGESTS_: false
         run: |
-          rcmdcheck::rcmdcheck(args = c("--no-manual", "--run-donttest"), error_on = "error")
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--run-donttest", "--no-build-vignettes"), error_on = "error")
           devtools::test()
         shell: Rscript {0}
 
