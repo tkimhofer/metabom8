@@ -34,7 +34,7 @@ jobs:
 
       - name: Install CRAN dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck", "testthat", "knitr", "devtools"))
+          install.packages(c("remotes", "rcmdcheck", "testthat", "knitr", "devtools", "DT"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
