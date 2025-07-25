@@ -11,14 +11,12 @@ LazyData: true
 Depends: R (>= 4.0)
 Imports: 
     abind, 
-    BiocManager,
     colorRamps,
     ellipse,
     ggplot2, 
     ggrepel,
     graphics,
     grDevices,
-    htmlTable,
     methods, 
     parallel,
     pcaMethods,
@@ -40,8 +38,10 @@ LinkingTo:
 biocViews: Metabolomics, Cheminformatics, Preprocessing, DataImport
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Suggests: 
+Suggests:
+    dplyr,
     DT,
+    htmlTable,
     knitr,
     nmrdata,
     rmarkdown,
