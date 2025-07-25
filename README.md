@@ -1,5 +1,8 @@
 
-# metabom8 ![R-C++](https://img.shields.io/badge/R-C%2B%2B-blue)
+# metabom8 
+
+![R-C++](https://img.shields.io/badge/R-C%2B%2B-blue)
+[![pages-build-deployment](https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment)
 
 **An R library for NMR-based metabolic profiling**  
 
@@ -109,7 +112,7 @@ If `metabom8` or any of its components contributes to your work, please ensure a
 
 - Found a bug? Open an [issue](https://github.com/tkimhofer/metabom8/issues)
 - Want to contribute? Fork the repo and submit a pull request
-- Code of Conduct: see `CODE_OF_CONDUCT.md`
+- Code of Conduct: see [`CODE_OF_CONDUCT.md`](https://github.com/tkimhofer/metabom8/blob/master/CODE_OF_CONDUCT.md)
 
 ---
 
