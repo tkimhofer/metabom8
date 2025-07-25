@@ -41,6 +41,7 @@ biocViews: Metabolomics, Cheminformatics, Preprocessing, DataImport
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Suggests: 
+    DT,
     knitr,
     nmrdata,
     rmarkdown,
