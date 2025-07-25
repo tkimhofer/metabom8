@@ -1,8 +1,6 @@
-# R CMD check workflow for an R package (Ubuntu, macOS, Windows)
-# Includes R versions 3.6.3 through 4.5.1 (latest release as of July 2025:contentReference[oaicite:3]{index=3})
-# Installs dependencies with caching and uploads check logs on failure.
 
 name: R-CMD-check
+
 on:
   push:
     branches: [master]
@@ -15,47 +13,45 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        r: ['3.6.3', '4.0.5', '4.5.1']
-    env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        r-version: ['4.3', '4.2', '4.1.1']
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      # Set up Pandoc (needed for building vignettes, etc.)
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      # Set up R on the runner (install specific R version, and Rtools on Windows)
-      - uses: r-lib/actions/setup-r@v2
+      - name: Set up R ${{ matrix.r-version }}
+        uses: r-lib/actions/setup-r@v2
         with:
-          r-version: ${{ matrix.r }}
-          use-public-rspm: true  # Use RStudio Package Manager on Linux for binaries:contentReference[oaicite:4]{index=4}
+          r-version: ${{ matrix.r-version }}
 
-      - name: Install remotes
-        run: install.packages("remotes")
-        shell: Rscript {0}
-          
-      # Install nmrdata (from GitHub) before dependency resolution
-      - name: Install nmrdata from GitHub
-        run: remotes::install_github("tkimhofer/nmrdata", ref = "master")
-        shell: Rscript {0}
-
-      # Install package dependencies (with caching) and additional tools
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          cache-version: 2               # Bump to refresh cache if needed:contentReference[oaicite:5]{index=5}
-          extra-packages: rcmdcheck      # Install rcmdcheck for running checks
-
-      # Run R CMD check (as CRAN, skipping manual/doc build for speed)
-      - name: Run R CMD check
+      - name: Install CRAN dependencies
         run: |
-          R CMD build .
-          R CMD check *.tar.gz --no-manual --as-cran
+          install.packages(c("remotes", "rcmdcheck", "testthat", "knitr"))
+          remotes::install_deps(dependencies = TRUE)
+        shell: Rscript {0}
 
-      # If any errors or failures occurred, upload the check artifacts (logs, etc.)
-      - name: Upload check artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: "${{ matrix.os }}-R${{ matrix.r }}-check-artifacts"
-          path: "*.Rcheck/**"
+      - name: Install suggest from Bioconductor
+        run: |
+          install.packages("BiocManager")
+          BiocManager::install(c("xcms"))
+        shell: Rscript {0}
+
+      - name: Install suggest from GH
+        env:
+          GITHUB_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          install.packages("remotes")
+          remotes::install_github("tkimhofer/msbrowser")
+        shell: Rscript {0}
+
+      - name: List installed packages
+        run: Rscript -e 'installed.packages()[, "Package"]'
+
+      - name: Run tests
+        env:
+          _R_CHECK_FORCE_SUGGESTS_: false
+        run: |
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--run-donttest"), error_on = "error")
+          devtools::test()
+        shell: Rscript {0}
+
