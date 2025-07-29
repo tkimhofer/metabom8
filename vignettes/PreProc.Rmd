@@ -263,3 +263,9 @@ matspec(X_pqn, ppm, shift = c(1.2, 1.7), interactive=F)
 1D NMR spectra were imported, quality checked and pre-processed which included referencing to TSP, baseline correction, excision of spectral areas that bear no quantitative biological information. Urinary spectra were normalised with PQN to account for different sample dilutions. 
 
 The pre-processed spectra can now be statistical interrogated, e.g., using multivariate methods Prinicpal Component Analysis (PCA) and Orthogoanl-Partial-Least Squares (O-PLS). You can find more information on this in the vignette **Multivariate Statistical Analysis**.
+
+
+## Session Info
+
+```{r session-info, echo=FALSE}
+sessionInfo()

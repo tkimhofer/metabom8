@@ -260,5 +260,9 @@ The assignment of putative identities via database search based on the supervise
 This vignette illustrated multivariate statistical analysis of NMR-based metabolic phenotyping data with PCA and O-PLS-DA using the *metabom8* package. Once a statistically robust OPLS model was established, information on variable importance was extracted using different model visualisations. STOCSY was performed to identify strucutural correlations of metabolites and this information was used to search putative metabolite identities on a spectral database.
 
 
+## Session Info
+
+```{r session-info, echo=FALSE}
+sessionInfo()
 
 
