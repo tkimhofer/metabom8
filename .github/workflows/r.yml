@@ -38,6 +38,9 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+          
+      - name: Install nmrData from GitHub
+        run: Rscript -e 'if (!requireNamespace("remotes", quietly=TRUE)) install.packages("remotes"); remotes::install_github("tkimhofer/nmrData")'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
