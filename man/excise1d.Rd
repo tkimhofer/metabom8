@@ -2,59 +2,43 @@
 % Please edit documentation in R/excise1d.R
 \name{excise1d}
 \alias{excise1d}
-\title{Excise standard chemical shift regions}
+\title{Excise Standard Chemical Shift Regions from NMR Spectra}
 \usage{
 excise1d(X, ppm)
 }
 \arguments{
-\item{X}{num matrix:  NMR data, spectra in rows}
+\item{X}{Numeric matrix. NMR spectra with rows representing samples and columns representing chemical shift variables.}
 
-\item{ppm}{ppm, num array - chemical shift positions, length matches to columns in X}
+\item{ppm}{Numeric vector. Chemical shift positions (in ppm), must match number of columns in \code{X}.}
 }
 \value{
-The function exports the following two objects into the currently active R environment (no variable assignments needed):
+A list with:
 \itemize{
-\item Xc, num matrix: column reduced
-\item ppc, num array - chemical shift positions, length is equal to ncol(X_c)
-
+\item \code{Xc}: Numeric matrix with excised chemical shift regions removed.
+\item \code{ppc}: Numeric vector of ppm values corresponding to \code{Xc}.
 }
 }
 \description{
-Excise standard chemical shift regions
+Removes standard chemical shift regions from 1D \eqn{^1}H NMR spectra typically excluded from metabolomics analysis.
 }
 \details{
-Function removes the following chemical shift reagions from 1H NMR spectra acquired for small molecule research:
+The following regions are removed:
 \itemize{
-\item min(ppm) to 0.25 ppm  (cap upfield)
-\item 4.5 - 5.2 ppm (residual water)
-\item 5.5 - 6.0 ppm (urea)
-\item 9.7 to max(ppm)  (cap downfield)
+\item Upfield noise: \code{min(ppm)} to 0.25 ppm
+\item Residual water: 4.5 to 5.2 ppm
+\item Urea region: 5.5 to 6.0 ppm
+\item Downfield noise: 9.7 ppm to \code{max(ppm)}
 }
 }
-\section{}{
-NA
-}
+\examples{
+set.seed(1)
+ppm <- seq(0, 10, length.out = 1000)
+X <- matrix(rnorm(100 * length(ppm)), nrow = 100)
+result <- excise1d(X, ppm)
+dim(result$Xc)
+length(result$ppc)
 
-\seealso{
-Other NMR: 
-\code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{get.idx}()},
-\code{\link{lw}()},
-\code{\link{matspec}()},
-\code{\link{noise.est}()},
-\code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
-\code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
-\code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
-\code{\link{storm}()}
 }
 \author{
-\email{torben.kimhofer@murdoch.edu.au}
+Torben Kimhofer
 }
-\concept{NMR}

@@ -2,25 +2,39 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.createDummyY}
 \alias{.createDummyY}
-\alias{create_dummy_Y}
-\title{Create dummy matrix and check numeric variable for OPLS analysis}
+\title{Create Dummy Encoding of a Response Vector}
 \usage{
 .createDummyY(Y)
 }
 \arguments{
-\item{Y}{Dependent variable (numeric or factor for regression or discriminat analysis, resepctively)}
+\item{Y}{Numeric, factor, or character vector representing response classes or values.}
 }
 \value{
-List of two: Dummy matrix and data frame mapping Y-levels to numeric representations.
+A \code{list} with two elements:
+\describe{
+\item{\code{[[1]]}}{Numeric matrix of dummy-coded responses.}
+\item{\code{[[2]]}}{Data frame mapping original \code{Y} values to numeric codes; empty if \code{Y} is numeric.}
+}
 }
 \description{
-Create dummy matrix and check numeric variable for OPLS analysis
+Converts a response vector \code{Y} into a numeric dummy-coded matrix.
+If \code{Y} is numeric, it is returned as a column matrix.
+For factor or character vectors:
+\itemize{
+\item If binary (2 levels), returns a single numeric column representing classes.
+\item If multi-class (>2 levels), returns a dummy matrix with entries \code{1} (presence) and \code{-1} (absence).
 }
-\section{}{
-NA
+A data frame mapping original values to their numeric encoding is also returned.
 }
+\examples{
+# Numeric input returns matrix with one column
+.createDummyY(c(2.3, 1.5, 4.1))
 
-\author{
-Torben Kimhofer \email{MetaboMate@tkimhofer.com}
+# Binary factor input returns single numeric column (1 or 2)
+.createDummyY(factor(c("A", "B", "A", "B")))
+
+# Multi-level character input returns dummy matrix with -1/1 coding
+.createDummyY(c("cat", "dog", "cat", "mouse"))
+
 }
 \keyword{internal}

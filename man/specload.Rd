@@ -2,7 +2,7 @@
 % Please edit documentation in R/AllViz.R
 \name{specload}
 \alias{specload}
-\title{Overlay PCA or OPLS loadings with spectra}
+\title{Overlay Loadings with NMR Spectra}
 \usage{
 specload(
   mod,
@@ -17,64 +17,43 @@ specload(
 )
 }
 \arguments{
-\item{mod}{PCA or OPLS model generated via \emph{MetaboMate} package functions.}
+\item{mod}{A model object of class \code{PCA_metabom8} or \code{OPLS_metabom8}.}
 
-\item{shift}{ppm region to visualise.}
+\item{shift}{Numeric vector (length 2), chemical shift region to visualize (in ppm).}
 
-\item{an}{List with one to three elements specifying facetting, colour and linetype (see Details).}
+\item{an}{List of up to three grouping variables (for facet, color, linetype). First must be defined.}
 
-\item{alp}{Alpha value for spectral lines.}
+\item{alp}{Numeric (0–1). Alpha level for spectra.}
 
-\item{size}{plot line width.}
+\item{size}{Numeric. Line width for plotted spectra.}
 
-\item{pc}{index of principal component to visualise, set to 1 if input model is OPLS}
+\item{pc}{Integer. Component to visualize (for OPLS, set to 1).}
 
-\item{type}{Type of loadings visualisation, either \code{'Statistical reconstruction'} or \code{'Backscaled'} (see Details).}
+\item{type}{Character. Either \code{"Statistical reconstruction"} or \code{"Backscaled"} (case-insensitive).}
 
-\item{title}{Plot title.}
+\item{title}{Character. Plot title.}
 
-\item{r_scale}{logical, adjust limits of color gradient to 0 and 1 (only applies for argument \code{type='stat reconstruction'})}
+\item{r_scale}{Logical. If \code{TRUE}, correlation color scale is fixed to \link{0, 1}. Only used in statistical reconstruction.}
 }
 \value{
-ggplot2 plot object
+A \code{ggplot} object.
 }
 \description{
-Plotting overlayed NMR spectra. This function is based on ggplot2, a high-level plotting R package. For high ppm ranges computation time is relatively, so the range of input argument \code{shift} should be as small as possible. List argument \code{an} must have the first element define, even if it is only a single value. If colour and line width is specified, then at least one list elements of \code{an} must have the same length as \code{X}.
+This function overlays loadings from a PCA or OPLS model on top of NMR spectra using \code{ggplot2}.
+It supports two types of loadings visualization: statistical reconstruction or backscaling.
 }
 \details{
-OPLS: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical reconstruction.
+\itemize{
+\item \strong{Statistical reconstruction}: Correlates predictive scores with spectral variables.
+\item \strong{Backscaled}: Multiplies model loadings by feature SDs.
 }
-\section{}{
-NA
 }
-
 \examples{
 data(covid)
-model=pca(X)
-specload(model, shift=c(1,2), an=list(an$type), pc=1, alp=0.8)
+model <- pca(X)
+specload(model, shift = c(1, 2), an = list(meta$Group), pc = 1, alp = 0.8)
+
 }
 \seealso{
-Other NMR: 
-\code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
-\code{\link{lw}()},
-\code{\link{matspec}()},
-\code{\link{noise.est}()},
-\code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
-\code{\link{read1d}()},
-\code{\link{spec}()},
-\code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
-\code{\link{storm}()}
+\code{\link{specOverlay}}, \code{\link{pca}}, \code{\link{opls}}
 }
-\author{
-Torben Kimhofer \email{tkimhofer@gmail.com}
-
-\email{torben.kimhofer@murdoch.edu.au}
-}
-\concept{NMR}

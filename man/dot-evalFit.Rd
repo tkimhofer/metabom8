@@ -2,27 +2,27 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.evalFit}
 \alias{.evalFit}
-\title{Criteria to evaluate number of components}
+\title{Evaluate Model Fit Progression Based on Generalization Performance}
 \usage{
-.evalFit(type, q2s, aucs_te, pc_max)
+.evalFit(type, q2s, auroc_cv, pc_max)
 }
 \arguments{
-\item{type}{char, 'R' for regression or 'DA' for discriminant analysis, with prefix '-mY' if mutli-column Y}
+\item{type}{Character. Either 'R' for regression or 'DA' for discriminant analysis. May be prefixed with '-mY' to indicate multi-column Y.}
 
-\item{q2s}{num array with Q2 entries of principal components}
+\item{q2s}{Numeric vector of Q² values for fitted components (used for regression).}
 
-\item{aucs_te}{num array with AUROC entries of principal components}
+\item{auroc_cv}{Numeric vector of AUROC values computed on test folds during cross-validation (used for classification).}
 
-\item{pc_max}{maximum number of components}
+\item{pc_max}{Integer. Maximum number of components allowed for fitting.}
 }
 \value{
-bool: FALSE if another component should be fitted, TRUE if the current component is starting to overfit OR improves only little in prediction capcity when compared to the previous one.
+Logical. Returns \code{FALSE} if another component should be fitted;
+\code{TRUE} if the current component starts to overfit or provides minimal gain.
 }
 \description{
-The number of component is decided based on indices tthat estimate a models generalisation criteria: Q2 for regression and AUROC (calculated with predictive Y in the innter CV) for discriminant analytis.
+Determines whether an additional component improves model generalization based on cross-validated performance indices:
+Q² for regression (R) and AUROC for discriminant analysis (DA).
+AUROC is computed on cross-validation test folds to ensure it reflects out-of-sample classification performance,
+analogous to Q² in regression.
 }
-\section{evalFit(type, q2_comp, aucs_tr aucs_te, maxPCo)}{
-NA
-}
-
 \keyword{internal}

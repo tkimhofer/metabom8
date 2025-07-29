@@ -1,169 +1,95 @@
-#' @title OPLS model Y-permutations
-#' @export
-#' @description Model validation using Y-permutations
-#' @param smod OPLS model of the package \emph{metabom8}
-#' @param n, num Number of permutations
-#' @param plot logical, indicating if results should be visualised
-#' @param mc logical, indicating if tasked should be parallelised using multiple cores
-#' @return  data.frame with perutation indices
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @importFrom ggplot2 ggplot aes_string theme_bw labs
+#' @title OPLS Model Validation via Y-Permutation
+#'
+#' @description
+#' Performs Y-permutation tests to assess the robustness of OPLS models by comparing model performance statistics on real vs. permuted response labels.
+#'
+#' @param smod An OPLS model object of class \code{OPLS_metabom8}.
+#' @param n Integer. Number of permutations to perform.
+#' @param plot Logical. If \code{TRUE}, generates a visual summary of permutation statistics.
+#' @param mc Logical. If \code{TRUE}, enables multicore processing (currently not implemented).
+#'
+#' @return A \code{data.frame} with model metrics (e.g., R2, Q2, AUROC) from both permuted and original models.
+#'
+#' @details
+#' Each permutation shuffles the response labels and fits a new OPLS model. The function captures model statistics (R2, Q2, AUC) to compare against the non-permuted model. This helps determine whether the original model performance is better than expected by chance.
+#'
+#' @references
+#' Wiklund, S. et al. (2008). A Tool for Improved Validation of OPLS Models. *Journal of Chemometrics*, 22(11–12), 594–600.
+#'
+#' @importFrom ggplot2 ggplot aes_string theme_bw labs geom_point
 #' @importFrom reshape2 melt
-#' @importFrom plyr ddply geom_point
-#' @importFrom stats median
+#' @importFrom stats cor median
 #' @importFrom parallel detectCores
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#' @family NMR ++
+#' @export
 #' @examples
 #' data(covid)
-#' model=opls(X, Y=an$type)
-#' perm=opls_perm(model)
-#' @section
-
+#' model <- opls(X, Y = an$type)
+#' perm_results <- opls_perm(model, n = 10)
 opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
-    
-    
-    # how many orth components
-    nc_o <- nrow(smod@summary) - 1
-    
-    
-    Xs <- smod@X  # metabom8:::.scaleMatRcpp(mod@X, seq(nrow(mod@X))-1, center=mod@Parameters$center, scale_type=sc_num)$X_prep
-    Y <- smod@Y$dummy
-    
-    cv <- list()
-    cv$cv_sets <- smod@Parameters$cv$cv_sets
-    cv$k <- length(cv$cv_sets)
-    cv$method <- smod@Parameters$cv$method
-    
-    type <- smod@type
-    
-    # browser() if(mc==TRUE){ numCores <- detectCores()-2 out=mclapply(seq(n),
-    # do_perm, Y, cv, type, nc_o, mc.cores=numCores) }else{
-    out <- lapply(seq(n), function(i) {
-        Y_perm <- t(t(sample(Y[, 1])))
-        ind <- .permYmod(Xs, Y_perm, cv, type, nc_o)
-        list(ind = ind, r = cor(Y, Y_perm)[1, 1])
-    })
-    # }
-    
-    out_df <- as.data.frame(t(vapply(out, unlist, FUN.VALUE = rep(1, 5))))
-    out_df <- data.frame(apply(out_df, 2, function(x) as.numeric(unlist(x))), stringsAsFactors = FALSE)
-    colnames(out_df) <- c("r2_comp", "q2_comp", "aucs_tr", "aucs_te", "r")
-    out_df$model <- paste0("perm_", seq_len(nrow(out_df)))
-    mod <- .permYmod(Xs, Y, cv, type, nc_o)
-    add <- as.data.frame(t(c(unlist(mod), 1)))
-    add$model <- "Non-permuted"
-    colnames(add) <- colnames(out_df)
-    
-    out_df <- rbind(out_df, add)
-    
-    idx_rm <- apply(out_df, 2, function(x) {
-        all(is.na(x))
-    })
-    
-    out_df <- out_df[, !idx_rm]
-    
-    
-    
-    
-    if (plot == TRUE) {
-        
-        # x.val=out_df$aucs_te[out_df$model!='Non-permuted'] dn=pnorm(seq(0,1, by=0.01),
-        # mean(x.val), sd(x.val))
-        
-        
-        dd <- melt(out_df, id.vars = c("model", "r"))
-        dd$variable <- as.character(dd$variable)
-        
-        map_parameter <- c(aucs_tr = "Train", aucs_te = "Test", r2_comp = "R2", q2_comp = "Q2")
-        ylab <- ifelse(any(grepl("aucs", dd$variable)), "AUROC", expression(R^2 ~ 
-            "/" ~ Q^2))
-        
-        dd$variable <- map_parameter[match(dd$variable, names(map_parameter))]
-        
-        out_df$model <- gsub("_.*", "", out_df$model)
-        
-        add_summary <- data.frame(t(apply(out_df[out_df$model == "perm", -ncol(out_df)], 
-            2, median)), stringsAsFactors = FALSE)
-        add_summary$model <- "perm"
-        
-        
-        
-        add_summary <- rbind(add_summary, out_df[out_df$model == "Non-permuted", 
-            ])
-        
-        g <- ggplot(dd, aes_string(x = "abs(r)", y = "value", colour = "variable")) + 
-            geom_point() + theme_bw() + labs(x = "|r|", y = ylab, colour = "Sample Set", 
-            caption = paste0("O-PLS-", type, ", ", n, " Y-permutations."))
-        
-        plot(g)
-        
+  if (!inherits(smod, "OPLS_metabom8")) {
+    stop("Input must be an OPLS_metabom8 object.")
+  }
+
+  nc_o <- nrow(smod@summary) - 1
+  Xs <- smod@X
+  Y <- smod@Y$dummy
+  cv <- list(cv_sets = smod@Parameters$cv$cv_sets,
+             k = length(smod@Parameters$cv$cv_sets),
+             method = smod@Parameters$cv$method)
+  type <- smod@type
+
+  perms <- lapply(seq_len(n), function(i) {
+    Y_perm <- matrix(sample(Y[, 1]), ncol = 1)
+    stats <- .permYmod(Xs, Y_perm, cv, type, nc_o)
+    list(ind = stats, r = cor(Y[, 1], Y_perm[, 1])[1])
+  })
+
+  out_df <- as.data.frame(do.call(rbind, lapply(perms, function(p){
+    ind_vec <- unlist(p$ind)
+    r_val <- unlist(p$r)
+    c(ind_vec, r = p$r)
+  } )))
+  colnames(out_df) <- c("r2_comp", "q2_comp", "aucs_tr", "aucs_te", "r")
+  out_df$model <- paste0("perm_", seq_len(nrow(out_df)))
+
+  real_stats <- .permYmod(Xs, Y, cv, type, nc_o)
+  real_row <- as.data.frame(t(c(real_stats, r = 1)))
+  real_row$model <- "Non-permuted"
+  colnames(real_row) <- colnames(out_df)
+
+  out_df <- rbind(out_df, unlist(real_row))
+
+  # Clean up NA-only columns
+  idx_rm <- vapply(out_df, function(x) all(is.na(x)), logical(1))
+  out_df <- out_df[, !idx_rm, drop = FALSE]
+  out_df$r_abs <- abs(as.numeric(out_df$r))
+
+  if (plot) {
+
+
+    if (smod@type=='DA'){
+      dd <- reshape2::melt(out_df[,c('aucs_te', 'r_abs', 'model')], id.vars = c("model", "r_abs"))
     }
-    
-    return(out_df)
-    
+    else{
+      dd <- reshape2::melt(out_df[, c('q2_comp', 'r_abs', 'model')], id.vars = c("model", "r_abs"))
+    }
+
+    dd$r <- as.numeric(dd$r)
+    dd$value <- as.numeric(dd$value)
+    dd$variable <- as.character(dd$variable)
+
+    map_parameter <- c(aucs_tr = "AUROC_train", aucs_te = "AUROC_test", r2_comp = "R2", q2_comp = "Q2")
+    dd$variable <- map_parameter[match(dd$variable, names(map_parameter))]
+    ylab <- if (any(grepl("AU", dd$variable))) "AUROC" else expression(R^2 ~ "/" ~ Q^2)
+
+    g <- ggplot(dd, aes(x = !!sym("r_abs"), y = !!sym("value"), colour = !!sym("variable"))) +
+      geom_point() +
+      theme_bw() +
+      labs(x = "|r|", y = ylab, colour = "Metric",
+           caption = paste0("O-PLS-", type, ": ", n, " Y-permutations."))
+
+    plot(g)
+  }
+
+  return(out_df)
 }
-
-# .do_perm <- function(i, Y, cv, type, nc_o){ Y_perm=t(t(sample(Y[,1])))
-# ind=.permYmod(Xs, Y_perm, cv, type, nc_o) list(ind=ind, r=cor(Y, Y_perm)[1,1])
-# }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

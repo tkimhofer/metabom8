@@ -27,13 +27,30 @@ storm(
 \item{shift}{num array, min and max chemical shift value defining narrow boundary of the target signal}
 }
 \value{
-Vector of row indices that define the optimal subset.
+Vector of X row indices that define the optimal subset.
 }
 \description{
 Subset Optimisation by Reference Matching (STORM)
 }
 \details{
 The STORM algorithm can be used to subselect NMR spectra based on a spectrocopic target signal to match multiplicity and chemical shift position. The output are row-indices for X, defining the optimal spectral subset that is typically used as input for STOCSY.
+}
+\examples{
+
+set.seed(123)
+n <- 100; S <- 1000
+ppm <- seq(10, 0, length.out = S)
+gauss <- function(x, c, w, h) h * exp(-((x - c)^2) / (2 * w^2))
+sig1 <- gauss(ppm, 7, 0.05, 10)
+sig2 <- gauss(ppm, 3.5, 0.1, 8)
+sig3 <- gauss(ppm, 1, 0.07, 5)
+spectra <- matrix(0, n, S)
+for(i in 1:n) {
+  spectra[i, ] <- sig1 + sig2 + rnorm(S, 0, 0.1)
+  if(i <= 25) spectra[i, ] <- spectra[i, ] + sig3
+}
+
+tt=storm(X=spectra, ppm=ppm, b=30, q=0.05, idx.refSpec=1, shift=c(0.75,1.25))
 }
 \references{
 Posma, Joram M., et al. "Subset optimization by reference matching (STORM): an optimized statistical approach for recovery of metabolic biomarker structural information from 1H NMR spectra of biofluids." Analytical chemistry 84.24 (2012): 10694-10701.
@@ -43,25 +60,18 @@ stocsy
 
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
+\code{\link{binning}()},
+\code{\link{cvanova}()},
+\code{\link{get_idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
 \code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
 \code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
-\code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()}
+\code{\link{read1d_raw}()},
+\code{\link{stocsy1d_metabom8-class}}
 }
 \author{
 \email{torben.kimhofer@murdoch.edu.au}
-
-torben.kimhofer@murdoch.edu.au
 }
 \concept{NMR}

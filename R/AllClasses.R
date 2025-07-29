@@ -54,6 +54,41 @@ setClass("OPLS_metabom8", representation(
   Y = "list"
 ))
 
+# Define generics and methods for OPLS_metabom8 slots
+
+# Helper function to define generic and method for a slot
+makeAccessor <- function(slotName, genericName = slotName) {
+  setGeneric(genericName, function(object) standardGeneric(genericName))
+  setMethod(genericName, "OPLS_metabom8", function(object) slot(object, slotName))
+}
+
+# Accessors for all slots
+makeAccessor("type")
+makeAccessor("t_pred")
+makeAccessor("p_pred")
+makeAccessor("w_pred")
+makeAccessor("betas_pred")
+makeAccessor("Qpc")
+makeAccessor("t_pred_cv")
+makeAccessor("t_orth_cv")
+makeAccessor("t_orth")
+makeAccessor("p_orth")
+makeAccessor("w_orth")
+makeAccessor("nPC")
+makeAccessor("summary")
+makeAccessor("X_orth")
+makeAccessor("Y_res")
+makeAccessor("X_res")
+makeAccessor("X_mean")
+makeAccessor("X_sd")
+makeAccessor("Y_mean")
+makeAccessor("Y_sd")
+makeAccessor("Parameters")
+makeAccessor("X")
+makeAccessor("X_scaled")
+makeAccessor("Y")
+
+
 #' @title PLS model object from metabom8
 #' @description An S4 class to represent a PLS model constructed with metabom8.
 #' @slot type Character string indicating model type (e.g., "PLS")
@@ -143,3 +178,46 @@ setClass("PCA_metabom8", representation(
   Parameters = "list",
   X = "matrix"
 ))
+
+
+# Define generic and methods for each accessor
+
+setGeneric("type", function(object) standardGeneric("type"))
+setMethod("type", "PCA_metabom8", function(object) {
+  object@type
+})
+
+setGeneric("scores", function(object) standardGeneric("scores"))
+setMethod("scores", "PCA_metabom8", function(object) {
+  object@t
+})
+
+setGeneric("loadings", function(object) standardGeneric("loadings"))
+setMethod("loadings", "PCA_metabom8", function(object) {
+  object@p
+})
+
+setGeneric("numPC", function(object) standardGeneric("numPC"))
+setMethod("numPC", "PCA_metabom8", function(object) {
+  object@nPC
+})
+
+setGeneric("meanX", function(object) standardGeneric("meanX"))
+setMethod("meanX", "PCA_metabom8", function(object) {
+  object@X_mean
+})
+
+setGeneric("sdX", function(object) standardGeneric("sdX"))
+setMethod("sdX", "PCA_metabom8", function(object) {
+  object@X_sd
+})
+
+setGeneric("parameters", function(object) standardGeneric("parameters"))
+setMethod("parameters", "PCA_metabom8", function(object) {
+  object@Parameters
+})
+
+setGeneric("originalX", function(object) standardGeneric("originalX"))
+setMethod("originalX", "PCA_metabom8", function(object) {
+  object@X
+})

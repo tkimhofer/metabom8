@@ -2,18 +2,35 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.load_backscaled_nmr}
 \alias{.load_backscaled_nmr}
-\title{Backscaling for NMR data}
+\title{Backscaling for NMR Loadings}
 \usage{
 .load_backscaled_nmr(mod, pc, idx, ppm)
 }
+\arguments{
+\item{mod}{An object of class \code{PCA_metabom8} or \code{OPLS_metabom8}.}
+
+\item{pc}{Character or numeric. Principal or orthogonal component identifier (e.g., \code{1}, \code{"o1"}).}
+
+\item{idx}{Integer vector. Indices defining the region of interest in the \code{ppm} scale.}
+
+\item{ppm}{Numeric vector. Chemical shift axis in parts per million (ppm).}
+}
 \value{
-data frame with backscaled loadings
+A \code{data.frame} containing:
+\describe{
+\item{p_bs}{Backscaled loadings for the selected component.}
+\item{p_abs}{Normalized absolute loadings (min-max scaled).}
+\item{ppm}{Chemical shift values (ppm).}
+}
 }
 \description{
-Backscaling for NMR data
+Computes backscaled loadings for visualization in NMR spectral space. The loadings are rescaled to original variable units using standard deviations from preprocessed input data. This is often used to interpret model loadings in terms of chemical shift.
 }
-\section{}{
-NA
+\details{
+Backscaling is computed as: \code{p_bs = p * sd(X)}, where \code{p} is the loading vector and \code{sd(X)} the original variable standard deviations.
 }
-
+\examples{
+# Example usage:
+# df <- .load_backscaled_nmr(model, "1", get_idx(c(0.5, 4.5), ppm), ppm)
+}
 \keyword{internal}

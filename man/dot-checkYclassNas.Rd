@@ -7,16 +7,25 @@
 .checkYclassNas(Y)
 }
 \arguments{
-\item{Y}{Input data (uni or multivar) formatted as vector or matrix or data.frame}
+\item{Y}{A vector, matrix, or data.frame. Target variable.}
 }
 \value{
-List of i) Y matrix, ii) Y levels (empty if numeric Y), iii) Y type (R or DA)
+A list: cleaned Y matrix, levels (if applicable), and type ('R' or 'DA')
 }
 \description{
-This function checks for missing values in Y (NA, NAN, infinite) and establishes analysis type accroding to the class of the input data Y: regression (R) or discriminant analysis (DA). It also converts Y to a matrix.
+Checks input Y for NA/NaN/Inf values, determines analysis type
+(Regression or Discriminant Analysis), and returns cleaned Y matrix,
+associated levels, and type.
 }
-\section{}{
-NA
-}
+\examples{
+# Numeric Y (Regression)
+y_numeric <- rnorm(10)
+result <- .checkYclassNas(y_numeric)
+str(result)
 
+# Factor Y (Discriminant Analysis)
+y_factor <- factor(rep(c("A", "B"), each = 5))
+result <- .checkYclassNas(y_factor)
+str(result)
+}
 \keyword{internal}

@@ -2,47 +2,42 @@
 % Please edit documentation in R/calibrate.R
 \name{calibrate}
 \alias{calibrate}
-\title{Chemical shift calibration}
+\title{Chemical Shift Calibration}
 \usage{
 calibrate(X, ppm, type = c("tsp", "glucose", "alanine"))
 }
 \arguments{
-\item{X}{num matrix, NMR data matrix with rows representing spectra and columns representing chemical shift position}
+\item{X}{Numeric matrix. NMR data matrix with spectra in rows and chemical shift positions in columns.}
 
-\item{ppm}{num vector, matched to columns of X}
+\item{ppm}{Numeric vector. Chemical shift values corresponding to the columns of \code{X}.}
 
-\item{type}{str or num. Str: Either 'tsp' or 'glucose' for urine or blood-derived spectra, respectively (see Details). Num: ppm range of max height signal that will be used to reference to zero}
+\item{type}{Either a character string or numeric vector. Options include:
+\itemize{
+\item{\code{"tsp"}: calibrates to 0 ppm using the highest peak in the interval \link{−0.2, 0.2} ppm (TSP signal).}
+\item{\code{"glucose"}: calibrates to 5.23 ppm using glucose doublet (5.15–5.30 ppm).}
+\item{\code{"alanine"}: calibrates to 1.48 ppm using alanine doublet (1.40–1.53 ppm).}
+\item{Numeric vector of length 2: custom ppm range. Spectrum is shifted so the maximum peak in this interval aligns with \code{mean(type)}.}
+}}
 }
 \value{
-num matrix X, calibrated NMR data matrix.
+A numeric matrix of the same dimensions as \code{X}, with spectra calibrated to the chosen reference.
 }
 \description{
-Chemical shift calibration with a reference signal.
+Chemical shift calibration using a reference signal for 1D NMR spectra.
 }
 \details{
-Spectral calibration to a selected chemical shift reference signal.
-\itemize{
-\item{\code{type='tsp'}{calibration to 0 ppm using the highest peak located in interval 0 +/- 0.20 ppm (Trimethylsilylpropanoic acid resonance)}}
-\item{\code{type='glucose'}{calibration to 5.23 ppm using the glucose doublet located in interval 5.15 ppm to 5.30 ppm}}
-\item{\code{type='alanine'}{calibration to 1.48 ppm using the alanine doublet located in interval 1.4 ppm to 1.53 ppm}}
-\item{\code{type=ppm_range}{ppm_range is numeric array, calibration to mean(ppm_range) using a maximum signal located in interval ppm_range}}
-}
+Calibration is typically part of the technical quality control pipeline and is commonly done using a reference signal such as TSP at 0 ppm.
 }
 \examples{
 data(covid_raw)
-matspec(X, ppm, shift=c(-0.1,0.1))
-X_tsp=calibrate(X, ppm, type='tsp')
-matspec(X, ppm, shift=c(-0.1,0.1))
-
-# calibrate with glucose (blood plasma)
-matspec(X, ppm, shift=c(5.15, 5.3))
-X_tsp=calibrate(X, ppm, type='glucose')
-matspec(X, ppm, shift=c(5.15, 5.3))
+X_tsp <- calibrate(X, ppm, type = "tsp")
+X_glu <- calibrate(X, ppm, type = "glucose")
+X_custom <- calibrate(X, ppm, type = c(1.9, 2.1))
 
 }
 \references{
-Dona, A.C., \emph{et al.} (2014) Precision high-throughput proton NMR spectroscopy of human urine, serum, and plasma for large-scale metabolic phenotyping. \emph{Analytical Chemistry}. 86.19. 9887-94.
+Dona, A.C., \emph{et al.} (2014). Precision high-throughput proton NMR spectroscopy of human urine, serum, and plasma for large-scale metabolic phenotyping. \emph{Analytical Chemistry}, 86(19), 9887–9894.
 }
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
+\seealso{
+\code{\link{.calibrate_doub}}
 }

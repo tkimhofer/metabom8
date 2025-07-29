@@ -2,18 +2,21 @@
 % Please edit documentation in R/read1d.R
 \name{.chemShift}
 \alias{.chemShift}
-\title{Calculate chemical shift axis}
+\title{Calculate Chemical Shift Axis}
 \usage{
 .chemShift(swidth, offset, si)
 }
+\arguments{
+\item{swidth}{Numeric. Sweep width (Hz).}
+
+\item{offset}{Numeric. Frequency offset (ppm).}
+
+\item{si}{Integer. Number of data points.}
+}
 \value{
-num array, chemical shift for resp experiment
+Numeric vector of chemical shift values (ppm).
 }
 \description{
-Calculate chemical shift axis
+Computes a 1D NMR chemical shift axis based on sweep width, offset, and size.
 }
-\section{}{
-NA
-}
-
 \keyword{internal}

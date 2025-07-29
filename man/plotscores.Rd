@@ -2,65 +2,40 @@
 % Please edit documentation in R/plotscores.R
 \name{plotscores}
 \alias{plotscores}
-\title{Plotting PCA or OPLS model scores}
+\title{Plot PCA, PLS or OPLS Model Scores}
 \usage{
 plotscores(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ...)
 }
 \arguments{
-\item{obj}{PCA, PLS or OPLS model of the package \emph{metabom8} or \emph{MetaboMate}.}
+\item{obj}{A fitted model object of class \code{PCA_metabom8}, \code{OPLS_metabom8}, \code{PCA_MetaboMate}, \code{PLS_MetaboMate}, or \code{OPLS_MetaboMate}.}
 
-\item{pc}{num vector (n=2), indicating which omponents to be plotted on abscissa and ordinate. If not specified: PCA components 1 vs 2, OPLS: predictive vs 1st orth component.}
+\item{pc}{Numeric or character vector of length 2. Principal components or score components to plot. Defaults: \code{c(1,2)} for PCA/PLS, \code{c("1", "o1")} for OPLS.}
 
-\item{an}{list of 3 elements: 1st: scatter colour, 2nd: shape and 3rd: label specification (see Details).}
+\item{an}{Optional list of up to 3 elements specifying annotation: \code{list(color, shape, label)}.}
 
-\item{title}{cher, plot title.}
+\item{title}{Optional character. Plot title.}
 
-\item{qc}{int vector, row indices of QC samples (can be left NA). If specified, QC samples will be highlighted in the plot.}
+\item{qc}{Optional integer vector of row indices indicating QC samples to highlight.}
 
-\item{legend}{str, position of the plot legend, set to NA if legend should be outside of the plotting area.}
+\item{legend}{Character. Legend position inside plot (default), or set to \code{NA} to suppress.}
 
-\item{cv}{logical, indicating if cross-validated (cv) scores should be plotted (only for PLS and O-PLS).}
+\item{cv}{Logical. If \code{TRUE}, cross-validated scores are shown when available (OPLS only).}
 
-\item{...}{Additional values passed on to \code{\link[ggplot2]{scale_colour_gradientn}}.}
+\item{...}{Additional arguments passed to \code{\link[ggplot2]{scale_colour_gradientn}}.}
 }
 \value{
-This function returns a \emph{ggplot2} object.
+A \code{ggplot2} object.
 }
 \description{
-Function for plotting PCA, PLS or OPLS model scores.
+Generate score plots for PCA, PLS, or OPLS models with optional annotation, QC highlighting, and cross-validation scores.
 }
-\details{
-Scores colouring is specified with the argument \code{an}, which is a list of three elements. The first list element specifies the colour (class factor required for categorical variables), the second list element specifies a point labeling (class character or factor) and the third list element specifies point shape. The Hotelling's \out{T<sup>2</sup>} ellipse is automatically included and calculated for the dimensions selected by the \code{pc} argument.
-}
-\section{}{
-NA
-}
-
 \examples{
-data(covid)
-model=pca(X)
-plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))
+data("covid")
+y = an$type
+mod = opls(X, y)
+plotscores(mod, an=list(Group=y, Hospital=an$hospital))
 }
 \references{
-Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
-
-Hotelling, H. (1931) The generalization of Student’s ratio. \emph{Ann. Math. Stat.}, 2, 360-378.
+Trygg J., Wold S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16(3):119–128.
+Hotelling H. (1931) The generalization of Student’s ratio. \emph{Annals of Mathematical Statistics}, 2:360–378.
 }
-\seealso{
-Other NMR ++: 
-\code{\link{.hotellingsT2}()},
-\code{\link{cvanova}()},
-\code{\link{es_cdelta}()},
-\code{\link{minmax}()},
-\code{\link{opls_perm}()},
-\code{\link{pca}()},
-\code{\link{pqn}()},
-\code{\link{predict_opls}()},
-\code{\link{scRange}()}
-}
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
-
-\email{torben.kimhofer@murdoch.edu.au}
-}
-\concept{NMR ++}

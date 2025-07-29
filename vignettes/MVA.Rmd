@@ -77,7 +77,7 @@ The following variables should be in the R workspace after executing the code sn
 Let's start with a visual inspection of the pre-processed NMR spectra using the **matspec()** function:
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
 # visualise first ten spectra
-matspec(Xn[1:10,], ppm, shift = c(0,10), interactive=F)
+matspec(Xn[1:10,], ppm, shift = c(0,10), interactive=FALSE)
 ```
 
 The pre-processed specra range from 0.5 to 9.5 ppm, the water signal has been removed and the baseline is fairly flat. 
@@ -111,7 +111,7 @@ Additional graphics parameters can be passed to the **plotscores()** function. F
 
 ```{r, fig.show='hold', fig.width = 6, fig.height = 5, message=FALSE, warning=FALSE}
 # define scores that should be labelled
-idx<-which(pca_model@t[,2]>20 & an$Class=='RYGB') # PC 2 scores above 20 and in group RYGB
+idx<-which(scores(pca_model)[,2]>20 & an$Class=='RYGB') # PC 2 scores above 20 and in group RYGB
 
 # construct label vector with mouse IDs
 outliers<-rep('', nrow(an))
@@ -171,12 +171,12 @@ opls.model=opls(X,Y)
 The model summary plot above describes the O-PLS parameters, with each set of bars corresponding to one fitted predictive and the specied number of orthogonal compononents. As you can see, the final model comprises one predictive and one orthogonal components (labelled 1+1). The set of bars on the right-hand side of the plot (slightly transparent) correspond to a model with 1 predictive and 2 orthogonal components (one orthogonal component more than found appropriate). This information is included for comparative purposes and for the evaluation of the automatic stop criteria. 
 
 The model summary can also be returned as a table with the following command:
-```{r, echo=T, eval=F, message=FALSE, warning=FALSE}
-opls.model@summary
+```{r, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
+summary(opls.model)
 ```
 
-```{r, echo=F, message=FALSE, warning=FALSE}
-knitr::kable(opls.model@summary)
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(summary(opls.model))
 ```
 
 R2X (R2Y) describes the amount of variation that the model describes in the X (Y) variable space. The range of R2X and R2Y is 0-1, with the latter indicating that all variation is explaine by the model.
@@ -184,7 +184,7 @@ R2X (R2Y) describes the amount of variation that the model describes in the X (Y
 ### Distance to the Model in *X* Space
 The distance to the model in X space (DModX) is a dianostic measure to spot model outliers. The variable *X* refers to the independent variables, in this case the NMR matrix. We can access the DModX  by calling the **dmodx()** function:
 ```{r, fig.show='hold', fig.width = 6, fig.height = 5, message=FALSE, warning=FALSE}
-distX=dmodx(mod =opls.model, plot=T)
+distX=dmodx(mod =opls.model, plot=TRUE)
 ```
 
 In the plot above each point represents a sample and the dotted horizontal line represents a 95% confidence interval. This threshold is specific for a particular model and varies for different OPLS models. Samples exceeding the confidence line are considered as moderate outliers. In particular if the DModX plot shows any patterns a further investigation should be untertaken. The *distX* variable in the above code snippet is a dataframe of DModX values which can be used for further instpections.
@@ -198,7 +198,7 @@ plotscores(obj=opls.model, an=list(
   Surgery=an$Class[idx],          # colouring according to surgery type
   Timepoint=an$Timepoint[idx]),   # linetype according to timepoint
   title='OPLS - Scores plot',     # plot title
-  cv.scores = T)                  # visualise cross-validated scores
+  cv.scores = TRUE)                  # visualise cross-validated scores
 ```
 
 The resuling OPLS CV scores plot shows a perfect separation of both surgery types, with all predictive power focussed on the x-axis (that is characteristic for O-PLS, compared to PLS). 

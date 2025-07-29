@@ -2,46 +2,37 @@
 % Please edit documentation in R/AllGenerics.R
 \name{scRange}
 \alias{scRange}
-\title{Range scaling}
+\title{Min-Max Scaling to Arbitrary Range}
 \usage{
 scRange(x, ra)
 }
 \arguments{
-\item{x}{num array to be scaled}
+\item{x}{Numeric vector. Input values to be scaled.}
 
-\item{ra}{num array, desired value range}
+\item{ra}{Numeric vector of length 2. Desired output range (e.g., \code{c(5, 10)}).}
 }
 \value{
-num array, same length as x
+A numeric vector of the same length as \code{x}, scaled to the range \code{ra}.
 }
 \description{
-Range scaling
+Rescales a numeric vector to a specified range using min-max scaling.
+This is a generalized form of min-max normalization allowing any output range.
 }
 \details{
-x-scaled, so that values fall between range of \code{ra}
+The scaled values are computed as:
+\deqn{x_{scaled} = \frac{x - \min(x)}{\max(x) - \min(x)} \cdot (r_{max} - r_{min}) + r_{min}}
 }
-\section{}{
-NA
-}
-
 \examples{
-x=rnorm(20, 0, 1)
-plot(x, type='l'); abline(h=range(x), lty=2)
-points(scRange(x, ra=c(5,15)), type='l', col='red'); abline(h=c(0,1), col='red', lty=2)
+x <- rnorm(20)
+plot(x, type = 'l'); abline(h = range(x), lty = 2)
+points(scRange(x, ra = c(5, 10)), type = 'l', col = 'red'); abline(h = c(5, 10), col = 'red', lty = 2)
+
 }
 \seealso{
+\code{\link{minmax}} for standard 0–1 scaling.
+
 Other NMR ++: 
 \code{\link{.hotellingsT2}()},
-\code{\link{cvanova}()},
-\code{\link{es_cdelta}()},
-\code{\link{minmax}()},
-\code{\link{opls_perm}()},
-\code{\link{pca}()},
-\code{\link{plotscores}()},
-\code{\link{pqn}()},
-\code{\link{predict_opls}()}
-}
-\author{
-\email{torben.kimhofer@gmail.com}
+\code{\link{minmax}()}
 }
 \concept{NMR ++}

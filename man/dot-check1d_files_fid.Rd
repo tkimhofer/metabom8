@@ -2,30 +2,30 @@
 % Please edit documentation in R/RawGenerics.R
 \name{.check1d_files_fid}
 \alias{.check1d_files_fid}
-\title{Check for intact file systems - helper function read1d}
+\title{Check for Intact Bruker NMR File Structures}
 \usage{
 .check1d_files_fid(datapath, n_max = 10, filter = TRUE, recursive, verbose)
 }
 \arguments{
-\item{datapath}{char, File directory containing spectra}
+\item{datapath}{Character. Directory containing NMR spectra.}
 
-\item{n_max}{int, Maximum number of spectra to read-in}
+\item{n_max}{Integer. Maximum number of experiments to process.}
 
-\item{filter}{lobic, filter for intact file systems (TRUE is recommended)}
+\item{filter}{Logical. Whether to filter out incomplete experiments.}
 
-\item{procs_exp}{num, Topspin processing experiment ID}
+\item{recursive}{Logical. Whether to search directories recursively.}
+
+\item{verbose}{Integer. Controls verbosity level (0 = silent, 1 = basic, 2 = detailed).}
+
+\item{procs_exp}{Integer. Processing experiment number (unused, reserved for future use).}
 }
 \value{
-List of strings, each one is a path to fid and experiment number
+A list with paths to intact experiments and matching metadata.
 }
 \description{
-Check for intact file systems - helper function read1d
+Verifies that each NMR experiment has a matching \code{acqus} and \code{fid} file.
 }
-\section{}{
-NA
-}
-
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
+\seealso{
+\code{\link{.extract_acq_pars1d}}, \code{\link{.filterExp_files}}
 }
 \keyword{internal}

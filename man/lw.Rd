@@ -2,54 +2,61 @@
 % Please edit documentation in R/AllGenerics.R
 \name{lw}
 \alias{lw}
-\title{Full width at half-maximum (fwhm)}
+\title{Full Width at Half Maximum (FWHM) Estimation}
 \usage{
 lw(X, ppm, shift = c(-0.1, 0.1), sf)
 }
 \arguments{
-\item{X}{num matrix, NMR data with rows representing spectra.}
+\item{X}{Numeric matrix. NMR spectral data with rows as spectra and columns as chemical shift (ppm) variables.}
 
-\item{ppm}{num array describing chemical shift positions, its length equals to \code{nrow(X)}.}
+\item{ppm}{Numeric vector. Chemical shift axis corresponding to columns of \code{X}.}
 
-\item{shift}{num array(2), chemical shift range of a singlet for which fwhm is calculated}
+\item{shift}{Numeric vector of length 2. Chemical shift range that includes the singlet peak (e.g., \code{c(-0.1, 0.1)} for TSP).}
 
-\item{sf}{num, operating frequency of the spectrometer (meta$SFO1)}
+\item{sf}{Numeric scalar. Spectrometer frequency in MHz (e.g., 600 for 600 MHz).}
 }
 \value{
-Array of line widths in ppm. To convert from ppm to Hertz (Hz), multiply values with the spectrometer frequency (column \code{a_SF01} in \code{meta} data frame).
+Numeric vector. FWHM in Hz, one value per row in \code{X}.
 }
 \description{
-Calculating full width at half maximum (FWHM, aka line width). This function returns the ppm difference where peak line crosses half of the peak height. It requires one signal across all spectra within ppm ranges specified in \code{shift}.
+Calculates the full width at half maximum (FWHM, or line width) of a peak
+within a specified chemical shift range in each NMR spectrum.
 }
-\section{}{
-NA
-}
+\details{
+For each spectrum, the function extracts the region defined by \code{shift},
+interpolates the signal, identifies the full width at half maximum (FWHM),
+and converts the width from ppm to Hz using \code{sf}.
 
+This is commonly used as part of technical QC for NMR data, especially for evaluating the TSP reference peak,
+where a sharp peak implies good resolution and field homogeneity.
+}
+\note{
+The chemical shift axis direction is auto-detected. If a spectrum does not have a clear half-maximum width,
+\code{NA} is returned for that spectrum.
+}
 \examples{
-load(covid)
-lw(X, ppm) # in ppm
-lw(X, ppm) * meta$a_SFO1 # in Hz
+# Simulated data example
+ppm <- seq(-0.2, 0.2, length.out = 1000)
+X <- matrix(dnorm(ppm, mean = 0, sd = 0.02), nrow = 10, byrow = TRUE)
+sf <- 600  # MHz
+fwhm_vals <- lw(X, ppm, shift = c(-0.1, 0.1), sf = sf)
+hist(fwhm_vals, main = "Line Width (Hz)", xlab = "FWHM [Hz]")
+
 }
 \seealso{
+\code{\link{get_idx}}
+
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
+\code{\link{binning}()},
+\code{\link{cvanova}()},
+\code{\link{get_idx}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
 \code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
 \code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
+\code{\link{read1d_raw}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
 \code{\link{storm}()}
-}
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR}

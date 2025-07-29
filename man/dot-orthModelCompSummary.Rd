@@ -2,36 +2,36 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.orthModelCompSummary}
 \alias{.orthModelCompSummary}
-\title{Summarise component indices}
+\title{Summary of OPLS Model Components}
 \usage{
 .orthModelCompSummary(type, r2x_comp, r2_comp, q2_comp, aucs_tr, aucs_te, cv)
 }
 \arguments{
-\item{type}{char, OPLS type: DA (discriminant analysis) or R (regression), with prefix '-mY' if mutli-column Y}
+\item{type}{Character. Model type: either "DA" (discriminant analysis) or "R" (regression). May include prefix "-mY" for multi-response models.}
 
-\item{r2x_comp}{num array, r2x value for each component}
+\item{r2x_comp}{Numeric vector. Proportion of X variance explained by each orthogonal component.}
 
-\item{r2_comp}{num array, r2y value for each component}
+\item{r2_comp}{Numeric vector. Proportion of Y variance explained by the predictive component.}
 
-\item{q2_comp}{num array, q2 value for each component}
+\item{q2_comp}{Numeric vector. Cross-validated predictive accuracy per component (Q²).}
 
-\item{aucs_tr}{num array, cv training set aucs value for each component (defined only for DA)}
+\item{aucs_tr}{Numeric vector. AUROC values for training sets (only for "DA").}
 
-\item{aucs_te}{num array, cv test set aucs value for each component (defined only for DA)}
+\item{aucs_te}{Numeric vector. AUROC values for test sets (only for "DA").}
 
-\item{cv}{list, see cv argument in function opls}
+\item{cv}{List. Cross-validation configuration as used in the \code{opls()} function.}
 }
 \value{
-list: 1. data.frame, summary table 2. ggplot2, viz of summary tbl
+A list with:
+\itemize{
+\item A \code{data.frame} summarizing the metrics per component.
+\item A \code{ggplot2} object visualizing the component summary.
+}
 }
 \description{
-Summarise component indices
-}
-\section{}{
-NA
-}
+Generates a tabular and graphical summary of orthogonal and predictive components from an OPLS model.
+Includes explained variance (R²), predictive accuracy (Q²), and AUROC metrics (for classification models).
 
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+For discriminant models (DA), AUROC values are included. For regression models (R), R² and Q² are reported.
 }
 \keyword{internal}

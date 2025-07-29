@@ -2,74 +2,50 @@
 % Please edit documentation in R/AllViz.R
 \name{spec}
 \alias{spec}
-\title{Plot single NMR spectrum}
+\title{Plot a Single NMR Spectrum}
 \usage{
 spec(
   x,
   ppm,
   shift = c(0, 11),
-  add = FALSE,
   interactive = TRUE,
   name = "A",
   mode = "lines",
+  base = FALSE,
+  add = FALSE,
   ...
 )
 }
 \arguments{
-\item{x}{num array, NMR spectrum.}
+\item{x}{Numeric vector. NMR spectrum intensity values.}
 
-\item{ppm}{num array, ppm vector.}
+\item{ppm}{Numeric vector. Chemical shift positions.}
 
-\item{shift}{num array, chemical shift region to be plotted.}
+\item{shift}{Numeric length-2 vector. Chemical shift range to plot (e.g., \code{c(0, 11)}).}
 
-\item{add}{logical, indicating if spectrum should be added to a current plot generated with \code{spec()} or \code{matspec()}.}
+\item{interactive}{Logical. Use plotly for interactive output? Defaults to TRUE.}
 
-\item{interactive}{logical, interactive version (plotly package)}
+\item{name}{Character. Label for trace (Plotly only).}
 
-\item{name}{string, name of trace (only used in interactive mode)}
+\item{mode}{Character. Plotly trace mode: 'lines', 'markers', or 'lines+markers'.}
 
-\item{mode}{string, plot mode for interactive version: 'lines' (recommended), 'lines+markers' or 'markers'}
+\item{base}{Logical. If TRUE, use base R plot (overrides \code{interactive}).}
 
-\item{...}{Additional parameters to be passed on to the graphics generic plot function.}
+\item{add}{Logical. If TRUE, add to an existing base R plot.}
+
+\item{...}{Additional arguments passed to base \code{plot()} or \code{points()}.}
+}
+\value{
+If \code{interactive = TRUE}, returns a \code{plotly} object. Otherwise, returns \code{NULL}.
 }
 \description{
-Plot single NMR spectrum
+Plots a 1D NMR spectrum using either base R or interactive Plotly graphics.
 }
-\details{
-Non-interactive mode: Base graphics for single NMR spectrum. Interactive mode: Plotly graphics.
-}
-\section{}{
-NA
-}
-
 \examples{
 data(covid)
-spec(X[1,], ppm) # interactive
-spec(X[2,], ppm, add=TRUE) # add trace
-spec(X[1,], ppm, interactive=FALSE) # static
-}
-\seealso{
-\code{\link{matspec}} \code{\link{plot}}
+p <- spec(X[1, ], ppm, shift = c(0, 11), interactive = TRUE)
+if (interactive()) p
 
-Other NMR: 
-\code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
-\code{\link{lw}()},
-\code{\link{matspec}()},
-\code{\link{noise.est}()},
-\code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
-\code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
-\code{\link{storm}()}
+spec(X[2, ], ppm, shift = c(0, 11), interactive = FALSE)
+spec(X[3, ], ppm, shift = c(0, 11), interactive = FALSE, add = TRUE, col = 'red')
 }
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
-}
-\concept{NMR}

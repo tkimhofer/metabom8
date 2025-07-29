@@ -2,29 +2,38 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.cvSetsMethod}
 \alias{.cvSetsMethod}
-\title{Create Cross Validation (CV) row-indices for Y}
+\title{Generate Cross-Validation (CV) Training Set Indices}
 \usage{
 .cvSetsMethod(Y, type, method = "k-fold_stratified", k = 7, split = 2/3)
 }
 \arguments{
-\item{Y}{matrix, if multi-column, only the first column will be used}
+\item{Y}{matrix or data.frame. Outcome matrix. If multi-column, only the first column will be used.}
 
-\item{type}{char Regression (R) or disciminant analysis (DA), combined with '-mY' indicating multi-column Y}
+\item{type}{character. Type of analysis: "R" for regression or "DA" for discriminant analysis. Use suffix "-mY" to indicate multi-column Y.}
 
-\item{method}{Type of cross validation: k-fold or Monte Carlo-Cross Validation (MCCV), sampling can be performed group-blind (\code{'k-fold'}, \code{'MC'}) or group-stratified (\code{'k-fold_stratified'}, \code{'MC_balanced'}).}
+\item{method}{character. One of: \code{"k-fold"}, \code{"k-fold_stratified"}, \code{"MC"}, \code{"MC_balanced"}.}
 
-\item{k}{Number of training sets to generate.}
+\item{k}{integer. Number of CV iterations/folds.}
 
-\item{split}{Fraction of samples used to generate training set for class/group-balanced Monte Carlo (MC) CV}
+\item{split}{numeric. For Monte Carlo methods, the fraction of samples to use in the training set (0 < split < 1).}
 }
 \value{
-list of Y row-indices for each CV fold
+A list of integer vectors. Each vector contains row indices representing a training set.
 }
 \description{
-This function creates a list of indices that represent k fold subsets for MCCV
+Generates a list of row indices representing training sets for various CV strategies including stratified and Monte Carlo methods. Handles both regression (R) and discriminant analysis (DA), and multi-column Y.
 }
-\section{}{
-NA
+\details{
+\itemize{
+\item In \code{"k-fold_stratified"} and \code{"MC_balanced"} modes, stratification is applied to preserve class proportions or outcome distribution.
+\item If \code{type} is regression (\code{"R"}), quantile-based binning is applied to stratify continuous Y values.
+\item If \code{type} is discriminant analysis (\code{"DA"}), class labels are used directly.
 }
+}
+\examples{
+Y <- cbind(sample(1:100))  # continuous outcome
+cv_sets <- .cvSetsMethod(Y, type = "R", method = "k-fold_stratified", k = 5)
+str(cv_sets)
 
+}
 \keyword{internal}

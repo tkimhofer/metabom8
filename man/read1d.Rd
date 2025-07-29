@@ -3,11 +3,11 @@
 \name{read1d}
 \alias{read1d}
 \alias{read1d_proc}
-\title{Import 1D NMR spectra}
+\title{Import 1D NMR spectra (TopSpin processed)}
 \usage{
 read1d(
   path,
-  exp_type = list(exp = c("PROF_PLASMA_CPMG")),
+  exp_type = list(pulprog = "noesygppr1d"),
   n_max = 1000,
   filter = TRUE,
   recursive = TRUE,
@@ -16,7 +16,7 @@ read1d(
 
 read1d_proc(
   path,
-  exp_type = list(exp = c("PROF_PLASMA_CPMG")),
+  exp_type = list(pulprog = "noesygppr1d"),
   n_max = 1000,
   filter = TRUE,
   recursive = TRUE,
@@ -24,63 +24,49 @@ read1d_proc(
 )
 }
 \arguments{
-\item{path}{char, path to file directory containing spectra}
+\item{path}{Character. Directory path containing Bruker NMR experiments.}
 
-\item{exp_type}{named list, filter for acquisition paramters of experiments to read-in (see Details)}
+\item{exp_type}{Named list. Filter experiments by acquisition parameters (e.g., list(pulprog = 'noesygppr1d')).}
 
-\item{n_max}{int, maximum number of experiments to read-in}
+\item{n_max}{Integer. Maximum number of spectra to import. Default: 1000.}
 
-\item{filter}{logic, remove experiments with incomplete file systems (TRUE is recommended)}
+\item{filter}{Logical. Filter out experiments with incomplete file systems.}
 
-\item{recursive}{logic, if TRUE recursively search all subfolders of path for specified NMR files}
+\item{recursive}{Logical. Search path recursively. Default: TRUE.}
 
-\item{verbose}{num, different verbose levels: 0 (no info), 1 (overview), 2 (detailed), 3 (step-by-step for debugging)}
+\item{verbose}{Logical or numeric. Verbosity level.}
 }
 \value{
-The function exports the following three objects into the currently active R environment (no variable assignments needed):
+The following objects are assigned to the global environment:
 \itemize{
-\item X, num matrix:  NMR data, spectra in rows
-\item ppm, num array - chemical shift positions, length matches to columns in X
-\item meta, data.frame - spectrometer metadata as extracted from individual \emph{acqus} files, row-matched to X
+\item \code{X}: Numeric matrix of spectra (samples x variables)
+\item \code{ppm}: Numeric vector of chemical shift values
+\item \code{meta}: Data frame of acquisition/processing metadata
 }
-Objects in the R environment with the same variable names will be overwritten.
+Also returns a (named) list invisibly for testing.
 }
 \description{
-Import 1D NMR spectra
+Imports Bruker TopSpin-processed 1D NMR spectra. Spectrometer and processing
+parameters are extracted from \code{acqus} and \code{procs} files. Optionally filters
+experiments using acquisition metadata.
 }
-\details{
-This function imports TopSpin processed NMR spectra as well as spectrometer and processing parameters found in files \emph{acqus} and \emph{procs}. Experiments can be filtered according to data acquisition variables using the \code{exp_type} argument: For example, to read standard 1D NMR experiments use \code{exp_type=list(exp='noesygppr1d')}. More than one argument can be provided as list element.
-}
-\section{}{
-NA
-}
-
 \examples{
-path<-system.file('extdata/',  package = 'metabom8')
-read1d(path,  exp_type=list(pulprog='noesygppr1d'))
+path <- system.file("extdata", package = "metabom8")
+read1d(path, exp_type = list(pulprog = "noesygppr1d"), n_max = 2)
+
 }
 \seealso{
-\code{\link[=read1d_raw]{Process raw FIDs}}
-
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
+\code{\link{binning}()},
+\code{\link{cvanova}()},
+\code{\link{get_idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
 \code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
 \code{\link{read1d_raw}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
 \code{\link{storm}()}
-}
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR}

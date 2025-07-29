@@ -2,50 +2,47 @@
 % Please edit documentation in R/pca.R
 \name{pca}
 \alias{pca}
-\title{Principal Component Analysis}
+\title{Principal Component Analysis (PCA)}
 \usage{
 pca(X, pc = 2, scale = "UV", center = TRUE, method = "nipals")
 }
 \arguments{
-\item{X}{Numeric input matrix with each row representing an observation and each column a metabolic variable.}
+\item{X}{A numeric matrix or \code{data.frame}, where rows represent observations and columns represent metabolic features.}
 
-\item{pc}{Desired number of principal components.}
+\item{pc}{Integer. The number of principal components to compute. If \code{pc} exceeds the allowed maximum, it will be set to the smaller of \code{nrow(X)} or \code{ncol(X)}.}
 
-\item{scale}{Desired scaling method: \code{None}, \code{UV} (unit variance) or \code{Pareto} (Pareto scaling).
-#' @param center Logical indicating if data should be mean centered.}
+\item{scale}{Character. Scaling method to apply before PCA. One of \code{"None"}, \code{"UV"} (unit variance), or \code{"Pareto"}.}
 
-\item{method}{Algorithm for computing PCA. NIPALS is default and usually fine, see Details for other methods.}
+\item{center}{Logical. Whether to mean-center the variables. Defaults to \code{TRUE}.}
+
+\item{method}{Character. Algorithm to use for PCA. Defaults to \code{"nipals"} (Rcpp implementation). Alternatives include: \code{"svd"}, \code{"ppca"}, \code{"svdImpute"}, \code{"robustPca"}, and \code{"nlpca"}, all from the \pkg{pcaMethods} package.}
 }
 \value{
-This function returns a \emph{PCA_metabom8} S4 object.
+An S4 object of class \code{"PCA_metabom8"} containing:
+\itemize{
+\item \code{t}: Principal component scores (observations × components).
+\item \code{p}: Loadings matrix.
+\item \code{X_mean}: Feature means (for re-scaling).
+\item \code{X_sd}: Feature standard deviations (for re-scaling).
+\item \code{Parameters}: A list of metadata including centering/scaling choices, explained variance, and number of components.
+\item \code{X}: The original input matrix.
+}
 }
 \description{
-This function is used to perform Principal Component Analysis (PCA).
+Performs Principal Component Analysis on metabolomics datasets. Supports NIPALS via Rcpp or alternative PCA algorithms from the \pkg{pcaMethods} package.
 }
 \details{
-Other PCA algorithms build on the pcaMethods R package and include: 'svd', 'ppca', 'svdImpute', 'robustPca', 'nlpca'. For complete list of available methods see \code{?pcaMethods::pca} documentation.
+The default \code{"nipals"} method uses an efficient NIPALS implementation in C++ via Rcpp for large datasets. If another method is specified, the function delegates to \code{pca()} from the \pkg{pcaMethods} package. Scaling and centering are performed manually before PCA, regardless of method.
 }
 \examples{
 data(covid)
-model=pca(X)
-plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))
+model <- pca(X, pc = 2)
+plotscores(model, an = list(Class = an$type, Clinic = an$hospital, id = 1:nrow(an)), pc = c(1, 2))
+
 }
 \references{
-Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
+Geladi, P., & Kowalski, B. R. (1986). Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, \strong{185}, 1–17.
 }
 \seealso{
-Other NMR ++: 
-\code{\link{.hotellingsT2}()},
-\code{\link{cvanova}()},
-\code{\link{es_cdelta}()},
-\code{\link{minmax}()},
-\code{\link{opls_perm}()},
-\code{\link{plotscores}()},
-\code{\link{pqn}()},
-\code{\link{predict_opls}()},
-\code{\link{scRange}()}
+\code{\link[pcaMethods]{pca}}, \code{\link{plotscores}}
 }
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-}
-\concept{NMR ++}

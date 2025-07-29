@@ -2,59 +2,42 @@
 % Please edit documentation in R/ppick.R
 \name{ppick}
 \alias{ppick}
-\title{Find local extrema in NMR spectra (peak picking)}
+\title{Find Local Extrema in NMR Spectra (Peak Picking)}
 \usage{
 ppick(X, ppm, fil_p = 3, fil_n = 5, type = "max")
 }
 \arguments{
-\item{X}{num matrix, NMR matrix with spectra in rows}
+\item{X}{Numeric matrix. NMR data with spectra in rows and chemical shifts in columns.}
 
-\item{ppm}{num vec, chemical shift matching to X}
+\item{ppm}{Numeric vector. Chemical shift values corresponding to columns in \code{X}.}
 
-\item{fil_p, }{SG filter order}
+\item{fil_p}{Integer. Polynomial order of the Savitzky–Golay filter.}
 
-\item{fil_n}{num, SG filter length (must be odd)}
+\item{fil_n}{Integer. Filter length (must be odd) of the Savitzky–Golay filter.}
 
-\item{type}{str, return local extrema: maxima (\code{max}), minima (\code{min}), or \code{both}}
+\item{type}{Character. Type of extrema to return: \code{"max"}, \code{"min"}, or \code{"both"}.}
 }
 \value{
-List of data frames for each spectrum. Each data frame has four columns: index in X col/ppm, ppm value, signal intensity and local extrema type (+1 for local min, -1 for local max). Number of rows match to all local extrema found within a spectrum.
+A list of data frames, one per spectrum. Each data frame contains:
+\itemize{
+\item \code{idc}: Index of the detected peak.
+\item \code{ppm}: Chemical shift at the peak.
+\item \code{Int}: Intensity at the peak.
+\item \code{Etype}: Extrema type: \code{1} for minima, \code{-1} for maxima.
+}
 }
 \description{
-Find local extrema in NMR spectra (peak picking)
+Identifies local maxima, minima, or both from smoothed NMR spectra using Savitzky–Golay filtering.
 }
 \details{
-Function first smoothes the spectrum to reduce extrema related to noise fluctuations using a Savitzki-Golay (SG) filter. Local extrema are identified according to sign change of adjacent points.
+The spectra are smoothed using a Savitzky–Golay filter to reduce noise. Extrema are then detected by identifying sign changes in the first derivative of the smoothed signal.
 }
 \examples{
 data(covid)
-peaks=ppick(X, ppm)
-# Plotting first spectrum in reagion 3.0 to 3.15 ppm
-spec(X[1,], ppm, shift=c(4.2, 5.3))
-points(speaks[[1]]$ppm, speaks[[1]]$Int, col=factor(speaks[[1]]$type))
+peaks <- ppick(X, ppm)
+spec(X[1, ], ppm, shift = c(4.2, 5.3))
+points(peaks[[1]]$ppm, peaks[[1]]$Int, col = factor(peaks[[1]]$Etype))
 }
 \seealso{
 \code{\link[signal]{sgolayfilt}}
-
-Other NMR: 
-\code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
-\code{\link{lw}()},
-\code{\link{matspec}()},
-\code{\link{noise.est}()},
-\code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{read1d_raw}()},
-\code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
-\code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
-\code{\link{storm}()}
 }
-\author{
-\email{torben.kimhofer@gmail.com}
-}
-\concept{NMR}

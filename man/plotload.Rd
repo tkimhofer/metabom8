@@ -2,7 +2,7 @@
 % Please edit documentation in R/AllViz.R
 \name{plotload}
 \alias{plotload}
-\title{Visualising PCA or OPLS loadings for NMR data}
+\title{Visualize PCA or OPLS Loadings for NMR Data}
 \usage{
 plotload(
   mod,
@@ -14,63 +14,43 @@ plotload(
 )
 }
 \arguments{
-\item{mod}{PCA or OPLS model generated via \emph{metabom8} package functions.}
+\item{mod}{A PCA or OPLS model object generated via the \emph{metabom8} package.}
 
-\item{shift}{ppm region to visualise.}
+\item{shift}{Numeric vector of length 2. Chemical shift (ppm) range to display.}
 
-\item{pc}{index of principal component to visualise, set to 1 if input model is OPLS}
+\item{pc}{Integer. Index of component to visualize (use 1 for OPLS).}
 
-\item{type}{Type of loadings visualisation, either \code{'Statistical reconstruction'} or \code{'Backscaled'} (see Details).}
+\item{type}{Character. Either \code{"Statistical reconstruction"} or \code{"Backscaled"} (case-insensitive).}
 
-\item{title}{Plot title.}
+\item{title}{Optional plot title.}
 
-\item{r_scale}{logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)}
+\item{r_scale}{Logical. If \code{TRUE}, correlation color gradient is fixed between 0 and 1 (only for statistical reconstruction).}
 }
 \value{
-ggplot2 plot object
+A \code{ggplot2} object.
 }
 \description{
-Visualising PCA or OPLS loadings for NMR data
+Overlay PCA or OPLS loadings on the ppm axis for NMR data. Visualizations can be based on statistical reconstruction
+or backscaling, providing insights into spectral regions that contribute most to variation or separation.
 }
 \details{
-OPLS loadinsg visualisatoin for NMR data: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical recostruction.
-}
-\section{}{
-NA
+For OPLS:
+\itemize{
+\item \strong{Statistical reconstruction} visualizes correlation (\code{r}) and covariance between scores and predictors.
+\item \strong{Backscaled} multiplies loadings by feature standard deviations, highlighting consistent spectral influence.
 }
 
+For PCA, only statistical reconstruction is available.
+}
 \examples{
 data(covid)
-model=pca(X)
-plotload(model, pc=1)
+model <- pca(X)
+plotload(model, pc = 1)
+
 }
 \references{
-Cloarec, O., \emph{et al.} (2005). Evaluation of the Orthogonal Projection on Latent Structure Model Limitations Caused by Chemical Shift Variability and Improved Visualization of Biomarker Changes in 1H NMR Spectroscopic Metabonomic Studies. \emph{Analytical Chemistry} 77.2, 517-26.
+Cloarec, O., et al. (2005). \emph{Anal. Chem.} 77(2), 517–526.
 }
 \seealso{
-\code{\link{plotload_cat}}
-
-Other NMR: 
-\code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
-\code{\link{lw}()},
-\code{\link{matspec}()},
-\code{\link{noise.est}()},
-\code{\link{normErectic}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
-\code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
-\code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
-\code{\link{storm}()}
+\code{\link{specload}}, \code{\link{pca}}, \code{\link{opls}}
 }
-\author{
-Torben Kimhofer \email{tkimhofer@gmail.com}
-
-\email{torben.kimhofer@murdoch.edu.au}
-}
-\concept{NMR}

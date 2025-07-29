@@ -70,7 +70,7 @@ read1d_proc(path, exp_type=list(PULPROG='noesypr1d'))
 
 Three spectral variables are routinely imported into the R workspace upon execution of the `read1d_proc()` function:
 
-```{r echo=FALSE, out.width='30%', include = T}
+```{r echo=FALSE, out.width='30%', include = TRUE}
 # create table
 df=data.frame('Variable'=c('X', 'ppm', 'meta'), 
              'Description'=c('Matrix of NMR data (rows = spectra, columns = spectral variables (ppm))', 
@@ -96,10 +96,10 @@ Example script for plotting NMR spectra:
 ```{r spec overlay I, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
 
 # use 'spec' to plot a single pectrum, e.g., in row position 15:
-spec(X[15,], ppm, shift = range(ppm), interactive=F)
+spec(X[15,], ppm, shift = range(ppm), interactive=FALSE)
 
 # use 'matspec' to overlay spectra, in ppm range 0 to 10
-matspec(X, ppm, shift = c(1.2, 1.7), interactive=F)
+matspec(X, ppm, shift = c(1.2, 1.7), interactive=FALSE)
 ```
 
 From this overview we can see that the spectral width ranges from -5 to approximately 15 ppm with the residual water signal resonating around 4.8 ppm. All ^1^H NMR signals are situated within the ppm range of 0 and 10, therefore both ends can be capped and this will be illustrated further below.
@@ -140,7 +140,7 @@ We can reference the urine spectra using the **`calibrate()`** function, as show
 X_cal=calibrate(X, ppm, type='tsp')
 
 # plot TSP after calibration
-matspec(X_cal, ppm, shift=c(-0.1,0.1), interactive=F)
+matspec(X_cal, ppm, shift=c(-0.1,0.1), interactive=FALSE)
 ```
 
 After calibration of the urine spectra, the TSP peak apex is centered at zero ppm. 
@@ -178,9 +178,9 @@ Visual assessment of spectral quality:
 
 ```{r spec qc I, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
 # calculate quality control measures
-matspec(X_cal, ppm, shift=c(4.5,5), interactive=F, main='Residual Water')
-matspec(X_cal, ppm, shift=c(9,11), interactive=F, main='LowField Cap')
-matspec(X_cal, ppm, shift=c(-1,1), interactive=F, main='UpField Cap')
+matspec(X_cal, ppm, shift=c(4.5,5), interactive=FALSE, main='Residual Water')
+matspec(X_cal, ppm, shift=c(9,11), interactive=FALSE, main='LowField Cap')
+matspec(X_cal, ppm, shift=c(-1,1), interactive=FALSE, main='UpField Cap')
 
 
   
@@ -223,8 +223,8 @@ X_bl=bcor(X_cut)
 
 # visual assessment
 Xcompare=rbind(X_bl[1,], X_cut[1,])
-matspec(Xcompare, ppm, shift = c(7, 9), interactive=F)
-matspec(Xcompare, ppm, shift = c(3,4), interactive=F)
+matspec(Xcompare, ppm, shift = c(7, 9), interactive=FALSE)
+matspec(Xcompare, ppm, shift = c(3,4), interactive=FALSE)
 ```
 
 The black line is the baseline corrected spectrum, the red and dotted line represents the uncorrected spectrum. 
@@ -251,8 +251,8 @@ hist(dilf, xlab='PQN calculated dilution factor')
 The final step in this preprocessing tutorial is the visual inspection of the pre-processed NMR spectra: 
 
 ```{r visal check, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
-matspec(X_pqn, ppm, shift = range(ppm), interactive=F)
-matspec(X_pqn, ppm, shift = c(1.2, 1.7), interactive=F)
+matspec(X_pqn, ppm, shift = range(ppm), interactive=FALSE)
+matspec(X_pqn, ppm, shift = c(1.2, 1.7), interactive=FALSE)
 ```
 
 &nbsp;

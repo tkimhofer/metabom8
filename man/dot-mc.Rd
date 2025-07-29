@@ -2,25 +2,28 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.mc}
 \alias{.mc}
-\title{k-fold Monte Carlo Cross Validation (MCCV) subsets}
+\title{Generate Monte Carlo Cross-Validation (MCCV) Training Indices}
 \usage{
 .mc(k, Y, split)
 }
 \arguments{
-\item{k}{int k parameter}
+\item{k}{Integer. Number of MCCV iterations (i.e., training sets to generate).}
 
-\item{Y}{matrix (observations times variables) with ncol(Y)=1, always (column reduction for multicolumn Y  in parent function: .cvSetsMethod)!}
+\item{Y}{A matrix (n × p), where rows are observations and columns are outcomes. Only the number of rows is used here.}
 
-\item{split}{Ratio of the number of samples in training and test set}
+\item{split}{Numeric. Fraction of the data to include in each training set. Should be between 0 and 1.}
 }
 \value{
-list of Y row-indices for each fold
+A list of length \code{k}, each containing a vector of training set indices.
 }
 \description{
-This function creates a list of indices that represent k fold subsets for MCCV
+Generates a list of training set indices for Monte Carlo Cross-Validation.
 }
-\section{}{
-NA
+\details{
+For each fold, a random sample (with replacement) of size \code{floor(nrow(Y) * split)} is drawn.
 }
-
+\examples{
+Y <- matrix(rnorm(100), ncol = 1)
+sets <- .mc(k = 5, Y = Y, split = 0.7)
+}
 \keyword{internal}

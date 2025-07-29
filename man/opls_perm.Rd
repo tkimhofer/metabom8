@@ -2,49 +2,33 @@
 % Please edit documentation in R/opls_perm.R
 \name{opls_perm}
 \alias{opls_perm}
-\title{OPLS model Y-permutations}
+\title{OPLS Model Validation via Y-Permutation}
 \usage{
 opls_perm(smod, n = 10, plot = TRUE, mc = FALSE)
 }
 \arguments{
-\item{smod}{OPLS model of the package \emph{metabom8}}
+\item{smod}{An OPLS model object of class \code{OPLS_metabom8}.}
 
-\item{n, }{num Number of permutations}
+\item{n}{Integer. Number of permutations to perform.}
 
-\item{plot}{logical, indicating if results should be visualised}
+\item{plot}{Logical. If \code{TRUE}, generates a visual summary of permutation statistics.}
 
-\item{mc}{logical, indicating if tasked should be parallelised using multiple cores}
+\item{mc}{Logical. If \code{TRUE}, enables multicore processing (currently not implemented).}
 }
 \value{
-data.frame with perutation indices
+A \code{data.frame} with model metrics (e.g., R2, Q2, AUROC) from both permuted and original models.
 }
 \description{
-Model validation using Y-permutations
+Performs Y-permutation tests to assess the robustness of OPLS models by comparing model performance statistics on real vs. permuted response labels.
 }
-\section{}{
-NA
+\details{
+Each permutation shuffles the response labels and fits a new OPLS model. The function captures model statistics (R2, Q2, AUC) to compare against the non-permuted model. This helps determine whether the original model performance is better than expected by chance.
 }
-
 \examples{
 data(covid)
-model=opls(X, Y=an$type)
-perm=opls_perm(model)
+model <- opls(X, Y = an$type)
+perm_results <- opls_perm(model, n = 10)
 }
-\seealso{
-Other NMR ++: 
-\code{\link{.hotellingsT2}()},
-\code{\link{cvanova}()},
-\code{\link{es_cdelta}()},
-\code{\link{minmax}()},
-\code{\link{pca}()},
-\code{\link{plotscores}()},
-\code{\link{pqn}()},
-\code{\link{predict_opls}()},
-\code{\link{scRange}()}
+\references{
+Wiklund, S. et al. (2008). A Tool for Improved Validation of OPLS Models. \emph{Journal of Chemometrics}, 22(11–12), 594–600.
 }
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-}
-\concept{NMR ++}

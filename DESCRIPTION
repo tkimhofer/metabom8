@@ -1,7 +1,7 @@
 Package: metabom8
 Type: Package
 Title: NMR-based metabolic profiling 
-Version: 1.0.0
+Version: 1.2.0
 Authors@R: person(given = "Torben",
            family = "Kimhofer",
            role = c("aut", "cre"),
@@ -10,7 +10,7 @@ Authors@R: person(given = "Torben",
 Description: Functions to perform 1D NMR data import, spectral data preprocessing, multivariate statistical analysis and statistical total correlation for putative metabolite identification!
 License: MIT + file LICENSE
 Encoding: UTF-8
-Depends: R (>= 4.0)
+Depends: R (>= 4.5)
 Imports: 
     abind, 
     colorRamps,
@@ -37,9 +37,11 @@ LinkingTo:
     Rcpp,
     RcppArmadillo,
     RcppEigen
-biocViews: Metabolomics, Cheminformatics, Preprocessing, DataImport
+biocViews: Metabolomics, Cheminformatics, Preprocessing, DataImport, Alignment
+BugReports: https://github.com/tkimhofer/metabom8/issues
+URL: https://tkimhofer.github.io/metabom8/
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.2
 Suggests:
     dplyr,
     DT,

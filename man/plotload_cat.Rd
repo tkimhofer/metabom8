@@ -2,39 +2,60 @@
 % Please edit documentation in R/plotload_cat.R
 \name{plotload_cat}
 \alias{plotload_cat}
-\title{Plot PCA or O-PLS loadings}
+\title{Plot Loadings from PCA or O-PLS Models}
 \usage{
 plotload_cat(obj, pc, an, title = NULL, legend = TRUE, ...)
 }
 \arguments{
-\item{obj}{PCA or OPLS object from packages metabom8 or MetaboMate}
+\item{obj}{An object of class \code{"PCA_metabom8"} or \code{"OPLS_metabom8"}.
+Typically created by the \code{\link{pca}} or \code{\link{opls}} functions.}
 
-\item{pc, }{num vector descrbing which components to visualise in on abcissa and ordinate (in case of OPLS the first element in pc is ignored as abcissa always shows predicted component)}
+\item{pc}{A numeric vector specifying the components to be plotted.
+For PCA models, use \code{c(1, 2)} for PC1 vs PC2.
+For O-PLS models, use a character vector like \code{c("1", "o1")}, where \code{"o1"} refers to the first orthogonal component.}
 
-\item{an}{list, three elements describing colour, point shape and point labels (all is aes context)}
+\item{an}{Optional named list for point annotations with up to three elements:
+\describe{
+\item{\code{colour}}{A vector indicating groupings used to color the points.}
+\item{\code{shape}}{A factor or grouping variable for point shapes.}
+\item{\code{label}}{A character vector of labels for each point (e.g., variable names).}
+}}
 
-\item{title}{Plot title}
+\item{title}{Optional character string to be used as the plot title.}
 
-\item{legend}{logical, indicating if legend should be included (legend takes up too much space when high number of categorical varaibles)}
+\item{legend}{Logical; if \code{TRUE}, displays the plot legend. Set to \code{FALSE} to suppress the legend, useful when plotting many groups.}
 
-\item{...}{Optional arguments passed to \code{geom_point()}}
+\item{...}{Additional arguments passed to \code{\link[ggplot2]{geom_point}}.}
 }
 \value{
-data.frame containing H.T2 ellipse cooredinates
+A \code{\link[ggplot2]{ggplot}} object representing the loadings scatter plot.
+This object can be further customized using \pkg{ggplot2} syntax.
 }
 \description{
-Visualisation of loadings using scatter plot
+Generates a scatter plot of variable loadings from PCA or O-PLS models using \pkg{ggplot2}.
+The function supports flexible annotation of points using color, shape, and labels.
+O-PLS plots display the predictive component on the x-axis and an orthogonal component on the y-axis.
 }
-\section{}{
-NA
+\details{
+This function is intended for use with PCA or O-PLS models generated using the \pkg{metabom8} package.
+For PCA, the x- and y-axes correspond to the selected principal components.
+For O-PLS, the x-axis always corresponds to the predictive component, while the y-axis displays the specified orthogonal component.
 }
+\examples{
+set.seed(123)
+X <- matrix(rnorm(200), 10, 20)
+grp <- rep(c("A", "B"), each = 5)
+X[grp == "B", 1:5] <- X[grp == "B", 1:5] + 2
+X[grp == "B", 5] <- X[grp == "B", 4] * 0.9 + rnorm(5, 0, 0.1)
+colnames(X) <- paste0("metabolite", 1:20)
 
+mod = opls(X,group)
+plotload_cat(mod)
+}
 \references{
-Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
+Geladi, P., & Kowalski, B. R. (1986). Partial least squares regression: A tutorial. \emph{Analytica Chimica Acta}, 185, 1–17.
 }
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\seealso{
+\code{\link{pca}}, \code{\link{opls}}, \code{\link[ggplot2]{ggplot}}, \code{\link{plotscores}}
 }
-\concept{dataviz}
+\concept{Visualization}

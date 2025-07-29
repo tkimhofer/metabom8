@@ -1,35 +1,37 @@
-#' Align NMR Spectra to a Reference Spectrum via Cross-Correlation
+#' @title Align NMR Spectra via Cross-Correlation
 #'
 #' @description
-#' Aligns a matrix of NMR spectral segments by x-shifting each row to maximize cross-correlation with a reference spectrum.
+#' Aligns rows of an NMR spectral matrix to a reference spectrum by maximizing cross-correlation.
+#' Optionally uses the row-wise median spectrum as reference. Useful for minor spectral misalignments.
 #'
-#' @param seg A matrix or data frame with spectra as rows.
-#' @param idx_ref Integer. Row index of the reference spectrum (ignored if \code{med = TRUE}).
-#' @param clim Numeric. Cross-correlation similarity threshold. Segments below this threshold are not aligned.
-#' @param med Logical. Use the median spectrum as reference? If \code{TRUE}, \code{idx_ref} is ignored.
-#' @param norm Logical. If \code{TRUE}, min-max normalization is applied to each row before alignment.
+#' @param seg Numeric matrix. Each row is a 1D NMR spectrum segment.
+#' @param idx_ref Integer. Row index to use as reference spectrum. Ignored if \code{med = TRUE}.
+#' @param clim Numeric. Minimum cross-correlation threshold. Segments with lower similarity are not shifted.
+#' @param med Logical. If \code{TRUE}, the row-wise median spectrum is used as the reference.
+#' @param norm Logical. If \code{TRUE}, rows are scaled to the [0, 1] range using min-max scaling before alignment.
 #'
-#' @return A matrix of aligned spectra (rows).
+#' @return A numeric matrix of aligned spectra with the same dimensions as \code{seg}.
+#' If \code{med = TRUE}, the output excludes the median row.
 #'
 #' @details
-#' Spectra are aligned by computing the cross-correlation with a reference and applying a circular shift based on the lag that maximizes similarity.
-#' If \code{med = TRUE}, the reference is the row-wise median spectrum. Segments with a cross-correlation below \code{clim} are left unshifted.
-#'
-#' @importFrom stats ccf
-#'
-#' @author \email{t.kimhofer@@gmail.com}
+#' Each spectrum is aligned to the reference by computing the cross-correlation and applying a lag-based circular shift.
+#' The shift is applied only if the cross-correlation exceeds \code{clim}.
+#' This function is intended for fine-tuning alignment across short ppm windows (i.e., segments).
 #'
 #' @examples
 #' set.seed(1)
 #' x <- matrix(rnorm(1000), nrow = 10)
-#' x[5, ] <- x[1, ] + 0.1  # create similar spectrum
-#' aligned <- alignSegment(x)
+#' x[5, ] <- x[1, ] + 0.1  # Simulate minor shift
+#' aligned <- alignSegment(x, clim = 0.6)
 #'
+#' @seealso \code{\link{minmax}}
+#' @family NMR
+#' @importFrom stats ccf
 #' @export
 alignSegment <- function(seg, idx_ref = 1, clim = 0.7, med = TRUE, norm = FALSE) {
-  if (is.null(nrow(seg)) || nrow(seg) < 2) stop("Check input dimensions.")
+  if (!is.matrix(seg) || nrow(seg) < 2) stop("Input must be a matrix with at least two rows.")
 
-  if (med[1]) {
+  if (med) {
     seg <- rbind(apply(seg, 2, median), seg)
     idx_ref <- 1
   }
@@ -38,29 +40,24 @@ alignSegment <- function(seg, idx_ref = 1, clim = 0.7, med = TRUE, norm = FALSE)
     seg <- t(apply(seg, 1, minmax))
   }
 
-  out <- vapply(seq(nrow(seg)), function(i, le = ncol(seg)) {
+  out <- vapply(seq_len(nrow(seg)), function(i) {
     cc_mod <- ccf(seg[i, ], seg[idx_ref, ], type = "correlation", plot = FALSE)
     acf <- as.vector(cc_mod$acf)
-    idx <- which.max(acf)
-    cval <- acf[idx]
-    xlag <- as.vector(cc_mod$lag)[idx]
+    xlag <- as.vector(cc_mod$lag)[which.max(acf)]
+    cval <- max(acf)
 
     if (cval > clim) {
       if (xlag > 0) {
-        dd <- c(seg[i, -seq_len(abs(xlag))], rep(0, abs(xlag)))
+        return(c(seg[i, -seq_len(xlag)], rep(0, xlag)))
       } else if (xlag < 0) {
-        dd <- c(rep(0, abs(xlag)), seg[i, -seq((le - abs(xlag) + 1), le)])
-      } else {
-        dd <- seg[i, ]
+        le <- ncol(seg)
+        return(c(rep(0, -xlag), seg[i, seq_len(le + xlag)]))
       }
-      return(dd)
-    } else {
-      seg[i, ]
     }
-  }, FUN.VALUE = seg[1, ])
+    seg[i, ]
+  }, FUN.VALUE = numeric(ncol(seg)))
 
   out <- t(out)
-  if (med) out <- out[-1, ]
-
+  if (med) out <- out[-1, , drop = FALSE]
   return(out)
 }

@@ -2,24 +2,18 @@
 % Please edit documentation in R/read1d.R
 \name{.extract_pars1d}
 \alias{.extract_pars1d}
-\title{Read Bruker NMR paramter files - helper function read1d}
+\title{Read Bruker NMR Parameter Files}
 \usage{
 .extract_pars1d(f_list)
 }
 \arguments{
-\item{f_list}{list, intact files system for NMR experiments. See fct checkFiles1d}
+\item{f_list}{List of file paths. Output from \code{.detect1d_procs()}.}
 }
 \value{
-data frame of spectrometer acquisition metadata
+A data frame of extracted acquisition and processing metadata. Row names correspond to spectrum filenames.
 }
 \description{
-Read Bruker NMR paramter files - helper function read1d
-}
-\section{}{
-NA
-}
-
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
+Helper function used by \code{read1d()} to extract acquisition (\code{acqus}) and processing (\code{procs}) parameters
+from Bruker-formatted 1D NMR experiments.
 }
 \keyword{internal}

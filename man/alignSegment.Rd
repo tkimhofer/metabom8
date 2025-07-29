@@ -2,54 +2,55 @@
 % Please edit documentation in R/alignSegment.R
 \name{alignSegment}
 \alias{alignSegment}
-\title{Align an NMR spectra to a reference spectrum (cross-correlation)}
+\title{Align NMR Spectra via Cross-Correlation}
 \usage{
 alignSegment(seg, idx_ref = 1, clim = 0.7, med = TRUE, norm = FALSE)
 }
 \arguments{
-\item{seg}{matrix or data frame, NMR submatrix containing segments (spectra in rows)}
+\item{seg}{Numeric matrix. Each row is a 1D NMR spectrum segment.}
 
-\item{idx_ref}{int, rown index of reference spectrum}
+\item{idx_ref}{Integer. Row index to use as reference spectrum. Ignored if \code{med = TRUE}.}
 
-\item{clim}{num, upper cross-correlation threshold (see Details)}
+\item{clim}{Numeric. Minimum cross-correlation threshold. Segments with lower similarity are not shifted.}
 
-\item{med}{logical, use median spectrum as reference?}
+\item{med}{Logical. If \code{TRUE}, the row-wise median spectrum is used as the reference.}
 
-\item{norm}{logical, minmax normalisation for each spectrum prior to alignment? Useful for viz.}
+\item{norm}{Logical. If \code{TRUE}, rows are scaled to the \link{0, 1} range using min-max scaling before alignment.}
 }
 \value{
-Matrix of aligned spectral segments
+A numeric matrix of aligned spectra with the same dimensions as \code{seg}.
+If \code{med = TRUE}, the output excludes the median row.
 }
 \description{
-Align an NMR spectra to a reference spectrum (cross-correlation)
+Aligns rows of an NMR spectral matrix to a reference spectrum by maximizing cross-correlation.
+Optionally uses the row-wise median spectrum as reference. Useful for minor spectral misalignments.
 }
 \details{
-Spectral alignment is obtained by x-positional shifting a spectral segment. The extend of the shift is determined by maximising the cross-correlation with a refrence segment. The refernce can either be a spectrum in \emph{seg} or the segment median spectrum (parameter \emph{idx_ref} is ignored then). Non-matching spectral segments, defined by \emph{clim} (cross-corrleation upper limit, similarity score) are not aligned.
+Each spectrum is aligned to the reference by computing the cross-correlation and applying a lag-based circular shift.
+The shift is applied only if the cross-correlation exceeds \code{clim}.
+This function is intended for fine-tuning alignment across short ppm windows (i.e., segments).
 }
-\section{}{
-NA
-}
+\examples{
+set.seed(1)
+x <- matrix(rnorm(1000), nrow = 10)
+x[5, ] <- x[1, ] + 0.1  # Simulate minor shift
+aligned <- alignSegment(x, clim = 0.6)
 
+}
 \seealso{
+\code{\link{minmax}}
+
 Other NMR: 
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
+\code{\link{binning}()},
+\code{\link{cvanova}()},
+\code{\link{get_idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
 \code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
 \code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
+\code{\link{read1d_raw}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
 \code{\link{storm}()}
-}
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR}

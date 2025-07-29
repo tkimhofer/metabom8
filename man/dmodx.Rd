@@ -2,39 +2,39 @@
 % Please edit documentation in R/AllViz.R
 \name{dmodx}
 \alias{dmodx}
-\title{Calculating distance to the model in X space}
+\title{Distance to the Model in X-Space (DModX)}
 \usage{
 dmodx(mod, plot = TRUE)
 }
 \arguments{
-\item{mod}{OPLS model of type \code{OPLS_metabom8}.}
+\item{mod}{An OPLS model object of class \code{OPLS_metabom8}.}
 
-\item{plot}{Logical indicating if results should be visualised.}
+\item{plot}{Logical. If \code{TRUE}, a plot of DModX values with a cutoff line based on a t-test is shown.}
 }
 \value{
-The projection distance of each observation in the model (\code{DModX}).
+A data frame with columns:
+\describe{
+\item{ID}{Sample index}
+\item{DmodX}{Distance to the model in X-space}
+\item{passedT.test}{Logical. TRUE if within the 95\\\% confidence interval}
+}
 }
 \description{
-Calculating distance to the model in X space
+Calculates the orthogonal distance of each observation to the OPLS model in X-space. The DModX is used for identifying outliers.
 }
-\section{}{
-NA
+\details{
+DModX is calculated as the scaled root-mean-squared residual. An approximate upper 95\\\% confidence limit is drawn using a one-sided t-test.
 }
-
 \examples{
 data(covid)
-model=opls(X, Y=an$type)
-dmx=dmodx(model)
+model <- opls(X, Y = an$type)
+dmx <- dmodx(model)
+
 }
 \references{
-Bylesjö M., \emph{et al.} (2002) OPLS discriminant analysis: combining the strengths of PLS-DA and SIMCA classification. \emph{Journal of Chemometrics}, 20, 341-51.
-
-Wold S. (1976) Pattern recognition by means of disjoint principal components models.  \emph{Pattern Recognition}, 8, 127-39.
+Bylesjö, M. et al. (2006). \emph{J. Chemometrics}, 20, 341–351.
+Wold, S. (1976). \emph{Pattern Recognition}, 8, 127–139.
 }
 \seealso{
-\code{\link{opls}}
+\code{\link{opls}}, \code{\link{plotload}}
 }
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
-}
-\concept{NMR and other}

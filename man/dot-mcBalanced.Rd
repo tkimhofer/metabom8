@@ -2,25 +2,34 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.mcBalanced}
 \alias{.mcBalanced}
-\title{Monte Carlo Cross Validation (MCCV) generation of training sets indices}
+\title{Class-balanced Monte Carlo Cross-Validation (MCCV)}
 \usage{
 .mcBalanced(k, split, stratified)
 }
 \arguments{
-\item{k}{int k parameter}
+\item{k}{Integer. Number of MCCV training sets to generate.}
 
-\item{split}{Fraction of samples used to generate training set for class/group-balanced Monte Carlo (MC) CV}
+\item{split}{Numeric. Fraction of observations per class to include in each training set. Must be between 0 and 1.}
 
-\item{stratified}{list with 3 elements: 1) char: R for regression (Y is numeric), DA for discriminant analysis (Y treated as categorical), prefix '-mY' indicates multi-column Y (see Y) 2) Y matrix (observations times variables), always with ncol = 1 (stratified CV generation for multi-Y to be implemented) and 3) quantile function probabilities for stratification of numberic Y}
+\item{stratified}{List of three elements:
+\itemize{
+\item{1: } Character. Outcome type: 'R' (regression) or 'DA' (discriminant analysis), optionally with suffix '-mY' for multi-column Y.
+\item{2: } Matrix. Response matrix \code{Y}, with \code{ncol(Y) == 1}.
+\item{3: } Numeric vector of probabilities used to stratify numeric Y if regression.
+}}
 }
 \value{
-list of Y row-indices for each fold
+A list of length \code{k}, each element containing a vector of row indices for the training set.
 }
 \description{
-This function creates a list of indices that represent k fold subsets for MCCV
+Generates class/group-balanced training set indices for each MCCV round.
 }
-\section{}{
-NA
+\details{
+Each round samples a class-balanced subset with replacement. Useful for high-variance, imbalanced-class modeling.
 }
-
+\examples{
+Y <- matrix(sample(letters[1:3], 100, replace = TRUE), ncol = 1)
+stratified <- list("DA", Y, NULL)
+sets <- .mcBalanced(k = 5, split = 0.7, stratified = stratified)
+}
 \keyword{internal}

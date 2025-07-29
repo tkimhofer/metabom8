@@ -7,29 +7,21 @@
 plotStocsy(stoc_mod, shift = c(0, 10), title = NULL)
 }
 \arguments{
-\item{stoc_mod}{STOCSY object, as created with function 'stocsy' ('see ?stocsy()')}
+\item{stoc_mod}{An object of class \code{stocsy1d_metabom8} returned by the \code{stocsy()} function.}
 
-\item{shift}{num array, chemical shift range defining plotting area}
+\item{shift}{Numeric vector of length 2 specifying the chemical shift range (ppm) to be plotted.}
 
-\item{title}{char, plot title}
+\item{title}{Character string for the plot title.}
 }
 \value{
-ggplot2 object, stocsy plot
+A \code{ggplot2} object displaying the STOCSY spectrum within the specified shift range.
 }
 \description{
-Plot Statistical Total Correlation Spectroscopy (STOCSY)
+Generates a plot of the results from a STOCSY analysis.
 }
-\section{}{
-NA
-}
-
 \examples{
 data(covid)
-stcy_glucose=stocsy(X, ppm, driver=5.233)
-plotStocsy(stcy_glucose, shift=c(5.15, 5.30), title='Alpha-anomeric proton of glucose (doublet)')
-points(speaks[[1]]$ppm, speaks[[1]]$Int, col=factor(speaks[[1]]$type))
+stcy_glucose <- stocsy(X, ppm, driver = 5.233)
+plotStocsy(stcy_glucose, shift = c(5.15, 5.30), title = "Alpha-anomeric proton of glucose (doublet)")
+
 }
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
-}
-\concept{NMR functions}

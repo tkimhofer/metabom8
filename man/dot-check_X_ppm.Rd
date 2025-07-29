@@ -2,23 +2,26 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.check_X_ppm}
 \alias{.check_X_ppm}
-\title{Check dimension, NA and infinity}
+\title{Check Consistency of Spectral Data and ppm Vector}
 \usage{
 .check_X_ppm(X, ppm)
 }
 \arguments{
-\item{X}{NMR matrix with spectra represented in rows.}
+\item{X}{Numeric matrix. NMR spectral matrix with samples in rows and variables in columns (e.g., intensities).}
 
-\item{ppm}{ppm vector.}
+\item{ppm}{Numeric vector. Chemical shift reference values corresponding to columns of \code{X}.}
 }
 \value{
-Logical indicating if X and ppm match and absence of NA and inf in ppm
+Logical. Returns \code{TRUE} if inputs are valid, \code{FALSE} otherwise.
 }
 \description{
-Check dimension, NA and infinity
-}
-\section{}{
-NA
+Validates that the NMR data matrix and the chemical shift reference vector (\code{ppm}) are consistent.
+Specifically, it checks that:
+\itemize{
+\item \code{ppm} contains no NA or infinite values.
+\item The number of columns in \code{X} matches the length of \code{ppm}.
 }
 
+This function is typically used as a preliminary data validation step before downstream spectral analysis.
+}
 \keyword{internal}

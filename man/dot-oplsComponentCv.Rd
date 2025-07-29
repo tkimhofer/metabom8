@@ -2,32 +2,40 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.oplsComponentCv}
 \alias{.oplsComponentCv}
-\title{Performs OPLS modelling for each CV set and collates output}
+\title{OPLS Component Estimation via Cross-Validation}
 \usage{
 .oplsComponentCv(X, Y, cv.set, nc, mod.cv)
 }
 \arguments{
-\item{X}{num matrix X: preproc NMR data}
+\item{X}{Numeric matrix. Input data matrix (samples × features); only required for \code{nc = 1}.}
 
-\item{Y}{num matrix Y: outcome, dummy matrix in case of categorical outcome}
+\item{Y}{Numeric matrix. Response variable (can be dummy-coded for classification).}
 
-\item{cv.set}{list of k elements containing vector of X and Y row-indices representing training set for cv round k}
+\item{cv.set}{List of integer vectors. Each element contains training indices for one CV round.
+These indices are adjusted internally by -1 due to 0-based indexing in the underlying C++ (Rcpp) routines.}
 
-\item{nc}{int, max number of orthogonal components to fit}
+\item{nc}{Integer. Component number currently being estimated (\code{nc = 1} for first orthogonal component).}
 
-\item{mod.cv}{cv parameters}
+\item{mod.cv}{List. Model state to be updated with results from each CV iteration.}
 }
 \value{
-Named list of collated OPLS data for respective component
+A list of the same length as \code{cv.set}. Each list element contains:
+\itemize{
+\item \code{t_xo}: Orthogonal component scores (matrix, samples × components).
+\item \code{t_xp}: Predictive component scores (matrix, samples × 1).
+\item \code{y_pred_train}: Predicted responses for training samples.
+\item \code{y_pred_test}: Predicted responses for held-out test samples.
+\item \code{x_res}: Residual matrix after filtering out orthogonal structure.
+}
 }
 \description{
-Performs OPLS modelling for each CV set and collates output
+Performs orthogonal projections to latent structures (OPLS) modeling on training folds of a cross-validation (CV) scheme.
+The function fits one orthogonal and one predictive component per fold, tracking scores, predictions, and residuals.
+For the first orthogonal component (\code{nc = 1}), the full model structure is initialized.
+For later components (\code{nc > 1}), modeling proceeds on residual matrices carried over from previous iterations.
 }
-\section{}{
-NA
-}
-
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\note{
+Training indices in \code{cv.set} are internally adjusted by -1 before being passed to Rcpp routines.
+This is required because C++ uses zero-based indexing.
 }
 \keyword{internal}

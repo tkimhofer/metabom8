@@ -13,7 +13,7 @@ binning(X, ppm, width = NULL, npoints = NULL)
 
 \item{width}{num, bin size in ppm or NULL in case \code{npoints} is specified}
 
-\item{npoints}{num, desired number of bins per spectrum or NULL in case  \code{width} is specified}
+\item{npoints}{num, desired number of bins per spectrum or NULL in case \code{width} is specified}
 }
 \value{
 Numeric matrix with spectra in rows and chemical shift variables in columns.
@@ -22,8 +22,32 @@ Numeric matrix with spectra in rows and chemical shift variables in columns.
 Spectral data binning
 }
 \details{
-#' Equidistant binning of spectra. Specify either \code{width} or \code{npoints} argument - if both are provided, \code{npoints} is used. Input argument \code{ppm} can be omitted if chemical shift information is encoded in the column names of the NMR matrix \code{X}.
+Equidistant binning of spectra. Specify either \code{width} or \code{npoints} argument - if both are provided, \code{npoints} is used. Input argument \code{ppm} can be omitted if chemical shift information is encoded in the column names of the NMR matrix \code{X}.
 }
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+\examples{
+# Simulate 2 spectra with 100 ppm points
+set.seed(1)
+X <- matrix(rnorm(2 * 100), nrow = 2)
+colnames(X) <- round(seq(0.5, 10, length.out = 100), 3)
+
+# Bin using width of 0.5 ppm
+Xb <- binning(X = X, width = 0.5)
+
+# Show dimensions of binned data
+dim(Xb)
 }
+\seealso{
+Other NMR: 
+\code{\link{alignSegment}()},
+\code{\link{cvanova}()},
+\code{\link{get_idx}()},
+\code{\link{lw}()},
+\code{\link{matspec}()},
+\code{\link{noise.est}()},
+\code{\link{normErectic}()},
+\code{\link{read1d}()},
+\code{\link{read1d_raw}()},
+\code{\link{stocsy1d_metabom8-class}},
+\code{\link{storm}()}
+}
+\concept{NMR}

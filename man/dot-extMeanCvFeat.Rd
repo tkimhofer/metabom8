@@ -2,30 +2,33 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.extMeanCvFeat}
 \alias{.extMeanCvFeat}
-\title{Extract data structures from output of function .oplsComponentCv}
+\title{Extract Cross-Validated OPLS Features}
 \usage{
 .extMeanCvFeat(cv_obj, feat = "t_xp", cv_type, model_type)
 }
 \arguments{
-\item{cv_obj}{named list, output of .oplsComponentCv (for resp OPLS component)}
+\item{cv_obj}{Named list. Output of \code{.oplsComponentCv()} for a specific OPLS component.}
 
-\item{feat}{char, feature name in output of tt (names(tt))}
+\item{feat}{Character. Feature name to extract from each CV fold object (e.g., \code{"t_xp"} or \code{"y_pred_test"}).}
 
-\item{cv_type}{char indicating cross validation type (k-fold, k-fold_stratified, MC, MC_balanced)}
+\item{cv_type}{Character. Cross-validation type, one of \code{"k-fold"}, \code{"k-fold_stratified"}, \code{"MC"}, or \code{"MC_balanced"}.}
 
-\item{model_type}{char indicating single or multi-column Y (grep mY)}
+\item{model_type}{Character. Indicates the output structure, typically \code{"mY"} for multi-column response matrix.}
 }
 \value{
-num array or matrix of resp component feature. For MCCV and single-column (multi-column) Y this is a 2D (3D) matrix where D1: mean, sd, or length, D2: nrow(Y) and D3: ncol(Y). For k-fold CV single-column (multi-column) Y output is 1D (2D) with D1: nrow(Y) and D2: ncol(Y)
+A numeric matrix or array of the requested feature:
+\itemize{
+\item For Monte Carlo CV and single-column Y: matrix with rows \code{"mean"}, \code{"sd"}, and \code{"coverage"} × samples.
+\item For Monte Carlo CV and multi-column Y: 3D array with shape \link{3, samples, outcomes}.
+\item For k-fold CV: matrix or array containing values for each sample (no aggregation, just fold values).
+}
 }
 \description{
-Extract data structures from output of function .oplsComponentCv
-}
-\section{}{
-NA
-}
+Extracts a specific data structure (e.g., scores or predictions) from cross-validation output returned by \code{.oplsComponentCv()}.
+Depending on the cross-validation type and model structure, the output is aggregated across folds by computing the mean,
+standard deviation (SD), and coverage.
 
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+Here, \strong{Coverage} refers to the proportion of cross-validation folds in which a given sample's value was observed
+(i.e., not missing), serving as an estimate of how frequently that value was evaluated across folds.
 }
 \keyword{internal}

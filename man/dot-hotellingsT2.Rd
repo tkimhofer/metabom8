@@ -2,40 +2,33 @@
 % Please edit documentation in R/hotellingsT2.R
 \name{.hotellingsT2}
 \alias{.hotellingsT2}
-\title{Hotelling's T2 ellipse in 2D}
+\title{Hotelling's T² Ellipse in 2D}
 \usage{
 .hotellingsT2(x, y, alpha = 0.95)
 }
 \arguments{
-\item{x}{num vector descrbing dimension 1}
+\item{x}{Numeric vector. First dimension (e.g., PC1 or t\link{1}).}
 
-\item{y, }{num vector descrbing dimension 2}
+\item{y}{Numeric vector. Second dimension (e.g., PC2 or t\link{2}).}
 
-\item{alpha}{num, probability level}
+\item{alpha}{Numeric. Confidence level for the ellipse. Default is 0.95.}
 }
 \value{
-data.frame containing H.T2 ellipse cooredinates
+A \code{data.frame} with two columns \code{V1} and \code{V2} containing coordinates of the T² ellipse.
 }
 \description{
-This function is used to calculate hotellings T2 ellipse
+Computes the Hotelling's T² ellipse for a bivariate dataset, commonly used to visualise multivariate confidence intervals in score plots.
 }
 \references{
-Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
+Geladi, P. and Kowalski, B.R. (1986). Partial least squares regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1–17.
 }
 \seealso{
 Other NMR ++: 
-\code{\link{cvanova}()},
-\code{\link{es_cdelta}()},
 \code{\link{minmax}()},
-\code{\link{opls_perm}()},
-\code{\link{pca}()},
-\code{\link{plotscores}()},
-\code{\link{pqn}()},
-\code{\link{predict_opls}()},
 \code{\link{scRange}()}
 }
 \author{
-\email{torben.kimhofer@murdoch.edu.au}
+Torben Kimhofer
 }
 \concept{NMR ++}
 \keyword{internal}

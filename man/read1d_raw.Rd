@@ -2,11 +2,11 @@
 % Please edit documentation in R/read1d_raw.R
 \name{read1d_raw}
 \alias{read1d_raw}
-\title{Read-in 1D NMR FIDs and process to spectra}
+\title{Read Raw 1D NMR FIDs and Process to Spectra}
 \usage{
 read1d_raw(
   path,
-  exp_type = list(exp = c("PROF_PLASMA_CPMG128_3mm"), pulprog = c("noesygppr1d")),
+  exp_type = list(exp = "PROF_PLASMA_CPMG128_3mm", pulprog = "noesygppr1d"),
   apodisation = list(fun = "exponential", lb = 0.2),
   zerofil = 1L,
   return = "absorption",
@@ -17,80 +17,66 @@ read1d_raw(
 )
 }
 \arguments{
-\item{path}{char, path to file directory containing spectra}
+\item{path}{Character. Path to the root directory containing Bruker experiment folders.}
 
-\item{exp_type}{named list, filter for acquisition paramters of experiments to read-in (see Details)}
+\item{exp_type}{Named list. Filter for acquisition parameters to select experiments (e.g., \code{list(exp = "noesygppr1d")}).}
 
-\item{apodisation}{named list, apodisation function and its parameters (see Details)}
+\item{apodisation}{Named list. Specifies apodisation function and parameters. \code{fun} must be one of: \code{"exponential"}, \code{"cosine"}, \code{"sine"}, \code{"sem"}.}
 
-\item{zerofil}{int, amount of zeros to append to FID given as exponent added of base 2 (see Details)}
+\item{zerofil}{Integer. Zerofilling exponent (e.g., 1 doubles points, 2 quadruples).}
 
-\item{return}{char, return mode of spectra: absorption, dispersion or magnitude mode}
+\item{return}{Character. Spectrum type to return: \code{"absorption"}, \code{"dispersion"}, or \code{"magnitude"}.}
 
-\item{verbose}{num, different verbose levels: 0 (no info), 1 (overview), 2 (detailed), 3 (step-by-step for debugging)}
+\item{verbose}{Integer. Verbosity level: 0 = silent, 1 = summary (default), 2 = detailed, 3 = debug mode.}
 
-\item{recursive}{logic, if TRUE recursively search all subfolders of path for specified NMR files}
+\item{recursive}{Logical. Whether to recursively search subdirectories for FIDs.}
 
-\item{n_max}{int, maximum number of experiments to read-in}
+\item{n_max}{Integer. Maximum number of experiments to process.}
 
-\item{filter}{logic, remove experiments with incomplete file systems (TRUE is recommended)}
+\item{filter}{Logical. Whether to remove experiments with incomplete file structures.}
 }
 \value{
-The function exports the following three objects into the currently active R environment (no variable assignments needed):
-\itemize{
-\item X, num matrix:  NMR data, spectra in rows
-\item ppm, num array - chemical shift positions, length matches to columns in X
-\item meta, data.frame - spectrometer metadata as extracted from individual \emph{acqus} files, row-matched to X
+The function assigns three objects into the global environment:
+\describe{
+\item{X}{Numeric matrix of spectra (rows = samples, columns = ppm values).}
+\item{ppm}{Numeric vector of chemical shift axis (ppm).}
+\item{meta}{Data.frame with spectrometer parameters, row-matched to \code{X}.}
 }
-Objects in the R environment with the same variable names will be overwritten.
+Existing objects named \code{X}, \code{ppm}, or \code{meta} will be overwritten.
 }
 \description{
-Read-in 1D NMR FIDs and process to spectra
+Reads Bruker 1D NMR FIDs from directories, applies apodisation and FFT, phases and calibrates the spectrum, and returns absorption, dispersion, or magnitude mode spectra. Results are assigned to the global environment.
 }
 \details{
-In the first step, read-in are FIDs generated with experimental condition(s) specified with the exp_type argument. This represents a list with each element representing a parameter condition, named according to spectrometer parameters listed in \emph{acqus} file. For example, to read standard 1D NMR experiments use \code{exp_type=list(exp='noesygppr1d')}. More than one argument can be provided as list element.
+Reads FID data from Bruker acquisition folders and applies digital signal processing:
+apodisation, zerofilling, FFT, phase correction, and calibration to TSP. A common ppm scale is interpolated across spectra.
 
-The apodisation argument is a named list specifying the function name in element \emph{fun} and functions-specific paramter arguments. There are the following different apodisation functions and arguments:
-#' @return
+Apodisation functions:
 \itemize{
-\item exponential, arguments: lb (line broadening factor)
-\item cosine, no further arguments
-\item sine, no further arguments
-\item sem, combined sine-bell - exponential fct: arguments: lb (line broadening factor)
+\item \code{"exponential"} (requires \code{lb})
+\item \code{"cosine"}, \code{"sine"}, \code{"sem"}
 }
-
-The zerofil argument specifies the amount of zeros to append to the FID and is expressed as exponent addand in the binary numeral system: \code{2^(1+x)}, with x being the zerofil parameter argument. Hence, \code{zerofil=1} doubles the amount of data points.
 }
-\section{}{
-NA
-}
-
 \examples{
-path<-system.file('extdata/',  package = 'metabom8')
-read1d_raw(path,  exp_type=list(exp='PROF_PLASMA_NOESY'), apodisation=list(fun='exponential', lb=0.2), n_max=3)
+path <- system.file("extdata", package = "metabom8")
+read1d_raw(path, exp_type = list(exp = "noesygppr1d"),
+           apodisation = list(fun = "exponential", lb = 0.2), n_max = 3)
+
 }
 \seealso{
-\code{\link[=read1d]{Import TopSpin processed spectra}}
+\code{\link{read1d}} for TopSpin-processed spectra
 
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
+\code{\link{binning}()},
+\code{\link{cvanova}()},
+\code{\link{get_idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
 \code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
 \code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
 \code{\link{storm}()}
-}
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR}

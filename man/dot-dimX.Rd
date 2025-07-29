@@ -2,21 +2,19 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.dimX}
 \alias{.dimX}
-\title{Transform to row vec}
+\title{Ensure Input is a Row Matrix}
 \usage{
 .dimX(X)
 }
 \arguments{
-\item{X}{Array or matrix - NMR data with spectra represented in rows.}
+\item{X}{Numeric vector, matrix, or array. Typically NMR data where rows represent spectra.}
 }
 \value{
-X as row-matrix with dimeniosn 1xlength(X)
+A numeric matrix with one row if input was a vector; otherwise, returns \code{X} unchanged.
 }
 \description{
-Transform to row vec
+Ensures that the input object \code{X} is in row-matrix form. If \code{X} is a vector (i.e., no \code{ncol} attribute),
+it is converted to a matrix with 1 row and \code{length(X)} columns.
+This is helpful for standardizing inputs before applying matrix operations.
 }
-\section{}{
-NA
-}
-
 \keyword{internal}
