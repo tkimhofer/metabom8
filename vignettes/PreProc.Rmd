@@ -26,18 +26,18 @@ library(dplyr)
 
 &nbsp;
 
-This tutorial runs through a typical data import and pre-processing workflow for Magnetic Resonance spectroscopy (MRS) - based metabolic profilig with the *metabom8* R package. Tutorial data are available in the *nmrdata* R package. Both of these packages are available on the author's GitHub page and can be installed using the commands below.
+This tutorial runs through a typical data import and pre-processing workflow for Magnetic Resonance spectroscopy (MRS) - based metabolic profilig with the *metabom8* R package. Tutorial data are available in the *nmrData* R package. Both of these packages are available on the author's GitHub page and can be installed using the commands below.
 
 ```{r load-pack, fig.show='hold', message=FALSE, warning=FALSE}
 # # obtain NMR training data from GitHub
 # install.packages('remotes')
-# remotes::install_github('tkimhofer/nmrdata')
+# remotes::install_github('tkimhofer/nmrData')
 # 
 # # install metaom8 package
 # remotes::install_github('tkimhofer/metabom8')
 
 # load packages
-library(nmrdata)
+library(nmrData)
 library(metabom8)
 ```
 
@@ -46,7 +46,7 @@ library(metabom8)
 
 ## Data
 
-Proton (^1^H) NMR data are available in the *nmrdata* package (www.github.com/tkimhofer) and constitute standard 1D experiments acquired from murine urine samples. Samples were collected longitudinally with a single collection point before and multiple collection points after bariatric surgery was performed. Data acquisition was performed on a 600 MHz Bruker Avance III spectrometer, equipped with a 5 mm triple resonance (TXI) probe operating at 300 K. Further information on study design, experimental setup and data collection can be found in Jia Li *et al.*^[Li, Jia V., *et al.* (2011) Metabolic surgery profoundly influences gut microbial-host metabolic cross-talk. *Gut* 60.9, 1214-1223.]
+Proton (^1^H) NMR data are available in the *nmrData* package (www.github.com/tkimhofer) and constitute standard 1D experiments acquired from murine urine samples. Samples were collected longitudinally with a single collection point before and multiple collection points after bariatric surgery was performed. Data acquisition was performed on a 600 MHz Bruker Avance III spectrometer, equipped with a 5 mm triple resonance (TXI) probe operating at 300 K. Further information on study design, experimental setup and data collection can be found in Jia Li *et al.*^[Li, Jia V., *et al.* (2011) Metabolic surgery profoundly influences gut microbial-host metabolic cross-talk. *Gut* 60.9, 1214-1223.]
 
 &nbsp;
 
@@ -61,7 +61,7 @@ In this tutorial all standard 1D experiments are imported, the selection paramet
 
 ```{r read-in, fig.show='hold', message=FALSE, warning=FALSE}
 # define path to NMR experiments
-path=system.file("extdata/", package = "nmrdata"); print(path)
+path=system.file("extdata/", package = "nmrData"); print(path)
 
 # import 1D MRS data
 read1d_proc(path, exp_type=list(PULPROG='noesypr1d'))
