@@ -132,7 +132,9 @@ plotStocsy <- function(stoc_mod, shift = c(0, 10), title = NULL) {
     paste0("Sample size: n=", nrow(stoc_mod@X))
   }
 
-  g1 <- ggplot(ds, aes_string(x = "ppm", y = "cov", colour = "abs(r)")) +
+  ds$r_abs = abs(ds$r)
+
+  g1 <- ggplot(ds, aes(x = !!sym("ppm"), y = !!sym("cov"), colour = !!sym("r_abs"))) +
     geom_line() +
     scale_x_reverse(breaks = breaks_pretty()) +
     scale_colour_gradientn(colours = matlab.like2(10), limits = c(0, 1), name = csc_lab) +

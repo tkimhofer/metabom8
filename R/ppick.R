@@ -42,14 +42,14 @@ ppick <- function(X, ppm, fil_p = 3, fil_n = 5, type = "max") {
 
   apply(X, 1, function(x, pp = ppm) {
     x[is.na(x)] <- 0
-
     x_smooth <- sgolayfilt(x, p = fil_p, n = fil_n)
     x_diff <- sign(diff(x_smooth))
 
     extrema_idx <- which(head(x_diff, -1) != tail(x_diff, -1)) + 1
     if (length(extrema_idx) == 0) return(NULL)
 
-    extrema_type <- x_diff[extrema_idx]
+    # Correct indexing here
+    extrema_type <- x_diff[extrema_idx - 1]
 
     res <- data.frame(
       idc = extrema_idx,
@@ -59,9 +59,10 @@ ppick <- function(X, ppm, fil_p = 3, fil_n = 5, type = "max") {
     )
 
     switch(type,
-           "max" = res[res$Etype < 0, ],
-           "min" = res[res$Etype > 0, ],
+           "max" = res[res$Etype > 0, ],
+           "min" = res[res$Etype < 0, ],
            "both" = res
     )
   })
 }
+

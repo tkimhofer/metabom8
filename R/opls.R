@@ -47,8 +47,15 @@ opls <- function(X, Y, center = TRUE, scale = "UV",
 
   x_check <- .checkXclassNas(X)
   y_check <- .checkYclassNas(Y)
+
   xy_check <- .checkDimXY(X, y_check[[1]])
   type <- y_check[[3]]
+  is_multi_Y <- grepl('mY', type)
+
+  if (is_multi_Y) {
+    idx_clmemb = apply(y_check[[2]][,-1], 2, which.max)
+    class_memb = sub("^Numeric\\.", "", names(idx_clmemb[order(idx_clmemb)]))
+  }
 
   msd_y <- .sdRcpp(y_check[[1]])
   msd_x <- .sdRcpp(X)
@@ -83,9 +90,14 @@ opls <- function(X, Y, center = TRUE, scale = "UV",
     if (cv_method == 'MC') {
       if (is_DA) {
         if (is_multi_Y) {
-          mod <- multiclass.roc(response = factor(Y), predictor = preds_test[1, , ], quiet=TRUE)
+          clmem_test = preds_test[1, , ] # mean
+          colnames(clmem_test) = class_memb
+          mod <- multiclass.roc(response = factor(Y), predictor = clmem_test, quiet=TRUE)
           aucs_te[nc] <- mod$auc
-          mod <- multiclass.roc(response = factor(Y), predictor = preds_train[1, , ], quiet=TRUE)
+
+          clmem_train = preds_test[1, , ] # mean
+          colnames(clmem_train) = class_memb
+          mod <- multiclass.roc(response = factor(Y), predictor = clmem_train, quiet=TRUE)
           aucs_tr[nc] <- mod$auc
         } else {
           mod <- roc(response = Y, predictor = preds_test[1, ], quiet=TRUE)
@@ -100,9 +112,14 @@ opls <- function(X, Y, center = TRUE, scale = "UV",
     } else if (cv_method == 'k-fold') {
       if (is_DA) {
         if (is_multi_Y) {
-          mod <- multiclass.roc(response = Y, predictor = apply(preds_test, 2, as.numeric), quiet=TRUE)
+          clmem_test = apply(preds_test, 2, as.numeric)
+          colnames(clmem_test) = class_memb
+          mod <- multiclass.roc(response = Y, predictor = clmem_test, quiet=TRUE)
           aucs_te[nc] <- mod$auc
-          mod <- multiclass.roc(response = Y, predictor = preds_train[1, , ], quiet=TRUE)
+
+          clmem_train = preds_train[1, , ]
+          colnames(clmem_train) = class_memb
+          mod <- multiclass.roc(response = Y, predictor = clmem_train, quiet=TRUE)
           aucs_tr[nc] <- mod$auc
         } else {
           mod <- roc(response = Y, predictor = preds_test[,1], quiet=TRUE)
@@ -111,12 +128,12 @@ opls <- function(X, Y, center = TRUE, scale = "UV",
           aucs_tr[nc] <- mod$auc
         }
       } else {
-        r2_comp[nc] <- .r2(YcsTot, preds_train[1, , drop = FALSE], NULL)
+        r2_comp[nc] <- .r2(YcsTot, as.vector(preds_train[1, , drop = FALSE]), NULL)
         q2_comp[nc] <- .r2(YcsTot, preds_test[, 1], tssy)
       }
     }
 
-    overfitted <- .evalFit(type, q2_comp, aucs_te, maxPCo)
+    overfitted <- .evalFit(type, q2_comp, aucs_te, maxPCo+1)
 
     if (nc >= 2) {
       if (nc == 2) {
@@ -138,8 +155,29 @@ opls <- function(X, Y, center = TRUE, scale = "UV",
       message(sprintf("An O-PLS-%s model with 1 predictive and %d orthogonal components was fitted.",
                       type, nc - 1))
       pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type), ncol = 1)
-      pred_comp$t_o_cv <- matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[, nc - 1]),
-                                 ncol = nc - 1)
+
+
+      if (grepl('MC', cv$method)) {
+        message('MC')
+        pred_comp$t_o_cv <- matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[1,]),#[, nc - 1]),
+                                   ncol = nc - 1)
+        pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type)[1,], ncol = 1)
+      }else{
+        pred_comp$t_o_cv <- matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[, nc - 1]),#[, nc - 1]),
+                                   ncol = nc - 1)
+        pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type), ncol = 1)
+      }
+
+      # if (grepl('MC', cv$method)) {
+      #   message('MC')
+      #   pred_comp$t_o_cv <- matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[1,, nc - 1]),#[, nc - 1]),
+      #                              ncol = nc - 1)
+      #   pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type)[1,,], ncol = 1)
+      # }else{
+      #   pred_comp$t_o_cv <- matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[, nc - 1]),#[, nc - 1]),
+      #                              ncol = nc - 1)
+      #   pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type), ncol = 1)
+      # }
       pred_comp$t_o <- t_orth
     }
     nc <- nc + 1

@@ -52,12 +52,15 @@ opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
   colnames(out_df) <- c("r2_comp", "q2_comp", "aucs_tr", "aucs_te", "r")
   out_df$model <- paste0("perm_", seq_len(nrow(out_df)))
 
-  real_stats <- .permYmod(Xs, Y, cv, type, nc_o)
-  real_row <- as.data.frame(t(c(real_stats, r = 1)))
-  real_row$model <- "Non-permuted"
-  colnames(real_row) <- colnames(out_df)
+  idx <- max(which(!is.na(smod@summary$R2X)))
+  model_comp <- smod@summary[idx, ]
 
-  out_df <- rbind(out_df, unlist(real_row))
+  if (grepl('DA', smod@type)){
+    real_stats <- data.frame(r2_comp=NA_real_, q2_comp=NA_real_, aucs_tr=model_comp$aucs_tr, aucs_te=model_comp$aucs_te, r = 1, model="Non-permuted")
+  } else{
+    real_stats <- data.frame(r2_comp=model_comp$R2Y, q2_comp=model_comp$Q2, aucs_tr=NA_real_, aucs_te=NA_real_, r = 1, model="Non-permuted")
+  }
+  out_df <- rbind(out_df, unlist(real_stats))
 
   # Clean up NA-only columns
   idx_rm <- vapply(out_df, function(x) all(is.na(x)), logical(1))
@@ -68,10 +71,10 @@ opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
 
 
     if (smod@type=='DA'){
-      dd <- reshape2::melt(out_df[,c('aucs_te', 'r_abs', 'model')], id.vars = c("model", "r_abs"))
+      dd <- reshape2::melt(out_df[,c('aucs_tr', 'aucs_te', 'r_abs', 'model')], id.vars = c("model", "r_abs"))
     }
     else{
-      dd <- reshape2::melt(out_df[, c('q2_comp', 'r_abs', 'model')], id.vars = c("model", "r_abs"))
+      dd <- reshape2::melt(out_df[, c('r2_comp', 'q2_comp', 'r_abs', 'model')], id.vars = c("model", "r_abs"))
     }
 
     dd$r <- as.numeric(dd$r)
@@ -80,13 +83,16 @@ opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
 
     map_parameter <- c(aucs_tr = "AUROC_train", aucs_te = "AUROC_test", r2_comp = "R2", q2_comp = "Q2")
     dd$variable <- map_parameter[match(dd$variable, names(map_parameter))]
-    ylab <- if (any(grepl("AU", dd$variable))) "AUROC" else expression(R^2 ~ "/" ~ Q^2)
+    # ylab <- if (any(grepl("AU", dd$variable))) "AUROC" else expression(R^2 ~ "/" ~ Q^2)
+
+    y_lwer <- min(dd$value, na.rm = TRUE)
 
     g <- ggplot(dd, aes(x = !!sym("r_abs"), y = !!sym("value"), colour = !!sym("variable"))) +
       geom_point() +
       theme_bw() +
-      labs(x = "|r|", y = ylab, colour = "Metric",
-           caption = paste0("O-PLS-", type, ": ", n, " Y-permutations."))
+      labs(x = "|r|", y = NULL, colour = "Metric",
+           caption = paste0("O-PLS-", type, ": ", n, " Y-permutations."))+
+      scale_y_continuous(limits = c(y_lwer, 1))
 
     plot(g)
   }

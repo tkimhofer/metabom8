@@ -33,13 +33,33 @@
   }
 
   test <- apply(X[, idx, drop = FALSE], 1, function(x, pp = ppm[idx]) {
-    smoothed <- sgolayfilt(x - asysm(x, lambda = 100), p = 3, n = sg_length)
-    ppick(smoothed, pp, type = "max")[[1]]
+    result <- try(expr, silent = TRUE)
+    if (inherits(result, "try-error")) {
+      smoothed <- x - asysm(x, lambda = 100, maxit=1000)
+    }
+    smoothed <- sgolayfilt(x - asysm(x, lambda = 100, maxit=1000), p = 3, n = sg_length)
+
+    picks <- ppick(smoothed, pp, type = "max")
+
+    if (is.null(picks) || length(picks) == 0 || is.null(picks[[1]])) {
+      return(NULL)
+    } else {
+      return(picks[[1]])
+    }
   })
+
+  if (all(is.null(test))) {
+    warning('Could not calibrate - no signals detected');
+    return(NULL)
+    }
 
   s <- lapply(seq_along(test), function(i) {
     peaks <- test[[i]]
-    if (is.null(peaks) || nrow(peaks) < 2) return(NULL)
+
+    if (is.null(peaks) || nrow(peaks) < 2){
+      warning('Could not calibrate spectrum')
+      return(NULL)
+    }
     ptab <- peaks[peaks$Etype > 0, , drop = FALSE]
 
     if (nrow(ptab) < 2) return(NULL)

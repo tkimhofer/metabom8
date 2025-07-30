@@ -37,10 +37,10 @@ excise1d <- function(X, ppm) {
   if (anyNA(ppm)) stop("ppm contains NA values.")
 
   idx_rm <- c(
-    get.idx(c(min(ppm), 0.25), ppm),
-    get.idx(c(4.5, 5.2), ppm),
-    get.idx(c(5.5, 6.0), ppm),
-    get.idx(c(9.7, max(ppm)), ppm)
+    get_idx(c(min(ppm), 0.25), ppm),
+    get_idx(c(4.5, 5.2), ppm),
+    get_idx(c(5.5, 6.0), ppm),
+    get_idx(c(9.7, max(ppm)), ppm)
   )
 
   keep_idx <- setdiff(seq_along(ppm), idx_rm)

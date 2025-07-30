@@ -87,8 +87,8 @@
 #' .checkXclassNas(X_bad)  # should throw an error
 #' }
 .checkXclassNas <- function(X) {
-  if (!is.matrix(X) || !is.numeric(X[1, 1])) {
-    stop("Input X must be a numeric matrix. Use matrix() or as.matrix() to convert.")
+  if (!is.matrix(X) || !is.numeric(X)) {
+    stop(sprintf("Input X must be a numeric matrix. Use matrix() or as.matrix() to convert."))
   }
 
   if (any(is.na(X) | is.nan(X) | is.infinite(X))) {
@@ -722,14 +722,27 @@
 #' @return A single numeric value representing R² or Q².
 #'
 #' @keywords internal
-.r2 <- function(Y, Yhat, ytss) {
-  press <- sum((Y - Yhat)^2, na.rm = TRUE) / ncol(Y)
+.r2 <- function(Y, Yhat, ytss = NULL) {
+  if (!is.numeric(Y)) stop("Y must be numeric")
+  if (!is.numeric(Yhat)) stop("Yhat must be numeric")
 
-  if (is.null(ytss)) {
-    ytss <- sum(Y^2, na.rm = TRUE) / ncol(Y)
+  if (is.null(dim(Y))) {
+    if (length(Y) != length(Yhat)) stop("Lengths of Y and Yhat must match")
+    ncol_Y <- 1
+  } else {
+    if (!all(dim(Y) == dim(Yhat))) stop("Dimensions of Y and Yhat must match")
+    ncol_Y <- ncol(Y)
   }
 
-  1 - (press / ytss)
+  if (!is.null(ytss) && !is.numeric(ytss)) stop("ytss must be numeric or NULL")
+
+  press <- sum((Y - Yhat)^2, na.rm = TRUE) / ncol_Y
+
+  if (is.null(ytss)) {
+    ytss <- sum((Y - mean(Y))^2, na.rm = TRUE) / ncol_Y
+  }
+
+  return(1 - (press / ytss))
 }
 
 #' @title Summary of OPLS Model Components
@@ -792,8 +805,8 @@
   idx <- which(mm$value < (-0.015) & mm$variable == 'Q2')
   mm$value[idx] <- -0.01
 
-  g <- ggplot2::ggplot(mm, ggplot2::aes_string("PC", "value", fill = "variable")) +
-    ggplot2::geom_bar(stat = "identity", position = "dodge", colour = NA, ggplot2::aes_string(alpha = "alph")) +
+  g <- ggplot2::ggplot(mm, ggplot2::aes(x = !!sym("PC"), y = !!sym("value"), fill = !!sym("variable"))) +
+    ggplot2::geom_bar(stat = "identity", position = "dodge", colour = NA, ggplot2::aes(alpha = !!sym("alph"))) +
     ggplot2::scale_fill_manual(
       values = c(R2X = "lightgreen", R2Y = "lightblue", Q2 = "red", AUROC = "black", AUROC_CV = "red"),
       labels = c(
@@ -805,7 +818,7 @@
       ),
       name = ""
     ) +
-    ggplot2::scale_alpha(guide = FALSE, limits = c(0, 1)) +
+    ggplot2::scale_alpha(guide = "none", limits = c(0, 1)) +
     ggplot2::labs(
       x = "Predictive + Orthogonal Component(s)",
       y = "",
@@ -814,12 +827,12 @@
     ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
-      legend.text.align = 0,
+      legend.text = element_text(0),
       panel.grid.major.x = element_blank(),
-      panel.grid.major.y = element_line(color = "black", size = 0.15),
+      panel.grid.major.y = element_line(color = "black", linewidth = 0.15),
       panel.grid.minor = element_blank(),
       panel.border = element_blank(),
-      axis.line.x = element_line(color = "black", size = 0.55),
+      axis.line.x = element_line(color = "black", linewidth = 0.55),
       axis.line.y = element_blank(),
       axis.ticks = element_blank(),
       legend.key = element_rect(colour = "white"),
@@ -1440,8 +1453,11 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
         r2_comp[nc] <- .r2(Y, preds_test[1, , ], NULL)
         q2_comp[nc] <- .r2(Y, preds_test[4, , ], tssy)
       } else {
-        r2_comp[nc] <- .r2(Y, preds_test[1, ], NULL)
-        q2_comp[nc] <- .r2(Y, preds_test[4, ], tssy)
+        r2_comp[nc] <- .r2(Y, t(t(preds_train[1,])), NULL)
+        q2_comp[nc] <- .r2(Y, as.array(preds_test), tssy)
+
+        # r2_comp[nc] <- .r2(Y, preds_test[1, ], NULL)
+        # q2_comp[nc] <- .r2(Y, preds_test[4, ], tssy)
       }
     }
   }

@@ -16,7 +16,7 @@ test_that("alignSegment keeps low-correlation rows unshifted", {
 test_that("median reference is used correctly", {
   mat <- matrix(rnorm(100), nrow = 10)
   result <- alignSegment(mat, med = TRUE)
-  expect_equal(nrow(result), 9)  # One row dropped after using median
+  expect_equal(nrow(result), 10)
 })
 
 test_that("normalization does not crash", {
@@ -35,7 +35,7 @@ test_that("alignment improves similarity for correlated rows", {
 
 test_that("out-of-bounds idx_ref throws error", {
   mat <- matrix(rnorm(100), nrow = 10)
-  expect_error(alignSegment(mat, idx_ref = 20))
+  expect_error(alignSegment(mat, idx_ref = 20, med=FALSE))
 })
 
 test_that("non-matrix input throws error", {

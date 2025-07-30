@@ -1,3 +1,5 @@
+pdf(NULL)
+
 test_that("matspec validates input", {
   X <- matrix(rnorm(100), nrow = 10)
   ppm <- seq(0, 10, length.out = 10)
@@ -18,7 +20,11 @@ test_that("matspec returns a plotly object in interactive mode", {
 })
 
 test_that("matspec handles shift range correctly", {
+
   X <- matrix(rnorm(100), nrow = 10)
   ppm <- seq(0, 10, length.out = 10)
   expect_silent(matspec(X, ppm, shift = c(2, 5), interactive = FALSE))
 })
+
+
+dev.off()

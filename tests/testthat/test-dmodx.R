@@ -1,6 +1,6 @@
 test_that("dmodx returns expected structure", {
   data(covid)
-  model <- opls(X, Y = an$type)
+  model <- opls(X, Y = an$type, plotting = FALSE)
 
   result <- dmodx(model, plot = FALSE)
 
@@ -17,19 +17,19 @@ test_that("dmodx handles incorrect input gracefully", {
 
 test_that("dmodx returns the same values with plot = TRUE", {
   data(covid)
-  model <- opls(X, Y = an$type)
+  model <- opls(X, Y = an$type, plotting = FALSE)
 
   expect_silent({
     result <- dmodx(model, plot = TRUE)
   })
 
   expect_s3_class(result, "data.frame")
-  expect_named(result, c("ID", "DmodX", "passedT.test"))
+  expect_named(result, c("ID", "DmodX", "passedT.test", "Group"))
 })
 
 test_that("dmodx DmodX values are non-negative", {
   data(covid)
-  model <- opls(X, Y = an$type)
+  model <- opls(X, Y = an$type, plotting = FALSE)
 
   result <- dmodx(model, plot = FALSE)
   expect_true(all(result$DmodX >= 0))

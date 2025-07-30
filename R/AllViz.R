@@ -142,7 +142,7 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...) {
 #' specOverlay(X, ppm, shift = c(5.15, 4.6), an = list(Group = meta$Group))
 #'
 #' @importFrom reshape2 melt
-#' @importFrom ggplot2 ggplot geom_line aes_string scale_x_reverse ggtitle xlab facet_grid theme_bw theme element_text scale_y_continuous
+#' @importFrom ggplot2 ggplot geom_line aes scale_x_reverse ggtitle xlab facet_grid theme_bw theme element_text scale_y_continuous
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales breaks_pretty
 #' @importFrom stats as.formula
@@ -181,12 +181,12 @@ specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7
   # Add traces based on number of grouping variables
   switch(as.character(length(an)),
          "1" = {
-           g <- g + ggplot2::geom_line(data = df, aes_string(x = "variable", y = "value", group = "ID"),
+           g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID")),
                                        alpha = alp, size = size)
          },
          "2" = {
            col_var <- names(an)[2]
-           g <- g + ggplot2::geom_line(data = df, aes_string(x = "variable", y = "value", group = "ID", colour = col_var),
+           g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID"), colour = col_var),
                                        alpha = alp, size = size)
            if (!is.factor(an[[2]]) && !is.character(an[[2]])) {
              g <- g + ggplot2::scale_colour_gradientn(colors = colorRamps::matlab.like2(100))
@@ -194,7 +194,7 @@ specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7
          },
          "3" = {
            df[[names(an)[3]]] <- factor(df[[names(an)[3]]])
-           g <- g + ggplot2::geom_line(data = df, aes_string(x = "variable", y = "value", group = "ID",
+           g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID"),
                                                              colour = names(an)[2], linetype = names(an)[3]),
                                        alpha = alp, size = size)
            if (!is.factor(an[[2]]) && !is.character(an[[2]])) {
@@ -294,9 +294,9 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1,
   }))
 
   g <- ggplot() +
-    geom_line(data = df1, aes_string("ppm", "Intensity", color = "load", group = "ID"),
+    geom_line(data = df1, aes(x=!!sym("ppm"), y=!!sym("Intensity"), color = !!sym("load"), group = !!sym("ID")),
               size = 0.8) +
-    geom_line(data = df, aes_string("variable", "value", group = "ID"),
+    geom_line(data = df, aes(x=!!sym("variable"), y=!!sym("value"), group = !!sym("ID")),
               alpha = alp, size = size) +
     facet_grid(facet ~ .) +
     scale_x_reverse(breaks = round(seq(shift[1], shift[2], length.out = 10), 3)) +
@@ -380,7 +380,7 @@ plotload <- function(mod, shift = c(0, 10), pc = 1,
     df <- .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
     raCol <- if (r_scale) c(0, 1) else c(0, max(abs(df$cor)))
 
-    g <- ggplot(df, aes_string("ppm", "cov", colour = "cor")) +
+    g <- ggplot(df, aes(x=!!sym("ppm"), y=!!sym("cov"), colour = !!sym("cor"))) +
       geom_line() +
       scale_x_reverse(breaks = breaks_pretty(n = 15)) +
       scale_colour_gradientn(colors = matlab.like2(10), limits = raCol, name = "r") +
@@ -394,7 +394,7 @@ plotload <- function(mod, shift = c(0, 10), pc = 1,
   } else {
     df <- .load_backscaled_nmr(mod, pc, idx, ppm)
 
-    g <- ggplot(df, aes_string("ppm", "p_bs", colour = "p_abs")) +
+    g <- ggplot(df, aes(x=!!sym("ppm"), y=!!sym("p_bs"), colour = !!sym("p_abs"))) +
       geom_line() +
       scale_x_reverse(breaks = breaks_pretty(n = 15)) +
       scale_colour_gradientn(colors = matlab.like2(10), name = expression("|p[sc]|")) +

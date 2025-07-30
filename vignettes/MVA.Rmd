@@ -22,6 +22,7 @@ This tutorial illustrates a multivariate statistical analysis workflow for NMR-b
 
 ```{r load-pack, fig.show='hold', message=FALSE, warning=FALSE}
 # load packages
+remotes::install_github('tkimhofer/nmrData')
 library(nmrData)
 library(metabom8)
 ```

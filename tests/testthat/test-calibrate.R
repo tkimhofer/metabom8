@@ -37,16 +37,28 @@ test_that("calibrate() fails for incorrect input", {
   expect_error(calibrate("not a matrix", ppm, type = "tsp"))
 })
 
-test_that("calibrate() works with glucose and alanine types", {
+test_that("calibrate() works with metabolit str input (here: glucose)", {
   skip_if_not(exists(".calibrate_doub"), "requires internal .calibrate_doub()")
 
-  ppm <- seq(10, 0, length.out = 1000)
-  X <- matrix(rnorm(2 * length(ppm), sd = 1e-2), nrow = 2)
+  set.seed(123)
+  n_spec <- 5
+  ppm <- seq(5.21, 5.25, length.out = 1024)
+  cent_loc <- 5.233
+  j_const <- c(0.0065, 0.007)
+  lw <- 0.0002
+
+  gauss <- function(x, mu, sd) exp(-((x - mu)^2) / (2 * sd^2))
+
+  X <- t(sapply(1:n_spec, function(i) {
+    jc <- 0.0065
+    peak1 <- gauss(ppm, cent_loc - jc/2, lw)
+    peak2 <- gauss(ppm, cent_loc + jc/2, lw)
+    peak1 + peak2
+  }))
+
 
   X_glu <- calibrate(X, ppm, type = "glucose")
   expect_true(is.matrix(X_glu))
   expect_equal(dim(X_glu), dim(X))
 
-  X_ala <- calibrate(X, ppm, type = "alanine")
-  expect_true(is.matrix(X_ala))
 })

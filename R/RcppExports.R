@@ -79,6 +79,7 @@
 }
 
 #' @title Column-wise matrix scaling
+#' @export
 #' @param X num matrix
 #' @param idc int row indices of X
 #' @param center bool mean centering

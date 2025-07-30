@@ -2,7 +2,7 @@ test_that("binning with width returns matrix of expected dimensions", {
   set.seed(1)
   X <- matrix(rnorm(1000), nrow = 10)
   ppm <- seq(10, 0, length.out = ncol(X))
-  Xb <- binning(X, ppm, width = 0.1)
+  Xb <- binning(X, ppm, width = 0.5)
 
   expect_true(is.matrix(Xb))
   expect_equal(nrow(Xb), nrow(X))

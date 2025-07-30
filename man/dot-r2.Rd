@@ -4,7 +4,7 @@
 \alias{.r2}
 \title{R² and Q² Calculation for OPLS Models}
 \usage{
-.r2(Y, Yhat, ytss)
+.r2(Y, Yhat, ytss = NULL)
 }
 \arguments{
 \item{Y}{Numeric matrix. True response values. For classification, this should be a dummy matrix.}

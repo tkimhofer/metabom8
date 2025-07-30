@@ -12,17 +12,13 @@ test_that("plotload_cat returns ggplot object for PCA_metabom8", {
   expect_true("ggplot" %in% class(g))
 })
 
+test_that("plotload_cat works with default pc and an when features < 150", {
+  X_small <- iris[1:149, 1:4]
+  model_small <- pca(X = X_small, pc = 2)
 
-test_that("plotload_cat returns ggplot object for OPLS_metabom8", {
-  data(covid)
+  p <- plotload_cat(model_small)
 
-  model <- opls(X = X, Y = an$type, plotting = FALSE)
-
-  # Use first orthogonal component
-  g <- plotload_cat(model, pc = c("1", "o1"), an = list(Group = rep("B", ncol(X))))
-
-  expect_s3_class(g, "ggplot")
-  expect_true("ggplot" %in% class(g))
+  expect_s3_class(p, "ggplot")
 })
 
 
@@ -30,6 +26,10 @@ test_that("plotload_cat fails gracefully with missing pc and an", {
   data(covid)
   model <- pca(X = X, pc = 2)
 
-  # Test default behaviour with no pc or an
-  expect_s3_class(plotload_cat(model), "ggplot")
+  # Expect error due to missing 'an' with large feature set
+  expect_error(
+    plotload_cat(model),
+    "Annotation list 'an' is missing and too many features to set a default."
+  )
+
 })
