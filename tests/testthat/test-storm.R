@@ -4,7 +4,7 @@ test_that("storm selects a valid subset of spectra", {
   # Simulate test data
   set.seed(123)
   X <- matrix(rnorm(1000), nrow = 20)  # 20 spectra, 50 variables
-  ppm <- seq(0.5, 5, length.out = ncol(X))
+  ppm <- seq(0.5, 2, length.out = ncol(X))
 
   # Inject a fake peak at 1.2 ppm for spectra 1:10
   peak_idx <- which.min(abs(ppm - 1.2))
@@ -27,6 +27,9 @@ test_that("storm selects a valid subset of spectra", {
 
   subset_idx <- storm(X, ppm, b = 3, q = 0.05, idx.refSpec = 1, shift = c(1.15, 1.25))
 
+  matspec(X, ppm)
+  spec(X[1,], ppm)
+  dim(X)
   # Expectations
   expect_type(subset_idx, "integer")
   expect_true(length(subset_idx) > 0)

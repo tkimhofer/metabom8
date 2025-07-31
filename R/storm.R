@@ -31,7 +31,7 @@
 #' }
 #'
 #' tt=storm(X=spectra, ppm=ppm, b=30, q=0.05, idx.refSpec=1, shift=c(0.75,1.25))
-storm <- function(X=bbin[[1]], ppm=bbin[[2]], b=30, q=0.05, idx.refSpec=NULL, shift=c(1.117,1.25)){
+storm <- function(X, ppm, b=30, q=0.05, idx.refSpec, shift){
 
   # center X, define reference index and reference spectrum
   X_sc <- .scaleMatRcpp(X, seq.int(0, nrow(X) - 1), center=TRUE, scale=0)
@@ -46,7 +46,6 @@ storm <- function(X=bbin[[1]], ppm=bbin[[2]], b=30, q=0.05, idx.refSpec=NULL, sh
 
   # perform storm
   while(length(which(!subset %in% subset1))>0){
-    #print(table(subset %in% subset1))
 
     # correlation based subset selection
     subset <- subset1
@@ -60,7 +59,6 @@ storm <- function(X=bbin[[1]], ppm=bbin[[2]], b=30, q=0.05, idx.refSpec=NULL, sh
     index <- order(pval)
     subset1 <- subset1[index]
 
-
     # Stocsy with driver=max intensity reference spectrum
     index <- which.max(ref)
     r <- cor(X[subset1, (ref.idx[index]-(b+1)):(ref.idx[index]+(b+1))], X[subset1,ref.idx[index]])
@@ -73,9 +71,6 @@ storm <- function(X=bbin[[1]], ppm=bbin[[2]], b=30, q=0.05, idx.refSpec=NULL, sh
     ref <- co[pval<q & r>0]
     ref.idx <- (ref.idx[index]-(b+1)):(ref.idx[index]+(b+1))
     ref.idx <- ref.idx[pval<q & r>0]
-
   }
-
   return(subset1)
-
 }
