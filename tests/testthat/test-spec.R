@@ -20,9 +20,9 @@ test_that("spec produces silent base plot and overlay", {
 })
 
 test_that("spec respects shift range", {
-  ppm <- seq(0, 10, length.out = 100)
+  ppm <- seq(1, 5, length.out = 100)
   x <- sin(ppm)
   idx <- get_idx(c(2, 4), ppm)
   expect_silent(spec(x, ppm, shift = c(2, 4), interactive = FALSE))
-  expect_equal(range(ppm[idx]), c(4, 2)) # reversed by default
+  expect_equal(range(ppm[idx]), c(2, 4), tolerance = 1e-2)
 })

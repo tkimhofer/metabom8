@@ -39,7 +39,7 @@ read1d <- function(path,
     warning("`read1d` will be deprecated; please use `read1d_proc()`.", call. = FALSE)
   }
 
-  f_list <- .detect1d_procs(path, n_max = 1e6, filter = filter, recursive = recursive, verbose = verbose)
+  f_list <- .detect1d_procs(path, n_max = n_max, filter = filter, recursive = recursive, verbose = verbose)
   if (is.null(f_list)) stop("No valid experiments found.")
 
   pars <- .extract_pars1d(f_list)
@@ -119,7 +119,7 @@ read1d_proc <- read1d
     d_acqu_val <- gsub("^ ", "", vapply(acqus_vals, "[[", 2, FUN.VALUE = ""))
     names(d_acqu_val) <- paste0("a_", vapply(acqus_vals, "[[", 1, FUN.VALUE = ""))
 
-    # Convert date from Bruker format
+    # Convert datetime
     idx_date <- grep("date", names(d_acqu_val), ignore.case = TRUE)
     d_acqu_val[idx_date] <- as.character(
       as.POSIXct("1970-01-01 00:00:00", tz = "UTC") + as.numeric(d_acqu_val[idx_date])
@@ -141,13 +141,130 @@ read1d_proc <- read1d
 
   out_df <- as.data.frame(do.call(rbind, out), stringsAsFactors = FALSE)
 
-  # Convert numeric columns
-  is_num <- vapply(out_df, function(col) all(!is.na(as.numeric(col))), logical(1))
+  is_num <- vapply(out_df, .is_numeric_trycatch, logical(1))
+  # is_num <- vapply(out_df, function(col) all(!is.na(as.numeric(col))), logical(1))
   out_df[is_num] <- lapply(out_df[is_num], as.numeric)
 
   rownames(out_df) <- f_list[[2]]
   return(out_df)
 }
+
+
+#' @title Check for Intact File Systems - Helper Function for read1d
+#' @description
+#' Scans the specified directory recursively to find intact sets of Bruker NMR files:
+#' 'procs', 'acqus', and '1r' files. Optionally filters incomplete experiments.
+#'
+#' @param datapath character. Path to directory containing spectra.
+#' @param n_max integer. Maximum number of spectra to read (default 10).
+#' @param filter logical. Whether to filter out incomplete file sets (default TRUE).
+#' @param recursive logical. Whether to search directories recursively.
+#' @param verbose integer. Verbosity level for messaging.
+#'
+#' @return
+#' A list with elements:
+#' \describe{
+#'   \item{path}{Character vector of experiment folder paths (intact).}
+#'   \item{exp_no}{Character vector of experiment folder IDs.}
+#'   \item{f_procs}{Character vector of paths to 'procs' files.}
+#'   \item{f_acqus}{Character vector of paths to 'acqus' files.}
+#'   \item{f_1r}{Character vector of paths to '1r' files.}
+#' }
+#'
+#' @keywords internal
+.detect1d_procs <- function(datapath,
+                            n_max = 10,
+                            filter = TRUE,
+                            recursive = TRUE,
+                            verbose = 1) {
+
+  stopifnot(is.character(datapath), length(datapath) == 1)
+  stopifnot(is.numeric(n_max), length(n_max) == 1, n_max > 0)
+  stopifnot(is.logical(filter), length(filter) == 1)
+  stopifnot(is.logical(recursive), length(recursive) == 1)
+  stopifnot(is.numeric(verbose), length(verbose) == 1)
+
+  datapath <- gsub(paste0(.Platform$file.sep, "$"), "", datapath)
+
+  # List files matching patterns recursively, if requested
+  f_procs <- list.files(path = datapath, pattern = "^procs$", full.names = TRUE,
+                        recursive = TRUE, ignore.case = TRUE)
+  f_acqus <- list.files(path = datapath, pattern = "^acqus$", full.names = TRUE,
+                        recursive = TRUE, ignore.case = TRUE)
+  f_1r <- list.files(path = datapath, pattern = "^1r$", full.names = TRUE,
+                     recursive = TRUE, ignore.case = TRUE)
+
+  # Extract experiment IDs by trimming known suffixes and folder patterns
+  pattern_acqus <- paste0("^", datapath, .Platform$file.sep, "|", .Platform$file.sep, "acqus$")
+  pattern_procs <- paste0("^", datapath, .Platform$file.sep, "|", .Platform$file.sep, "pdata", .Platform$file.sep, ".*")
+  pattern_1r <- paste0("^", datapath, .Platform$file.sep, "|", .Platform$file.sep, "pdata", .Platform$file.sep, ".*")
+
+  id_a <- gsub(pattern_acqus, "", f_acqus)
+  id_p <- gsub(pattern_procs, "", f_procs)
+  id_f1r <- gsub(pattern_1r, "", f_1r)
+
+  # Find matching indices (keep only matching files)
+  idx_a <- which(id_a %in% id_f1r)
+  idx_p <- which(id_p %in% id_f1r)
+  idx_f1r <- which(id_f1r %in% id_a)
+
+  # Filter incomplete sets if requested
+  if (length(idx_a) != length(id_a) || length(idx_f1r) != length(id_f1r) || length(idx_p) != length(id_p)) {
+    if (filter) {
+      if (verbose > 1) {
+        message("Reading experiments with matching procs, acqus and 1r files.")
+      }
+      f_acqus <- f_acqus[idx_a]
+      id_a <- id_a[idx_a]
+      f_procs <- f_procs[idx_p]
+      id_p <- id_p[idx_p]
+      f_1r <- f_1r[idx_f1r]
+      id_f1r <- id_f1r[idx_f1r]
+    } else {
+      message("File system seems to be corrupt for some experiments. Consider setting `filter=TRUE`.")
+      return(NULL)
+    }
+  }
+
+  # Ensure matching between acqus, procs, and 1r files
+  idm_f1r <- match(id_a, id_f1r)
+  idm_p <- match(id_a, id_p)
+  if (any(is.na(idm_f1r)) || any(is.na(idm_p))) {
+    stop("Mismatch in matching file indices between acqus, procs, and 1r files.")
+  }
+
+  f_procs <- f_procs[idm_p]
+  f_1r <- f_1r[idm_f1r]
+  id_f1r <- id_f1r[idm_f1r]
+
+  # Sanity check lengths are consistent
+  if (length(unique(c(length(f_acqus), length(f_1r), length(f_procs)))) != 1) {
+    stop("Lengths of filtered files (acqus, 1r, procs) do not match after filtering.")
+  }
+
+  # Limit to n_max spectra
+  if (n_max < length(f_1r)) {
+    idx_nmax <- seq_len(n_max)
+    f_acqus <- f_acqus[idx_nmax]
+    f_procs <- f_procs[idx_nmax]
+    f_1r <- f_1r[idx_nmax]
+    id_f1r <- id_f1r[idx_nmax]
+    message("Reached n_max - not all spectra read-in.")
+  }
+
+  # Remove trailing "/acqus" from path for experiment folder
+  p_intact <- gsub(paste0(.Platform$file.sep, "acqus$"), "", f_acqus)
+
+  # Return list of intact experiment data
+  return(list(
+    path = p_intact,
+    exp_no = id_f1r,
+    f_procs = f_procs,
+    f_acqus = f_acqus,
+    f_1r = f_1r
+  ))
+}
+
 
 #' @title Calculate Chemical Shift Axis
 #'

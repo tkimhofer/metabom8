@@ -123,7 +123,13 @@
     vars %in% exp_type[[i]]
   }, logical(nrow(pars)))
 
-  idx_filt <- apply(fmat == 1, 1, all)
+  # idx_filt <- apply(fmat == 1, 1, all)
+  if (is.matrix(fmat) && nrow(fmat) > 0) {
+    idx_filt <- apply(fmat == 1, 1, all)
+  } else {
+    # handle scalar or vector case
+    idx_filt <- (fmat == 1)
+  }
   if (!any(idx_filt)) {
     stop("No files found that match the specified parameter specification levels.")
   }
@@ -137,9 +143,9 @@
   }
 
   pars <- pars[idx_filt, ]
-  fnam <- strsplit(ifelse(!is.na(f_list$f_1r), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
+  fnam <- strsplit(ifelse(!(is.na(f_list$f_1r) || is.null(f_list$f_1r)), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
   fmat_comb <- do.call(rbind, fnam)
-  uniq_cols <- vapply(seq_len(ncol(fmat_comb)), function(i) length(unique(fmat_comb[, i])) > 1, logical(1))
+  uniq_cols <- vapply(seq_len(ncol(fmat_comb)), function(i) length(unique(fmat_comb[, i])) == nrow(fmat_comb), logical(1))
   idx_keep <- which(uniq_cols)
 
   if (length(idx_keep) > 1) {
@@ -155,9 +161,14 @@
     rord_fac <- rord_fac[match(fnam1, rack_order_$a)]
 
     exp_ <- vapply(fnam, function(x) x[idx_keep[length(idx_keep)]], FUN.VALUE = "")
-    if (any(is.na(as.numeric(exp_)))) {
+
+    if (!.is_numeric_trycatch(exp_)) {
       exp_ <- factor(exp_)
     }
+
+    # if (any(is.na(as.numeric(exp_)))) {
+    #   exp_ <- factor(exp_)
+    # }
     rr <- order(as.numeric(exp_) + rord_fac)
   } else {
     exp_ <- vapply(fnam, function(x) x[idx_keep], FUN.VALUE = "")
@@ -222,8 +233,9 @@
     out <- t(out)
   }
 
-  dtype_num <- vapply(out, function(x) !any(is.na(as.numeric(x))), logical(1))
   out <- as.data.frame(out, stringsAsFactors = FALSE)
+  dtype_num <- vapply(out, function(x) .is_numeric_trycatch(x), logical(1))
+  # dtype_num <- vapply(out, function(x) !any(is.na(as.numeric(x))), logical(1))
   out[, dtype_num] <- lapply(out[, dtype_num, drop = FALSE], as.numeric)
   rownames(out) <- f_list[[2]]
 

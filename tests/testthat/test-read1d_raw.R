@@ -7,7 +7,7 @@ test_that("read1d_raw correctly reads and processes FID data", {
     path = test_path,
     exp_type = list(exp = "PROF_PLASMA_NOESY"),
     apodisation = list(fun = "exponential", lb = 0.2),
-    zerofil = 1,
+    zerofil = 1L,
     return = "absorption",
     verbose = 0,
     n_max = 2,

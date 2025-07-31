@@ -103,7 +103,7 @@ read1d_raw <- function(path,
     if (length(apoFct) != length(fid_corF)) warning("Apodisation length mismatch.")
     spec_lb <- fid_corF * apoFct
 
-    if (!is.integer(zerofil)) stop("zerofil must be integer (e.g., 1, 2).")
+    if (zerofil != floor(zerofil)) stop("zerofil must be integer (e.g., 1, 2).")
     spec_zf <- .zerofil(fid = spec_lb, zf = zerofil, le_ori = length(fid))
     sp <- .cplxFft(spec_zf)[, 1]
 
@@ -119,7 +119,7 @@ read1d_raw <- function(path,
       sp_re <- -sp_re
     }
     sp_re <- .phaseTsp(sp_re, sp_im, ppm, seq(0, pi, by = 0.01), 0,
-                       idx_tsp = get.idx(c(-0.15, 0.15), ppm) - 1)[, 1]
+                       idx_tsp = get_idx(c(-0.15, 0.15), ppm) - 1)[, 1]
     if (abs(min(sp_re[seq_len(length(sp_re) %/% 3)])) > max(sp_re[seq_len(length(sp_re) %/% 3)])) {
       sp_re <- -sp_re
     }

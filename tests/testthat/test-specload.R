@@ -1,7 +1,7 @@
 test_that("specload returns ggplot object with PCA input", {
   data(covid)
   model <- pca(X)
-  g <- specload(model, shift = c(1, 2), an = list(meta$Group), pc = 1)
+  g <- specload(model, shift = c(1, 2), an = list(an$type), pc = 1)
   expect_s3_class(g, "ggplot")
 })
 
@@ -13,5 +13,5 @@ test_that("specload stops for wrong model input", {
 test_that("specload handles invalid ppm range", {
   data(covid)
   model <- pca(X)
-  expect_error(specload(model, shift = c(20, 21), an = list(meta$Group)), "Insufficient")
+  expect_error(specload(model, shift = c(20, 21), an = list(an$type)), "Insufficient")
 })

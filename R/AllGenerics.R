@@ -1466,3 +1466,45 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 }
 
 
+#' @title Check if input is numeric-like using tryCatch
+#' @description
+#' Tests whether a vector \code{x} can be safely coerced to numeric without
+#' producing \code{NA}s (excluding original \code{NA}s) or warnings.
+#'
+#' This function attempts to coerce the input to numeric and returns \code{TRUE}
+#' if all non-missing elements convert without coercion failure; otherwise \code{FALSE}.
+#' It catches warnings and errors during coercion and treats those as non-numeric.
+#' @param x A vector to test for numeric coercion.
+#' @return Logical \code{TRUE} if \code{x} is numeric-like, \code{FALSE} otherwise.
+#' @keywords internal
+#' @examples
+#' is_numeric_trycatch(c("1.23", "4.56", "7.89"))
+#' # TRUE
+#' is_numeric_trycatch(c("1.23", "abc", "7.89"))
+#' # FALSE
+#' is_numeric_trycatch(c(NA, "3.14"))
+#' # TRUE
+#' is_numeric_trycatch(c("1e-5", "2.5"))
+#' # TRUE
+#' is_numeric_trycatch(c("one", "two"))
+#' # FALSE
+#'
+#' @keywords internal
+.is_numeric_trycatch <- function(x) {
+  tryCatch({
+    num_x <- as.numeric(x)
+    # Check if coercion produced NA for non-NA inputs
+    if (any(is.na(num_x) & !is.na(x))) {
+      FALSE
+    } else {
+      TRUE
+    }
+  }, warning = function(w) {
+    # On warning -> not numeric
+    FALSE
+  }, error = function(e) {
+    # On error -> not numeric
+    FALSE
+  })
+}
+

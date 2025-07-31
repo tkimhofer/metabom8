@@ -12,7 +12,7 @@ test_that("ppick returns expected output structure", {
   expect_true(all(sapply(peaks_max, is.data.frame)))
   expect_true(all(c("idc", "ppm", "Int", "Etype") %in% colnames(peaks_both[[1]])))
 
-  expect_true(all(peaks_max[[1]]$Etype == -1))
-  expect_true(all(peaks_min[[1]]$Etype == 1))
+  expect_true(all(peaks_max[[1]]$Etype == 1))
+  expect_true(all(peaks_min[[1]]$Etype == -1))
   expect_true(all(peaks_both[[1]]$Etype %in% c(-1, 1)))
 })

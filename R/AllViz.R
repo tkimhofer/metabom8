@@ -182,12 +182,12 @@ specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7
   switch(as.character(length(an)),
          "1" = {
            g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID")),
-                                       alpha = alp, size = size)
+                                       alpha = alp, linewidth = size)
          },
          "2" = {
            col_var <- names(an)[2]
            g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID"), colour = col_var),
-                                       alpha = alp, size = size)
+                                       alpha = alp, linewidth = size)
            if (!is.factor(an[[2]]) && !is.character(an[[2]])) {
              g <- g + ggplot2::scale_colour_gradientn(colors = colorRamps::matlab.like2(100))
            }
@@ -196,7 +196,7 @@ specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7
            df[[names(an)[3]]] <- factor(df[[names(an)[3]]])
            g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID"),
                                                              colour = names(an)[2], linetype = names(an)[3]),
-                                       alpha = alp, size = size)
+                                       alpha = alp, linewidth = size)
            if (!is.factor(an[[2]]) && !is.character(an[[2]])) {
              g <- g + ggplot2::scale_colour_gradientn(colors = colorRamps::matlab.like2(100))
            }
@@ -295,9 +295,9 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1,
 
   g <- ggplot() +
     geom_line(data = df1, aes(x=!!sym("ppm"), y=!!sym("Intensity"), color = !!sym("load"), group = !!sym("ID")),
-              size = 0.8) +
+              linewidth = 0.8) +
     geom_line(data = df, aes(x=!!sym("variable"), y=!!sym("value"), group = !!sym("ID")),
-              alpha = alp, size = size) +
+              alpha = alp, linewidth = size) +
     facet_grid(facet ~ .) +
     scale_x_reverse(breaks = round(seq(shift[1], shift[2], length.out = 10), 3)) +
     scale_y_continuous(limits = limY) +

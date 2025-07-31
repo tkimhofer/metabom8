@@ -16,7 +16,7 @@
 #' Trygg J., Wold S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16(3):119–128.
 #' Hotelling H. (1931) The generalization of Student’s ratio. \emph{Annals of Mathematical Statistics}, 2:360–378.
 #'
-#' @importFrom ggplot2 ggplot aes_string geom_point geom_vline geom_hline geom_polygon labs theme_bw scale_colour_gradientn scale_x_continuous scale_y_continuous guides unit element_text theme
+#' @importFrom ggplot2 ggplot aes geom_point geom_vline geom_hline geom_polygon labs theme_bw scale_colour_gradientn scale_x_continuous scale_y_continuous guides unit element_text theme
 #' @importFrom rlang sym
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom colorRamps matlab.like2
@@ -73,7 +73,7 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ..
   }
 
   if (res$an_le == 3) {
-    g <- g + geom_text_repel(data = sc, aes_string(label = colnames(sc)[5]))
+    g <- g + geom_text_repel(data = sc, aes(label = !!sym(colnames(sc)[5])))
   }
 
   # Add QC points
@@ -108,9 +108,9 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ..
 
   # Legend positioning
   if (legend == "in") {
-    g <- g + theme(legend.position = c(1.01, 1.02), legend.justification = c(1, 1))
+    g <- g + theme(legend.position.inside = c(1.01, 1.02), legend.justification = c(1, 1))
   } else if (is.na(legend)) {
-    g <- g + theme(legend.position = "none")
+    g <- g + theme(legend.position.inside = "none")
   }
 
   return(g)
