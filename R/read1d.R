@@ -32,7 +32,7 @@ read1d <- function(path,
                    n_max = 1000,
                    filter = TRUE,
                    recursive = TRUE,
-                   verbose = TRUE) {
+                   verbose = 1) {
   path <- path.expand(path)
 
   if (as.character(match.call()[[1]]) == "read1d") {

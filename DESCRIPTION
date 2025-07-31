@@ -47,9 +47,6 @@ Suggests:
     DT,
     htmlTable,
     knitr,
-    nmrData,
     rmarkdown,
     testthat
-Remotes:
-  tkimhofer/nmrData
 VignetteBuilder: knitr

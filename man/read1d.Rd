@@ -11,7 +11,7 @@ read1d(
   n_max = 1000,
   filter = TRUE,
   recursive = TRUE,
-  verbose = TRUE
+  verbose = 1
 )
 
 read1d_proc(
@@ -20,7 +20,7 @@ read1d_proc(
   n_max = 1000,
   filter = TRUE,
   recursive = TRUE,
-  verbose = TRUE
+  verbose = 1
 )
 }
 \arguments{

@@ -37,7 +37,7 @@ This tutorial runs through a typical data import and pre-processing workflow for
 # remotes::install_github('tkimhofer/metabom8')
 
 # load packages
-library(nmrData)
+# library(nmrData)
 library(metabom8)
 ```
 

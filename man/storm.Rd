@@ -4,23 +4,16 @@
 \alias{storm}
 \title{Subset Optimisation by Reference Matching (STORM)}
 \usage{
-storm(
-  X = bbin[[1]],
-  ppm = bbin[[2]],
-  b = 30,
-  q = 0.05,
-  idx.refSpec = NULL,
-  shift = c(1.117, 1.25)
-)
+storm(X, ppm, b = 30, q = 0.05, idx.refSpec, shift)
 }
 \arguments{
 \item{X}{Numeric matrix or dataframe where each row represents a NMR spectrum and each column a chemical shift variable.}
 
 \item{ppm}{num array of chemical shift variables, matched to columns in X}
 
-\item{b}{int, boundary value provided as positive integer in chemical shift space}
+\item{b}{int, expected signal width / chemical shift window size, provided as positive integer in chemichal shift space}
 
-\item{q}{num, level of significance}
+\item{q}{num, p value threshold for including spectral variable in the updated reference}
 
 \item{idx.refSpec}{int, reference spectrum defined as row index for X}
 
@@ -70,8 +63,5 @@ Other NMR:
 \code{\link{read1d}()},
 \code{\link{read1d_raw}()},
 \code{\link{stocsy1d_metabom8-class}}
-}
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR}

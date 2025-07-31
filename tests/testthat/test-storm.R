@@ -1,38 +1,39 @@
 # tests/testthat/test-storm.R
 
 test_that("storm selects a valid subset of spectra", {
-  # Simulate test data
-  set.seed(123)
-  X <- matrix(rnorm(1000), nrow = 20)  # 20 spectra, 50 variables
-  ppm <- seq(0.5, 2, length.out = ncol(X))
+  set.seed(153)
 
-  # Inject a fake peak at 1.2 ppm for spectra 1:10
-  peak_idx <- which.min(abs(ppm - 1.2))
-  X[1:10, peak_idx + (-2:2)] <- X[1:10, peak_idx + (-2:2)] + 3
+  # Parameters
+  n_spectra <- 10    # number of spectra (rows)
+  n_vars <- 500      # number of variables (columns)
+  ppm <- seq(0.5, 2, length.out = n_vars)  # ppm scale
 
-  # Mock scale_rcpp and get_idx if not already defined
-  if (!exists("scale_rcpp")) {
-    scale_rcpp <- function(x, center = TRUE, scale = FALSE) {
-      if (center) x <- sweep(x, 2, colMeans(x), "-")
-      if (scale) x <- sweep(x, 2, apply(x, 2, sd), "/")
-      return(x)
-    }
+  # Baseline noise matrix
+  X <- matrix(rnorm(n_spectra * n_vars, 0, 0.3), nrow = n_spectra, ncol = n_vars)
+
+  # Gaussian peak parameters
+  peak_center <- 1.2
+  peak_width <- 0.05
+
+  # Peak amplitudes vary per spectrum (positive values only)
+  peak_amplitude <- rnorm(n_spectra, mean = 500, sd = 100)
+  peak_amplitude[peak_amplitude < 0] <- 0  # no negative amplitudes
+
+  # Gaussian peak shape (length n_vars)
+  gauss_shape <- exp(-0.5 * ((ppm - peak_center) / peak_width)^2)
+
+  # Inject peaks with different amplitudes per spectrum
+  for (i in 1:5) {
+    X[i, ] <- X[i, ] + peak_amplitude[i] * gauss_shape
   }
-
-  if (!exists("get_idx")) {
-    get_idx <- function(range, ppm) {
-      which(ppm >= min(range) & ppm <= max(range))
-    }
-  }
-
-  subset_idx <- storm(X, ppm, b = 3, q = 0.05, idx.refSpec = 1, shift = c(1.15, 1.25))
 
   matspec(X, ppm)
-  spec(X[1,], ppm)
-  dim(X)
+
+  subset_idx <- storm(X, ppm, b = 30, q = 0.05, idx.refSpec = 1, shift = c(1.15, 1.25))
+
   # Expectations
   expect_type(subset_idx, "integer")
-  expect_true(length(subset_idx) > 0)
   expect_true(all(subset_idx %in% seq_len(nrow(X))))
-  expect_true(1 %in% subset_idx)  # reference spectrum should be included
+  expect_true(1 %in% subset_idx)  # ref should be included
+  expect_equal(sort(subset_idx), 1:5) # acc to synth ds
 })

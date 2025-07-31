@@ -2,72 +2,72 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 .nipPcaCompRcpp <- function(X) {
-    .Call(`_metabom8_nip_pca_comp_rcpp`, X)
+    .Call('_metabom8_nip_pca_comp_rcpp', PACKAGE = 'metabom8', X)
 }
 
 .multiY_TwRcpp <- function(X, Y) {
-    .Call(`_metabom8_multiY_Tw_rcpp`, X, Y)
+    .Call('_metabom8_multiY_Tw_rcpp', PACKAGE = 'metabom8', X, Y)
 }
 
 .nipPlsCompRcpp <- function(X, Y) {
-    .Call(`_metabom8_nip_PLS_comp_rcpp`, X, Y)
+    .Call('_metabom8_nip_PLS_comp_rcpp', PACKAGE = 'metabom8', X, Y)
 }
 
 .orthoGramSchmidtRcpp <- function(u, v) {
-    .Call(`_metabom8_ortho_gram_schmidt_rcpp`, u, v)
+    .Call('_metabom8_ortho_gram_schmidt_rcpp', PACKAGE = 'metabom8', u, v)
 }
 
 .nipOplsRcpp <- function(X, Y) {
-    .Call(`_metabom8_nip_opls_rcpp`, X, Y)
+    .Call('_metabom8_nip_opls_rcpp', PACKAGE = 'metabom8', X, Y)
 }
 
 .tssRcpp <- function(X) {
-    .Call(`_metabom8_tss_rcpp`, X)
+    .Call('_metabom8_tss_rcpp', PACKAGE = 'metabom8', X)
 }
 
 .oplsPredRcpp <- function(opls_mod, pred_mod, Xnew) {
-    .Call(`_metabom8_opls_pred_rcpp`, opls_mod, pred_mod, Xnew)
+    .Call('_metabom8_opls_pred_rcpp', PACKAGE = 'metabom8', opls_mod, pred_mod, Xnew)
 }
 
 .plsPredRcpp <- function(pls_mod, Xnew) {
-    .Call(`_metabom8_pls_pred_rcpp`, pls_mod, Xnew)
+    .Call('_metabom8_pls_pred_rcpp', PACKAGE = 'metabom8', pls_mod, Xnew)
 }
 
 #' @keywords internal
 .calcPhi <- function(ph0, ph1, le) {
-    .Call(`_metabom8_calcPhi`, ph0, ph1, le)
+    .Call('_metabom8_calcPhi', PACKAGE = 'metabom8', ph0, ph1, le)
 }
 
 #' @keywords internal
 .phase1d <- function(sp_re, sp_im, ph0, ph1) {
-    .Call(`_metabom8_phase1d`, sp_re, sp_im, ph0, ph1)
+    .Call('_metabom8_phase1d', PACKAGE = 'metabom8', sp_re, sp_im, ph0, ph1)
 }
 
 #' @keywords internal
 .phaseTsp <- function(sp_re, sp_im, ppm, ph0, ph1, idx_tsp) {
-    .Call(`_metabom8_phaseTsp`, sp_re, sp_im, ppm, ph0, ph1, idx_tsp)
+    .Call('_metabom8_phaseTsp', PACKAGE = 'metabom8', sp_re, sp_im, ppm, ph0, ph1, idx_tsp)
 }
 
 #' @keywords internal
 .zerofil <- function(fid, zf, le_ori) {
-    .Call(`_metabom8_zerofil`, fid, zf, le_ori)
+    .Call('_metabom8_zerofil', PACKAGE = 'metabom8', fid, zf, le_ori)
 }
 
 #' @keywords internal
 .cplxFft <- function(fid) {
-    .Call(`_metabom8_cplxFft`, fid)
+    .Call('_metabom8_cplxFft', PACKAGE = 'metabom8', fid)
 }
 
 #' @keywords internal
 .defineChemShiftPpm <- function(sf_mhz, sw_hz, n_sp_re, dref, ref) {
-    .Call(`_metabom8_defineChemShiftPpm`, sf_mhz, sw_hz, n_sp_re, dref, ref)
+    .Call('_metabom8_defineChemShiftPpm', PACKAGE = 'metabom8', sf_mhz, sw_hz, n_sp_re, dref, ref)
 }
 
 #' @title Calibrate
 #' @return Shift-adjusted ppm vector
 #' @keywords internal
 .calibTsp <- function(spec, ppm) {
-    .Call(`_metabom8_calibTsp`, spec, ppm)
+    .Call('_metabom8_calibTsp', PACKAGE = 'metabom8', spec, ppm)
 }
 
 #' @title Column-wise standard deviation and mean for a matrix
@@ -75,7 +75,7 @@
 #' @keywords internal
 #' @return list: 1. sd (num vec), 2. mean (sd vec)
 .sdRcpp <- function(X) {
-    .Call(`_metabom8_sd_rcpp`, X)
+    .Call('_metabom8_sd_rcpp', PACKAGE = 'metabom8', X)
 }
 
 #' @title Column-wise matrix scaling
@@ -87,6 +87,6 @@
 #' @return list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
 #' @keywords internal
 .scaleMatRcpp <- function(X, idc, center, scale_type) {
-    .Call(`_metabom8_scale_rcpp`, X, idc, center, scale_type)
+    .Call('_metabom8_scale_rcpp', PACKAGE = 'metabom8', X, idc, center, scale_type)
 }
 

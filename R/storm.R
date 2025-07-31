@@ -1,14 +1,13 @@
 #' @title Subset Optimisation by Reference Matching (STORM)
 #' @param X  Numeric matrix or dataframe where each row represents a NMR spectrum and each column a chemical shift variable.
 #' @param ppm num array of chemical shift variables, matched to columns in X
-#' @param b int, boundary value provided as positive integer in chemical shift space
-#' @param q num, level of significance
+#' @param b int, expected signal width / chemical shift window size, provided as positive integer in chemichal shift space
+#' @param q num, p value threshold for including spectral variable in the updated reference
 #' @param idx.refSpec int, reference spectrum defined as row index for X
 #' @param shift num array, min and max chemical shift value defining narrow boundary of the target signal
 #' @details The STORM algorithm can be used to subselect NMR spectra based on a spectrocopic target signal to match multiplicity and chemical shift position. The output are row-indices for X, defining the optimal spectral subset that is typically used as input for STOCSY.
 #' @references Posma, Joram M., et al. "Subset optimization by reference matching (STORM): an optimized statistical approach for recovery of metabolic biomarker structural information from 1H NMR spectra of biofluids." Analytical chemistry 84.24 (2012): 10694-10701.
 #' @return Vector of X row indices that define the optimal subset.
-#' @author \email{torben.kimhofer@@murdoch.edu.au}
 #' @family NMR
 #' @seealso stocsy
 #' @importFrom stats cor cov pt
@@ -47,30 +46,42 @@ storm <- function(X, ppm, b=30, q=0.05, idx.refSpec, shift){
   # perform storm
   while(length(which(!subset %in% subset1))>0){
 
-    # correlation based subset selection
+    if (length(subset1) <= 1) {
+      message("STORM reduced to a single variable; stopping loop.")
+      break
+    }
+
     subset <- subset1
+
+    # 1. correlation based subset selection
     Xr <- X[subset, ref.idx]
     r <- cor(t(Xr), ref)
-    a <- -abs(r * sqrt((length(r)-2)/(1-r^2)))
-    pval <- 2*pt(a, (length(r)-2))
+    a <- abs(r * sqrt((length(r)-2)/(1-r^2))) # t-statistic
+    pval <- 2*pt(-a, (length(r)-2)) # p-val, 2-sided
 
-    subset1 <- subset[r>0]
-    pval <- pval[r>0]
-    index <- order(pval)
+    subset1 <- subset[r>0] # select idx subset that have positive corr
+    pval <- pval[r>0] # select pval subset that have positive corr
+
+    index <- order(pval) # re-order based on smallest p value, not taking the max n spectrum as suggested in paper
     subset1 <- subset1[index]
 
-    # Stocsy with driver=max intensity reference spectrum
+    # 2. Stocsy with driver=max intensity reference spectrum
     index <- which.max(ref)
-    r <- cor(X[subset1, (ref.idx[index]-(b+1)):(ref.idx[index]+(b+1))], X[subset1,ref.idx[index]])
-    co <- cov(X[subset1, (ref.idx[index]-(b+1)):(ref.idx[index]+(b+1))], X[subset1,ref.idx[index]])
+    driver = ref.idx[index]
+    ppm_win = (ref.idx[index]-(b+1)):(ref.idx[index]+(b+1))
+    r <- cor(X[subset1, ppm_win], X[subset1, driver])
+    co <- cov(X[subset1, ppm_win], X[subset1, driver])
 
-    # update reference spectrum and reference index
-    a <- -abs(r * sqrt((length(r)-2)/(1-r^2)))
-    pval <- 2*pt(a,(length(r)-2))
+    # 3. update reference spectrum and reference index
+    a <- -abs(r * sqrt((length(r)-2)/(1-r^2))) # t-statistic
+    pval <- 2*pt(a,(length(r)-2)) # p-val, 2-sided
 
-    ref <- co[pval<q & r>0]
-    ref.idx <- (ref.idx[index]-(b+1)):(ref.idx[index]+(b+1))
-    ref.idx <- ref.idx[pval<q & r>0]
+    iid = which(pval<q & r>0)
+    idx_max = which.max(co[iid])
+
+    ref.idx <- (ppm_win[iid[idx_max]] - (b+1)):(ppm_win[iid[idx_max]] + (b+1))
+    ref <- cov(X[subset1, ref.idx], X[subset1, driver])[,1]
+
   }
   return(subset1)
 }
