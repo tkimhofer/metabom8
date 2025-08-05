@@ -143,7 +143,9 @@
   }
 
   pars <- pars[idx_filt, ]
-  fnam <- strsplit(ifelse(!(is.na(f_list$f_1r) || is.null(f_list$f_1r)), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
+  # fnam <- strsplit(ifelse(!(any(is.na(f_list$f_1r)) || is.null(f_list$f_1r)), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
+  fnam <- strsplit(ifelse(!(is.na(f_list$f_1r)), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
+
   fmat_comb <- do.call(rbind, fnam)
   uniq_cols <- vapply(seq_len(ncol(fmat_comb)), function(i) length(unique(fmat_comb[, i])) == nrow(fmat_comb), logical(1))
   idx_keep <- which(uniq_cols)

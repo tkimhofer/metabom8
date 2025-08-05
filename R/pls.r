@@ -66,13 +66,15 @@ pls <- function(X, Y,
   tssy <- .tssRcpp(YcsTot) / ncol(YcsTot)
 
   cv$cv_sets <- .cvSetsMethod(Y = y_check[[1]], type = type, method = cv$method, k = cv$k, split = cv$split)
-  cv$k <- length(cv$cv_sets)
+  # cv$k <- length(cv$cv_sets)
 
   r2_comp <- r2x_comp <- q2_comp <- aucs_tr <- aucs_te <- array()
   nc <- 1
   overfitted <- FALSE
+  full_mod = list()
 
   while (overfitted == FALSE) {
+
     if (nc == 1) {
       tt <- .plsComponentCv(X, Y = y_check[[1]], cv$cv_sets, nc, mod.cv = NULL)
     } else {
@@ -81,88 +83,115 @@ pls <- function(X, Y,
 
     # preds_test <- .extMeanCvFeat_pls(cv_obj = tt, feat = "y_pred_test", cv_type = cv$method, model_type = type)
     # preds_train <- .extMeanCvFeat_pls(tt, feat = "y_pred_train", cv_type = cv$method, model_type = type)
-    #
-    preds_test <- .extMeanCvFeat(cv_obj = tt, feat = "y_pred_test", cv_type = cv$method, model_type = type)
-    preds_train <- .extMeanCvFeat(tt, feat = "y_pred_train", cv_type = cv$method, model_type = type)
+    # in-sample predictions
+    preds_test <- .extMeanCvFeat_alt(cv_obj = tt, feat = "y_pred_test", cv_type = cv$method, model_type = type)
+    # out-of-sample predictions
+    preds_train <- .extMeanCvFeat_alt(tt, feat = "y_pred_train", cv_type = cv$method, model_type = type)
+
+    if(length(preds_test)!=length(y_check[[1]])){
+      error('outcome of cv routine: length of Y-predictions of in-sample and/or out-of-sample set is/are uneuql to length of Y')
+    }
+
+    if(length(preds_test)!=length(preds_train)){
+      error('outcome of cv routine: in-sample and out-of-sample sets have uneuql length of Y-predictions')
+    }
 
     switch(strsplit(cv$method, '_')[[1]][1],
            'MC' = {
              if (grepl('DA', type)) {
                if (grepl('mY', type)) {
-                 pred_mean <- preds_test[1, , ]
+                 pred_mean <- preds_test
                  colnames(pred_mean) <- colnames(y_check[[1]])
-                 aucs_te[nc] <- multiclass.roc(response = factor(Y), predictor = pred_mean, quiet=TRUE)$auc
+                 aucs_te[nc] <- multiclass.roc(response = Y, predictor = pred_mean, quiet=TRUE)$auc
 
-                 pred_tr_mean <- preds_train[1, , ]
+                 pred_tr_mean <- preds_train
                  colnames(pred_tr_mean) <- colnames(y_check[[1]])
-                 aucs_tr[nc] <- multiclass.roc(response = factor(Y), predictor = pred_tr_mean, quiet=TRUE)$auc
+                 aucs_tr[nc] <- multiclass.roc(response = Y, predictor = pred_tr_mean, quiet=TRUE)$auc
                } else {
-                 aucs_te[nc] <- roc(response = Y, predictor = preds_test[1, ], quiet=TRUE)$auc
-                 aucs_tr[nc] <- roc(response = Y, predictor = preds_train[1, ], quiet=TRUE)$auc
+                 aucs_te[nc] <- roc(response = Y, predictor = preds_test, quiet=TRUE)$auc
+                 aucs_tr[nc] <- roc(response = Y, predictor = preds_train, quiet=TRUE)$auc
                }
              } else {
-               r2_comp[nc] <- .r2(YcsTot, preds_train[1, ], NULL)
-               q2_comp[nc] <- .r2(YcsTot, preds_test[1, ], tssy)
+               r2_comp[nc] <- .r2(YcsTot, preds_train, NULL)
+               q2_comp[nc] <- .r2(YcsTot, preds_test, tssy)
              }
            },
            'k-fold' = {
              if (grepl('DA', type)) {
                if (grepl('mY', type)) {
                  colnames(preds_test) <- colnames(y_check[[1]])
-                 aucs_te[nc] <- multiclass.roc(response = Y, predictor = apply(preds_test, 2, as.numeric), quiet=TRUE)$auc
+                 aucs_te[nc] <- multiclass.roc(response = Y, predictor = preds_test, quiet=TRUE)$auc
                  preds_te <- preds_train
                  colnames(preds_te) <- colnames(y_check[[1]])
                  aucs_tr[nc] <- multiclass.roc(response = Y, predictor = preds_te, quiet=TRUE)$auc
                } else {
                  aucs_te[nc] <- roc(response = Y, predictor = preds_test[, 1], quiet=TRUE)$auc
-                 aucs_tr[nc] <- roc(response = Y, predictor = preds_train[1, ], quiet=TRUE)$auc
+                 aucs_tr[nc] <- roc(response = Y, predictor = preds_train, quiet=TRUE)$auc
                }
              } else {
-               r2_comp[nc] <- .r2(YcsTot, preds_train[1, ], NULL)
-               q2_comp[nc] <- .r2(YcsTot, preds_test[, 1], tssy)
+               r2_comp[nc] <- .r2(YcsTot, preds_train, NULL)
+               q2_comp[nc] <- .r2(YcsTot, preds_test, tssy)
              }
            }
     )
 
-    # if (nc==1){ X_pred = XcsTot}
-    #
-    #
-    # pred_comp <- .nipPlsCompRcpp(X = opls_filt$X_res, Y = YcsTot)
-    # r2x_comp[nc - 1] <- .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, NULL)
 
     overfitted <- .evalFit(type, q2_comp, aucs_te, maxPCo)
-    nc <- nc + 1
+
+    if (nc == 1){
+      Xinp <- XcsTot
+      full_mod[[1]] = .nipPlsCompRcpp(X = Xinp, Y = YcsTot)
+      r2xc <- .r2(Xinp, (full_mod[[1]]$t_x %*% full_mod[[1]]$p_x), NULL)
+    }else{
+      c_idx = length(full_mod)+1
+      Xinp <- full_mod[[length(full_mod)]]$x_res
+      full_mod[[c_idx]] = .nipPlsCompRcpp(X = Xinp, Y = YcsTot)
+      r2xc <- .r2(XcsTot, (full_mod[[c_idx]]$t_x %*% full_mod[[c_idx]]$p_x), NULL)
+    }
+    r2x_comp[nc] <- r2xc
+
+    if (!overfitted) {nc <- nc + 1}
   }
 
-  message(sprintf("A PLS-%s model with %d components was fitted.", type, nc - 1))
-  mod_summary <- .orthModelCompSummary(type = type, r2x_comp = c(r2x_comp, NA), r2_comp = r2_comp, q2_comp = q2_comp, aucs_te = aucs_te, aucs_tr = aucs_tr, cv = cv)
-  if (plotting) plot(mod_summary[[2]] + labs(x = 'Predictive Components'))
+  message(sprintf("A PLS-%s model with %d components was fitted.", type, nc))
+  full_mod = full_mod[1:nc]
 
-  final_model <- .nipPlsCompRcpp(X = XcsTot, Y = YcsTot)
-  Xpred <- final_model$t_x %*% final_model$p_x
+
+  mod_summary <- .plsModelCompSummary(type = type, r2x_comp = cumsum(r2x_comp), r2_comp = r2_comp, q2_comp = q2_comp, aucs_te = aucs_te, aucs_tr = aucs_tr, cv = cv)
+  if (plotting) plot(mod_summary[[2]])# + labs(x = 'Component(s)'))
+
+  # final_model <- .nipPlsCompRcpp(X = XcsTot, Y = YcsTot)
+  t_x = do.call(cbind, lapply(full_mod, function(x){x$t_x}))
+  p_x = do.call(rbind, lapply(full_mod, function(x){x$p_x}))
+  w_x = do.call(rbind, lapply(full_mod, function(x){x$w_x}))
+  b = do.call(rbind, lapply(full_mod, function(x){x$b}))
+  w_y = do.call(rbind, lapply(full_mod, function(x){x$w_y}))
+
+  Xpred <- t_x %*% p_x
   E <- XcsTot - Xpred
-  Y_res <- YcsTot - (final_model$t_y %*% t(final_model$p_y))
+  Y_res <- YcsTot - (full_mod[[length(full_mod)]]$t_y %*% t(full_mod[[length(full_mod)]]$p_y))
 
   pars <- list(
     center = center,
     scale = scale,
     nPredC = 1,
-    nOrthC = nc - 1,
+    nOrthC = nc,
     maxPCo = maxPCo,
     cv = cv,
     tssx = tssx,
-    tssy = tssy
+    tssy = tssy,
+    r2x_comp = r2x_comp
   )
 
   new("PLS_metabom8",
       type = type,
-      t_pred = final_model$t_x,
-      p_pred = final_model$p_x,
-      w_pred = final_model$w_x,
-      betas_pred = drop(final_model$b),
-      Qpc = final_model$w_y,
-      t_pred_cv = final_model$t_x,
-      nPC = nc - 1,
+      t_pred = t_x,
+      p_pred = p_x,
+      w_pred = w_x,
+      betas_pred = drop(b),
+      Qpc = w_y,
+      t_pred_cv = t_x,
+      nPC = nc,
       summary = mod_summary[[1]],
       Y_res = Y_res,
       X_res = E,

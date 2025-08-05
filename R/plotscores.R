@@ -73,7 +73,9 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ..
   }
 
   if (res$an_le == 3) {
-    g <- g + geom_text_repel(data = sc, aes(label = !!sym(colnames(sc)[5])))
+    g <- g + geom_text_repel(data = sc, aes(x = !!sym(colnames(sc)[1]),
+                                            y = !!sym(colnames(sc)[2]),
+                                            label = !!sym(colnames(sc)[5])))
   }
 
   # Add QC points
@@ -100,6 +102,16 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ..
                   labs(title = paste0("OPLS-", obj@type, ": 1+", obj@nPC - 1, " comp.",
                                       " (R2X=", round(obj@summary$R2X[obj@nPC - 1], 2),
                                       if (!is.null(obj@summary$AUROC[obj@nPC - 1])) paste0(", AUROC=", round(obj@summary$AUROC[obj@nPC - 1], 2)) else "",
+                                      ")")) +
+                  theme(plot.title = element_text(size = 10))
+              },
+              "PLS_metabom8" = {
+                # axis_type <- if (etype == "t") "t" else ""
+                g + scale_x_continuous(name = paste0("PC ", pc[1], " (", round(obj@Parameters$r2x_comp[pc[1]] * 100, 1), "%)")) +
+                  scale_y_continuous(name = paste0("PC ", pc[2], " (", round(obj@Parameters$r2x_comp[pc[2]] * 100, 1), "%)")) +
+                  labs(title = paste0("PLS-", obj@type, ": ", obj@nPC, " comp.",
+                                      " (R2X=", round(obj@summary$R2X[obj@nPC], 2),
+                                      if (!is.null(obj@summary$AUROC[obj@nPC])) paste0(", AUROC=", round(obj@summary$AUROC[obj@nPC], 2)) else "",
                                       ")")) +
                   theme(plot.title = element_text(size = 10))
               },

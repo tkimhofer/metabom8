@@ -676,18 +676,21 @@
       f_mat <- abind::abind(inter, along = 3)
       fout <- apply(f_mat, c(1, 2), function(x) {
         valid <- which(!is.na(x))
-        coverage <- length(valid) / length(x)
+        # coverage <- length(valid) / length(x)
         mean_val <- sum(x, na.rm = TRUE) / length(valid)
-        sd_val <- stats::sd(x, na.rm = TRUE)
-        c(mean = mean_val, sd = sd_val, coverage = coverage)
+        # sd_val <- stats::sd(x, na.rm = TRUE)
+        # c(mean = mean_val, sd = sd_val, coverage = coverage)
+        return(mean_val)
       })
     } else {
       f_mat <- do.call(cbind, inter)
       fout <- apply(f_mat, 1, function(x) {
         idx <- which(!is.na(x))
-        c(mean = mean(x[idx], na.rm = TRUE),
-          sd = stats::sd(x[idx], na.rm = TRUE),
-          coverage = length(idx) / length(x))
+        # c(mean = mean(x[idx], na.rm = TRUE),
+        #   sd = stats::sd(x[idx], na.rm = TRUE),
+        #   coverage = length(idx) / length(x))
+        mean = mean(x[idx], na.rm = TRUE)
+        return(mean)
       })
     }
   } else {
@@ -696,13 +699,61 @@
       f_mat <- abind::abind(inter, along = 3)
       fout <- apply(f_mat, c(1, 2), function(x) {
         idx <- which(!is.na(x))
-        x[idx]
+        return(x[idx])
       })
     }
   }
 
+  return(as.vector(fout))
+}
+
+.extMeanCvFeat_alt <- function(cv_obj, feat = "t_xp", cv_type, model_type) {
+  if (!feat %in% names(cv_obj[[1]])) stop("Feature name not in feature list.")
+
+  inter <- lapply(cv_obj, `[[`, feat)
+
+  ### accountinf for cv-type
+
+  if (grepl("MC", cv_type) || (grepl("k-fold", cv_type) && grepl("train", feat))) {
+    # Cross-validated data: summarize mean, SD, and coverage
+    if (grepl("mY", model_type)) {
+      # accounting for Y dimensions
+      cbind(inter)
+      f_mat <- abind::abind(inter, along = 3)
+      fout <- apply(f_mat, c(1, 2), function(x) {
+        valid <- which(!is.na(x))
+        # coverage <- length(valid) / length(x)
+        mean_val <- sum(x, na.rm = TRUE) / length(valid)
+        # sd_val <- stats::sd(x, na.rm = TRUE)
+        # c(mean = mean_val, sd = sd_val, coverage = coverage)
+        return(mean_val)
+      })
+    } else {
+      f_mat <- do.call(cbind, inter)
+      fout <- apply(f_mat, 1, function(x) {
+        idx <- which(!is.na(x))
+        # c(mean = mean(x[idx], na.rm = TRUE),
+        #   sd = stats::sd(x[idx], na.rm = TRUE),
+        #   coverage = length(idx) / length(x))
+        mean = mean(x[idx], na.rm = TRUE)
+        return(as.vector(mean))
+      })
+    }
+  } else {
+    # No summary required, return raw CV output
+    if (grepl("mY", model_type) || !grepl("mY", model_type)) {
+      f_mat <- abind::abind(inter, along = 3)
+      fout <- apply(f_mat, c(1, 2), function(x) {
+        idx <- which(!is.na(x))
+        return(as.vector(x[idx]))
+      })
+    }
+  }
+
+
   return(fout)
 }
+
 
 
 #' @title R² and Q² Calculation for OPLS Models
@@ -805,6 +856,12 @@
   idx <- which(mm$value < (-0.015) & mm$variable == 'Q2')
   mm$value[idx] <- -0.01
 
+  if(grepl('k-fold', cv$method)){
+    cv_text = paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ')')
+  } else{
+    cv_text = paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ', ratio test/training set=', round(cv$split, 2), ')')
+  }
+
   g <- ggplot2::ggplot(mm, ggplot2::aes(x = !!sym("PC"), y = !!sym("value"), fill = !!sym("variable"))) +
     ggplot2::geom_bar(stat = "identity", position = "dodge", colour = NA, ggplot2::aes(alpha = !!sym("alph"))) +
     ggplot2::scale_fill_manual(
@@ -823,11 +880,119 @@
       x = "Predictive + Orthogonal Component(s)",
       y = "",
       title = paste("O-PLS-", type, "  - Component Summary", sep = ""),
-      caption = paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ', ratio test/training set=', round(cv$split, 2), ')')
+      caption = cv_text
     ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       legend.text = element_text(0),
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(color = "black", linewidth = 0.15),
+      panel.grid.minor = element_blank(),
+      panel.border = element_blank(),
+      axis.line.x = element_line(color = "black", linewidth = 0.55),
+      axis.line.y = element_blank(),
+      axis.ticks = element_blank(),
+      legend.key = element_rect(colour = "white"),
+      text = element_text(family = "Helvetica")
+    )
+
+  # Set y-axis limits
+  if (any(mm$value < 0, na.rm = TRUE)) {
+    g <- g + ggplot2::scale_y_continuous(limits = c(-0.015, 1), breaks = breaks_pretty(), expand = c(0, 0))
+  } else {
+    g <- g + ggplot2::scale_y_continuous(limits = c(0, 1), breaks = breaks_pretty(), expand = c(0, 0))
+  }
+
+  return(list(model_summary, g))
+}
+
+#' @title Summary of PLS Model Components
+#'
+#' @description
+#' Generates a tabular and graphical summary of PLS model components.
+#' Includes explained variance in X Space (R²X), predictive accuracy (Q²Y), and AUROC metrics, depending on model type.
+#'
+#' For discriminant models (DA), AUROC values are included. For regression models (R), R²Y and Q² are reported.
+#'
+#' @param type Character. Model type: either "DA" (discriminant analysis) or "R" (regression). May include prefix "-mY" for multi-response models.
+#' @param r2x_comp Numeric vector. Proportion of X variance explained by each component.
+#' @param r2_comp Numeric vector. Proportion of Y variance explained by each component.
+#' @param q2_comp Numeric vector. Cross-validated predictive accuracy per component (Q²).
+#' @param aucs_tr Numeric vector. in-sample prediction accuracy for categorical Y ("DA").
+#' @param aucs_te Numeric vector. out-of-sample prediction accuracy for categorical Y ("DA").
+#' @param cv List. Cross-validation parameters.
+#'
+#' @return A list with:
+#' \itemize{
+#'   \item A \code{data.frame} summarizing the metrics per component.
+#'   \item A \code{ggplot2} object visualizing the component summary.
+#' }
+#'
+#' @importFrom scales breaks_pretty
+#' @importFrom ggplot2 ggplot geom_bar aes_string scale_fill_manual scale_alpha labs theme_bw theme
+#' @importFrom ggplot2 element_line element_blank element_text element_rect
+#' @importFrom reshape2 melt
+#' @keywords internal
+.plsModelCompSummary <- function(type, r2x_comp, r2_comp, q2_comp, aucs_tr, aucs_te, cv) {
+  type <- strsplit(type, '-')[[1]][1]
+
+  # Construct summary table
+  model_summary <- switch(type,
+                          'DA' = data.frame(
+                            PC_pred = seq_along(r2x_comp),
+                            PC_orth = 0,
+                            R2X = round(r2x_comp, 2),
+                            AUROC = round(aucs_tr, 2),
+                            AUROC_CV = round(aucs_te, 2)
+                          ),
+                          'R' = data.frame(
+                            PC_pred = 0,
+                            PC_orth = seq_along(q2_comp),
+                            R2X = round(r2x_comp, 2),
+                            R2Y = round(r2_comp, 2),
+                            Q2 = round(q2_comp, 2)
+                          )
+  )
+
+  # Reshape for plotting
+  mm <- reshape2::melt(model_summary, id.vars = c("PC_orth", "PC_pred"))
+  mm$PC <- paste0('PC', mm$PC_pred)
+  mm$alph <- 1
+  mm$alph[mm$PC_orth == max(mm$PC_orth)] <- 0.7
+
+  # Avoid very negative bars pulling down y-axis
+  idx <- which(mm$value < (-0.015) & mm$variable == 'Q2')
+  mm$value[idx] <- -0.01
+
+  if(grepl('k-fold', cv$method)){
+    cv_text = paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ')')
+  } else{
+    cv_text = paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ', ratio test/training set=', round(cv$split, 2), ')')
+  }
+
+  g <- ggplot2::ggplot(mm, ggplot2::aes(x = !!sym("PC"), y = !!sym("value"), fill = !!sym("variable"))) +
+    ggplot2::geom_bar(stat = "identity", position = "dodge", colour = NA, ggplot2::aes(alpha = !!sym("alph"))) +
+    ggplot2::scale_fill_manual(
+      values = c(R2X = "lightgreen", R2Y = "lightblue", Q2 = "red", AUROC = "black", AUROC_CV = "red"),
+      labels = c(
+        R2X = expression(R^2 * X),
+        R2Y = expression(R^2 * Y),
+        Q2 = expression(Q^2),
+        AUROC = expression(AUROC),
+        AUROC_CV = expression(AUROC[cv])
+      ),
+      name = ""
+    ) +
+    ggplot2::scale_alpha(guide = "none", limits = c(0, 1)) +
+    ggplot2::labs(
+      x = "Component(s)",
+      y = "",
+      title = paste("PLS-", type, "  - Component Summary", sep = ""),
+      caption =  cv_text
+    ) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      legend.text = element_text(),
       panel.grid.major.x = element_blank(),
       panel.grid.major.y = element_line(color = "black", linewidth = 0.15),
       panel.grid.minor = element_blank(),
@@ -1144,6 +1309,8 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
     for (i in seq_along(pc)) {
       com[[i]] <- if (cls == "PCA_metabom8") {
         obj@p[, pc[i]]
+      } else if (cls == "PLS_metabom8") {
+        obj@p_pred[ pc[i],]
       } else {
         if (grepl("o", pc[i])) obj@p_orth[pc1[i], ] else obj@p_pred[1, ]
       }
@@ -1152,15 +1319,19 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
     for (i in seq_along(pc)) {
       com[[i]] <- if (cls == "PCA_metabom8") {
         obj@t[, pc[i]]
+      } else if (cls == "PLS_metabom8") {
+        obj@t_pred[, pc[i]]
       } else {
         if (grepl("o", pc[i])) obj@t_orth[, pc1[i]] else obj@t_pred[, 1]
       }
     }
   } else if (type == "t_cv") {
     if (cls == "PCA_metabom8") stop("t_cv not defined for PCA objects.")
+    if (cls == "PLS_metabom8") stop("t_cv not implemented for PLS objects.")
     for (i in seq_along(pc)) {
       com[[i]] <- if (grepl("o", pc[i])) obj@t_orth_cv[, pc1[i]] else obj@t_pred_cv[, 1]
     }
+
   }
 
   melted <- as.data.frame(com)

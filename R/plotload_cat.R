@@ -55,13 +55,13 @@
 #' plotload_cat(mod)
 plotload_cat <- function(obj, pc, an, title = NULL, legend = TRUE, ...) {
 
-  if (!inherits(obj, c("PCA_metabom8", "OPLS_metabom8"))) {
-    stop("`obj` must be of class 'PCA_metabom8' or 'OPLS_metabom8'.")
+  if (!inherits(obj, c("PCA_metabom8",'PLS_metabom8', "OPLS_metabom8"))) {
+    stop("`obj` must be of class 'PCA_metabom8', 'PLS_metabom8' or 'OPLS_metabom8'.")
   }
 
   # Default PC
   if (missing(pc)) {
-    pc <- if (inherits(obj, "PCA_metabom8")) c(1, 2) else c("1", "o1")
+    pc <- if (inherits(obj, "PCA_metabom8") || inherits(obj, "PLS_metabom8")) c(1, 2) else c("1", "o1")
   }
 
   # Default annotations

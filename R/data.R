@@ -1,6 +1,3 @@
-
-
-
 #' Bariatric surgery metabolic profiling data
 #'
 #' Metabolic profiling NMR dataset of murine urine samples collected before and after bariatric surgery (Roux-en-Y gastric bypass).
@@ -23,27 +20,13 @@
 #' @keywords datasets
 "bariatric"
 
+
 #' COVID-19 blood plasma proton NMR spectra (processed)
 #'
 #' 1D NMR spectra from SARS-CoV-2 positive patients (n=10) and healthy controls (n=13), collected in Perth, Western Australia.
 #' Spectra were pre-processed including excision of residual water and signal-free areas, baseline correction, and normalization to account for different line widths.
 #' FIDs were acquired using a standard 90˚ RF pulse sequence on a 600 MHz Avance II spectrometer using Bruker IVDr methods for blood plasma (300 K, 32 scans).
-#' The spectrometer was equipped with a double resonance broadband probe (BBI) and a refrigerated autosampler operated at 4˚C.
-#' Further details can be found in Kimhofer et al., *Integrative Modelling of Quantitative Plasma Lipoprotein, Metabolic and Amino Acid Data Reveals a Multi-organ Pathological Signature of SARS-CoV-2 Infection*, Journal of Proteome Research (Aug 2020).
-#'
-#' @format A data frame with 11 rows and 131,072 columns:
-#' \describe{
-#'   \item{rows}{Spectra (samples)}
-#'   \item{columns}{Chemical shift variables in parts per million (ppm)}
-#' }
-#' @source Australian National Phenome Centre (ANPC) @ Murdoch University \url{https://www.murdoch.edu.au/research/institutes-centres/health-futures-institute/australian-national-phenome-centre/covid-19-critical-research-programme}
-#' @usage data(covid)
-#' @examples
-#' data(covid)
-#' head(covid)
-#' @docType data
-#' @keywords datasets
-"covid"
+#' The spectrometer was equipped with a double resonance broadband probe (BBI) and a refrigerated autosampler o
 
 
 #' COVID-19 blood plasma proton NMR spectra (raw)

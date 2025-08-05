@@ -17,6 +17,7 @@
 #'
 #' @importFrom graphics plot points
 #' @importFrom plotly plot_ly add_trace layout
+#' @importFrom magrittr %>%
 #' @examples
 #' data(covid)
 #' p <- spec(X[1, ], ppm, shift = c(0, 11), interactive = TRUE)
@@ -168,15 +169,7 @@ specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7
 
   g <- ggplot2::ggplot() +
     ggplot2::scale_x_reverse(name = expression(delta ^ 1 * H ~ "(ppm)"),
-                             breaks = seq(min(shift), max(shift), length.out = 5)) +
-    ggplot2::scale_y_continuous(breaks = scales::breaks_pretty(), name = "Intensity") +
-    ggplot2::ggtitle(title) +
-    ggplot2::facet_grid(stats::as.formula(paste0(names(an)[1], " ~ .")), ...) +
-    ggplot2::theme_bw() +
-    ggplot2::theme(
-      axis.text = element_text(colour = "black"),
-      axis.text.x = element_text(angle = 45, hjust = 1)
-    )
+                             breaks = seq(min(shift), max(shift), length.out = 5))
 
   # Add traces based on number of grouping variables
   switch(as.character(length(an)),
@@ -186,7 +179,7 @@ specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7
          },
          "2" = {
            col_var <- names(an)[2]
-           g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID"), colour = col_var),
+           g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID"), colour = !!sym(col_var)),
                                        alpha = alp, linewidth = size)
            if (!is.factor(an[[2]]) && !is.character(an[[2]])) {
              g <- g + ggplot2::scale_colour_gradientn(colors = colorRamps::matlab.like2(100))
@@ -195,12 +188,22 @@ specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7
          "3" = {
            df[[names(an)[3]]] <- factor(df[[names(an)[3]]])
            g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID"),
-                                                             colour = names(an)[2], linetype = names(an)[3]),
+                                                             colour = !!sym(names(an)[2]), linetype = !!sym(names(an)[3])),
                                        alpha = alp, linewidth = size)
            if (!is.factor(an[[2]]) && !is.character(an[[2]])) {
              g <- g + ggplot2::scale_colour_gradientn(colors = colorRamps::matlab.like2(100))
            }
          })
+
+  g <- g +
+    ggplot2::scale_y_continuous(breaks = scales::breaks_pretty(), name = "Intensity") +
+    ggplot2::ggtitle(title) +
+    ggplot2::facet_grid(stats::as.formula(paste0(names(an)[1], " ~ .")), ...) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      axis.text = element_text(colour = "black"),
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    )
 
   return(g)
 }
@@ -360,8 +363,8 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1,
 plotload <- function(mod, shift = c(0, 10), pc = 1,
                      type = "Backscaled", title = NULL, r_scale = FALSE) {
 
-  if (!inherits(mod, c("OPLS_metabom8", "PCA_metabom8"))) {
-    stop("Input must be a metabom8 PCA or OPLS model.")
+  if (!inherits(mod, c("OPLS_metabom8", "PLS_metabom8", "PCA_metabom8"))) {
+    stop("Input must be a metabom8 PCA, PLS or OPLS model.")
   }
 
   type <- if (grepl("st|recon", type, ignore.case = TRUE)) {
