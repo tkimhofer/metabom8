@@ -19,6 +19,7 @@
 #' X <- covid_raw$X
 #' ppm <- covid_raw$ppm
 #' X_bc <- bcor(X[1, ])
+#'
 #' spec(X[1, ], ppm, shift = c(3, 4), interactive = FALSE)
 #' spec(X_bc[1, ], ppm, shift = c(3, 4), col='red', add = TRUE, interactive = FALSE)
 #'
