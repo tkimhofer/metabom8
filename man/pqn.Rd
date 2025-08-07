@@ -32,6 +32,8 @@ If binning is applied, the function uses a reference spectrum computed on binned
 }
 \examples{
 data(covid)
+X <- covid$X
+
 Xn <- pqn(X, add_DilF = "dilutionFactor")
 plot(dilutionFactor)
 

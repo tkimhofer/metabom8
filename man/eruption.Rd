@@ -41,7 +41,7 @@ X[grp == "B", 1:5] <- X[grp == "B", 1:5] + 2
 X[grp == "B", 5] <- X[grp == "B", 4] * 0.9 + rnorm(5, 0, 0.1)
 colnames(X) <- paste0("metabolite", 1:20)
 
-mod = opls(X,group)
+mod = opls(X,grp)
 er = eruption(mod)
 head(er[[1]]); plot(er[[2]])
 }

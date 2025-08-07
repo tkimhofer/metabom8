@@ -49,9 +49,11 @@ It supports two types of loadings visualization: statistical reconstruction or b
 }
 }
 \examples{
-data(covid)
+X <- covid$X
+an <- covid$an
+
 model <- pca(X)
-specload(model, shift = c(1, 2), an = list(meta$Group), pc = 1, alp = 0.8)
+specload(model, shift = c(1, 2), an = list(an$type), pc = 1, alp = 0.8)
 
 }
 \seealso{

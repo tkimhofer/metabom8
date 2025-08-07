@@ -37,7 +37,8 @@ The chemical shift axis direction is auto-detected. If a spectrum does not have 
 \examples{
 # Simulated data example
 ppm <- seq(-0.2, 0.2, length.out = 1000)
-X <- matrix(dnorm(ppm, mean = 0, sd = 0.02), nrow = 10, byrow = TRUE)
+spec <- dnorm(ppm, mean = 0, sd = 0.02)
+X <- matrix(rep(spec, each = 10), nrow = 10, byrow = TRUE)
 sf <- 600  # MHz
 fwhm_vals <- lw(X, ppm, shift = c(-0.1, 0.1), sf = sf)
 hist(fwhm_vals, main = "Line Width (Hz)", xlab = "FWHM [Hz]")

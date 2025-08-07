@@ -22,8 +22,4 @@ Generates a list of training set indices for Monte Carlo Cross-Validation.
 \details{
 For each fold, a random sample (with replacement) of size \code{floor(nrow(Y) * split)} is drawn.
 }
-\examples{
-Y <- matrix(rnorm(100), ncol = 1)
-sets <- .mc(k = 5, Y = Y, split = 0.7)
-}
 \keyword{internal}

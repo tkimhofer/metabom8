@@ -27,12 +27,14 @@ DModX is calculated as the scaled root-mean-squared residual. An approximate upp
 }
 \examples{
 data(covid)
+X <- covid$X
+an <- covid$an
 model <- opls(X, Y = an$type)
 dmx <- dmodx(model)
 
 }
 \references{
-Bylesjö, M. et al. (2006). \emph{J. Chemometrics}, 20, 341–351.
+Bylesjo, M. et al. (2006). \emph{J. Chemometrics}, 20, 341–351.
 Wold, S. (1976). \emph{Pattern Recognition}, 8, 127–139.
 }
 \seealso{

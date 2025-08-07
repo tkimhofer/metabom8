@@ -31,6 +31,9 @@
 #'
 #' @examples
 #' data("covid")
+#' X <- covid$X
+#' an <- covid$an
+#'
 #' mod <- opls(X, an$type)
 #' summary(mod)
 opls <- function(X, Y, center = TRUE, scale = "UV",

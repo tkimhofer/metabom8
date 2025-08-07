@@ -27,9 +27,4 @@ Generates class/group-balanced training set indices for each MCCV round.
 \details{
 Each round samples a class-balanced subset with replacement. Useful for high-variance, imbalanced-class modeling.
 }
-\examples{
-Y <- matrix(sample(letters[1:3], 100, replace = TRUE), ncol = 1)
-stratified <- list("DA", Y, NULL)
-sets <- .mcBalanced(k = 5, split = 0.7, stratified = stratified)
-}
 \keyword{internal}

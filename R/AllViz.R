@@ -75,6 +75,8 @@ spec <- function(x, ppm, shift = c(0, 11), interactive = TRUE, name = "A", mode 
 #' @importFrom grDevices colorRampPalette
 #' @examples
 #' data(covid)
+#' X <- covid$X
+#' ppm <- covid$ppm
 #' matspec(X[1:3,], ppm, interactive = TRUE)
 #' matspec(X[1:3,], ppm, interactive = FALSE)
 #' @seealso \code{\link{spec}}, \code{\link{plot}}
@@ -140,6 +142,9 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...) {
 #'
 #' @examples
 #' data(covid)
+#' X <- covid$X
+#' ppm <- covid$ppm
+#' an <- covid$an
 #' specOverlay(X, ppm, shift = c(5.15, 4.6), an = list(Group = meta$Group))
 #'
 #' @importFrom reshape2 melt
@@ -234,9 +239,11 @@ specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7
 #' @seealso \code{\link{specOverlay}}, \code{\link{pca}}, \code{\link{opls}}
 #'
 #' @examples
-#' data(covid)
+#' X <- covid$X
+#' an <- covid$an
+#'
 #' model <- pca(X)
-#' specload(model, shift = c(1, 2), an = list(meta$Group), pc = 1, alp = 0.8)
+#' specload(model, shift = c(1, 2), an = list(an$type), pc = 1, alp = 0.8)
 #'
 #' @importFrom ggplot2 ggplot geom_line aes_string scale_x_reverse scale_y_continuous
 #' @importFrom ggplot2 facet_grid ggtitle xlab ylab theme_bw theme element_text
@@ -352,6 +359,8 @@ specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1,
 #'
 #' @examples
 #' data(covid)
+#' X <- covid$X
+#'
 #' model <- pca(X)
 #' plotload(model, pc = 1)
 #'
@@ -433,7 +442,7 @@ plotload <- function(mod, shift = c(0, 10), pc = 1,
 #' DModX is calculated as the scaled root-mean-squared residual. An approximate upper 95\\% confidence limit is drawn using a one-sided t-test.
 #'
 #' @references
-#' Bylesjö, M. et al. (2006). *J. Chemometrics*, 20, 341–351.
+#' Bylesjo, M. et al. (2006). *J. Chemometrics*, 20, 341–351.
 #' Wold, S. (1976). *Pattern Recognition*, 8, 127–139.
 #'
 #' @seealso \code{\link{opls}}, \code{\link{plotload}}
@@ -446,6 +455,8 @@ plotload <- function(mod, shift = c(0, 10), pc = 1,
 #'
 #' @examples
 #' data(covid)
+#' X <- covid$X
+#' an <- covid$an
 #' model <- opls(X, Y = an$type)
 #' dmx <- dmodx(model)
 #'

@@ -26,11 +26,4 @@ Stratification is performed based on the first column of \code{Y}. For regressio
 \code{Y} is binned by quantiles to emulate class balance. Ensures class proportions are
 preserved across folds when possible.
 }
-\examples{
-Y <- cbind(c(rep("A", 10), rep("B", 10)))
-strat <- list(type = "DA", Y = Y, probs = NULL)
-folds <- .kFoldStratified(3, strat)
-length(folds)         # Should be 3
-sapply(folds, length) # Training set sizes per fold
-}
 \keyword{internal}

@@ -23,6 +23,9 @@
 #' @export
 #' @examples
 #' data(covid)
+#' X <- covid$X
+#' an <- covid$an
+#'
 #' model <- opls(X, Y = an$type)
 #' perm_results <- opls_perm(model, n = 10)
 opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {

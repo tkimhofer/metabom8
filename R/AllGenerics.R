@@ -4,16 +4,6 @@
 #' associated levels, and type.
 #' @param Y A vector, matrix, or data.frame. Target variable.
 #' @return A list: cleaned Y matrix, levels (if applicable), and type ('R' or 'DA')
-#' @examples
-#' # Numeric Y (Regression)
-#' y_numeric <- rnorm(10)
-#' result <- .checkYclassNas(y_numeric)
-#' str(result)
-#'
-#' # Factor Y (Discriminant Analysis)
-#' y_factor <- factor(rep(c("A", "B"), each = 5))
-#' result <- .checkYclassNas(y_factor)
-#' str(result)
 #' @keywords internal
 .checkYclassNas <- function(Y) {
   if (!inherits(Y, c("matrix", "data.frame"))) {
@@ -50,24 +40,6 @@
   return(c(Y_out, type))
 }
 
-#'
-#' #' @title Check X matrix (PLS context)
-#' #' @description This function checks for missing values in Y (NA, NAN, infinite), numeric variable format.
-#' #' @param X Input data (uni or multivar) formatted as vector or matrix or data.frame
-#' #' @return NULL if all's fine and throws error otherwise
-#' #' @keywords internal
-#' .checkXclassNas <- function(X) {
-#'
-#'     if (!is.matrix(X) | !is.numeric(X[1, 1])) {
-#'         stop("Input X must be matrix of class numeric")
-#'     }
-#'
-#'     if (any(is.na(X)) | any(is.nan(X)) | any(is.infinite(X))) {
-#'         stop("Input X contains na/nan/inf values.")
-#'     }
-#'
-#' }
-#'
 
 #' @title Check X matrix (PLS context)
 #' @description Validates that input \code{X} is a numeric matrix and does not contain missing, NaN, or infinite values.
@@ -75,17 +47,6 @@
 #' @return \code{NULL} if all checks pass; otherwise throws an informative error.
 #' @keywords internal
 #' @rdname checkXclassNas
-#' @examples
-#' # Valid matrix
-#' X_valid <- matrix(rnorm(20), nrow = 5)
-#' .checkXclassNas(X_valid)  # should pass silently
-#'
-#' # Matrix with NA
-#' X_bad <- X_valid
-#' X_bad[1, 1] <- NA
-#' \dontrun{
-#' .checkXclassNas(X_bad)  # should throw an error
-#' }
 .checkXclassNas <- function(X) {
   if (!is.matrix(X) || !is.numeric(X)) {
     stop(sprintf("Input X must be a numeric matrix. Use matrix() or as.matrix() to convert."))
@@ -111,15 +72,6 @@
 #' @return
 #' Invisibly returns \code{NULL} if checks pass.
 #' Throws an error if dimensions are incompatible.
-#'
-#' @examples
-#' X <- matrix(rnorm(30), nrow = 10, ncol = 3)
-#' Y <- matrix(rnorm(20), nrow = 10, ncol = 2)
-#' .checkDimXY(X, Y)  # no error
-#'
-#' # This will error due to differing number of rows:
-#' # .checkDimXY(matrix(1:6, 2, 3), matrix(1:4, 3, 1))
-#'
 #' @keywords internal
 .checkDimXY <- function(X, Y) {
   if (nrow(X) != nrow(Y)) {
@@ -195,12 +147,6 @@
 #' for one CV fold.
 #'
 #' @keywords internal
-#'
-#' @examples
-#' Y <- matrix(rnorm(100), nrow = 20)  # Simulated outcome matrix
-#' folds <- .kFold(k = 5, Y = Y)
-#' length(folds)         # Should be 5
-#' sapply(folds, length) # Training set size per fold
 .kFold <- function(k, Y){
   n <- nrow(Y)
 
@@ -243,13 +189,6 @@
 #' Returns \code{NULL} and a warning if stratification is not feasible due to class imbalance.
 #'
 #' @keywords internal
-#'
-#' @examples
-#' Y <- cbind(c(rep("A", 10), rep("B", 10)))
-#' strat <- list(type = "DA", Y = Y, probs = NULL)
-#' folds <- .kFoldStratified(3, strat)
-#' length(folds)         # Should be 3
-#' sapply(folds, length) # Training set sizes per fold
 .kFoldStratified <- function(k, stratified){
 
   if (!is.list(stratified) || length(stratified) != 3) {
@@ -318,9 +257,6 @@
 #' @return A list of length \code{k}, each containing a vector of training set indices.
 #' @details For each fold, a random sample (with replacement) of size \code{floor(nrow(Y) * split)} is drawn.
 #' @keywords internal
-#' @examples
-#' Y <- matrix(rnorm(100), ncol = 1)
-#' sets <- .mc(k = 5, Y = Y, split = 0.7)
 .mc <- function(k, Y, split) {
 
   k <- ceiling(k)
@@ -370,10 +306,6 @@
 #' @return A list of length \code{k}, each element containing a vector of row indices for the training set.
 #' @details Each round samples a class-balanced subset with replacement. Useful for high-variance, imbalanced-class modeling.
 #' @keywords internal
-#' @examples
-#' Y <- matrix(sample(letters[1:3], 100, replace = TRUE), ncol = 1)
-#' stratified <- list("DA", Y, NULL)
-#' sets <- .mcBalanced(k = 5, split = 0.7, stratified = stratified)
 .mcBalanced <- function(k, split, stratified) {
 
   k <- ceiling(k)
@@ -450,12 +382,6 @@
 #' - In `"k-fold_stratified"` and `"MC_balanced"` modes, stratification is applied to preserve class proportions or outcome distribution.
 #' - If `type` is regression (`"R"`), quantile-based binning is applied to stratify continuous Y values.
 #' - If `type` is discriminant analysis (`"DA"`), class labels are used directly.
-#'
-#' @examples
-#' Y <- cbind(sample(1:100))  # continuous outcome
-#' cv_sets <- .cvSetsMethod(Y, type = "R", method = "k-fold_stratified", k = 5)
-#' str(cv_sets)
-#'
 #' @keywords internal
 .cvSetsMethod <- function(Y, type, method = "k-fold_stratified", k = 7, split = 2/3) {
 
@@ -516,10 +442,6 @@
 #'   \item{\code{[[1]]}}{Numeric matrix of processed response.}
 #'   \item{\code{[[2]]}}{Data frame mapping class labels to encoding (empty for numeric input).}
 #' }
-#' @examples
-#' .prepareY(c(2.3, 1.5, 4.1))                          # Regression
-#' .prepareY(factor(c("A", "B", "A", "B")))             # Binary
-#' .prepareY(c("cat", "dog", "cat", "mouse"))           # Multiclass
 #' @keywords internal
 .prepareY <- function(Y) {
   if (!is.numeric(Y)) {
@@ -1063,7 +985,9 @@
 #' @export
 #'
 #' @examples
-#' data(covid)
+#' data(covid_raw)
+#' X <- covid_raw$X
+#' ppm <- covid_raw$ppm
 #' idx_tsp <- get_idx(c(-0.1, 0.1), ppm)
 #' ppm[range(idx_tsp)]
 #' plot(ppm[idx_tsp], X[1, idx_tsp], type = 'l')
@@ -1164,7 +1088,8 @@ minmax <- function(x) {
 #' @examples
 #' # Simulated data example
 #' ppm <- seq(-0.2, 0.2, length.out = 1000)
-#' X <- matrix(dnorm(ppm, mean = 0, sd = 0.02), nrow = 10, byrow = TRUE)
+#' spec <- dnorm(ppm, mean = 0, sd = 0.02)
+#' X <- matrix(rep(spec, each = 10), nrow = 10, byrow = TRUE)
 #' sf <- 600  # MHz
 #' fwhm_vals <- lw(X, ppm, shift = c(-0.1, 0.1), sf = sf)
 #' hist(fwhm_vals, main = "Line Width (Hz)", xlab = "FWHM [Hz]")
@@ -1232,8 +1157,10 @@ lw <- function(X, ppm, shift = c(-0.1, 0.1), sf) {
 #' @export
 #'
 #' @examples
-#' load(covid)
-#' noise_vals <- noise.est(X, ppm, where = c(14.6, 14.7))
+#' data(covid_raw)
+#' X <- covid_raw$X
+#' ppm <- covid_raw$ppm
+#' noise_vals <- noise.est(X, ppm, where = c(8.8, 8.9))
 #' hist(noise_vals, main = "Estimated Noise", xlab = "Noise Level")
 #'
 #' @family NMR
@@ -1678,19 +1605,6 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 #' It catches warnings and errors during coercion and treats those as non-numeric.
 #' @param x A vector to test for numeric coercion.
 #' @return Logical \code{TRUE} if \code{x} is numeric-like, \code{FALSE} otherwise.
-#' @keywords internal
-#' @examples
-#' is_numeric_trycatch(c("1.23", "4.56", "7.89"))
-#' # TRUE
-#' is_numeric_trycatch(c("1.23", "abc", "7.89"))
-#' # FALSE
-#' is_numeric_trycatch(c(NA, "3.14"))
-#' # TRUE
-#' is_numeric_trycatch(c("1e-5", "2.5"))
-#' # TRUE
-#' is_numeric_trycatch(c("one", "two"))
-#' # FALSE
-#'
 #' @keywords internal
 .is_numeric_trycatch <- function(x) {
   tryCatch({

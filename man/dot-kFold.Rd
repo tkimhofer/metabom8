@@ -21,10 +21,4 @@ Creates a list of training set indices for k-fold cross-validation (CV),
 without considering class balance in Y. Each element of the list represents
 the row indices used for training in one CV fold.
 }
-\examples{
-Y <- matrix(rnorm(100), nrow = 20)  # Simulated outcome matrix
-folds <- .kFold(k = 5, Y = Y)
-length(folds)         # Should be 5
-sapply(folds, length) # Training set size per fold
-}
 \keyword{internal}

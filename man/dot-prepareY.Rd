@@ -28,9 +28,4 @@ Also returns a mapping between original labels and numeric values (only for cate
 }
 }
 }
-\examples{
-.prepareY(c(2.3, 1.5, 4.1))                          # Regression
-.prepareY(factor(c("A", "B", "A", "B")))             # Binary
-.prepareY(c("cat", "dog", "cat", "mouse"))           # Multiclass
-}
 \keyword{internal}

@@ -34,6 +34,9 @@ The spectra are smoothed using a Savitzky–Golay filter to reduce noise. Extrem
 }
 \examples{
 data(covid)
+X <- covid$X
+ppm <- covid$ppm
+
 peaks <- ppick(X, ppm)
 spec(X[1, ], ppm, shift = c(4.2, 5.3))
 points(peaks[[1]]$ppm, peaks[[1]]$Int, col = factor(peaks[[1]]$Etype))

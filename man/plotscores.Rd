@@ -31,6 +31,9 @@ Generate score plots for PCA, PLS, or OPLS models with optional annotation, QC h
 }
 \examples{
 data("covid")
+X <- covid$X
+an <- covid$an
+
 y = an$type
 mod = opls(X, y)
 plotscores(mod, an=list(Group=y, Hospital=an$hospital))

@@ -26,6 +26,9 @@ Each permutation shuffles the response labels and fits a new OPLS model. The fun
 }
 \examples{
 data(covid)
+X <- covid$X
+an <- covid$an
+
 model <- opls(X, Y = an$type)
 perm_results <- opls_perm(model, n = 10)
 }

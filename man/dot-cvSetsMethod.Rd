@@ -30,10 +30,4 @@ Generates a list of row indices representing training sets for various CV strate
 \item If \code{type} is discriminant analysis (\code{"DA"}), class labels are used directly.
 }
 }
-\examples{
-Y <- cbind(sample(1:100))  # continuous outcome
-cv_sets <- .cvSetsMethod(Y, type = "R", method = "k-fold_stratified", k = 5)
-str(cv_sets)
-
-}
 \keyword{internal}

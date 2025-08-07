@@ -36,6 +36,9 @@ The default \code{"nipals"} method uses an efficient NIPALS implementation in C+
 }
 \examples{
 data(covid)
+X <- covid$X
+an <- covid$an
+
 model <- pca(X, pc = 2)
 plotscores(model, an = list(Class = an$type, Clinic = an$hospital, id = 1:nrow(an)), pc = c(1, 2))
 

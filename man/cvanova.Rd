@@ -35,6 +35,8 @@ Please note: larger sample sizes increase the power to detect true effects. With
 }
 \examples{
 data("covid")
+X <- covid$X
+an <- covid$an
 mod <- opls(X, an$type)
 cvanova(mod)
 

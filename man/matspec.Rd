@@ -25,6 +25,8 @@ Plots multiple 1D NMR spectra using either base R or interactive Plotly graphics
 }
 \examples{
 data(covid)
+X <- covid$X
+ppm <- covid$ppm
 matspec(X[1:3,], ppm, interactive = TRUE)
 matspec(X[1:3,], ppm, interactive = FALSE)
 }

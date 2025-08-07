@@ -17,15 +17,4 @@ Checks input Y for NA/NaN/Inf values, determines analysis type
 (Regression or Discriminant Analysis), and returns cleaned Y matrix,
 associated levels, and type.
 }
-\examples{
-# Numeric Y (Regression)
-y_numeric <- rnorm(10)
-result <- .checkYclassNas(y_numeric)
-str(result)
-
-# Factor Y (Discriminant Analysis)
-y_factor <- factor(rep(c("A", "B"), each = 5))
-result <- .checkYclassNas(y_factor)
-str(result)
-}
 \keyword{internal}

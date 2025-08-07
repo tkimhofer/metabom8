@@ -46,6 +46,9 @@ elements define coloring and line type. Use short ppm ranges (e.g., 5.15–4.6) 
 }
 \examples{
 data(covid)
+X <- covid$X
+ppm <- covid$ppm
+an <- covid$an
 specOverlay(X, ppm, shift = c(5.15, 4.6), an = list(Group = meta$Group))
 
 }

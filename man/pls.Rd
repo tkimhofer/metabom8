@@ -45,6 +45,9 @@ Cross-validation is used to select the optimal number of predictive components b
 }
 \examples{
 data(covid)
+X <- covid$X
+an <- covid$an
+
 model <- pls(X, Y = an$type)
 plotscores(model, an = list(Class = an$type, Clinic = an$hospital, id = 1:nrow(an)), pc = c(1, 2))
 

@@ -31,6 +31,9 @@ If more than one orthogonal component is present, the PCA of orthogonal scores i
 }
 \examples{
 data(covid)
+X <- covid$X
+an <- covid$an
+
 model <- opls(X, Y = an$type)
 preds <- predict_opls(model, X)
 table(preds$Y_predicted, an$type)

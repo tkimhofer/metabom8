@@ -23,6 +23,8 @@
 #'
 #' @examples
 #' data(covid)
+#' X <- covid$X
+#'
 #' Xn <- pqn(X, add_DilF = "dilutionFactor")
 #' plot(dilutionFactor)
 #'

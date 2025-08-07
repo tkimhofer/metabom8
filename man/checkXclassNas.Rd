@@ -15,35 +15,4 @@
 \description{
 Validates that input \code{X} is a numeric matrix and does not contain missing, NaN, or infinite values.
 }
-\details{
-#' @title Check X matrix (PLS context)
-#' @description This function checks for missing values in Y (NA, NAN, infinite), numeric variable format.
-#' @param X Input data (uni or multivar) formatted as vector or matrix or data.frame
-#' @return NULL if all's fine and throws error otherwise
-#' @keywords internal
-.checkXclassNas <- function(X) {
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{if (!is.matrix(X) | !is.numeric(X[1, 1])) \{
-    stop("Input X must be matrix of class numeric")
-\}
-
-if (any(is.na(X)) | any(is.nan(X)) | any(is.infinite(X))) \{
-    stop("Input X contains na/nan/inf values.")
-\}
-}\if{html}{\out{</div>}}
-
-}
-}
-\examples{
-# Valid matrix
-X_valid <- matrix(rnorm(20), nrow = 5)
-.checkXclassNas(X_valid)  # should pass silently
-
-# Matrix with NA
-X_bad <- X_valid
-X_bad[1, 1] <- NA
-\dontrun{
-.checkXclassNas(X_bad)  # should throw an error
-}
-}
 \keyword{internal}

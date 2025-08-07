@@ -44,6 +44,8 @@ For PCA, only statistical reconstruction is available.
 }
 \examples{
 data(covid)
+X <- covid$X
+
 model <- pca(X)
 plotload(model, pc = 1)
 

@@ -30,6 +30,8 @@ Calibration is typically part of the technical quality control pipeline and is c
 }
 \examples{
 data(covid_raw)
+X <- covid_raw$X
+ppm <- covid_raw$ppm
 X_tsp <- calibrate(X, ppm, type = "tsp")
 X_glu <- calibrate(X, ppm, type = "glucose")
 X_custom <- calibrate(X, ppm, type = c(1.9, 2.1))

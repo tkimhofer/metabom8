@@ -51,6 +51,9 @@ This ensures the model captures relevant structure without modelling noise or ir
 }
 \examples{
 data("covid")
+X <- covid$X
+an <- covid$an
+
 mod <- opls(X, an$type)
 summary(mod)
 }

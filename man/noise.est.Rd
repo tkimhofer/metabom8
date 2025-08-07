@@ -31,8 +31,10 @@ Choose the \code{where} region carefully based on acquisition setup.
 Signal-free regions are typically at the high or low ppm ends (e.g., >10 ppm or <0 ppm).
 }
 \examples{
-load(covid)
-noise_vals <- noise.est(X, ppm, where = c(14.6, 14.7))
+data(covid_raw)
+X <- covid_raw$X
+ppm <- covid_raw$ppm
+noise_vals <- noise.est(X, ppm, where = c(8.8, 8.9))
 hist(noise_vals, main = "Estimated Noise", xlab = "Noise Level")
 
 }

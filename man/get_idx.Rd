@@ -21,7 +21,9 @@ Integer vector of indices corresponding to \code{ppm} values within the given ra
 Returns the indices of the chemical shift vector (\code{ppm}) that fall within the specified range.
 }
 \examples{
-data(covid)
+data(covid_raw)
+X <- covid_raw$X
+ppm <- covid_raw$ppm
 idx_tsp <- get_idx(c(-0.1, 0.1), ppm)
 ppm[range(idx_tsp)]
 plot(ppm[idx_tsp], X[1, idx_tsp], type = 'l')

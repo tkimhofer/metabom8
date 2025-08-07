@@ -31,6 +31,8 @@
 #'
 #' @examples
 #' data("covid")
+#' X <- covid$X
+#' an <- covid$an
 #' mod <- opls(X, an$type)
 #' cvanova(mod)
 #'

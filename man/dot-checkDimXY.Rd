@@ -21,13 +21,4 @@ for Partial Least Squares (PLS) analysis.
 Specifically, the number of observations (rows) must match, and
 the number of variables (columns) in \code{X} must be greater than in \code{Y}.
 }
-\examples{
-X <- matrix(rnorm(30), nrow = 10, ncol = 3)
-Y <- matrix(rnorm(20), nrow = 10, ncol = 2)
-.checkDimXY(X, Y)  # no error
-
-# This will error due to differing number of rows:
-# .checkDimXY(matrix(1:6, 2, 3), matrix(1:4, 3, 1))
-
-}
 \keyword{internal}

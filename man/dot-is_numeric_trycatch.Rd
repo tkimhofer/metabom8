@@ -20,17 +20,4 @@ This function attempts to coerce the input to numeric and returns \code{TRUE}
 if all non-missing elements convert without coercion failure; otherwise \code{FALSE}.
 It catches warnings and errors during coercion and treats those as non-numeric.
 }
-\examples{
-is_numeric_trycatch(c("1.23", "4.56", "7.89"))
-# TRUE
-is_numeric_trycatch(c("1.23", "abc", "7.89"))
-# FALSE
-is_numeric_trycatch(c(NA, "3.14"))
-# TRUE
-is_numeric_trycatch(c("1e-5", "2.5"))
-# TRUE
-is_numeric_trycatch(c("one", "two"))
-# FALSE
-
-}
 \keyword{internal}
