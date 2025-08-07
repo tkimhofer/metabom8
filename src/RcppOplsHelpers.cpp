@@ -8,15 +8,6 @@ using Eigen::MatrixXd;                  // variable size matrix, double precisio
 using Eigen::VectorXd;                  // variable size vector, double precision
 
 
-
-// data(iris)
-// X=as.matrix(iris[,c(1:4)])
-// Y=cbind(as.numeric(as.factor(iris[,5])) )
-// idx=which(Y<3)
-// X1=scale(X[idx,])
-// Y1=scale(cbind(Y[idx,]))
-// out = nip_pca_comp_rcpp(X1)
-
 // [[Rcpp::export(.nipPcaCompRcpp)]]
 Rcpp::List nip_pca_comp_rcpp(Eigen::MatrixXd X) {
 
@@ -31,12 +22,6 @@ Rcpp::List nip_pca_comp_rcpp(Eigen::MatrixXd X) {
 
   t_x= X.col(0);
   while( dd > 1e-6 ) {
-    //Rcpp::Rcout << "Iter ";
-    //Rcpp::Rcout << count;
-    //Rcpp::Rcout << '\t';
-    //Rcpp::Rcout << dd;
-    //Rcpp::Rcout << '\n';
-
     p_x = t_x.transpose() * X / t_x.squaredNorm();
     p_x = p_x / p_x.norm();
     t_x = X * p_x.transpose() / p_x.squaredNorm();
@@ -58,10 +43,6 @@ Rcpp::List nip_pca_comp_rcpp(Eigen::MatrixXd X) {
                             Rcpp::_["p"] = p_x);
 }
 
-
-
-
-
 //' Summarise Multivariate Y Weights via PCA
 //'
 //' Computes X-weight vectors for each response variable in a multivariate outcome matrix `Y`,
@@ -77,11 +58,13 @@ Rcpp::List nip_pca_comp_rcpp(Eigen::MatrixXd X) {
 //' The function first computes weights for each column in `Y` using least-squares projection,
 //' forming a weight matrix `W_x`. PCA is then applied to this matrix using NIPALS,
 //' and score components are extracted until the explained variance ratio drops below a threshold.
-//' // [[Rcpp::export(.multiY_TwRcpp)]]
 //' @examples
-//' \dontrun{
-//'   T_w <- multiY_Tw_rcpp(X, Y)
-//' }
+//' # Simulate data: 30 samples, 10 predictors, 3 response variables
+//' set.seed(123)
+//' X <- matrix(rnorm(30 * 10), nrow = 30)
+//' Y <- matrix(rnorm(30 * 3), nrow = 30)
+//' # Compute multivariate Y weights via PCA
+//' T_w <- multiY_Tw_rcpp(X, Y, it_max = 50, eps = 1e-4)
 //'
 //' @export
 // [[Rcpp::export]]

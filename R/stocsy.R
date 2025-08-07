@@ -132,7 +132,7 @@ plotStocsy <- function(stoc_mod, shift = c(0, 10), title = NULL) {
     paste0("Sample size: n=", nrow(stoc_mod@X))
   }
 
-  ds$r_abs = abs(ds$r)
+  ds$r_abs <- abs(ds$r)
 
   g1 <- ggplot(ds, aes(x = !!sym("ppm"), y = !!sym("cov"), colour = !!sym("r_abs"))) +
     geom_line() +

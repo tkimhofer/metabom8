@@ -87,7 +87,7 @@ opls <- function(X, Y, center = TRUE, scale = "UV",
 
     if (overfitted) {
       message(sprintf("An O-PLS-%s model with 1 predictive and %d orthogonal components was fitted.", type, nc - 1))
-      pred_comp$t_o_cv <- matrix(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[,1:(nc-1), drop=FALSE], ncol = nc - 1)
+      pred_comp$t_o_cv <- matrix(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[,seq_len(nc-1), drop=FALSE], ncol = nc - 1)
       pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type)[,nc-1, drop=FALSE], ncol = 1)
       pred_comp$t_o <- t_orth
     }

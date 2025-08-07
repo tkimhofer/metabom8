@@ -143,7 +143,7 @@ pls <- function(X, Y,
   }
 
   list(
-    full_mod = full_mod[1:nc],
+    full_mod = full_mod[seq_len(nc)],
     r2_comp = r2_comp,
     q2_comp = q2_comp,
     r2x_comp = r2x_comp,
@@ -167,9 +167,9 @@ pls <- function(X, Y,
         result$auc_te <- multiclass.roc(response = Y_vec, predictor = preds_test, quiet = TRUE)$auc
         result$auc_tr <- multiclass.roc(response = Y_vec, predictor = preds_train, quiet = TRUE)$auc
       } else {
-        if (length(dim(preds_test)) == 2) {pte = preds_test[, 1]} else {pte = preds_test}
+        if (length(dim(preds_test)) == 2) {pte <- preds_test[, 1]} else {pte <- preds_test}
         result$auc_te <- roc(response = Y_vec, predictor = pte, quiet = TRUE)$auc
-        if (length(dim(preds_train)) == 2) {ptr = preds_train[, 1]} else {ptr = preds_train}
+        if (length(dim(preds_train)) == 2) {ptr <- preds_train[, 1]} else {ptr <- preds_train}
         result$auc_tr <- roc(response = Y_vec, predictor = ptr, quiet = TRUE)$auc
       }
     } else {

@@ -24,7 +24,9 @@ has_data <- requireNamespace("nmrData", quietly = TRUE)
 
 ```{r no-data-msg, echo = FALSE, results = "asis"}
 if (!has_data) {
-  cat("## Tutorial Unavailable\n\nThis vignette requires the external package **nmrData** and access to large raw NMR datasets, which are not shipped with this package due to their size.\n\nTo run the full tutorial locally, please install `nmrData` from GitHub:\n\n```r\nremotes::install_github(\"tkimhofer/nmrData\")\n```\n")
+  message("The 'yourGitHubPackage' package is not installed. Please install it manually to run this example.")
+}else{
+  library(nmrdata)
 }
 ```
 
@@ -37,7 +39,6 @@ This tutorial runs through a typical data import and pre-processing workflow for
 ```{r load-pack, fig.show='hold', message=FALSE, warning=FALSE}
 # load packages
 library(metabom8)
-library(nmrdata)
 
 library(DT)
 library(htmlTable)

@@ -39,8 +39,8 @@ opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
   type <- smod@type
 
   perms <- lapply(seq_len(n), function(i) {
-    Y_perm <- Y[sample(1:nrow(Y)),]
-    colnames(Y_perm) = smod@Y$cname[,1]
+    Y_perm <- Y[sample(seq_len(nrow(Y))),]
+    colnames(Y_perm) <- smod@Y$cname[,1]
 
     stats <- .permYmod(Xs, Y_perm, cv, type, nc_o)
 

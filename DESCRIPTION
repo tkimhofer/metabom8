@@ -51,4 +51,3 @@ Suggests:
     rmarkdown,
     testthat
 VignetteBuilder: knitr
-LazyData: true

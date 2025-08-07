@@ -21,9 +21,12 @@
 #' forming a weight matrix `W_x`. PCA is then applied to this matrix using NIPALS,
 #' and score components are extracted until the explained variance ratio drops below a threshold.
 #' @examples
-#' \dontrun{
-#'   T_w <- multiY_Tw_rcpp(X, Y)
-#' }
+#' # Simulate data: 30 samples, 10 predictors, 3 response variables
+#. set.seed(123)
+#' X <- matrix(rnorm(30 * 10), nrow = 30)
+#' Y <- matrix(rnorm(30 * 3), nrow = 30)
+#' # Compute multivariate Y weights via PCA
+#' T_w <- multiY_Tw_rcpp(X, Y, it_max = 50, eps = 1e-4)
 #'
 #' @export
 multiY_Tw_rcpp <- function(X, Y, it_max, eps) {

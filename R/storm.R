@@ -67,8 +67,8 @@ storm <- function(X, ppm, b=30, q=0.05, idx.refSpec, shift){
 
     # 2. Stocsy with driver=max intensity reference spectrum
     index <- which.max(ref)
-    driver = ref.idx[index]
-    ppm_win = (ref.idx[index]-(b+1)):(ref.idx[index]+(b+1))
+    driver <- ref.idx[index]
+    ppm_win <- (ref.idx[index]-(b+1)):(ref.idx[index]+(b+1))
     r <- cor(X[subset1, ppm_win], X[subset1, driver])
     co <- cov(X[subset1, ppm_win], X[subset1, driver])
 
@@ -76,8 +76,8 @@ storm <- function(X, ppm, b=30, q=0.05, idx.refSpec, shift){
     a <- -abs(r * sqrt((length(r)-2)/(1-r^2))) # t-statistic
     pval <- 2*pt(a,(length(r)-2)) # p-val, 2-sided
 
-    iid = which(pval<q & r>0)
-    idx_max = which.max(co[iid])
+    iid <- which(pval<q & r>0)
+    idx_max <- which.max(co[iid])
 
     ref.idx <- (ppm_win[iid[idx_max]] - (b+1)):(ppm_win[iid[idx_max]] + (b+1))
     ref <- cov(X[subset1, ref.idx], X[subset1, driver])[,1]

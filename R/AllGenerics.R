@@ -28,12 +28,12 @@
 
   if (is.numeric(Y)) {
     type <- "R"
-    Y_out <- .createDummyY(Y)
+    Y_out <- .prepareY(Y)
     Y <- Y_out[[1]]
     levs <- data.frame()
   } else {
     type <- "DA"
-    Y_out <- .createDummyY(Y)
+    Y_out <- .prepareY(Y)
     Y <- Y_out[[1]]
 
     levs <- unique(apply(Y, 2, function(x) length(unique(x))))
@@ -202,18 +202,20 @@
 #' length(folds)         # Should be 5
 #' sapply(folds, length) # Training set size per fold
 .kFold <- function(k, Y){
-  if(k > nrow(Y) || k < 2 || is.na(k) || is.infinite(k)) {
-    message('Invalid k; using leave-one-out CV instead.')
-    k <- nrow(Y)
+  n <- nrow(Y)
+
+  if (!is.numeric(k) || is.na(k) || is.infinite(k) || k < 2 || k > n) {
+    message("Invalid k; defaulting to leave-one-out CV (k = n).")
+    k <- n
   }
 
-  if (nrow(Y) / k < 2) {
-    message('k too small; using leave-one-out CV.')
+  if (k != n && n / k < 2) {
+    message("Fold size is small; consider using fewer folds.")
   }
 
   sets <- sample(rep_len(seq_len(k), nrow(Y)))
-  sets_list <- lapply(seq_len(k), function(i, idc = sets) {
-    which(idc != i)
+  sets_list <- lapply(seq_len(k), function(i) {
+    which(sets != i)
   })
 
   return(sets_list)
@@ -249,11 +251,25 @@
 #' length(folds)         # Should be 3
 #' sapply(folds, length) # Training set sizes per fold
 .kFoldStratified <- function(k, stratified){
+
+  if (!is.list(stratified) || length(stratified) != 3) {
+    stop("'stratified' must be a list of length 3: type, Y, probs.")
+  }
+
+  if (anyNA(Y)) {
+    stop("Stratified CV not possible: Y contains NA values.")
+  }
+
   if (grepl('R', stratified[[1]])) {
     Yori <- stratified[[2]]
-    Y <- cbind(cut(Yori[, 1],
-                   breaks = as.numeric(quantile(Yori[, 1], stratified[[3]])),
-                   include.lowest = TRUE))
+
+    breaks <- unique(quantile(Yori[, 1], stratified[[3]]))
+    if (length(breaks) < 3) {
+      warning("Insufficient variability in Y for stratification - use unstratified k-fold or MC.")
+      return(NULL)
+    }
+    Y <- cbind(cut(Yori[, 1], breaks = breaks, include.lowest = TRUE))
+
   } else {
     Y <- stratified[[2]][, 1]
   }
@@ -266,7 +282,7 @@
 
   levs <- names(ct)
   if (min(ct) <= k || min(ct) / k < 2 || is.na(k) || is.infinite(k) || k < 2) {
-    message(sprintf("Adjusting k to %d due to small group size (n=%d).", min(ct), min(ct)))
+    message(sprintf("Reducing k to %d due to small group size (min n = %d).", min(ct), min(ct)))
     k <- min(ct)
   }
 
@@ -280,7 +296,8 @@
     return(k1)
   })
 
-  sets_list <- lapply(seq_len(k), function(i, idc = unlist(set_lev)) {
+  idc <- unlist(set_lev)
+  sets_list <- lapply(seq_len(k), function(i) {
     idx <- which(idc != i)
     as.numeric(names(idc[idx]))
   })
@@ -301,11 +318,13 @@
 #' Y <- matrix(rnorm(100), ncol = 1)
 #' sets <- .mc(k = 5, Y = Y, split = 0.7)
 .mc <- function(k, Y, split) {
-  # Check input: k must be a positive integer
-  if (!is.integer(k)) {
-    k <- ceiling(k)
-    warning(sprintf("The 'k' parameter should be an integer. Rounding up to k = %d.", k))
-  }
+
+  k <- ceiling(k)
+  # # Check input: k must be a positive integer
+  # if (!is.integer(k)) {
+  #   k <- ceiling(k)
+  #   warning(sprintf("The 'k' parameter should be an integer. Rounding up to k = %d.", k))
+  # }
 
   if (k <= 0 || k > 1e6 || is.na(k) || is.infinite(k)) {
     stop("Invalid value for 'k'. Must be a positive integer and <= 1e6.")
@@ -322,6 +341,9 @@
 
   n <- nrow(Y)
   n_train <- floor(n * split)
+  if (n_train < 1) {
+    stop("Split results in zero training samples. Increase split or use a larger dataset.")
+  }
 
   sets_list <- lapply(seq_len(k), function(i) {
     sample(seq_len(n), size = n_train, replace = TRUE)
@@ -349,11 +371,13 @@
 #' stratified <- list("DA", Y, NULL)
 #' sets <- .mcBalanced(k = 5, split = 0.7, stratified = stratified)
 .mcBalanced <- function(k, split, stratified) {
-  # Validate k
-  if (!is.integer(k)) {
-    k <- ceiling(k)
-    warning(sprintf("The k-fold parameter should be an integer. Rounding to k = %d", k))
-  }
+
+  k <- ceiling(k)
+  # # Validate k
+  # if (!is.integer(k)) {
+  #   k <- ceiling(k)
+  #   warning(sprintf("The k-fold parameter should be an integer. Rounding to k = %d", k))
+  # }
   if (k <= 2 || k > 1e6 || is.na(k) || is.infinite(k)) {
     stop("Invalid 'k' value. Must be between 3 and 1e6.")
   }
@@ -373,6 +397,9 @@
 
   if (grepl("R", type)) {
     breaks <- quantile(Ymat[, 1], probs = probs)
+    if (length(unique(breaks)) <= 2) {
+      stop("Y has insufficient variability to create stratified bins - switch to unstratified CV.")
+    }
     Y <- cut(Ymat[, 1], breaks = breaks, include.lowest = TRUE)
   } else {
     Y <- Ymat[, 1]
@@ -428,8 +455,14 @@
 #' @keywords internal
 .cvSetsMethod <- function(Y, type, method = "k-fold_stratified", k = 7, split = 2/3) {
 
-  if (grepl('mY', type)) {
-    Y <- as.matrix(Y)[, 1, drop = FALSE]  # reduce Y to first column
+  valid_methods <- c("k-fold", "k-fold_stratified", "MC", "MC_balanced")
+  if (!method %in% valid_methods) {
+    stop("Check method argument. Valid methods are: ", paste(valid_methods, collapse = ", "))
+  }
+
+  Y <- as.matrix(Y)
+  if (ncol(Y) > 1) {
+    Y <- Y[, 1, drop = FALSE]
   }
 
   valid_methods <- c("k-fold", "k-fold_stratified", "MC", "MC_balanced")
@@ -441,9 +474,13 @@
     k <- as.integer(k)
   }
 
-  if (grepl("MC", method) && split >= 1) {
-    message("Parameter 'split' must be < 1 (ratio of training samples to total).")
+  if (grepl("MC", method) && (split <= 0 || split >= 1)) {
+    stop("Parameter 'split' must be between 0 and 1 (exclusive).")
   }
+
+  k <- as.integer(k)
+  if (k < 2) stop("Number of folds or iterations (k) must be at least 2.")
+
 
   sets_list <- switch(method,
                       `k-fold_stratified` = .kFoldStratified(k, stratified = list(type, Y, probs = c(0, 0.33, 0.66, 1))),
@@ -459,62 +496,66 @@
   return(sets_list)
 }
 
-
-
-#' @title One-Hot-Encoding of Response Vector
+#' @title Prepare Response Vector for OPLS/OPLS-DA
 #' @description
-#' Converts a response vector \code{Y} into a numeric matrix.
-#' If \code{Y} is numeric, it is returned as a column matrix.
-#' For factor or character vectors:
-#' \itemize{
-#'   \item If binary (2 levels), returns a single numeric column representing classes.
-#'   \item If multi-class (>2 levels), returns a dummy matrix with entries \code{1} (presence) and \code{-1} (absence).
-#' }
-#' A data frame mapping original values to their numeric encoding is also returned.
+#' Converts a response vector \code{Y} into a numeric matrix suitable for regression or classification models.
+#' - Numeric input is returned as a column matrix.
+#' - Factor or character input:
+#'   - If binary (2 levels): returns a single numeric column (values 1 and 2).
+#'   - If multiclass (>2 levels): returns a dummy matrix with 1 for presence and -1 for absence.
+#' Also returns a mapping between original labels and numeric values (only for categorical input).
 #'
-#' @param Y Numeric, factor, or character vector representing response classes or values.
+#' @param Y A numeric, factor, or character vector.
 #'
-#' @return
-#' A \code{list} with two elements:
+#' @return A list with:
 #' \describe{
-#'   \item{\code{[[1]]}}{Numeric matrix of dummy-coded responses.}
-#'   \item{\code{[[2]]}}{Data frame mapping original \code{Y} values to numeric codes; empty if \code{Y} is numeric.}
+#'   \item{\code{[[1]]}}{Numeric matrix of processed response.}
+#'   \item{\code{[[2]]}}{Data frame mapping class labels to encoding (empty for numeric input).}
 #' }
-#'
 #' @examples
-#' # Numeric input returns matrix with one column
-#' .createDummyY(c(2.3, 1.5, 4.1))
-#'
-#' # Binary factor input returns single numeric column (1 or 2)
-#' .createDummyY(factor(c("A", "B", "A", "B")))
-#'
-#' # Multi-level character input returns dummy matrix with -1/1 coding
-#' .createDummyY(c("cat", "dog", "cat", "mouse"))
-#'
+#' .prepareY(c(2.3, 1.5, 4.1))                          # Regression
+#' .prepareY(factor(c("A", "B", "A", "B")))             # Binary
+#' .prepareY(c("cat", "dog", "cat", "mouse"))           # Multiclass
 #' @keywords internal
-.createDummyY <- function(Y) {
+.prepareY <- function(Y) {
   if (!is.numeric(Y)) {
-    Y_factor <- as.factor(Y)
+    Y_factor <- factor(Y)
     Y_levels <- levels(Y_factor)
+    n_levels <- length(Y_levels)
 
-    # One-hot encode all classes, including binary
-    Y_new <- matrix(0, nrow = length(Y), ncol = length(Y_levels))
-    colnames(Y_new) <- Y_levels
+    if (n_levels == 2) {
+      # Binary classification: encode as 1/2
+      Y_num <- as.numeric(Y_factor)
+      mapping <- data.frame(Level = Y_levels,
+                            Code = sort(unique(Y_num)),
+                            stringsAsFactors = FALSE)
+      return(list(matrix(Y_num, ncol = 1), mapping))
 
-    for (i in seq_along(Y_levels)) {
-      Y_new[, i] <- as.integer(Y_factor == Y_levels[i])
+    } else {
+      # Multiclass classification: dummy matrix with 1/-1
+      Y_mat <- vapply(
+        Y_levels,
+        function(lvl) ifelse(Y_factor == lvl, 1, -1),
+        numeric(length(Y_factor))
+      )
+      colnames(Y_mat) <- Y_levels
+
+      mapping <- data.frame(Level = Y_levels,
+                            Column = seq_along(Y_levels),
+                            stringsAsFactors = FALSE)
+
+      return(list(Y_mat, mapping))
     }
 
-    # Optionally store mapping between original and encoded
-    Y_levs <- data.frame(Original = Y, Matrix = Y_new)
-
-    return(list(Y_new, Y_levs))
   } else {
-    return(list(cbind(Y), data.frame()))
+    # Check if multi-column numeric matrix
+    if (is.matrix(Y) && ncol(Y) > 1) {
+      stop("Only single-column numeric input is supported for Y at this time.")
+    }
+    # Numeric (regression)
+    return(list(matrix(Y, ncol = 1), data.frame()))
   }
-
 }
-
 
 #' @title OPLS Component Estimation via Cross-Validation
 #' @description
@@ -681,7 +722,7 @@
       f_mat <- do.call(cbind, inter)
       fout <- apply(f_mat, 1, function(x) {
         idx <- which(!is.na(x))
-        mean = mean(x[idx], na.rm = TRUE)
+        mean <- mean(x[idx], na.rm = TRUE)
         return(as.vector(mean))
       })
     }
@@ -799,12 +840,12 @@
   idx <- which(mm$value < (-0.015) & mm$variable == 'Q2')
   mm$value[idx] <- -0.01
 
-  mm[is.na(mm$value),"value"] = 0 # r2x not calc for overfitted component
+  mm[is.na(mm$value),"value"] <- 0 # r2x not calc for overfitted component
 
   if(grepl('k-fold', cv$method)){
-    cv_text = paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ')')
+    cv_text <- paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ')')
   } else{
-    cv_text = paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ', ratio test/training set=', round(cv$split, 2), ')')
+    cv_text <- paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ', ratio test/training set=', round(cv$split, 2), ')')
   }
 
   g <- ggplot2::ggplot(mm, ggplot2::aes(x = !!sym("PC"), y = !!sym("value"), fill = !!sym("variable"))) +
@@ -910,9 +951,9 @@
   mm$value[idx] <- -0.01
 
   if(grepl('k-fold', cv$method)){
-    cv_text = paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ')')
+    cv_text <- paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ')')
   } else{
-    cv_text = paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ', ratio test/training set=', round(cv$split, 2), ')')
+    cv_text <- paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ', ratio test/training set=', round(cv$split, 2), ')')
   }
 
   g <- ggplot2::ggplot(mm, ggplot2::aes(x = !!sym("PC"), y = !!sym("value"), fill = !!sym("variable"))) +
@@ -1532,12 +1573,12 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
   if (cv_method == 'MC') {
     if (grepl('DA', type)) {
       if (grepl("mY", type)) {
-        Y_vec = factor(apply(Y, 1, function(x, nam=colnames(Y)){nam[which(x==max(x))]}))
+        Y_vec <- factor(apply(Y, 1, function(x, nam=colnames(Y)){nam[which(x==max(x))]}))
         colnames(preds_test) <- colnames(preds_train) <- colnames(Y)
         auc_te <- multiclass.roc(response = Y_vec, predictor = preds_test, quiet = TRUE)$auc
         auc_tr <- multiclass.roc(response = Y_vec, predictor = preds_train, quiet = TRUE)$auc
       } else {
-        Y_vec = as.factor(apply(Y, 1, function(x) {x>0}))
+        Y_vec <- as.factor(apply(Y, 1, function(x) {x>0}))
         auc_te <- roc(response = Y_vec, predictor = as.vector(preds_test), quiet = TRUE)$auc
         auc_tr <- roc(response = Y_vec, predictor = as.vector(preds_train), quiet = TRUE)$auc
       }
@@ -1548,12 +1589,12 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
   } else {
     if (grepl('DA', type)) {
       if (grepl("mY", type)) {
-        Y_vec = factor(apply(Y, 1, function(x, nam=colnames(Y)){nam[which(x==max(x))]}))
+        Y_vec <- factor(apply(Y, 1, function(x, nam=colnames(Y)){nam[which(x==max(x))]}))
         colnames(preds_test) <- colnames(preds_train) <- class_memb
         auc_te <- multiclass.roc(response = Y_vec, predictor = preds_test, quiet = TRUE)$auc
         auc_tr <- multiclass.roc(response = Y_vec, predictor = preds_train, quiet = TRUE)$auc
       } else {
-        Y_vec = as.factor(apply(Y, 1, function(x) {x>0}))
+        Y_vec <- as.factor(apply(Y, 1, function(x) {x>0}))
         auc_te <- roc(response = Y_vec, predictor = preds_test, quiet = TRUE)$auc
         auc_tr <- roc(response = Y_vec, predictor = as.vector(preds_train), quiet = TRUE)$auc
       }
