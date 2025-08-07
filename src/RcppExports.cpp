@@ -24,26 +24,30 @@ BEGIN_RCPP
 END_RCPP
 }
 // multiY_Tw_rcpp
-Eigen::MatrixXd multiY_Tw_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y);
-RcppExport SEXP _metabom8_multiY_Tw_rcpp(SEXP XSEXP, SEXP YSEXP) {
+Eigen::MatrixXd multiY_Tw_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y, int it_max, double eps);
+RcppExport SEXP _metabom8_multiY_Tw_rcpp(SEXP XSEXP, SEXP YSEXP, SEXP it_maxSEXP, SEXP epsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Eigen::MatrixXd >::type X(XSEXP);
     Rcpp::traits::input_parameter< Eigen::MatrixXd >::type Y(YSEXP);
-    rcpp_result_gen = Rcpp::wrap(multiY_Tw_rcpp(X, Y));
+    Rcpp::traits::input_parameter< int >::type it_max(it_maxSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    rcpp_result_gen = Rcpp::wrap(multiY_Tw_rcpp(X, Y, it_max, eps));
     return rcpp_result_gen;
 END_RCPP
 }
 // nip_PLS_comp_rcpp
-Rcpp::List nip_PLS_comp_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y);
-RcppExport SEXP _metabom8_nip_PLS_comp_rcpp(SEXP XSEXP, SEXP YSEXP) {
+Rcpp::List nip_PLS_comp_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y, int it_max, double eps);
+RcppExport SEXP _metabom8_nip_PLS_comp_rcpp(SEXP XSEXP, SEXP YSEXP, SEXP it_maxSEXP, SEXP epsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Eigen::MatrixXd >::type X(XSEXP);
     Rcpp::traits::input_parameter< Eigen::MatrixXd >::type Y(YSEXP);
-    rcpp_result_gen = Rcpp::wrap(nip_PLS_comp_rcpp(X, Y));
+    Rcpp::traits::input_parameter< int >::type it_max(it_maxSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    rcpp_result_gen = Rcpp::wrap(nip_PLS_comp_rcpp(X, Y, it_max, eps));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -229,8 +233,8 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_metabom8_nip_pca_comp_rcpp", (DL_FUNC) &_metabom8_nip_pca_comp_rcpp, 1},
-    {"_metabom8_multiY_Tw_rcpp", (DL_FUNC) &_metabom8_multiY_Tw_rcpp, 2},
-    {"_metabom8_nip_PLS_comp_rcpp", (DL_FUNC) &_metabom8_nip_PLS_comp_rcpp, 2},
+    {"_metabom8_multiY_Tw_rcpp", (DL_FUNC) &_metabom8_multiY_Tw_rcpp, 4},
+    {"_metabom8_nip_PLS_comp_rcpp", (DL_FUNC) &_metabom8_nip_PLS_comp_rcpp, 4},
     {"_metabom8_ortho_gram_schmidt_rcpp", (DL_FUNC) &_metabom8_ortho_gram_schmidt_rcpp, 2},
     {"_metabom8_nip_opls_rcpp", (DL_FUNC) &_metabom8_nip_opls_rcpp, 2},
     {"_metabom8_tss_rcpp", (DL_FUNC) &_metabom8_tss_rcpp, 1},

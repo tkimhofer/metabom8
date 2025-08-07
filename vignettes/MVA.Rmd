@@ -29,7 +29,6 @@ if (!has_data) {
 }
 ```
 
-# Multivariate statistical analysis
 
 This tutorial illustrates a multivariate statistical analysis workflow for NMR-based metabolic profilig using the *metabom8* R package.
 
@@ -43,7 +42,7 @@ library(nmrdata)
 ```
 
 
-## Data
+# Data
 
 Proton (^1^H) NMR data are available in the *nmrData* package (www.github.com/tkimhofer) and constitute standard 1D experiments acquired from murine urine samples. Samples were collected longitudinally with a single collection point before and multiple collection points after bariatric surgery was performed. Data acquisition was performed on a 600 MHz Bruker Avance III spectrometer, equipped with a 5 mm triple resonance (TXI) probe operating at 300 K. Further information on study design, experimental setup and data collection can be found in Jia Li *et al.*^[Li, Jia V., *et al.* (2011) Metabolic surgery profoundly influences gut microbial-host metabolic cross-talk. *Gut* 60.9, 1214-1223.]
 
@@ -58,7 +57,7 @@ Data have been preprocessed as illustrated in Tutorial I. In short, spectral reg
 
 Let's get started with the analysis:
 
-## Data import
+## Import
 Pre-processed data are imported with the `data()` command. The data are saved as a list, and the first task is to assign each list element to a variable.
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
 # Load data
@@ -89,7 +88,7 @@ The following variables should be in the R workspace after executing the code sn
 * *meta*  - spectrometer metadata, e.g., probe temperature at acquisition (not essential for this tutorial)
 
 
-## Visual inspection of the NMR data
+## Visual inspection
 Let's start with a visual inspection of the preprocessed NMR spectra using **matspec()**:
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
 # Visualise the first ten spectra
@@ -98,12 +97,15 @@ matspec(Xn[1:10,], ppm, shift = c(0,10), interactive=FALSE)
 
 The pre-processed spectra range from 0.5 to 9.5 ppm, the water signal has been removed and the baseline is fairly flat. 
 
-## Unsupervised Analysis
+# Unsupervised Analysis
+PCA offers an initial unsupervised view of major variation in the dataset, before moving to supervised approaches that directly incorporate the response variable.
+
+## PCA
 In the first analysis step, data are interrogated using Principal Component Analysis (PCA). PCA is a compression technique that represents high‑dimensional spectroscopic data (here, >56,300 spectral variables) with only a few latent (unobserved) components. Each principal component (PC) is a weighted linear combination of the original variables. The weights (PCA loadings) are chosen to preserve systematic variation across samples. Collinear variables—e.g., metabolites that share structural or biological relationships—tend to have similar PC loadings, and different PCs capture different variation trends.
 
 Typically, PCA provides a good overview of variable patterns by inspecting the first few components.
 
-In metabom8, a PCA can be calculated with **pca()**. Key input arguments are the preprocessed NMR matrix (*X=Xn*), the max. number of principal components (*pc=2*), and centering/scaling parameters. Here, the data will be mean centered (*center=TRUE*) and unit variance scaled (*scale="UV"*).
+In `metabom8`, a PCA can be calculated with **pca()**. Key input arguments are the preprocessed NMR matrix (*X=Xn*), the max. number of principal components (*pc=2*), and centering/scaling parameters. Here, the data will be mean centered (*center=TRUE*) and unit variance scaled (*scale="UV"*).
 
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
 # Perform PCA
@@ -112,6 +114,7 @@ pca_model=pca(X=Xn, pc=2, scale='UV', center=TRUE)
 
 The object *pca.model* contains different slots describing the PCA model - including the scores (*t*) and model loadings (*p*) for each PC.
 
+### Scores Plot
 PCA scores can be visualised with **plotscores()** and loadings with **plotload()**. Input include the PCA model (*obj=pca_model*), , the axes to plot (*pc=c(1,2)*), and a list that specifies aesthetics such as point colour (*an=list([variable])*).
 
 In this example, point colour indicates the treatment (e.g., surgical procedure): none (Pre‑op), Roux‑en‑Y gastric bypass (RYGB, a type of bariatric surgery), or sham surgery. The latter is a control group, included to account for incidental effects induced by the surgical procedure (anesthesia, incision, etc.).
@@ -141,6 +144,8 @@ plotscores(obj=pca_model, pc=c(1,2), an=list(
   title='PCA - Scores plot')
 ```
 
+### Loadings Plot
+
 In NMR-based metabonomics, PCA loadings are typically visualised as line plots resembling conventional NMR spectra. In metabom8, this is done by the **plotload()** function. It's primary inputs are the PCA model object (*mod=pca_model*) and the number of the principal component to display (eg., *pc=1*). In the example below, loadings for the first and second principal components are plotted individually. The final plot focuses on the aromatic chemical shift region (6–9 ppm).
 
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
@@ -157,14 +162,14 @@ In the loadings plot:
 
 PCA scores and loadings plots are inherently linked: peaks highlighted in warm colours (e.g., red) correspond to variables that are most influential in distinguishing samples with positive (or negative) scores. The direction (up or down) indicates the sign of the association.
 
-## Unsupervised vs Supervised Analysis
+#  Supervised Analysis
 A clustering trend by surgery type is visible in the PCA scores plot. However, PCA is an unsupervised technique: it does not explicitly model group differences (e.g., sham vs RYGB surgery) or trends related to a continuous outcome variable (e.g., recovery time).
 In human NMR urine spectra, PCA often highlights variation from environmental factors (e.g., diet, medication). In contrast, the murine samples in this study were acquired under tightly controlled conditions (e.g., defined diet and light/dark cycles), thereby reducing unrelated variability and allowing treatment effects to emerge more clearly—even in the first two components.
 
 To explicitly model treatment effects, we use a supervised approach: Orthogonal Projections to Latent Structures, or **Orthogonal Partial Least Squares (O-PLS)**.^[Trygg, J., *et al.* (2002). Orthogonal projections to latent structures (O-PLS). *Journal of Chemometrics*, 16.3, 119-28.]
 
 
-### O-PLS
+## O-PLS
 O-PLS extends PCA by associating the NMR data matrix (X) with an external outcome variable (Y), such as treatment group. It decomposes systematic variation into Y-predictive and Y-orthogonal components. The predictive component captures variation directly associated with the outcome, while the orthogonal components model structured variation that is independent of Y—often technical or biological noise (e.g., batch effects).
 
 Only the predictive component is used for interpretation with respect to the study outcome. 
@@ -179,6 +184,21 @@ Cross‑validation is used to determine the optimal number of orthogonal compone
 - Classification (categorical Y): Performance is assessed by the cross‑validated area under the receiver operating characteristic curve ($AUROC_{CV}$), which is 1 for perfect prediction, ~0.5 for chance‑level, and approaches 0 for systematically inverted predictions.
 In metabom8, the number of components is selected automatically using cross‑validated $Q^2$ (regression) or $AUROC_{CV}$ (classification), stopping when additional orthogonal components no longer improve the chosen metric.
 
+### Cross-validation (CV) methods
+`metabom8` implements both k-fold cross-validation and Monte Carlo cross-validation (MCCV) to assess model generalisability and guide component selection.
+
+- **K-fold CV**: The dataset is randomly partitioned into k approximately equal-sized subsets (folds). In each round, one fold is held out as the test set, and the model is trained on the remaining k – 1 folds. This is repeated k times so that each subset serves once as the test set. The average performance across folds is used to evaluate predictive power. This approach is straightforward and efficient for moderately sized datasets.
+
+- **Monte Carlo CV (MCCV)**: Also known as repeated random subsampling CV, this approach involves repeatedly (e.g., 50–200 times) splitting the data into a training set and test set at random. A fixed proportion of the data (e.g., 2/3) is used for training, and the remaining 1/3 for testing in each iteration. Since samples are randomly reassigned in each repetition, MCCV provides a more robust estimate of model stability and variance, particularly useful for smaller datasets.
+
+**Parameters:**
+
+- For k-fold, the parameter k defines the number of folds.
+- For MCCV, two parameters are relevant:
+  - k: Number of resampling repetitions (e.g., 100)
+  - ratio: Proportion of the dataset used for training in each round (e.g., 2/3)
+
+MCCV allows for greater randomness and variance estimation across splits, especially when the total sample size is small and strict partitioning into folds would leave very few samples in each test set.
 
 ### O-PLS model training and statistical validation
 An O-PLS model is calculated with the function **olps()**. The minimum input arguments are the NMR data matrix (*X=Xn*) and the outcome variable(s) of interest (*Y=[outcome variable]*), such as surgical procedure. Additional arguments are available—e.g., statistical validation settings—but these are not discussed here. Further details can be found in the function help: *?opls*.
@@ -207,7 +227,7 @@ knitr::kable(summary(opls.model))
 - $R2Y$ represents the variation explained in the outcome variable Y.
 
 Both values range from 0 to 1, where values closer to 1 imply stronger model fit.
-
+## OPLS Model Interpreation
 ### Distance to the Model in *X* Space 
 DModX is a diagnostic tool used to identify model outliers based on their distance to the O-PLS model in X space. In this context, X refers to the NMR data matrix. You can compute DModX using  **dmodx()** function:
 ```{r, fig.show='hold', fig.width = 6, fig.height = 5, message=FALSE, warning=FALSE}
@@ -215,7 +235,7 @@ distX=dmodx(mod =opls.model, plot=TRUE)
 ```
 In the plot, each point corresponds to a sample, and the dotted line represents the 95% confidence limit. Samples above this threshold are considered moderate outliers. If a trend or structure is observed among the outliers, further investigation is warranted. The variable *distX* is a data frame of DModX values that can be used for additional inspection.
 
-## Visualisation of O-PLS Scores and Loadings
+### Visualisation of O-PLS Scores and Loadings
 O-PLS results are typically visualised using scores plots, where the x-axis shows the predictive component and the y-axis shows one orthogonal component. Use **plotscores()** to create this plot (refer to the PCA section for input structure). One additional argument is *cv.scores*, which determines whether cross-validated (CV) scores are shown. These CV scores are estimated during internal validation and are more robust than standard scores.
 
 ```{r, fig.show='hold', fig.width = 6, fig.height = 5, message=FALSE, warning=FALSE}
@@ -231,7 +251,7 @@ The resulting plot shows clear separation between the surgery groups, with discr
 
 The y-axis (orthogonal component) is mathematically unrelated to the outcome Y. Still, it can sometimes capture technical or systematic effects. In this case, it appears related to spectral normalisation, part of the data preprocessing pipeline (not shown here).
 
-### Loadings Plot
+### Loadings Plot and Spetral Overlay
 
 To visualise variable contributions to the predictive component, use plotload():
 

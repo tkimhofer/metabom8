@@ -39,10 +39,19 @@ opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
   type <- smod@type
 
   perms <- lapply(seq_len(n), function(i) {
-    Y_perm <- matrix(sample(Y[, 1]), ncol = 1)
+    Y_perm <- Y[sample(1:nrow(Y)),]
+    colnames(Y_perm) = smod@Y$cname[,1]
+
     stats <- .permYmod(Xs, Y_perm, cv, type, nc_o)
-    list(ind = stats, r = cor(Y[, 1], Y_perm[, 1])[1])
+
+    list(ind = stats, r = mean(abs(diag(cor(Y_perm, Y)))))
   })
+
+  # perms <- lapply(seq_len(n), function(i) {
+  #   Y_perm <- matrix(sample(Y[, 1]), ncol = 1)
+  #   stats <- .permYmod(Xs, Y_perm, cv, type, nc_o)
+  #   list(ind = stats, r = cor(Y[, 1], Y_perm[, 1])[1])
+  # })
 
   out_df <- as.data.frame(do.call(rbind, lapply(perms, function(p){
     ind_vec <- unlist(p$ind)
@@ -56,7 +65,7 @@ opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
   model_comp <- smod@summary[idx, ]
 
   if (grepl('DA', smod@type)){
-    real_stats <- data.frame(r2_comp=NA_real_, q2_comp=NA_real_, aucs_tr=model_comp$aucs_tr, aucs_te=model_comp$aucs_te, r = 1, model="Non-permuted")
+    real_stats <- data.frame(r2_comp=NA_real_, q2_comp=NA_real_, aucs_tr=model_comp$AUROC, aucs_te=model_comp$AUROC_CV, r = 1, model="Non-permuted")
   } else{
     real_stats <- data.frame(r2_comp=model_comp$R2Y, q2_comp=model_comp$Q2, aucs_tr=NA_real_, aucs_te=NA_real_, r = 1, model="Non-permuted")
   }
@@ -70,7 +79,7 @@ opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
   if (plot) {
 
 
-    if (smod@type=='DA'){
+    if (grepl('DA', smod@type)){
       dd <- reshape2::melt(out_df[,c('aucs_tr', 'aucs_te', 'r_abs', 'model')], id.vars = c("model", "r_abs"))
     }
     else{

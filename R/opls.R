@@ -1,9 +1,11 @@
-#' @title Orthogonal Partial Least Squares (O-PLS)
-#'
-#' @description
-#' Fits an O-PLS model for regression or classification (discriminant analysis).
-#' The number of orthogonal components is determined via cross-validation and
-#' overfitting criteria.
+#' #' @title Orthogonal Partial Least Squares (O-PLS)
+#' #'
+#' #' @description
+#' #' Fits an Orthogonal Projections to Latent Structures (O-PLS) model for regression or classification.
+#' #' The number of orthogonal components is automatically selected using internal cross-validation.
+#' #' To avoid underfitting, components are added incrementally, while overfitting is prevented by requiring
+#' that each new component improves predictive performance beyond a defined threshold (ΔQ² / ΔAUROC > 0.05).
+#' This ensures the model captures relevant structure without modelling noise or irrelevant variation.
 #'
 #' @param X Numeric matrix or data frame of predictors. Rows are samples; columns are features.
 #' @param Y Response variable. Vector or matrix. For classification, should be a factor or class labels; for regression, a numeric vector or matrix.
@@ -31,11 +33,96 @@
 #' data("covid")
 #' mod <- opls(X, an$type)
 #' summary(mod)
-#' plot(mod)
 opls <- function(X, Y, center = TRUE, scale = "UV",
                  cv = list(method = "k-fold_stratified", k = 7, split = 2/3),
                  maxPCo = 5, plotting = TRUE) {
 
+  inputs <- .prepareInputs(X, Y, center, scale)
+  type <- inputs$type
+  is_multi_Y <- grepl('mY', type)
+  class_memb <- if (is_multi_Y) sub("^Numeric\\.", "", names(apply(inputs$Ydummy[,-1], 2, which.max))) else NULL
+
+  msd_y <- .sdRcpp(inputs$Y)
+  msd_x <- .sdRcpp(inputs$X)
+  XcsTot <- .scaleMatRcpp(inputs$X, 0:(nrow(inputs$X) - 1), center = TRUE, scale_type = inputs$scale_code)[[1]]
+  YcsTot <- .scaleMatRcpp(inputs$Y, 0:(nrow(inputs$Y) - 1), center = TRUE, scale_type = inputs$scale_code)[[1]]
+  tssx <- .tssRcpp(XcsTot)
+  tssy <- .tssRcpp(YcsTot) / ncol(YcsTot)
+
+  cv <- .generateCv(inputs$Y, type, cv)
+  r2_comp <- r2x_comp <- q2_comp <- aucs_tr <- aucs_te <- array()
+  nc <- 1
+  overfitted <- FALSE
+
+  while (!overfitted) {
+    tt <- if (nc == 1) .oplsComponentCv(inputs$X, inputs$Y, cv$cv_sets, nc, mod.cv = NULL)
+    else .oplsComponentCv(X = NA, inputs$Y, cv$cv_sets, nc, mod.cv = tt)
+
+    preds_test <- .extMeanCvFeat(tt, feat = 'y_pred_test', cv_type = cv$method, model_type = type)
+    preds_train <- .extMeanCvFeat(tt, feat = 'y_pred_train', cv_type = cv$method, model_type = type)
+
+    perf <- .evalComponentPerformance(strsplit(cv$method, '_')[[1]][1], type, is_multi_Y, Y, preds_train, preds_test, class_memb, YcsTot, tssy)
+    q2_comp[nc] <- perf$q2
+    r2_comp[nc] <- perf$r2
+    aucs_te[nc] <- perf$aucs_te
+    aucs_tr[nc] <- perf$aucs_tr
+
+    overfitted <- .evalFit(type, q2_comp, aucs_te, maxPCo+1)
+
+    if (nc >= 2) {
+      if (nc == 2) {
+        opls_filt <- .nipOplsRcpp(XcsTot, YcsTot)
+        t_orth <- opls_filt$t_o
+        p_orth <- opls_filt$p_o
+        w_orth <- t(opls_filt$w_o)
+      } else {
+        opls_filt <- .nipOplsRcpp(opls_filt$X_res, YcsTot)
+        t_orth <- cbind(t_orth, opls_filt$t_o)
+        p_orth <- rbind(p_orth, opls_filt$p_o)
+        w_orth <- rbind(w_orth, t(opls_filt$w_o))
+      }
+      pred_comp <- .nipPlsCompRcpp(opls_filt$X_res, YcsTot, it_max = 800, eps = 1e-8)
+      r2x_comp[nc - 1] <- .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, NULL)
+    }
+
+    if (overfitted) {
+      message(sprintf("An O-PLS-%s model with 1 predictive and %d orthogonal components was fitted.", type, nc - 1))
+      pred_comp$t_o_cv <- matrix(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[,1:(nc-1), drop=FALSE], ncol = nc - 1)
+      pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type)[,nc-1, drop=FALSE], ncol = 1)
+      pred_comp$t_o <- t_orth
+    }
+
+    nc <- nc + 1
+  }
+
+  .finaliseOplsModel(
+    pred_comp = pred_comp,
+    t_orth = t_orth,
+    p_orth = p_orth,
+    w_orth = w_orth,
+    XcsTot = XcsTot,
+    YcsTot = YcsTot,
+    msd_x = msd_x,
+    msd_y = msd_y,
+    r2x_comp = r2x_comp,
+    r2_comp = r2_comp,
+    q2_comp = q2_comp,
+    aucs_tr = aucs_tr,
+    aucs_te = aucs_te,
+    type = type,
+    nc = nc,
+    maxPCo = maxPCo,
+    cv = cv,
+    plotting = plotting,
+    original_X = X,
+    original_Y = Y,
+    Y_dummy_cnam = colnames(inputs$Y)
+  )
+}
+
+
+# Helper: Prepare and validate input
+.prepareInputs <- function(X, Y, center, scale) {
   if (is.data.frame(X)) X <- as.matrix(X)
   if (!is.logical(center)) stop("Check center parameter argument!")
 
@@ -47,177 +134,113 @@ opls <- function(X, Y, center = TRUE, scale = "UV",
 
   x_check <- .checkXclassNas(X)
   y_check <- .checkYclassNas(Y)
+  .checkDimXY(X, y_check[[1]])
 
-  xy_check <- .checkDimXY(X, y_check[[1]])
-  type <- y_check[[3]]
-  is_multi_Y <- grepl('mY', type)
+  list(X = X, Y = y_check[[1]], Ydummy = y_check[[2]],
+       type = y_check[[3]], scale_code = sc_num)
+}
 
-  if (is_multi_Y) {
-    idx_clmemb = apply(y_check[[2]][,-1], 2, which.max)
-    class_memb = sub("^Numeric\\.", "", names(idx_clmemb[order(idx_clmemb)]))
-  }
-
-  msd_y <- .sdRcpp(y_check[[1]])
-  msd_x <- .sdRcpp(X)
-  XcsTot <- .scaleMatRcpp(X, 0:(nrow(X) - 1), center = TRUE, scale_type = sc_num)[[1]]
-  YcsTot <- .scaleMatRcpp(y_check[[1]], 0:(nrow(y_check[[1]]) - 1), center = TRUE, scale_type = sc_num)[[1]]
-
-  tssx <- .tssRcpp(XcsTot)
-  tssy <- .tssRcpp(YcsTot) / ncol(YcsTot)
-
-  cv$cv_sets <- .cvSetsMethod(Y = y_check[[1]], type = type,
-                              method = cv$method, k = cv$k, split = cv$split)
+# Helper: Generate cross-validation folds
+.generateCv <- function(Y, type, cv) {
+  cv$cv_sets <- .cvSetsMethod(Y, type, method = cv$method, k = cv$k, split = cv$split)
   cv$k <- length(cv$cv_sets)
+  cv
+}
 
-  r2_comp <- r2x_comp <- q2_comp <- aucs_tr <- aucs_te <- array()
-  nc <- 1
-  overfitted <- FALSE
-
-  while (!overfitted) {
-    if (nc == 1) {
-      tt <- .oplsComponentCv(X, Y = y_check[[1]], cv$cv_sets, nc, mod.cv = NULL)
+# Helper: Evaluate component performance
+.evalComponentPerformance <- function(cv_method, type, is_multi_Y, Y, preds_train, preds_test, class_memb, YcsTot, tssy) {
+  if (cv_method == 'MC') {
+    if (grepl('DA', type)) {
+      if (is_multi_Y) {
+        colnames(preds_test) <- colnames(preds_train) <- class_memb
+        auc_te <- multiclass.roc(response = factor(Y), predictor = preds_test, quiet = TRUE)$auc
+        auc_tr <- multiclass.roc(response = factor(Y), predictor = preds_train, quiet = TRUE)$auc
+      } else {
+        auc_te <- roc(response = Y, predictor = as.vector(preds_test), quiet = TRUE)$auc
+        auc_tr <- roc(response = Y, predictor = as.vector(preds_train), quiet = TRUE)$auc
+      }
+      list(q2 = NA, r2 = NA, aucs_te = auc_te, aucs_tr = auc_tr)
     } else {
-      tt <- .oplsComponentCv(X = NA, Y = y_check[[1]], cv$cv_sets, nc, mod.cv = tt)
+      list(q2 = .r2(YcsTot, preds_test, tssy), r2 = .r2(YcsTot, preds_train, NULL), aucs_te = NA, aucs_tr = NA)
     }
-
-    preds_test <- .extMeanCvFeat(tt, feat = 'y_pred_test', cv_type = cv$method, model_type = type)
-    preds_train <- .extMeanCvFeat(tt, feat = 'y_pred_train', cv_type = cv$method, model_type = type)
-
-    cv_method <- strsplit(cv$method, '_')[[1]][1]
-    is_DA <- grepl('DA', type)
-    is_multi_Y <- grepl('mY', type)
-
-    if (cv_method == 'MC') {
-      if (is_DA) {
-        if (is_multi_Y) {
-          clmem_test = preds_test[1, , ] # mean
-          colnames(clmem_test) = class_memb
-          mod <- multiclass.roc(response = factor(Y), predictor = clmem_test, quiet=TRUE)
-          aucs_te[nc] <- mod$auc
-
-          clmem_train = preds_test[1, , ] # mean
-          colnames(clmem_train) = class_memb
-          mod <- multiclass.roc(response = factor(Y), predictor = clmem_train, quiet=TRUE)
-          aucs_tr[nc] <- mod$auc
-        } else {
-          mod <- roc(response = Y, predictor = preds_test[1, ], quiet=TRUE)
-          aucs_te[nc] <- mod$auc
-          mod <- roc(response = Y, predictor = preds_train[1, ], quiet=TRUE)
-          aucs_tr[nc] <- mod$auc
-        }
+  } else {
+    if (grepl('DA', type)) {
+      if (is_multi_Y) {
+        colnames(preds_test) <- colnames(preds_train) <- class_memb
+        auc_te <- multiclass.roc(response = Y, predictor = preds_test, quiet = TRUE)$auc
+        auc_tr <- multiclass.roc(response = Y, predictor = preds_train, quiet = TRUE)$auc
       } else {
-        r2_comp[nc] <- .r2(YcsTot, preds_train[1, , drop = FALSE], NULL)
-        q2_comp[nc] <- .r2(YcsTot, preds_test[1, , drop = FALSE], tssy)
+        auc_te <- roc(response = Y, predictor = as.vector(preds_test), quiet = TRUE)$auc
+        auc_tr <- roc(response = Y, predictor = as.vector(preds_train), quiet = TRUE)$auc
       }
-    } else if (cv_method == 'k-fold') {
-      if (is_DA) {
-        if (is_multi_Y) {
-          clmem_test = apply(preds_test, 2, as.numeric)
-          colnames(clmem_test) = class_memb
-          mod <- multiclass.roc(response = Y, predictor = clmem_test, quiet=TRUE)
-          aucs_te[nc] <- mod$auc
-
-          clmem_train = preds_train[1, , ]
-          colnames(clmem_train) = class_memb
-          mod <- multiclass.roc(response = Y, predictor = clmem_train, quiet=TRUE)
-          aucs_tr[nc] <- mod$auc
-        } else {
-          mod <- roc(response = Y, predictor = preds_test[,1], quiet=TRUE)
-          aucs_te[nc] <- mod$auc
-          mod <- roc(response = Y, predictor = preds_train[1, ], quiet=TRUE)
-          aucs_tr[nc] <- mod$auc
-        }
-      } else {
-        r2_comp[nc] <- .r2(YcsTot, as.vector(preds_train[1, , drop = FALSE]), NULL)
-        q2_comp[nc] <- .r2(YcsTot, preds_test[, 1], tssy)
-      }
+      list(q2 = NA, r2 = NA, aucs_te = auc_te, aucs_tr = auc_tr)
+    } else {
+      list(q2 = .r2(YcsTot, preds_test, tssy), r2 = .r2(YcsTot, as.vector(preds_train), NULL), aucs_te = NA, aucs_tr = NA)
     }
-
-    overfitted <- .evalFit(type, q2_comp, aucs_te, maxPCo+1)
-
-    if (nc >= 2) {
-      if (nc == 2) {
-        opls_filt <- .nipOplsRcpp(X = XcsTot, Y = YcsTot)
-        t_orth <- opls_filt$t_o
-        p_orth <- opls_filt$p_o
-        w_orth <- t(opls_filt$w_o)
-      } else {
-        opls_filt <- .nipOplsRcpp(X = opls_filt$X_res, Y = YcsTot)
-        t_orth <- cbind(t_orth, opls_filt$t_o)
-        p_orth <- rbind(p_orth, opls_filt$p_o)
-        w_orth <- rbind(w_orth, t(opls_filt$w_o))
-      }
-      pred_comp <- .nipPlsCompRcpp(X = opls_filt$X_res, Y = YcsTot)
-      r2x_comp[nc - 1] <- .r2(opls_filt$X_res, pred_comp$t_x %*% pred_comp$p_x, NULL)
-    }
-
-    if (overfitted) {
-      message(sprintf("An O-PLS-%s model with 1 predictive and %d orthogonal components was fitted.",
-                      type, nc - 1))
-      pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type), ncol = 1)
-
-
-      if (grepl('MC', cv$method)) {
-        message('MC')
-        pred_comp$t_o_cv <- matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[1,]),#[, nc - 1]),
-                                   ncol = nc - 1)
-        pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type)[1,], ncol = 1)
-      }else{
-        pred_comp$t_o_cv <- matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[, nc - 1]),#[, nc - 1]),
-                                   ncol = nc - 1)
-        pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type), ncol = 1)
-      }
-
-      # if (grepl('MC', cv$method)) {
-      #   message('MC')
-      #   pred_comp$t_o_cv <- matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[1,, nc - 1]),#[, nc - 1]),
-      #                              ncol = nc - 1)
-      #   pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type)[1,,], ncol = 1)
-      # }else{
-      #   pred_comp$t_o_cv <- matrix(t(.extMeanCvFeat(tt, 't_xo', cv_type = cv$method, model_type = type)[, nc - 1]),#[, nc - 1]),
-      #                              ncol = nc - 1)
-      #   pred_comp$t_cv <- matrix(.extMeanCvFeat(tt, 't_xp', cv_type = cv$method, model_type = type), ncol = 1)
-      # }
-      pred_comp$t_o <- t_orth
-    }
-    nc <- nc + 1
   }
+}
 
-  m_summary <- .orthModelCompSummary(type, c(r2x_comp, NA), r2_comp, q2_comp, aucs_te, aucs_tr, cv)
+.finaliseOplsModel <- function(pred_comp, t_orth, p_orth, w_orth,
+                               XcsTot, YcsTot, msd_x, msd_y,
+                               r2x_comp, r2_comp, q2_comp, aucs_tr, aucs_te,
+                               type, nc, maxPCo, cv, plotting,
+                               original_X, original_Y, Y_dummy_cnam) {
+
+  m_summary <- .orthModelCompSummary(
+    type = type,
+    r2x_comp = c(r2x_comp, NA),
+    r2_comp = r2_comp,
+    q2_comp = q2_comp,
+    aucs_tr = aucs_tr,
+    aucs_te = aucs_te,
+    cv = cv
+  )
   if (plotting) plot(m_summary[[2]])
 
+  # Final matrices
   Xorth <- t_orth %*% p_orth
   Xpred <- pred_comp$t_x %*% pred_comp$p_x
   E <- XcsTot - (Xpred + Xorth)
   Y_res <- YcsTot - (pred_comp$t_y %*% t(pred_comp$p_y))
 
-  pars <- list(center = center, scale = scale, nPredC = 1, nOrthC = nc - 1,
-               maxPCo = maxPCo, cv = cv, tssx = tssx, tssy = tssy)
+  # Parameters
+  pars <- list(
+    center = TRUE,
+    scale = "UV",
+    nPredC = 1,
+    nOrthC = nc - 1,
+    maxPCo = maxPCo,
+    cv = cv,
+    tssx = .tssRcpp(XcsTot),
+    tssy = .tssRcpp(YcsTot) / ncol(YcsTot)
+  )
 
+  # Return S4 object
   new("OPLS_metabom8",
-      type = type,
-      t_pred = pred_comp$t_x,
-      p_pred = pred_comp$p_x,
-      w_pred = pred_comp$w_x,
-      betas_pred = drop(pred_comp$b),
-      Qpc = pred_comp$w_y,
-      t_pred_cv = pred_comp$t_cv,
-      t_orth_cv = pred_comp$t_o_cv,
-      t_orth = t_orth,
-      w_orth = w_orth,
-      p_orth = p_orth,
-      nPC = nc - 1,
-      summary = m_summary[[1]],
-      X_orth = Xorth,
-      Y_res = Y_res,
-      X_res = E,
-      X_mean = msd_x[[2]],
-      X_sd = msd_x[[1]],
-      Y_mean = msd_y[[2]],
-      Y_sd = msd_y[[1]],
-      Parameters = pars,
-      X = X,
-      X_scaled = XcsTot,
-      Y = list(ori = Y, dummy = y_check[[1]])
+      type        = type,
+      t_pred      = pred_comp$t_x,
+      p_pred      = pred_comp$p_x,
+      w_pred      = pred_comp$w_x,
+      betas_pred  = drop(pred_comp$b),
+      Qpc         = pred_comp$w_y,
+      t_pred_cv   = pred_comp$t_cv,
+      t_orth_cv   = pred_comp$t_o_cv,
+      t_orth      = t_orth,
+      w_orth      = w_orth,
+      p_orth      = p_orth,
+      nPC         = nc - 1,
+      summary     = m_summary[[1]],
+      X_orth      = Xorth,
+      Y_res       = Y_res,
+      X_res       = E,
+      X_mean      = msd_x[[2]],
+      X_sd        = msd_x[[1]],
+      Y_mean      = msd_y[[2]],
+      Y_sd        = msd_y[[1]],
+      Parameters  = pars,
+      X           = original_X,
+      X_scaled    = XcsTot,
+      Y           = list(ori = original_Y, dummy = YcsTot, cname=Y_dummy_cnam)
   )
 }
+

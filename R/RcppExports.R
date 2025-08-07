@@ -2,72 +2,93 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 .nipPcaCompRcpp <- function(X) {
-    .Call('_metabom8_nip_pca_comp_rcpp', PACKAGE = 'metabom8', X)
+    .Call(`_metabom8_nip_pca_comp_rcpp`, X)
 }
 
-.multiY_TwRcpp <- function(X, Y) {
-    .Call('_metabom8_multiY_Tw_rcpp', PACKAGE = 'metabom8', X, Y)
+#' Summarise Multivariate Y Weights via PCA
+#'
+#' Computes X-weight vectors for each response variable in a multivariate outcome matrix `Y`,
+#' then performs PCA on these weights to extract shared predictive structure.
+#' Useful when `Y` has multiple columns (e.g., for multiclass problems).
+#' Conecptually similar to Canonical Correlation Analysis (CCA) and Multiblock PLS.
+#'
+#' @param X A numeric matrix (n × p): predictor matrix.
+#' @param Y A numeric matrix (n × k): response matrix with k variables.
+#'
+#' @return A matrix (p × r) of PCA scores, where r is the number of retained components.
+#' @details
+#' The function first computes weights for each column in `Y` using least-squares projection,
+#' forming a weight matrix `W_x`. PCA is then applied to this matrix using NIPALS,
+#' and score components are extracted until the explained variance ratio drops below a threshold.
+#' @examples
+#' \dontrun{
+#'   T_w <- multiY_Tw_rcpp(X, Y)
+#' }
+#'
+#' @export
+multiY_Tw_rcpp <- function(X, Y, it_max, eps) {
+    .Call(`_metabom8_multiY_Tw_rcpp`, X, Y, it_max, eps)
 }
 
-.nipPlsCompRcpp <- function(X, Y) {
-    .Call('_metabom8_nip_PLS_comp_rcpp', PACKAGE = 'metabom8', X, Y)
+.nipPlsCompRcpp <- function(X, Y, it_max, eps) {
+    .Call(`_metabom8_nip_PLS_comp_rcpp`, X, Y, it_max, eps)
 }
 
 .orthoGramSchmidtRcpp <- function(u, v) {
-    .Call('_metabom8_ortho_gram_schmidt_rcpp', PACKAGE = 'metabom8', u, v)
+    .Call(`_metabom8_ortho_gram_schmidt_rcpp`, u, v)
 }
 
 .nipOplsRcpp <- function(X, Y) {
-    .Call('_metabom8_nip_opls_rcpp', PACKAGE = 'metabom8', X, Y)
+    .Call(`_metabom8_nip_opls_rcpp`, X, Y)
 }
 
 .tssRcpp <- function(X) {
-    .Call('_metabom8_tss_rcpp', PACKAGE = 'metabom8', X)
+    .Call(`_metabom8_tss_rcpp`, X)
 }
 
 .oplsPredRcpp <- function(opls_mod, pred_mod, Xnew) {
-    .Call('_metabom8_opls_pred_rcpp', PACKAGE = 'metabom8', opls_mod, pred_mod, Xnew)
+    .Call(`_metabom8_opls_pred_rcpp`, opls_mod, pred_mod, Xnew)
 }
 
 .plsPredRcpp <- function(pls_mod, Xnew) {
-    .Call('_metabom8_pls_pred_rcpp', PACKAGE = 'metabom8', pls_mod, Xnew)
+    .Call(`_metabom8_pls_pred_rcpp`, pls_mod, Xnew)
 }
 
 #' @keywords internal
 .calcPhi <- function(ph0, ph1, le) {
-    .Call('_metabom8_calcPhi', PACKAGE = 'metabom8', ph0, ph1, le)
+    .Call(`_metabom8_calcPhi`, ph0, ph1, le)
 }
 
 #' @keywords internal
 .phase1d <- function(sp_re, sp_im, ph0, ph1) {
-    .Call('_metabom8_phase1d', PACKAGE = 'metabom8', sp_re, sp_im, ph0, ph1)
+    .Call(`_metabom8_phase1d`, sp_re, sp_im, ph0, ph1)
 }
 
 #' @keywords internal
 .phaseTsp <- function(sp_re, sp_im, ppm, ph0, ph1, idx_tsp) {
-    .Call('_metabom8_phaseTsp', PACKAGE = 'metabom8', sp_re, sp_im, ppm, ph0, ph1, idx_tsp)
+    .Call(`_metabom8_phaseTsp`, sp_re, sp_im, ppm, ph0, ph1, idx_tsp)
 }
 
 #' @keywords internal
 .zerofil <- function(fid, zf, le_ori) {
-    .Call('_metabom8_zerofil', PACKAGE = 'metabom8', fid, zf, le_ori)
+    .Call(`_metabom8_zerofil`, fid, zf, le_ori)
 }
 
 #' @keywords internal
 .cplxFft <- function(fid) {
-    .Call('_metabom8_cplxFft', PACKAGE = 'metabom8', fid)
+    .Call(`_metabom8_cplxFft`, fid)
 }
 
 #' @keywords internal
 .defineChemShiftPpm <- function(sf_mhz, sw_hz, n_sp_re, dref, ref) {
-    .Call('_metabom8_defineChemShiftPpm', PACKAGE = 'metabom8', sf_mhz, sw_hz, n_sp_re, dref, ref)
+    .Call(`_metabom8_defineChemShiftPpm`, sf_mhz, sw_hz, n_sp_re, dref, ref)
 }
 
 #' @title Calibrate
 #' @return Shift-adjusted ppm vector
 #' @keywords internal
 .calibTsp <- function(spec, ppm) {
-    .Call('_metabom8_calibTsp', PACKAGE = 'metabom8', spec, ppm)
+    .Call(`_metabom8_calibTsp`, spec, ppm)
 }
 
 #' @title Column-wise standard deviation and mean for a matrix
@@ -75,7 +96,7 @@
 #' @keywords internal
 #' @return list: 1. sd (num vec), 2. mean (sd vec)
 .sdRcpp <- function(X) {
-    .Call('_metabom8_sd_rcpp', PACKAGE = 'metabom8', X)
+    .Call(`_metabom8_sd_rcpp`, X)
 }
 
 #' @title Column-wise matrix scaling
@@ -87,6 +108,6 @@
 #' @return list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
 #' @keywords internal
 .scaleMatRcpp <- function(X, idc, center, scale_type) {
-    .Call('_metabom8_scale_rcpp', PACKAGE = 'metabom8', X, idc, center, scale_type)
+    .Call(`_metabom8_scale_rcpp`, X, idc, center, scale_type)
 }
 

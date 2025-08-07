@@ -429,7 +429,7 @@
 .cvSetsMethod <- function(Y, type, method = "k-fold_stratified", k = 7, split = 2/3) {
 
   if (grepl('mY', type)) {
-    Y <- as.matrix(Y[, 1, drop = FALSE])  # reduce Y to first column
+    Y <- as.matrix(Y)[, 1, drop = FALSE]  # reduce Y to first column
   }
 
   valid_methods <- c("k-fold", "k-fold_stratified", "MC", "MC_balanced")
@@ -461,9 +461,9 @@
 
 
 
-#' @title Create Dummy Encoding of a Response Vector
+#' @title One-Hot-Encoding of Response Vector
 #' @description
-#' Converts a response vector \code{Y} into a numeric dummy-coded matrix.
+#' Converts a response vector \code{Y} into a numeric matrix.
 #' If \code{Y} is numeric, it is returned as a column matrix.
 #' For factor or character vectors:
 #' \itemize{
@@ -494,65 +494,26 @@
 #' @keywords internal
 .createDummyY <- function(Y) {
   if (!is.numeric(Y)) {
-    Y_levels <- unique(Y)
-    if (length(Y_levels) == 2) {
-      Y_new <- cbind(as.numeric(as.factor(Y)))
-    } else {
-      Y_new <- matrix(-1, nrow = length(Y), ncol = length(Y_levels))
-      for (i in seq_len(length(Y_levels))) {
-        Y_new[which(Y == Y_levels[i]), i] <- 1
-      }
-      colnames(Y_new) <- Y_levels
+    Y_factor <- as.factor(Y)
+    Y_levels <- levels(Y_factor)
+
+    # One-hot encode all classes, including binary
+    Y_new <- matrix(0, nrow = length(Y), ncol = length(Y_levels))
+    colnames(Y_new) <- Y_levels
+
+    for (i in seq_along(Y_levels)) {
+      Y_new[, i] <- as.integer(Y_factor == Y_levels[i])
     }
-    Y_levs <- unique(data.frame(Original = Y, Numeric = Y_new, stringsAsFactors = FALSE))
+
+    # Optionally store mapping between original and encoded
+    Y_levs <- data.frame(Original = Y, Matrix = Y_new)
+
     return(list(Y_new, Y_levs))
   } else {
     return(list(cbind(Y), data.frame()))
   }
+
 }
-
-
-# .createDummyY <- function(y, reference = NULL) {
-#   if (is.null(y) || length(y) == 0) {
-#     stop("Argument 'y' must be a non-empty vector.")
-#   }
-#
-#   # Convert to factor if categorical
-#   if (is.character(y) || is.factor(y)) {
-#     y <- as.factor(y)
-#     lvls <- levels(y)
-#
-#     if (length(lvls) == 1) {
-#       stop("Only one class present in 'y'. Cannot create dummy matrix.")
-#     }
-#
-#     if (length(lvls) == 2) {
-#       # Binary classification
-#       if (!is.null(reference)) {
-#         if (!(reference %in% lvls)) {
-#           stop(sprintf("Reference level '%s' not found in y.", reference))
-#         }
-#         y <- relevel(y, ref = reference)
-#       }
-#
-#       dummy <- as.numeric(y == lvls[2])
-#       return(matrix(dummy, ncol = 1))
-#     } else {
-#       # Multiclass: one-hot encode
-#       dummy_mat <- matrix(0, nrow = length(y), ncol = length(lvls))
-#       colnames(dummy_mat) <- lvls
-#       for (i in seq_along(lvls)) {
-#         dummy_mat[, i] <- as.numeric(y == lvls[i])
-#       }
-#       return(dummy_mat)
-#     }
-#   } else if (is.numeric(y)) {
-#     # Regression
-#     return(matrix(y, ncol = 1))
-#   } else {
-#     stop("Unsupported data type for 'y'. Must be character, factor, or numeric.")
-#   }
-# }
 
 
 #' @title OPLS Component Estimation via Cross-Validation
@@ -583,59 +544,51 @@
 #'
 #' @keywords internal
 .oplsComponentCv <- function(X, Y, cv.set, nc, mod.cv) {
-  out <- lapply(seq_along(cv.set), function(k) {
+
+  if (nc == 1) {
+    mod.cv <- lapply(seq_along(cv.set), function(i) {
+      list(
+        t_xo = matrix(NA_real_, nrow = nrow(Y), ncol = 1),  # orth scores
+        t_xp = matrix(NA_real_, nrow = nrow(Y), ncol = 1),  # predictive scores
+        y_pred_train = matrix(NA_real_, nrow = nrow(Y), ncol = ncol(Y)),
+        y_pred_test = matrix(NA_real_, nrow = nrow(Y), ncol = ncol(Y)),
+        x_res = matrix(NA_real_, nrow = nrow(Y), ncol = ncol(X))  # residuals
+      )
+    })
+  } else {
+    mod.cv <- lapply(mod.cv, function(fold) {
+      fold$t_xo <- cbind(fold$t_xo, NA_real_)
+      fold$t_xp <- cbind(fold$t_xp, NA_real_) # single predictive component
+      fold
+    })
+  }
+
+  mod.cv <- lapply(seq_along(cv.set), function(k) {
     idc <- cv.set[[k]]
-    if (nc == 1) {
-      Xcs <- .scaleMatRcpp(X, idc - 1, center = TRUE, scale_type = 1)[[1]]
-    } else {
-      Xcs <- mod.cv[[k]]$x_res
-    }
 
-    Y_scale <- .scaleMatRcpp(Y, idc - 1, center = TRUE, scale_type = 1)
-    Ycs <- Y_scale[[1]]
+    Xcs <- if (nc == 1) .scaleMatRcpp(X, idc - 1, center = TRUE, scale_type = 1)[[1]] else mod.cv[[k]]$x_res
+    Ycs <- .scaleMatRcpp(Y, idc - 1, center = TRUE, scale_type = 1)[[1]]
 
-    opls_filt <- .nipOplsRcpp(X = Xcs[idc, ], Y = cbind(Ycs[idc, ]))
-    pred_comp <- .nipPlsCompRcpp(X = opls_filt$X_res, Y = cbind(Ycs[idc, ]))
+    opls_filt  <- .nipOplsRcpp(X = Xcs[idc, , drop = FALSE], Y = Ycs[idc, , drop = FALSE])
+    pred_comp  <- .nipPlsCompRcpp(opls_filt$X_res, Ycs[idc, , drop = FALSE], it_max = 800, eps = 1e-8)
 
-    Xte <- Xcs[-idc, ]
-    if (!is.matrix(Xte)) Xte <- matrix(Xte, nrow = 1)
+    Xte <- Xcs[-idc, , drop = FALSE]
     opls_pred <- .oplsPredRcpp(opls_mod = opls_filt, pred_mod = pred_comp, Xnew = Xte)
 
-    if (nc == 1) {
-      mod.cv <- list(
-        t_xo = matrix(NA, nrow = nrow(Y), ncol = 1),
-        t_xp = matrix(NA, nrow = nrow(Y), ncol = 1),
-        y_pred_train = matrix(NA, nrow = nrow(Y), ncol = ncol(Y)),
-        y_pred_test = matrix(NA, nrow = nrow(Y), ncol = ncol(Y)),
-        x_res = matrix(NA, nrow = nrow(Y), ncol = ncol(Xcs))
-      )
-      mod.cv$t_xo[-idc, nc] <- opls_pred$t_xo_new
-      mod.cv$t_xp[-idc, nc] <- opls_pred$t_pred
-      mod.cv$y_pred_train[idc, ] <- pred_comp$y_pred
-      mod.cv$y_pred_test[-idc, ] <- opls_pred$y_pred
-      mod.cv$x_res[idc, ] <- opls_filt$X_res
-      mod.cv$x_res[-idc, ] <- opls_pred$Xres
-      return(mod.cv)
-    } else {
-      mod.cv[[k]]$t_xo <- cbind(mod.cv[[k]]$t_xo, matrix(NA, nrow = nrow(Y), ncol = 1))
-      mod.cv[[k]]$t_xo[-idc, nc] <- opls_pred$t_xo_new
-      mod.cv[[k]]$t_xp <- matrix(NA, nrow = nrow(Y), ncol = 1)
-      mod.cv[[k]]$t_xp[-idc, 1] <- opls_pred$t_pred
+    # Xtr <- Xcs[idc, , drop = FALSE]
+    # opls_pred_tr <- .oplsPredRcpp(opls_mod = opls_filt, pred_mod = pred_comp, Xnew = Xtr)
 
-      y_pred_add <- matrix(NA, nrow = nrow(Y), ncol = ncol(Y))
-      y_pred_add[-idc, ] <- opls_pred$y_pred
-      mod.cv[[k]]$y_pred_test <- y_pred_add
+    mod.cv[[k]]$t_xo[-idc, nc]      <- opls_pred$t_xo_new
+    mod.cv[[k]]$t_xp[-idc, nc]      <- opls_pred$t_pred
+    mod.cv[[k]]$y_pred_train[idc, ] <- pred_comp$y_pred
+    mod.cv[[k]]$y_pred_test[-idc, ] <- opls_pred$y_pred
+    mod.cv[[k]]$x_res[idc, ]        <- opls_filt$X_res
+    mod.cv[[k]]$x_res[-idc, ]       <- opls_pred$Xres
 
-      y_pred_add1 <- matrix(NA, nrow = nrow(Y), ncol = ncol(Y))
-      y_pred_add1[idc, ] <- pred_comp$y_pred
-      mod.cv[[k]]$y_pred_train <- y_pred_add1
-
-      mod.cv[[k]]$x_res[idc, ] <- opls_filt$X_res
-      mod.cv[[k]]$x_res[-idc, ] <- opls_pred$Xres
-      return(mod.cv[[k]])
-    }
+    mod.cv[[k]]
   })
-  return(out)
+
+  return(mod.cv)
 }
 
 
@@ -666,36 +619,41 @@
 #' @importFrom stats sd
 #' @keywords internal
 .extMeanCvFeat <- function(cv_obj, feat = "t_xp", cv_type, model_type) {
+
+  ### feat t_xo -> can be more than single orthogonal component -> keep structure intact
+
   if (!feat %in% names(cv_obj[[1]])) stop("Feature name not in feature list.")
+  oc_ind <- (feat == 't_xo') && (ncol(cv_obj[[1]][[feat]]) > 1)
 
   inter <- lapply(cv_obj, `[[`, feat)
 
   if (grepl("MC", cv_type) || (grepl("k-fold", cv_type) && grepl("train", feat))) {
-    # Cross-validated data: summarize mean, SD, and coverage
-    if (grepl("mY", model_type)) {
-      f_mat <- abind::abind(inter, along = 3)
-      fout <- apply(f_mat, c(1, 2), function(x) {
-        valid <- which(!is.na(x))
-        # coverage <- length(valid) / length(x)
-        mean_val <- sum(x, na.rm = TRUE) / length(valid)
-        # sd_val <- stats::sd(x, na.rm = TRUE)
-        # c(mean = mean_val, sd = sd_val, coverage = coverage)
-        return(mean_val)
-      })
-    } else {
-      f_mat <- do.call(cbind, inter)
-      fout <- apply(f_mat, 1, function(x) {
-        idx <- which(!is.na(x))
-        # c(mean = mean(x[idx], na.rm = TRUE),
-        #   sd = stats::sd(x[idx], na.rm = TRUE),
-        #   coverage = length(idx) / length(x))
-        mean = mean(x[idx], na.rm = TRUE)
-        return(mean)
-      })
-    }
+    f_mat <- abind::abind(inter, along = 3)
+    fout <- apply(f_mat, c(1, 2), function(x) {
+      valid <- which(!is.na(x))
+      mean_val <- sum(x, na.rm = TRUE) / length(valid)
+      return(mean_val)
+    })
+    # if (grepl("mY", model_type)) {
+    #   f_mat <- abind::abind(inter, along = 3)
+    #   fout <- apply(f_mat, c(1, 2), function(x) {
+    #     valid <- which(!is.na(x))
+    #     mean_val <- sum(x, na.rm = TRUE) / length(valid)
+    #     return(mean_val)
+    #   })
+    # } else {
+    #   ### this is not bivariate Y, but it has multiple components for t_xo -> third dimension
+    #   # ned to make sure this is always column vector, even in only single column
+    #   f_mat <- do.call(cbind, inter)
+    #   fout <- apply(f_mat, 1, function(x) {
+    #     idx <- which(!is.na(x))
+    #     mean = mean(x[idx], na.rm = TRUE)
+    #     return(mean)
+    #   })
+    # }
   } else {
-    # No summary required, return raw CV output
     if (grepl("mY", model_type) || !grepl("mY", model_type)) {
+      # no mean required
       f_mat <- abind::abind(inter, along = 3)
       fout <- apply(f_mat, c(1, 2), function(x) {
         idx <- which(!is.na(x))
@@ -704,43 +662,30 @@
     }
   }
 
-  return(as.vector(fout))
+  return(fout)
 }
 
 .extMeanCvFeat_alt <- function(cv_obj, feat = "t_xp", cv_type, model_type) {
   if (!feat %in% names(cv_obj[[1]])) stop("Feature name not in feature list.")
-
   inter <- lapply(cv_obj, `[[`, feat)
-
-  ### accountinf for cv-type
-
   if (grepl("MC", cv_type) || (grepl("k-fold", cv_type) && grepl("train", feat))) {
-    # Cross-validated data: summarize mean, SD, and coverage
     if (grepl("mY", model_type)) {
-      # accounting for Y dimensions
-      cbind(inter)
+      # cbind(inter)
       f_mat <- abind::abind(inter, along = 3)
       fout <- apply(f_mat, c(1, 2), function(x) {
         valid <- which(!is.na(x))
-        # coverage <- length(valid) / length(x)
         mean_val <- sum(x, na.rm = TRUE) / length(valid)
-        # sd_val <- stats::sd(x, na.rm = TRUE)
-        # c(mean = mean_val, sd = sd_val, coverage = coverage)
         return(mean_val)
       })
     } else {
       f_mat <- do.call(cbind, inter)
       fout <- apply(f_mat, 1, function(x) {
         idx <- which(!is.na(x))
-        # c(mean = mean(x[idx], na.rm = TRUE),
-        #   sd = stats::sd(x[idx], na.rm = TRUE),
-        #   coverage = length(idx) / length(x))
         mean = mean(x[idx], na.rm = TRUE)
         return(as.vector(mean))
       })
     }
   } else {
-    # No summary required, return raw CV output
     if (grepl("mY", model_type) || !grepl("mY", model_type)) {
       f_mat <- abind::abind(inter, along = 3)
       fout <- apply(f_mat, c(1, 2), function(x) {
@@ -749,7 +694,6 @@
       })
     }
   }
-
 
   return(fout)
 }
@@ -830,7 +774,7 @@
   model_summary <- switch(type,
                           'DA' = data.frame(
                             PC_pred = 1,
-                            PC_orth = seq_along(q2_comp),
+                            PC_orth = seq_along(aucs_tr),
                             R2X = round(r2x_comp, 2),
                             AUROC = round(aucs_tr, 2),
                             AUROC_CV = round(aucs_te, 2)
@@ -846,7 +790,6 @@
 
   model_summary$PC_orth <- seq_len(nrow(model_summary))
 
-  # Reshape for plotting
   mm <- reshape2::melt(model_summary, id.vars = c("PC_orth", "PC_pred"))
   mm$PC <- paste0(mm$PC_pred, '+', mm$PC_orth)
   mm$alph <- 1
@@ -855,6 +798,8 @@
   # Avoid very negative bars pulling down y-axis
   idx <- which(mm$value < (-0.015) & mm$variable == 'Q2')
   mm$value[idx] <- -0.01
+
+  mm[is.na(mm$value),"value"] = 0 # r2x not calc for overfitted component
 
   if(grepl('k-fold', cv$method)){
     cv_text = paste0('\nCross validation: ', cv$method, ' (k=', cv$k, ')')
@@ -865,7 +810,7 @@
   g <- ggplot2::ggplot(mm, ggplot2::aes(x = !!sym("PC"), y = !!sym("value"), fill = !!sym("variable"))) +
     ggplot2::geom_bar(stat = "identity", position = "dodge", colour = NA, ggplot2::aes(alpha = !!sym("alph"))) +
     ggplot2::scale_fill_manual(
-      values = c(R2X = "lightgreen", R2Y = "lightblue", Q2 = "red", AUROC = "black", AUROC_CV = "red"),
+      values = c(R2X = "#1b9e77", R2Y = "#d95f02", Q2 = "#7570b3", AUROC = "#d95f02", AUROC_CV = "#7570b3"),
       labels = c(
         R2X = expression(R^2 * X),
         R2Y = expression(R^2 * Y),
@@ -884,7 +829,7 @@
     ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
-      legend.text = element_text(0),
+      legend.text = element_text(),
       panel.grid.major.x = element_blank(),
       panel.grid.major.y = element_line(color = "black", linewidth = 0.15),
       panel.grid.minor = element_blank(),
@@ -1557,7 +1502,11 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 #' @importFrom pROC roc multiclass.roc
 #' @keywords internal
 .permYmod <- function(Xs, Y, cv, type, nc_o) {
-  # Remove orthogonal component(s)
+
+  if(is.vector(Y) && is.null(dim(Y))){
+    Y <- matrix(Y, ncol=1)
+  }
+
   for (i in seq_len(nc_o)) {
     if (i == 1) {
       tt <- .oplsComponentCv(Xs, Y = Y, cv$cv_sets, nc_o[i], mod.cv = NULL)
@@ -1576,64 +1525,101 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 
   cv_method <- strsplit(cv$method, "_")[[1]][1]
 
-  # Performance evaluation
-  if (cv_method == "MC") {
-    if (grepl("DA", type)) {
-      if (grepl("mY", type)) {
-        pred_mean <- preds_test[1, , ]
-        colnames(pred_mean) <- colnames(Y)
-        mod <- multiclass.roc(response = factor(Y), predictor = pred_mean)
-        aucs_te[nc] <- mod$auc
-        pred_tr_mean <- preds_train[1, , ]
-        colnames(pred_tr_mean) <- colnames(Y)
-        mod <- multiclass.roc(response = factor(Y), predictor = pred_tr_mean)
-        aucs_tr[nc] <- mod$auc
-      } else {
-        mod <- roc(response = Y, predictor = preds_test[1, ], quiet = TRUE)
-        aucs_te[nc] <- mod$auc
-        mod <- roc(response = Y, predictor = preds_train[1, ], quiet = TRUE)
-        aucs_tr[nc] <- mod$auc
-      }
-    } else {
-      if (grepl("mY", type)) {
-        r2_comp[nc] <- .r2(Y, preds_test[1, , ], NULL)
-        q2_comp[nc] <- .r2(Y, preds_test[1, , ], tssy)
-      } else {
-        r2_comp[nc] <- .r2(Y, preds_test[1, ], NULL)
-        q2_comp[nc] <- .r2(Y, preds_test[1, ], tssy)
-      }
-    }
-  } else if (cv_method == "k-fold") {
-    if (grepl("DA", type)) {
-      if (grepl("mY", type)) {
-        colnames(preds_test) <- colnames(Y)
-        mod <- multiclass.roc(response = Y, predictor = apply(preds_test, 2, as.numeric))
-        aucs_te[nc] <- mod$auc
-        preds_te <- preds_train[1, , ]
-        colnames(preds_te) <- colnames(Y)
-        mod <- multiclass.roc(response = Y, predictor = preds_te, quiet = TRUE)
-        aucs_tr[nc] <- mod$auc
-      } else {
-        mod <- roc(response = as.vector(Y), predictor = as.vector(preds_test), quiet = TRUE)
-        aucs_te[nc] <- mod$auc
-        mod <- roc(response = as.vector(Y), predictor = preds_train[1, ], quiet = TRUE)
-        aucs_tr[nc] <- mod$auc
-      }
-    } else {
-      if (grepl("mY", type)) {
-        r2_comp[nc] <- .r2(Y, preds_test[1, , ], NULL)
-        q2_comp[nc] <- .r2(Y, preds_test[4, , ], tssy)
-      } else {
-        r2_comp[nc] <- .r2(Y, t(t(preds_train[1,])), NULL)
-        q2_comp[nc] <- .r2(Y, as.array(preds_test), tssy)
 
-        # r2_comp[nc] <- .r2(Y, preds_test[1, ], NULL)
-        # q2_comp[nc] <- .r2(Y, preds_test[4, ], tssy)
+
+
+  # Performance evaluation
+  if (cv_method == 'MC') {
+    if (grepl('DA', type)) {
+      if (grepl("mY", type)) {
+        Y_vec = factor(apply(Y, 1, function(x, nam=colnames(Y)){nam[which(x==max(x))]}))
+        colnames(preds_test) <- colnames(preds_train) <- colnames(Y)
+        auc_te <- multiclass.roc(response = Y_vec, predictor = preds_test, quiet = TRUE)$auc
+        auc_tr <- multiclass.roc(response = Y_vec, predictor = preds_train, quiet = TRUE)$auc
+      } else {
+        Y_vec = as.factor(apply(Y, 1, function(x) {x>0}))
+        auc_te <- roc(response = Y_vec, predictor = as.vector(preds_test), quiet = TRUE)$auc
+        auc_tr <- roc(response = Y_vec, predictor = as.vector(preds_train), quiet = TRUE)$auc
       }
+      list(q2 = NA, r2 = NA, aucs_te = auc_te, aucs_tr = auc_tr)
+    } else {
+      list(q2 = .r2(YcsTot, preds_test, tssy), r2 = .r2(YcsTot, preds_train, NULL), aucs_te = NA, aucs_tr = NA)
+    }
+  } else {
+    if (grepl('DA', type)) {
+      if (grepl("mY", type)) {
+        Y_vec = factor(apply(Y, 1, function(x, nam=colnames(Y)){nam[which(x==max(x))]}))
+        colnames(preds_test) <- colnames(preds_train) <- class_memb
+        auc_te <- multiclass.roc(response = Y_vec, predictor = preds_test, quiet = TRUE)$auc
+        auc_tr <- multiclass.roc(response = Y_vec, predictor = preds_train, quiet = TRUE)$auc
+      } else {
+        Y_vec = as.factor(apply(Y, 1, function(x) {x>0}))
+        auc_te <- roc(response = Y_vec, predictor = preds_test, quiet = TRUE)$auc
+        auc_tr <- roc(response = Y_vec, predictor = as.vector(preds_train), quiet = TRUE)$auc
+      }
+      list(q2 = NA, r2 = NA, aucs_te = auc_te, aucs_tr = auc_tr)
+    } else {
+      list(q2 = .r2(YcsTot, preds_test, tssy), r2 = .r2(YcsTot, as.vector(preds_train), NULL), aucs_te = NA, aucs_tr = NA)
     }
   }
 
-  return(list(r2_comp = r2_comp, q2_comp = q2_comp, aucs_tr = aucs_tr, aucs_te = aucs_te))
+  # if (cv_method == "MC") {
+  #   if (grepl("DA", type)) {
+  #     if (grepl("mY", type)) {
+  #       pred_mean <- preds_test[1, , ]
+  #       colnames(pred_mean) <- colnames(Y)
+  #       mod <- multiclass.roc(response = factor(Y), predictor = pred_mean)
+  #       aucs_te[nc] <- mod$auc
+  #       pred_tr_mean <- preds_train[1, , ]
+  #       colnames(pred_tr_mean) <- colnames(Y)
+  #       mod <- multiclass.roc(response = factor(Y), predictor = pred_tr_mean)
+  #       aucs_tr[nc] <- mod$auc
+  #     } else {
+  #       mod <- roc(response = Y, predictor = preds_test[1, ], quiet = TRUE)
+  #       aucs_te[nc] <- mod$auc
+  #       mod <- roc(response = Y, predictor = preds_train[1, ], quiet = TRUE)
+  #       aucs_tr[nc] <- mod$auc
+  #     }
+  #   } else {
+  #     if (grepl("mY", type)) {
+  #       r2_comp[nc] <- .r2(Y, preds_test[1, , ], NULL)
+  #       q2_comp[nc] <- .r2(Y, preds_test[1, , ], tssy)
+  #     } else {
+  #       r2_comp[nc] <- .r2(Y, preds_test[1, ], NULL)
+  #       q2_comp[nc] <- .r2(Y, preds_test[1, ], tssy)
+  #     }
+  #   }
+  # } else if (cv_method == "k-fold") {
+  #   if (grepl("DA", type)) {
+  #     if (grepl("mY", type)) {
+  #       colnames(preds_test) <- colnames(Y)
+  #       mod <- multiclass.roc(response = Y, predictor = apply(preds_test, 2, as.numeric))
+  #       aucs_te[nc] <- mod$auc
+  #       preds_te <- preds_train[1, , ]
+  #       colnames(preds_te) <- colnames(Y)
+  #       mod <- multiclass.roc(response = Y, predictor = preds_te, quiet = TRUE)
+  #       aucs_tr[nc] <- mod$auc
+  #     } else {
+  #       mod <- roc(response = as.vector(Y), predictor = as.vector(preds_test), quiet = TRUE)
+  #       aucs_te[nc] <- mod$auc
+  #       mod <- roc(response = as.vector(Y), predictor = preds_train[1, ], quiet = TRUE)
+  #       aucs_tr[nc] <- mod$auc
+  #     }
+  #   } else {
+  #     if (grepl("mY", type)) {
+  #       r2_comp[nc] <- .r2(Y, preds_test[1, , ], NULL)
+  #       q2_comp[nc] <- .r2(Y, preds_test[4, , ], tssy)
+  #     } else {
+  #       r2_comp[nc] <- .r2(Y, t(t(preds_train[1,])), NULL)
+  #       q2_comp[nc] <- .r2(Y, as.array(preds_test), tssy)
+  #
+  #       # r2_comp[nc] <- .r2(Y, preds_test[1, ], NULL)
+  #       # q2_comp[nc] <- .r2(Y, preds_test[4, ], tssy)
+  #     }
+  #   }
+  # }
+
+  # return(list(r2_comp = r2_comp, q2_comp = q2_comp, aucs_tr = auc_tr, aucs_te = auc_te))
 }
 
 

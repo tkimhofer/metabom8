@@ -91,9 +91,9 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ..
                   scale_y_continuous(name = paste0("PC ", pc[2], " (", round(obj@Parameters$R2[pc[2]] * 100, 1), "%)"))
               },
               "OPLS_metabom8" = {
-                axis_type <- if (etype == "t_cv") ",[cv]" else ""
-                g + scale_x_continuous(name = bquote(t[pred]*.(axis_type))) +
-                  scale_y_continuous(name = bquote(t[orth]*.(axis_type))) +
+                axis_type <- if (etype == "t_cv") ",cv" else NULL
+                g + scale_x_continuous(name = bquote(t[pred * .(axis_type)])) +
+                  scale_y_continuous(name =   bquote(t[orth * .(axis_type)])) +
                   # labs(title = paste0("OPLS-", obj@type, ": 1+", obj@nPC - 1, " comp.",
                   #                     " (R2X=", round(obj@summary$R2X[obj@nPC - 1], 2),
                   #                     ", Q2=", round(obj@summary$Q2[obj@nPC - 1], 2),

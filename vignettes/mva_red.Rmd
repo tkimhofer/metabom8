@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
   eval = requireNamespace("nmrdata", quietly = TRUE)
 )
 
-has_data <- requireNamespace("nmrData", quietly = TRUE)
+has_data <- requireNamespace("nmrdata", quietly = TRUE)
 ```
 
 ```{r no-data-msg, echo = FALSE, results = "asis"}
@@ -124,7 +124,7 @@ Aesthetic mapping (colour, shape, labels) is flexible via the `an` list:
 
 ```{r, fig.show='hold', fig.width = 6, fig.height = 5, message=FALSE, warning=FALSE}
 # define scores that should be labelled
-idx<-which(pca_model@t[,2]>20 & an$Class=='RYGB') # PC 2 scores above 20 and in group RYGB
+idx<-which(pca_model@t[,1]>200 & pca_model@t[,2]>150 & an$Class=='RYGB') # PC 2 scores above 20 and in group RYGB
 
 # construct label vector with mouse IDs
 outliers <- rep("", nrow(an)); outliers[idx] <- an$ID[idx]
@@ -178,15 +178,19 @@ summary(opls.model)
 - $Q^2$ / $AUROC_{CV}$: cross-validated prediction accuracy
 
 ### Overfitting & Component Selection
-O-PLS models can underfit (too few orthogonal components) or overfit (too many, capturing noise). `metabom8` uses automatic selection based on:
+To guide model complexity, `metabom8` automatically determines the optimal number of orthogonal components using internal cross-validation. The algorithm incrementally adds orthogonal components and evaluates the improvement in predictive performance. For continuous outcomes, selection is based on changes in $Q^2$; for classification problems, the increase in cross-validated AUROC ($\Delta$AUROC$_{CV}$) is monitored. A new component is retained only if it improves performance beyond a minimum threshold ($\Delta > 0.05$), helping to avoid overfitting on noise or technical variance.
 
-- $Q^2$  (for continuous Y)
-- $AUROC_{CV}$ (for categorical Y)
+#### How many orthogonal components should I fit?
+To further support model validation, permutation testing can be applied via the `opls_perm()` function. This procedure assesses whether the model's performance could arise by chance, by randomly permuting Y labels and re-fitting the model multiple times. When deciding whether to retain an additional component, comparing the observed improvement (e.g., in AUROC or $Q^2$) against the distribution of metrics from permuted models provides a more robust benchmark. If the performance gain is marginal or falls within the range expected under the null distribution, the component may not be warranted.
+
+```{r, fig.show='hold', fig.width = 6, fig.height = 5, message=FALSE, warning=FALSE}
+permutatios<-opls_perm(opls.model, n = 100, plot = TRUE)
+```
 
 ### Model Diagnostics
 Use `dmodx()` to assess outliers based on distance to the model in X-space (DModX):
 ```{r, fig.show='hold', fig.width = 6, fig.height = 5, message=FALSE, warning=FALSE}
-distX=dmodx(mod =opls.model, plot=TRUE)
+distanceX<-dmodx(mod =opls.model, plot=TRUE)
 ```
 Samples above the 95% confidence line warrant inspection.
 
@@ -197,9 +201,9 @@ Scores plots summarise group separation. `plotscores()` includes options for aes
 # Plot OPLS scores
 plotscores(obj=opls.model, an=list(
   Surgery=an$Class[idx],          # colouring according to surgery type
-  Timepoint=an$Timepoint[idx]),   # linetype according to timepoint
+  Timepoint=an$Timepoint[idx]),   # line type according to time point
   title='OPLS - Scores plot',     # plot title
-  cv.scores = TRUE)                  # visualise cross-validated scores
+  cv.scores = TRUE)               # visualise cross-validated scores
 ```
 The predictive component is along the x-axis. The orthogonal component (y-axis) is unrelated to the outcome and often reflects technical variation (e.g., batch or normalisation effects).
 

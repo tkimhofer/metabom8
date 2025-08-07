@@ -2,7 +2,14 @@
 % Please edit documentation in R/opls.R
 \name{opls}
 \alias{opls}
-\title{Orthogonal Partial Least Squares (O-PLS)}
+\title{#' @title Orthogonal Partial Least Squares (O-PLS)
+#'
+#' @description
+#' Fits an Orthogonal Projections to Latent Structures (O-PLS) model for regression or classification.
+#' The number of orthogonal components is automatically selected using internal cross-validation.
+#' To avoid underfitting, components are added incrementally, while overfitting is prevented by requiring
+that each new component improves predictive performance beyond a defined threshold (ΔQ² / ΔAUROC > 0.05).
+This ensures the model captures relevant structure without modelling noise or irrelevant variation.}
 \usage{
 opls(
   X,
@@ -33,15 +40,19 @@ opls(
 An S4 object of class OPLS_metabom8.
 }
 \description{
-Fits an O-PLS model for regression or classification (discriminant analysis).
-The number of orthogonal components is determined via cross-validation and
-overfitting criteria.
+#' @title Orthogonal Partial Least Squares (O-PLS)
+#'
+#' @description
+#' Fits an Orthogonal Projections to Latent Structures (O-PLS) model for regression or classification.
+#' The number of orthogonal components is automatically selected using internal cross-validation.
+#' To avoid underfitting, components are added incrementally, while overfitting is prevented by requiring
+that each new component improves predictive performance beyond a defined threshold (ΔQ² / ΔAUROC > 0.05).
+This ensures the model captures relevant structure without modelling noise or irrelevant variation.
 }
 \examples{
 data("covid")
 mod <- opls(X, an$type)
 summary(mod)
-plot(mod)
 }
 \references{
 Trygg J, Wold S. (2002). Orthogonal projections to latent structures (O-PLS).

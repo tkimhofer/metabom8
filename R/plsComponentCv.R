@@ -22,7 +22,7 @@
 
     Ycs <- .scaleMatRcpp(Y, idc - 1, center = TRUE, scale_type = 1)[[1]]
 
-    pred_comp <- .nipPlsCompRcpp(X = Xcs[idc, , drop = FALSE], Y = Ycs[idc, , drop = FALSE])
+    pred_comp <- .nipPlsCompRcpp(X = Xcs[idc, , drop = FALSE], Y = Ycs[idc, , drop = FALSE], it_max=800, eps=1e-8)
     Xte <- Xcs[-idc, , drop = FALSE]
     if (!is.matrix(Xte)) Xte <- matrix(Xte, nrow = 1)
 
