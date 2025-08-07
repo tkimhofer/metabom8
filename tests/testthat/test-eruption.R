@@ -2,6 +2,9 @@ test_that("eruption returns valid plot and data frame", {
   skip_if_not_installed("metabom8")
 
   data(covid, package = "metabom8")
+  X <- covid$X
+  an <- covid$an
+
   model <- opls(X, Y = factor(an$type), plotting=FALSE)
 
   result <- eruption(model)

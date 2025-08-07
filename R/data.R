@@ -4,7 +4,8 @@
 #' Spectra were pre-processed including excision of residual water and signal-free areas, baseline correction, and normalization to account for different line widths.
 #' FIDs were acquired using a standard 90˚ RF pulse sequence on a 600 MHz Avance II spectrometer using Bruker IVDr methods for blood plasma (300 K, 32 scans).
 #' The spectrometer was equipped with a double resonance broadband probe (BBI) and a refrigerated autosampler o
-
+#' @keywords datasets
+"covid"
 
 #' COVID-19 blood plasma proton NMR spectra (raw)
 #'

@@ -256,22 +256,26 @@
     stop("'stratified' must be a list of length 3: type, Y, probs.")
   }
 
+  Y <- stratified[[2]]
+  if (anyNA(Y)) {
+    stop("Stratified CV not possible: Y contains NA values.")
+  }
+
+
   if (anyNA(Y)) {
     stop("Stratified CV not possible: Y contains NA values.")
   }
 
   if (grepl('R', stratified[[1]])) {
-    Yori <- stratified[[2]]
-
+    Yori <- Y
     breaks <- unique(quantile(Yori[, 1], stratified[[3]]))
     if (length(breaks) < 3) {
       warning("Insufficient variability in Y for stratification - use unstratified k-fold or MC.")
       return(NULL)
     }
     Y <- cbind(cut(Yori[, 1], breaks = breaks, include.lowest = TRUE))
-
   } else {
-    Y <- stratified[[2]][, 1]
+    Y <- Y[, 1]
   }
 
   ct <- table(Y)
@@ -652,7 +656,7 @@
 #' @return A numeric matrix or array of the requested feature:
 #' \itemize{
 #'   \item For Monte Carlo CV and single-column Y: matrix with rows `"mean"`, `"sd"`, and `"coverage"` × samples.
-#'   \item For Monte Carlo CV and multi-column Y: 3D array with shape [3, samples, outcomes].
+#'   \item For Monte Carlo CV and multi-column Y: 3D array with shape \code{[3, samples, outcomes]}.
 #'   \item For k-fold CV: matrix or array containing values for each sample (no aggregation, just fold values).
 #' }
 #'
@@ -1112,7 +1116,7 @@ scRange <- function(x, ra) {
 #'
 #' @param x Numeric vector. Input values to be scaled.
 #'
-#' @return A numeric vector of the same length as \code{x}, scaled to the range [0, 1].
+#' @return A numeric vector of the same length as \code{x}, scaled to the range \code{[0, 1]}.
 #'
 #' @details
 #' The scaled values are computed as:
@@ -1584,7 +1588,7 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
       }
       list(q2 = NA, r2 = NA, aucs_te = auc_te, aucs_tr = auc_tr)
     } else {
-      list(q2 = .r2(YcsTot, preds_test, tssy), r2 = .r2(YcsTot, preds_train, NULL), aucs_te = NA, aucs_tr = NA)
+      list(q2 = .r2(Y, preds_test, NULL), r2 = .r2(Y, preds_train, NULL), aucs_te = NA, aucs_tr = NA)
     }
   } else {
     if (grepl('DA', type)) {
@@ -1600,7 +1604,7 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
       }
       list(q2 = NA, r2 = NA, aucs_te = auc_te, aucs_tr = auc_tr)
     } else {
-      list(q2 = .r2(YcsTot, preds_test, tssy), r2 = .r2(YcsTot, as.vector(preds_train), NULL), aucs_te = NA, aucs_tr = NA)
+      list(q2 = .r2(Y, preds_test, NULL), r2 = .r2(Y, as.vector(preds_train), NULL), aucs_te = NA, aucs_tr = NA)
     }
   }
 

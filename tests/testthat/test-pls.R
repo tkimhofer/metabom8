@@ -21,7 +21,7 @@ test_that("PLS returns valid summary metrics", {
   model <- pls(X, Y, plotting = FALSE)
 
   expect_type(model@summary, "list")
-  expect_named(model@summary, c("R2X", "R2Y", "Q2", "AUROC", "AUROC_CV"), ignore.order = TRUE)
+  expect_named(model@summary, c("PC_pred","PC_orth", "R2X", "AUROC", "AUROC_CV"), ignore.order = TRUE)
 })
 
 test_that("PLS handles factor and numeric Y properly", {

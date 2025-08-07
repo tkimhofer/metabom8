@@ -8,7 +8,7 @@
 #' @param idx_ref Integer. Row index to use as reference spectrum. Ignored if \code{med = TRUE}.
 #' @param clim Numeric. Minimum cross-correlation threshold. Segments with lower similarity are not shifted.
 #' @param med Logical. If \code{TRUE}, the row-wise median spectrum is used as the reference.
-#' @param norm Logical. If \code{TRUE}, rows are scaled to the [0, 1] range using min-max scaling before alignment.
+#' @param norm Logical. If \code{TRUE}, rows are scaled to the \code{[0, 1]} range using min-max scaling before alignment.
 #'
 #' @return A numeric matrix of aligned spectra with the same dimensions as \code{seg}.
 #' If \code{med = TRUE}, the output excludes the median row.

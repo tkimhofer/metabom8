@@ -10,7 +10,7 @@ minmax(x)
 \item{x}{Numeric vector. Input values to be scaled.}
 }
 \value{
-A numeric vector of the same length as \code{x}, scaled to the range \link{0, 1}.
+A numeric vector of the same length as \code{x}, scaled to the range \code{[0, 1]}.
 }
 \description{
 Scales a numeric vector to the range \link{0, 1} using min-max normalization.

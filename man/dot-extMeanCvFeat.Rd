@@ -19,7 +19,7 @@
 A numeric matrix or array of the requested feature:
 \itemize{
 \item For Monte Carlo CV and single-column Y: matrix with rows \code{"mean"}, \code{"sd"}, and \code{"coverage"} × samples.
-\item For Monte Carlo CV and multi-column Y: 3D array with shape \link{3, samples, outcomes}.
+\item For Monte Carlo CV and multi-column Y: 3D array with shape \code{[3, samples, outcomes]}.
 \item For k-fold CV: matrix or array containing values for each sample (no aggregation, just fold values).
 }
 }

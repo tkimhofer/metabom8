@@ -8,6 +8,9 @@ test_that("opls cv-method kfold", {
     #     split = 2/3), plotting = FALSE)
 
     data(covid)
+    X <- covid$X
+    an <- covid$an
+
     Y=an$type
 
     n <- nrow(X)

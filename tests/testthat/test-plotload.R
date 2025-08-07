@@ -1,5 +1,8 @@
 test_that("plotload returns ggplot object for PCA", {
   data(covid)
+  X <- covid$X
+  # an <- covid$an
+  # ppm <- covid$ppm
   model <- pca(X)
   g <- plotload(model, pc = 1)
   expect_s3_class(g, "ggplot")
@@ -11,6 +14,9 @@ test_that("plotload errors with invalid model", {
 
 test_that("plotload errors with insufficient shift", {
   data(covid)
+  X <- covid$X
+  # an <- covid$an
+  # ppm <- covid$ppm
   model <- pca(X)
   expect_error(plotload(model, shift = c(20, 21)), "Insufficient")
 })

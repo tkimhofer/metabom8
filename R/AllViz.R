@@ -223,7 +223,7 @@ specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7
 #' @param alp Numeric (0–1). Alpha level for spectra.
 #' @param title Character. Plot title.
 #' @param size Numeric. Line width for plotted spectra.
-#' @param r_scale Logical. If `TRUE`, correlation color scale is fixed to [0, 1]. Only used in statistical reconstruction.
+#' @param r_scale Logical. If `TRUE`, correlation color scale is fixed to \code{[0, 1]}. Only used in statistical reconstruction.
 #'
 #' @details
 #' - **Statistical reconstruction**: Correlates predictive scores with spectral variables.

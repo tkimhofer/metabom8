@@ -7,9 +7,9 @@
 .hotellingsT2(x, y, alpha = 0.95)
 }
 \arguments{
-\item{x}{Numeric vector. First dimension (e.g., PC1 or t\link{1}).}
+\item{x}{Numeric vector. First dimension (e.g., PC1 or \code{t[1]}).}
 
-\item{y}{Numeric vector. Second dimension (e.g., PC2 or t\link{2}).}
+\item{y}{Numeric vector. Second dimension (e.g., PC2 or \code{t[2]}).}
 
 \item{alpha}{Numeric. Confidence level for the ellipse. Default is 0.95.}
 }

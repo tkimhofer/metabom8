@@ -7,10 +7,12 @@ test_that("cvanova returns expected structure and valid p-value", {
   # print(class(X))   # should be "matrix" or "data.frame"
   # print(typeof(X))  # should be "double" or "integer"
   data(covid, package = "metabom8")
+  X_data = as.matrix(covid$X)
+  an = covid$an
   # print(ls())
   # print(class(X))   # should be "matrix" or "data.frame"
   # print(typeof(X))  # should be "double" or "integer"
-  X_data <- as.matrix(X)
+  # X_data <- as.matrix(X)
 
   # print(class(X))
   # print(dim(X))

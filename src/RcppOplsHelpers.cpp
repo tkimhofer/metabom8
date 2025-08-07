@@ -52,6 +52,8 @@ Rcpp::List nip_pca_comp_rcpp(Eigen::MatrixXd X) {
 //'
 //' @param X A numeric matrix (n × p): predictor matrix.
 //' @param Y A numeric matrix (n × k): response matrix with k variables.
+//' @param it_max Maximum nb of iterations for NIPALS converge.
+//' @param eps Threshold for sum of squares quotient below which NIPALS is considered converged
 //'
 //' @return A matrix (p × r) of PCA scores, where r is the number of retained components.
 //' @details

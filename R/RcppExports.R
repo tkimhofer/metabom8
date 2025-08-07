@@ -14,6 +14,8 @@
 #'
 #' @param X A numeric matrix (n × p): predictor matrix.
 #' @param Y A numeric matrix (n × k): response matrix with k variables.
+#' @param it_max Maximum nb of iterations for NIPALS converge.
+#' @param eps Threshold for sum of squares quotient below which NIPALS is considered converged
 #'
 #' @return A matrix (p × r) of PCA scores, where r is the number of retained components.
 #' @details
@@ -22,7 +24,7 @@
 #' and score components are extracted until the explained variance ratio drops below a threshold.
 #' @examples
 #' # Simulate data: 30 samples, 10 predictors, 3 response variables
-#. set.seed(123)
+#' set.seed(123)
 #' X <- matrix(rnorm(30 * 10), nrow = 30)
 #' Y <- matrix(rnorm(30 * 3), nrow = 30)
 #' # Compute multivariate Y weights via PCA

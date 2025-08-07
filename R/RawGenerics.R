@@ -143,8 +143,8 @@
   }
 
   pars <- pars[idx_filt, ]
-  # fnam <- strsplit(ifelse(!(any(is.na(f_list$f_1r)) || is.null(f_list$f_1r)), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
-  fnam <- strsplit(ifelse(!(is.na(f_list$f_1r)), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
+  fnam <- strsplit(ifelse(!(any(is.na(f_list$f_1r)) || is.null(f_list$f_1r)), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
+  # fnam <- strsplit(ifelse(!(is.na(f_list$f_1r)), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
 
   fmat_comb <- do.call(rbind, fnam)
   uniq_cols <- vapply(seq_len(ncol(fmat_comb)), function(i) length(unique(fmat_comb[, i])) == nrow(fmat_comb), logical(1))
@@ -248,7 +248,6 @@
 #' @title Check for Intact Bruker NMR File Structures
 #' @description Verifies that each NMR experiment has a matching `acqus` and `fid` file.
 #' @param datapath Character. Directory containing NMR spectra.
-#' @param procs_exp Integer. Processing experiment number (unused, reserved for future use).
 #' @param n_max Integer. Maximum number of experiments to process.
 #' @param filter Logical. Whether to filter out incomplete experiments.
 #' @param recursive Logical. Whether to search directories recursively.

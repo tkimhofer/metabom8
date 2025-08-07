@@ -16,8 +16,6 @@
 \item{recursive}{Logical. Whether to search directories recursively.}
 
 \item{verbose}{Integer. Controls verbosity level (0 = silent, 1 = basic, 2 = detailed).}
-
-\item{procs_exp}{Integer. Processing experiment number (unused, reserved for future use).}
 }
 \value{
 A list with paths to intact experiments and matching metadata.

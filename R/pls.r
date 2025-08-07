@@ -71,7 +71,7 @@ pls <- function(X, Y,
     r2x_comp = fit$r2x_comp
   )
 
-  .finalisePlsModel(fit$full_mod, prep$Xcs, prep$Ycs, prep$msd_x, prep$msd_y, type, pars, mod_summary[[1]])
+  .finalisePlsModel(fit$full_mod, prep$Xcs, prep$Ycs, prep$msd_x, prep$msd_y, type, pars, mod_summary[[1]], Y)
 }
 
 
@@ -180,7 +180,7 @@ pls <- function(X, Y,
   result
 }
 
-.finalisePlsModel <- function(mod_list, XcsTot, YcsTot, msd_x, msd_y, type, pars, summary) {
+.finalisePlsModel <- function(mod_list, XcsTot, YcsTot, msd_x, msd_y, type, pars, summary, Y) {
   t_x <- do.call(cbind, lapply(mod_list, `[[`, "t_x"))
   p_x <- do.call(rbind, lapply(mod_list, `[[`, "p_x"))
   w_x <- do.call(rbind, lapply(mod_list, `[[`, "w_x"))

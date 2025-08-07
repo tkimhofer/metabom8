@@ -1,5 +1,7 @@
 test_that("dmodx returns expected structure", {
   data(covid)
+  X <- covid$X
+  an <- covid$an
   model <- opls(X, Y = an$type, plotting = FALSE)
 
   result <- dmodx(model, plot = FALSE)
@@ -17,6 +19,9 @@ test_that("dmodx handles incorrect input gracefully", {
 
 test_that("dmodx returns the same values with plot = TRUE", {
   data(covid)
+  X <- covid$X
+  an <- covid$an
+
   model <- opls(X, Y = an$type, plotting = FALSE)
 
   expect_silent({
@@ -29,6 +34,9 @@ test_that("dmodx returns the same values with plot = TRUE", {
 
 test_that("dmodx DmodX values are non-negative", {
   data(covid)
+  X <- covid$X
+  an <- covid$an
+
   model <- opls(X, Y = an$type, plotting = FALSE)
 
   result <- dmodx(model, plot = FALSE)

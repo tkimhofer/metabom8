@@ -1,7 +1,8 @@
 test_that("plotload_cat returns ggplot object for PCA_metabom8", {
   # Example data
   data(covid)
-
+  X <- covid$X
+  an <- covid$an
   # Fit PCA model
   model <- pca(X = X, pc = 2)
 
@@ -24,6 +25,9 @@ test_that("plotload_cat works with default pc and an when features < 150", {
 
 test_that("plotload_cat fails gracefully with missing pc and an", {
   data(covid)
+  X <- covid$X
+  an <- covid$an
+
   model <- pca(X = X, pc = 2)
 
   # Expect error due to missing 'an' with large feature set

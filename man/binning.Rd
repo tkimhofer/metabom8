@@ -28,10 +28,11 @@ Equidistant binning of spectra. Specify either \code{width} or \code{npoints} ar
 # Simulate 2 spectra with 100 ppm points
 set.seed(1)
 X <- matrix(rnorm(2 * 100), nrow = 2)
-colnames(X) <- round(seq(0.5, 10, length.out = 100), 3)
+ppm <- round(seq(10, 0.5, length.out = 100), 3)
+colnames(X) <- ppm
 
 # Bin using width of 0.5 ppm
-Xb <- binning(X = X, width = 0.5)
+Xb <- binning(X, ppm, width = 0.5)
 
 # Show dimensions of binned data
 dim(Xb)

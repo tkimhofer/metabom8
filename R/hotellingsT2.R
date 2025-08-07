@@ -2,8 +2,8 @@
 #'
 #' @description Computes the Hotelling's T² ellipse for a bivariate dataset, commonly used to visualise multivariate confidence intervals in score plots.
 #'
-#' @param x Numeric vector. First dimension (e.g., PC1 or t[1]).
-#' @param y Numeric vector. Second dimension (e.g., PC2 or t[2]).
+#' @param x Numeric vector. First dimension (e.g., PC1 or \code{t[1]}).
+#' @param y Numeric vector. Second dimension (e.g., PC2 or \code{t[2]}).
 #' @param alpha Numeric. Confidence level for the ellipse. Default is 0.95.
 #'
 #' @return A \code{data.frame} with two columns \code{V1} and \code{V2} containing coordinates of the T² ellipse.

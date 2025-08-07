@@ -1,7 +1,7 @@
 #' @title Plot PCA, PLS or OPLS Model Scores
 #' @description Generate score plots for PCA, PLS, or OPLS models with optional annotation, QC highlighting, and cross-validation scores.
 #'
-#' @param obj A fitted model object of class \code{PCA_metabom8}, \code{OPLS_metabom8}, \code{PCA_MetaboMate}, \code{PLS_MetaboMate}, or \code{OPLS_MetaboMate}.
+#' @param obj A fitted model object of class \code{PCA_metabom8}, \code{OPLS_metabom8}, \code{PLS_metabom8}
 #' @param pc Numeric or character vector of length 2. Principal components or score components to plot. Defaults: \code{c(1,2)} for PCA/PLS, \code{c("1", "o1")} for OPLS.
 #' @param an Optional list of up to 3 elements specifying annotation: \code{list(color, shape, label)}.
 #' @param title Optional character. Plot title.

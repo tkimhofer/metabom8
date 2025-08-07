@@ -15,7 +15,7 @@ alignSegment(seg, idx_ref = 1, clim = 0.7, med = TRUE, norm = FALSE)
 
 \item{med}{Logical. If \code{TRUE}, the row-wise median spectrum is used as the reference.}
 
-\item{norm}{Logical. If \code{TRUE}, rows are scaled to the \link{0, 1} range using min-max scaling before alignment.}
+\item{norm}{Logical. If \code{TRUE}, rows are scaled to the \code{[0, 1]} range using min-max scaling before alignment.}
 }
 \value{
 A numeric matrix of aligned spectra with the same dimensions as \code{seg}.

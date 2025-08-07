@@ -33,7 +33,7 @@ specload(
 
 \item{title}{Character. Plot title.}
 
-\item{r_scale}{Logical. If \code{TRUE}, correlation color scale is fixed to \link{0, 1}. Only used in statistical reconstruction.}
+\item{r_scale}{Logical. If \code{TRUE}, correlation color scale is fixed to \code{[0, 1]}. Only used in statistical reconstruction.}
 }
 \value{
 A \code{ggplot} object.

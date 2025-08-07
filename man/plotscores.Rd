@@ -7,7 +7,7 @@
 plotscores(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ...)
 }
 \arguments{
-\item{obj}{A fitted model object of class \code{PCA_metabom8}, \code{OPLS_metabom8}, \code{PCA_MetaboMate}, \code{PLS_MetaboMate}, or \code{OPLS_MetaboMate}.}
+\item{obj}{A fitted model object of class \code{PCA_metabom8}, \code{OPLS_metabom8}, \code{PLS_metabom8}}
 
 \item{pc}{Numeric or character vector of length 2. Principal components or score components to plot. Defaults: \code{c(1,2)} for PCA/PLS, \code{c("1", "o1")} for OPLS.}
 
