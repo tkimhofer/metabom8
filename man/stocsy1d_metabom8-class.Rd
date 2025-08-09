@@ -3,34 +3,41 @@
 \docType{class}
 \name{stocsy1d_metabom8-class}
 \alias{stocsy1d_metabom8-class}
-\title{An S4 class to represent STOCSY model constructed with metabom8}
+\title{STOCSY model object from metabom8}
 \description{
-An S4 class to represent STOCSY model constructed with metabom8
+An S4 class to represent a STOCSY model.
 }
-\section{}{
-NA
-}
+\section{Slots}{
+
+\describe{
+\item{\code{version}}{Character string indicating version of the model}
+
+\item{\code{X}}{Spectral data matrix}
+
+\item{\code{ppm}}{Chemical shift values (vector)}
+
+\item{\code{driver}}{Numeric vector indicating driver variable}
+
+\item{\code{r}}{Correlation coefficients (vector)}
+
+\item{\code{cov}}{Covariance values (vector)}
+}}
 
 \seealso{
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
+\code{\link{binning}()},
+\code{\link{cvanova}()},
+\code{\link{get_idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
 \code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
 \code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
-\code{\link{stocsy}()},
+\code{\link{read1d_raw}()},
 \code{\link{storm}()}
 }
 \author{
-\email{torben.kimhofer@murdoch.edu.au}
+\email{tkimhofer@gmail.com}
 }
 \concept{NMR}

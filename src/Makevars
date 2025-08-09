@@ -1,0 +1,2 @@
+PKG_CXXFLAGS += -Wno-unused-but-set-variable
+PKG_CPPFLAGS += -isystem /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include

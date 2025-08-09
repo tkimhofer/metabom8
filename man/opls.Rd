@@ -2,7 +2,14 @@
 % Please edit documentation in R/opls.R
 \name{opls}
 \alias{opls}
-\title{Orthogonal-Partial Least Squares (O-PLS)}
+\title{#' @title Orthogonal Partial Least Squares (O-PLS)
+#'
+#' @description
+#' Fits an Orthogonal Projections to Latent Structures (O-PLS) model for regression or classification.
+#' The number of orthogonal components is automatically selected using internal cross-validation.
+#' To avoid underfitting, components are added incrementally, while overfitting is prevented by requiring
+that each new component improves predictive performance beyond a defined threshold (ΔQ² / ΔAUROC > 0.05).
+This ensures the model captures relevant structure without modelling noise or irrelevant variation.}
 \usage{
 opls(
   X,
@@ -15,41 +22,45 @@ opls(
 )
 }
 \arguments{
-\item{X}{Numeric input matrix or dataframe (usually measurements obtained through NMR spectroscopy or mass spectrometry) with each row representing an observation and each column a metabolic feature.}
+\item{X}{Numeric matrix or data frame of predictors. Rows are samples; columns are features.}
 
-\item{Y}{Response vector or matrix with same length or number of columns than rows in X, respectively. Y have multiple columns.}
+\item{Y}{Response variable. Vector or matrix. For classification, should be a factor or class labels; for regression, a numeric vector or matrix.}
 
-\item{center}{Logical value (TRUE or FALSE) indicating if features should be mean centered.}
+\item{center}{Logical. Should features be mean-centered? Default is TRUE.}
 
-\item{scale}{Desired scaling method (currently only no or unit variance scaling (UV) implemented).}
+\item{scale}{Character. Scaling method. Supported: "None", "UV" (unit variance), or "Pareto".}
 
-\item{cv}{Named list of cross-validation paramters to derive the optimal number of components: method, one of 'k-fold', 'k-fold_stratified', 'MC', 'MC_balanced' (see Details), split: fraction of observations used for model training, k: k-fold paramter, ie., the number of cross-validation sets. The latter depends on the number of observations in X but typically takes a value between 3 and 9.}
+\item{cv}{Named list specifying cross-validation settings: method ("k-fold", "k-fold_stratified"), split (training set proportion), and k (number of folds).}
 
-\item{maxPCo}{The maximum number of orthogonal components (in case stop criteria fail).}
+\item{maxPCo}{Integer. Maximum number of orthogonal components to consider. Default is 5.}
 
-\item{plotting}{Logical value (TRUE or FALSE) indicating if model parameters (R2X, Q2, etc) should be visualised once the model is trained.}
-
-\item{t_pred}{Parameter specifying the maximum number of predictive components (needed only for multi-factor Y)}
+\item{plotting}{Logical. If TRUE, shows model summary plot.}
 }
 \value{
-This function returns an metabom8 object (S4).
+An S4 object of class OPLS_metabom8.
 }
 \description{
-This function fits Orthogonal-Partial Least Squares (O-PLS) models for regression (R) or discriminant analysis (DA). The optimal number of components is determined automatically using automated stop criteria based on statistical cross validation indices.
-}
-\details{
-Models are fully statistically validated, currently only k-fold cross validation (CV) and class-balanced k-fold cross validation is implemented. Further extensions, e.g. Monte-Carlo CV, are work in progress. Although the algorithm accepts three and more levels as Y, model interpretation is more straightforward for pairwise group comparisons.
+#' @title Orthogonal Partial Least Squares (O-PLS)
+#'
+#' @description
+#' Fits an Orthogonal Projections to Latent Structures (O-PLS) model for regression or classification.
+#' The number of orthogonal components is automatically selected using internal cross-validation.
+#' To avoid underfitting, components are added incrementally, while overfitting is prevented by requiring
+that each new component improves predictive performance beyond a defined threshold (ΔQ² / ΔAUROC > 0.05).
+This ensures the model captures relevant structure without modelling noise or irrelevant variation.
 }
 \examples{
-data(covid)
-model=opls(X, Y=an$type)
-plotscores(model, an=list(Class=an$type, Clinic=an$hospital, id=1:nrow(an)), pc=c(1,2))
+data("covid")
+X <- covid$X
+an <- covid$an
+
+mod <- opls(X, an$type)
+summary(mod)
 }
 \references{
-Trygg J. and Wold, S. (2002) Orthogonal projections to latent structures (O-PLS). \emph{Journal of Chemometrics}, 16.3, 119-128.
-
-Geladi, P and Kowalski, B.R. (1986), Partial least squares and regression: a tutorial. \emph{Analytica Chimica Acta}, 185, 1-17.
+Trygg J, Wold S. (2002). Orthogonal projections to latent structures (O-PLS).
+Journal of Chemometrics, 16(3), 119–128.
 }
 \author{
-\email{torben.kimhofer@murdoch.edu.au}
+Torben Kimhofer
 }

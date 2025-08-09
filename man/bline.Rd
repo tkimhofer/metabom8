@@ -3,53 +3,38 @@
 \name{bline}
 \alias{bline}
 \alias{bcor}
-\title{Baseline correction for 1D NMR spectra}
+\title{Baseline Correction for 1D NMR Spectra}
 \usage{
 bline(X, lambda = 1e+07, iter_max = 30)
 
 bcor(X, lambda = 1e+07, iter_max = 30)
 }
 \arguments{
-\item{X}{num matrix or data.frame, NMR data with rows representing spectra}
+\item{X}{Numeric matrix or data frame. NMR data with spectra in rows.}
 
-\item{lambda, }{num smoothing paramter}
+\item{lambda}{Numeric. Smoothing parameter passed to \code{\link[ptw]{asysm}}. Larger values result in smoother baselines.}
 
-\item{iter_max}{num, maximum number of iterations}
+\item{iter_max}{Integer. Maximum number of iterations for the baseline estimation algorithm.}
 }
 \value{
-Baseline corrected NMR matrix an with same dimension as input matrix.
+A numeric matrix of the same dimensions as the input, containing the baseline-corrected spectra.
 }
 \description{
-Non-linear baseline correction for NMR spectra based on asymetric least squares. This function estimates smooth and non-linear baseline trends for each spectrum. The baseline is then subtracted from the respective spectrum and the remainder is returned. For more infor on smoothing parameter \emph{lambda}, check out \code{\link[ptw]{asysm}}.
+Non-linear baseline correction for NMR spectra based on asymmetric least squares. This function estimates a smooth, non-linear baseline trend for each spectrum. The estimated baseline is then subtracted, returning the corrected spectrum. See \code{\link[ptw]{asysm}} for more information on the smoothing parameter \code{lambda}.
+}
+\details{
+Missing values in \code{X} are replaced with zeros before baseline correction.
 }
 \examples{
 data(covid_raw)
-X1_bc=bline(X[1,])
-spec(X[1,], ppm, shift=c(3,4))
-spec(X1_bc[1,], ppm, shift=c(3,4), add=TRUE)
+X <- covid_raw$X
+ppm <- covid_raw$ppm
+X_bc <- bcor(X[1, ])
+
+spec(X[1, ], ppm, shift = c(3, 4), interactive = FALSE)
+spec(X_bc[1, ], ppm, shift = c(3, 4), col='red', add = TRUE, interactive = FALSE)
+
 }
 \seealso{
-\code{\link[ptw]{asysm}}
-
-Other NMR: 
-\code{\link{alignSegment}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
-\code{\link{lw}()},
-\code{\link{matspec}()},
-\code{\link{noise.est}()},
-\code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
-\code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
-\code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
-\code{\link{storm}()}
+\code{\link[ptw]{asysm}}, \code{\link{spec}}, \code{\link{matspec}}
 }
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
-}
-\concept{NMR}

@@ -13,23 +13,20 @@
 )
 }
 \arguments{
-\item{X}{num matrix, NMR matrix with spectra in rows}
+\item{X}{Numeric matrix. NMR data with spectra in rows.}
 
-\item{ppm}{num vec, chemical shift matching to X}
+\item{ppm}{Numeric vector. Chemical shift positions corresponding to columns of X.}
 
-\item{type}{string/num vec, either glu or ala for glucose and alanine calibration, respectively, or num array defining chem shift of doublet to be used for calibration}
+\item{type}{Character or numeric. Use \code{"glu"} (glucose) or \code{"ala"} (alanine) for predefined doublet regions, or a numeric vector with custom ppm range.}
 
-\item{j_const}{num array, range of J constant values used to identify doublet signal (ppm), default is for glucose (doublet has J-cons of 3.85 Hz)}
+\item{j_const}{Numeric vector. Expected J-coupling range in ppm (default for glucose).}
 
-\item{sg_length}{int, nb of data points to cacl 2nd degree estimation with savitzki-golay (higher number -> smoother)}
+\item{sg_length}{Integer. Smoothing window length for Savitzky-Golay filter.}
 }
 \value{
-Calibrated X matrix
+Calibrated numeric matrix of the same dimensions as X.
 }
 \description{
-Calibrate spectra to a doublet signal
-}
-\author{
-Torben Kimhofer \email{torben.kimhofer@gmail.com}
+Calibrate 1D NMR spectra to a doublet peak (e.g. glucose or alanine) by aligning to a known coupling pattern.
 }
 \keyword{internal}

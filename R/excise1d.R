@@ -1,36 +1,51 @@
-#' @title Excise standard chemical shift regions
-#' @export
-#' @param X num matrix:  NMR data, spectra in rows
-#' @param ppm ppm, num array - chemical shift positions, length matches to columns in X
-#' @details
-#' Function removes the following chemical shift reagions from 1H NMR spectra acquired for small molecule research:
-#' \itemize{
-#'   \item min(ppm) to 0.25 ppm  (cap upfield)
-#'   \item 4.5 - 5.2 ppm (residual water)
-#'   \item 5.5 - 6.0 ppm (urea)
-#'   \item 9.7 to max(ppm)  (cap downfield)
-#' }
-#' @return
-#' The function exports the following two objects into the currently active R environment (no variable assignments needed):
-#' \itemize{
-#'   \item Xc, num matrix: column reduced
-#'   \item ppc, num array - chemical shift positions, length is equal to ncol(X_c)
+#' @title Excise Standard Chemical Shift Regions from NMR Spectra
 #'
+#' @description
+#' Removes standard chemical shift regions from 1D \eqn{^1}H NMR spectra typically excluded from metabolomics analysis.
+#'
+#' @param X Numeric matrix. NMR spectra with rows representing samples and columns representing chemical shift variables.
+#' @param ppm Numeric vector. Chemical shift positions (in ppm), must match number of columns in \code{X}.
+#'
+#' @details
+#' The following regions are removed:
+#' \itemize{
+#'   \item Upfield noise: \code{min(ppm)} to 0.25 ppm
+#'   \item Residual water: 4.5 to 5.2 ppm
+#'   \item Urea region: 5.5 to 6.0 ppm
+#'   \item Downfield noise: 9.7 ppm to \code{max(ppm)}
 #' }
-#' @author \email{torben.kimhofer@@murdoch.edu.au}
-#' @family NMR
-#' @section
+#'
+#' @return A list with:
+#' \itemize{
+#'   \item \code{Xc}: Numeric matrix with excised chemical shift regions removed.
+#'   \item \code{ppc}: Numeric vector of ppm values corresponding to \code{Xc}.
+#' }
+#'
+#' @examples
+#' set.seed(1)
+#' ppm <- seq(0, 10, length.out = 1000)
+#' X <- matrix(rnorm(100 * length(ppm)), nrow = 100)
+#' result <- excise1d(X, ppm)
+#' dim(result$Xc)
+#' length(result$ppc)
+#'
+#' @author Torben Kimhofer
+#' @export
+excise1d <- function(X, ppm) {
+  if (is.vector(X)) X <- t(X)
+  if (ncol(X) != length(ppm)) stop("ppm length does not match number of columns in X.")
+  if (anyNA(ppm)) stop("ppm contains NA values.")
 
-excise1d<-function(X, ppm){
-  if(nrow(X)==0){X=t(X)}
-  if(ncol(X)!=length(ppm)){ stop('ppm does not match to X')}
-  if(any(is.na(ppm))){stop('ppm contains NA values')}
+  idx_rm <- c(
+    get_idx(c(min(ppm), 0.25), ppm),
+    get_idx(c(4.5, 5.2), ppm),
+    get_idx(c(5.5, 6.0), ppm),
+    get_idx(c(9.7, max(ppm)), ppm)
+  )
 
-  idx_rm<- c( get.idx(c(min(ppm), 0.25), ppm), get.idx(c(4.5, 5.2), ppm), get.idx(c(5.5,6), ppm), get.idx(c(9.7, max(ppm)), ppm))
+  keep_idx <- setdiff(seq_along(ppm), idx_rm)
+  Xc <- X[, keep_idx, drop = FALSE]
+  ppc <- ppm[keep_idx]
 
-  Xc=X[,-idx_rm]
-  ppc=ppm[-idx_rm]
-
-  assign("Xc", Xc, envir = .GlobalEnv)
-  assign("ppc", ppc, envir = .GlobalEnv)
+  return(list(Xc = Xc, ppc = ppc))
 }

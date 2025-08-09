@@ -1,94 +1,101 @@
-# Calibrate 1D NMR to doublet signal
 #' @title Calibrate spectra to a doublet signal
-#' @param X num matrix, NMR matrix with spectra in rows
-#' @param ppm num vec, chemical shift matching to X
-#' @param type string/num vec, either glu or ala for glucose and alanine calibration, respectively, or num array defining chem shift of doublet to be used for calibration
-#' @param j_const num array, range of J constant values used to identify doublet signal (ppm), default is for glucose (doublet has J-cons of 3.85 Hz)
-#' @param sg_length int, nb of data points to cacl 2nd degree estimation with savitzki-golay (higher number -> smoother)
-#' @return Calibrated X matrix
-#' @author Torben Kimhofer \email{torben.kimhofer@@gmail.com}
-#' @import signal sgolayfilt
-#' @import utils combn
+#' @description
+#' Calibrate 1D NMR spectra to a doublet peak (e.g. glucose or alanine) by aligning to a known coupling pattern.
+#'
+#' @param X Numeric matrix. NMR data with spectra in rows.
+#' @param ppm Numeric vector. Chemical shift positions corresponding to columns of X.
+#' @param type Character or numeric. Use \code{"glu"} (glucose) or \code{"ala"} (alanine) for predefined doublet regions, or a numeric vector with custom ppm range.
+#' @param j_const Numeric vector. Expected J-coupling range in ppm (default for glucose).
+#' @param sg_length Integer. Smoothing window length for Savitzky-Golay filter.
+#'
+#' @return Calibrated numeric matrix of the same dimensions as X.
+#'
 #' @keywords internal
-.calibrate_doub <- function(X, ppm, type=c('glu', 'ala'), j_const=c(0.006, 0.007), sg_length = 13) {
+#'
+#' @importFrom signal sgolayfilt
+#' @importFrom utils combn
+#' @importFrom ptw asysm
+.calibrate_doub <- function(X, ppm, type = c("glu", "ala"), j_const = c(0.006, 0.007), sg_length = 13) {
 
-    if(type[1] =='glu') {
-        idx <- get_idx(c(5.15, 5.3), ppm);
-        cent_loc=5.233;
-        j_const=c(0.006, 0.007)
+  if (type[1] == "glu") {
+    idx <- get_idx(c(5.15, 5.3), ppm)
+    cent_loc <- 5.233
+    j_const <- c(0.006, 0.007)
+  } else if (type[1] == "ala") {
+    idx <- get_idx(c(1.4, 1.56), ppm)
+    cent_loc <- 1.48
+    j_const <- c(0.0115, 0.0135)
+  } else if (is.numeric(type[1])) {
+    idx <- get_idx(type, ppm)
+    cent_loc <- mean(type)
+  } else {
+    stop("Unknown calibration type. Use 'glu', 'ala', or numeric ppm range.")
+  }
+
+  test <- apply(X[, idx, drop = FALSE], 1, function(x, pp = ppm[idx]) {
+    result <- try(expr, silent = TRUE)
+    if (inherits(result, "try-error")) {
+      smoothed <- x - asysm(x, lambda = 100, maxit=1000)
     }
-    if(type[1] =='ala') {
-        idx <- get_idx(c(1.4, 1.56), ppm);
-        cent_loc=1.48
-        j_const = c(0.0115, 0.0135)
+    smoothed <- sgolayfilt(x - asysm(x, lambda = 100, maxit=1000), p = 3, n = sg_length)
+
+    picks <- ppick(smoothed, pp, type = "max")
+
+    if (is.null(picks) || length(picks) == 0 || is.null(picks[[1]])) {
+      return(NULL)
+    } else {
+      return(picks[[1]])
     }
-    if(is.numeric(type[1])) {
-        idx <- get_idx(type, ppm)
-        cent_loc = mean(type)
+  })
+
+  if (all(is.null(test))) {
+    warning('Could not calibrate - no signals detected');
+    return(NULL)
     }
 
-    # remove broad signals and smooth
-    test <- apply(X[, idx], 1, function(x, pp = ppm[idx]) {
-        xs <- sgolayfilt(x - asysm(x, lambda = 100), p = 3, n = sg_length)
-        ppick(xs, pp, type = "max")[[1]]
-    })
+  s <- lapply(seq_along(test), function(i) {
+    peaks <- test[[i]]
 
-    # calculate J const
-    s <- lapply(seq(length(test)), function(i) {
+    if (is.null(peaks) || nrow(peaks) < 2){
+      warning('Could not calibrate spectrum')
+      return(NULL)
+    }
+    ptab <- peaks[peaks$Etype > 0, , drop = FALSE]
 
-        ptab <- test[[i]][test[[i]]$Etype > 0, ]
-        ii <- combn(seq(nrow(test[[i]])), 2)
-        ii_d <- apply(ii, 2, function(id, pp = test[[i]]$ppm) {
-            abs(diff(pp[id]))
-        })
+    if (nrow(ptab) < 2) return(NULL)
 
-        ii_idx <- which(ii_d > j_const[1] & ii_d < j_const[2])
+    combs <- combn(nrow(ptab), 2)
+    ppm_diffs <- apply(combs, 2, function(id) abs(diff(ptab$ppm[id])))
+    valid <- which(ppm_diffs > j_const[1] & ppm_diffs < j_const[2])
 
-        if (length(ii_idx) == 1) {
+    if (length(valid) == 0) return(NULL)
 
-            out <- test[[i]][ii[, ii_idx], ]
-            out$diff <- diff(out$ppm)
-            out$mm <- mean(out$ppm)
-            return(out)
-        }
+    if (length(valid) == 1) {
+      out <- ptab[combs[, valid], ]
+    } else {
+      crit <- apply(combs[, valid], 2, function(id) {
+        avg <- mean(ptab$Int[id])
+        ratio <- max(ptab$Int) / min(ptab$Int[id])
+        c(avg = avg, ratio = ratio)
+      })
+      idx_best <- which.max(crit["avg", ])
+      out <- ptab[combs[, valid[idx_best]], ]
+    }
 
-        if (length(ii_idx) > 1) {
-            if (is.matrix(ii[, ii_idx]))
-                crit <- apply(ii[, ii_idx], 2, function(id) {
-                  c(max = mean(test[[i]]$Int[id]), ratio = max(test[[i]]$Int)/min(test[[i]]$Int[2]))
-                })
+    out$diff <- diff(out$ppm)
+    out$mm <- mean(out$ppm)
+    return(out)
+  })
 
-            # doubl=order(crit[1,], decreasing = T)
-            doubl <- which.max(crit[1, ])
-            out <- test[[i]][ii[, ii_idx[doubl]], ]
-            # abline(v=out$ppm)
-            out$diff <- diff(out$ppm)
-            out$mm <- mean(out$ppm)
-            return(out)
-        } else {
-            NULL
-        }
-    })
+  Xc <- vapply(seq_len(nrow(X)), function(i) {
+    if (is.null(s[[i]]) || nrow(s[[i]]) < 2) {
+      warning(sprintf("Could not calibrate spectrum %d", i))
+      return(X[i, ])
+    } else {
+      shift_fun <- approxfun(x = ppm - (max(s[[i]]$ppm) - cent_loc), y = X[i, ])
+      return(shift_fun(ppm))
+    }
+  }, FUN.VALUE = X[1, ])
 
-    Xc <- vapply(seq(nrow(X)), function(i) {
-        if (is.null(s[[i]]) && nrow(s[[i]]) > 2) {
-            message(paste("Could not calibrate spectrum", i))
-        } else {
-            ff <- approxfun(x = ppm - (max(s[[i]]$ppm) - cent_loc), y = X[i, ])
-            news <- ff(ppm)
-            return(news)
-        }
-    }, FUN.VALUE = X[1, ])
-
-    Xc <- t(Xc)
-
-    return(Xc)
+  return(t(Xc))
 }
-
-
-
-
-
-
-
-

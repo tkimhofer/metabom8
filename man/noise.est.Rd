@@ -2,54 +2,54 @@
 % Please edit documentation in R/AllGenerics.R
 \name{noise.est}
 \alias{noise.est}
-\title{Estimation of noise level of 1D spectrum}
+\title{Estimate Noise Level in 1D NMR Spectra}
 \usage{
 noise.est(X, ppm, where = c(14.6, 14.7))
 }
 \arguments{
-\item{X}{num matrix, NMR data with rows representing spectra.}
+\item{X}{Numeric matrix. NMR data with spectra represented in rows (samples × chemical shift bins).}
 
-\item{ppm}{num array describing chemical shift positions, its length equals to \code{nrow(X)}.}
+\item{ppm}{Numeric vector. Chemical shift positions in ppm. Must match the number of columns in \code{X}.}
 
-\item{where}{Signal free region across all NMR spectra (see Details).}
+\item{where}{Numeric vector of length 2. Specifies the ppm range to use for noise estimation.
+This range should be free of peaks (i.e., no expected metabolite signal). Default is \code{c(14.6, 14.7)}.}
 }
 \value{
-Array of noise level for each spectrum.
+Numeric vector of noise levels, one value per spectrum (length equals \code{nrow(X)}).
 }
 \description{
-Estimation of noise level of 1D spectrum
+Estimates the noise level for each spectrum in a 1D NMR dataset by analyzing a signal-free region.
+Useful for quality control (QC) before or after spectral processing such as normalization or baseline correction.
 }
 \details{
-Estimation of noise level in NMR spectra. This is useful for quality control checks (e.g., before and after spectral normalisation). Noise estimation requires a signal-free ppm region, usually this is the extreme ends of the spectra. Noise is estimated after baseline correction using the 95th quantile. The function requires a minimum number of 50 data points.
+Noise is estimated after baseline correction using asymmetric least squares smoothing
+(via \code{\link[ptw]{asysm}}). The output is based on the 95th percentile of the signal in the specified
+region and assumes a minimum of 50 points in that region. If fewer points are available, the function stops.
 }
-\section{}{
-NA
+\note{
+Choose the \code{where} region carefully based on acquisition setup.
+Signal-free regions are typically at the high or low ppm ends (e.g., >10 ppm or <0 ppm).
 }
-
 \examples{
-load(covid)
-noise.est(X, ppm)
+data(covid_raw)
+X <- covid_raw$X
+ppm <- covid_raw$ppm
+noise_vals <- noise.est(X, ppm, where = c(8.8, 8.9))
+hist(noise_vals, main = "Estimated Noise", xlab = "Noise Level")
+
 }
 \seealso{
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
+\code{\link{binning}()},
+\code{\link{cvanova}()},
+\code{\link{get_idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
 \code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
+\code{\link{read1d_raw}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
 \code{\link{storm}()}
-}
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR}

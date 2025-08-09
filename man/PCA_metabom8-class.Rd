@@ -3,19 +3,36 @@
 \docType{class}
 \name{PCA_metabom8-class}
 \alias{PCA_metabom8-class}
-\title{An S4 class to represent an PCA model constructed with metabom8}
+\title{PCA model object from metabom8}
 \description{
-An S4 class to represent an PCA model constructed with metabom8
+An S4 class to represent a PCA model constructed using metabom8.
 }
-\section{}{
-NA
-}
+\section{Slots}{
+
+\describe{
+\item{\code{type}}{Character string indicating model type (e.g., "PCA")}
+
+\item{\code{t}}{Scores matrix (PCs)}
+
+\item{\code{p}}{Loadings matrix}
+
+\item{\code{nPC}}{Number of principal components}
+
+\item{\code{X_mean}}{Mean of each feature in X (numeric)}
+
+\item{\code{X_sd}}{Standard deviation of each feature in X (numeric)}
+
+\item{\code{Parameters}}{List of parameters used}
+
+\item{\code{X}}{Original input matrix}
+}}
 
 \seealso{
 Other NMR & MS: 
-\code{\link{OPLS_metabom8-class}}
+\code{\link{OPLS_metabom8-class}},
+\code{\link{PLS_metabom8-class}}
 }
 \author{
-\email{torben.kimhofer@murdoch.edu.au}
+\email{tkimhofer@gmail.com}
 }
 \concept{NMR & MS}

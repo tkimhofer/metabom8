@@ -2,23 +2,23 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.kFold}
 \alias{.kFold}
-\title{k-fold subsets for cross validation (CV)}
+\title{k-fold cross-validation index generator}
 \usage{
 .kFold(k, Y)
 }
 \arguments{
-\item{k}{int k parameter}
+\item{k}{Integer. Number of CV folds. If \code{k} is not valid or too high relative to number of rows in Y,
+it defaults to leave-one-out CV (LOO-CV).}
 
-\item{Y}{matrix (observations times variables)}
+\item{Y}{Matrix. Outcome matrix (observations × variables).}
 }
 \value{
-list of Y row-indices for each fold
+A list of length \code{k}, where each element contains the training indices (integers)
+for one CV fold.
 }
 \description{
-This function ccreates a list of indices that represent k fold subsets for CV
+Creates a list of training set indices for k-fold cross-validation (CV),
+without considering class balance in Y. Each element of the list represents
+the row indices used for training in one CV fold.
 }
-\section{}{
-NA
-}
-
 \keyword{internal}

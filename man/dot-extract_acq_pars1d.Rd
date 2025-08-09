@@ -2,26 +2,20 @@
 % Please edit documentation in R/RawGenerics.R
 \name{.extract_acq_pars1d}
 \alias{.extract_acq_pars1d}
-\title{Read Bruker NMR paramter files - helper function read1d}
+\title{Extract Bruker NMR Acquisition Parameters}
 \usage{
 .extract_acq_pars1d(f_list)
 }
 \arguments{
-\item{f_list}{list, intact files system for NMR experiments. See fct checkFiles1d}
-
-\item{procs_exp}{num or char, which processing experiment should be extracted}
+\item{f_list}{List. Contains paths to NMR experiment folders (e.g., as returned by \code{.check1d_files_fid()}).}
 }
 \value{
-data frame of spectrometer acquisition parameters
+A data frame containing extracted acquisition parameters for each experiment.
 }
 \description{
-Read Bruker NMR paramter files - helper function read1d
+Parses \code{acqus} files to extract acquisition parameters for each experiment.
 }
-\section{NA}{
-
-}
-
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
+\seealso{
+\code{\link{.filterExp_files}}, \code{\link{.check1d_files_fid}}
 }
 \keyword{internal}

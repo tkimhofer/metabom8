@@ -2,18 +2,30 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.viz_df_helper}
 \alias{.viz_df_helper}
-\title{Prep data.frame for plotting functions}
+\title{Prepare Data Frame for Projection or Score Plotting}
 \usage{
 .viz_df_helper(obj, pc, an, type = "p")
 }
+\arguments{
+\item{obj}{An object of class \code{PCA_metabom8} or \code{OPLS_metabom8}.}
+
+\item{pc}{Character vector indicating which components to extract, e.g., \code{c("1", "o1")} for predictive and orthogonal components.}
+
+\item{an}{Named list of annotation vectors to append to the output data frame. Each vector should be length 1 or \code{nrow(X)}.}
+
+\item{type}{Character. One of \code{"p"} (projection), \code{"t"} (scores), or \code{"t_cv"} (cross-validated scores).}
+}
 \value{
-list of data frame containing plotting data and number of cols of df
+A list with two elements:
+\itemize{
+\item \code{df}: A data frame containing extracted components and annotations.
+\item \code{an_le}: Number of annotation columns.
+}
 }
 \description{
-Prep data.frame for plotting functions
+Helper function to extract and structure projection (\code{p}) or score (\code{t}) components from a PCA or OPLS object for downstream visualization (e.g., scatter plots).
 }
-\section{}{
-NA
+\details{
+Used internally for constructing input to plotting functions. The \code{pc} vector can contain \code{"o"}-prefixed entries to access orthogonal components in OPLS.
 }
-
 \keyword{internal}

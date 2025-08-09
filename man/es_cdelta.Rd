@@ -2,46 +2,40 @@
 % Please edit documentation in R/es_cdelta.R
 \name{es_cdelta}
 \alias{es_cdelta}
-\title{Cliff's delta (effect size)}
+\title{Cliff's Delta Effect Size}
 \usage{
 es_cdelta(ref, comp)
 }
 \arguments{
-\item{ref}{num, reference group}
+\item{ref}{Numeric vector representing the reference group.}
 
-\item{comp}{num, comparator group}
+\item{comp}{Numeric vector representing the comparator group.}
 }
 \value{
-This function returns Cliff's delta effect size ranging from -1 to 1
+A single numeric value: Cliff's delta.
 }
 \description{
-Non-parametric effect size estimate used to quantify the degree to which two variable distributions overlap. Output is scaled to range between -1 to 1, with the arithmetic sign indicating if the comparator group lies to the right (higher) or left (lower) to a the reference.
+Calculates Cliff's delta, a non-parametric effect size that quantifies the degree of overlap between two distributions. The value ranges from -1 to 1, where:
+\itemize{
+\item{-1: all values in \code{comp} are greater than those in \code{ref}}
+\item{0: complete overlap between distributions}
+\item{1: all values in \code{ref} are greater than those in \code{comp}}
+}
+}
+\details{
+The effect size is calculated as the scaled difference in dominance between groups.
+Missing or infinite values are removed with a message.
 }
 \examples{
-# define two distrubutions
-a=rnorm(100, mean=0, sd=1)
-b=rnorm(100, mean=2, sd=1)
+ref <- rnorm(100, mean = 0)
+comp <- rnorm(100, mean = 1)
+es_cdelta(ref, comp)
 
-# Cliff's delta
- es_cdelta(ref=a, comp=b)
- es_cdelta(ref=b, comp=a)
 }
 \references{
-Cliff, N (1993), Dominance statistics: Ordinal analyses to answer ordinal quetsions \emph{Psychological Bulletin}, 114.(3), 494-509.\url{https://doi.org/10.1037\%2F0033-2909.114.3.494}
+Cliff, N. (1993). Dominance statistics: Ordinal analyses to answer ordinal questions.
+\emph{Psychological Bulletin}, 114(3), 494–509. \doi{10.1037/0033-2909.114.3.494}
 }
 \seealso{
-Other NMR ++: 
-\code{\link{.hotellingsT2}()},
-\code{\link{cvanova}()},
-\code{\link{minmax}()},
-\code{\link{opls_perm}()},
-\code{\link{pca}()},
-\code{\link{plotscores}()},
-\code{\link{pqn}()},
-\code{\link{predict_opls}()},
-\code{\link{scRange}()}
+\code{\link{eruption}}, \code{\link{opls}}, \code{\link{dmodx}}
 }
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
-}
-\concept{NMR ++}

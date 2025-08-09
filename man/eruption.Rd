@@ -2,32 +2,54 @@
 % Please edit documentation in R/eruption.R
 \name{eruption}
 \alias{eruption}
-\title{Eruption plot for OPLS-DA model visualisation}
+\title{Eruption Plot for OPLS-DA Model Interpretation}
 \usage{
 eruption(mod, pc = 1, p_adj = "BH", invert_es = FALSE)
 }
 \arguments{
-\item{mod}{OPLS model generated with \code{metabom8}.}
+\item{mod}{An OPLS model object of class \code{OPLS_metabom8}, generated via \code{\link{opls}}.}
 
-\item{pc}{num or char, indicating OPLS component to visualise (1 for predictive component, prefix 'o' for orthogonal components, e.g., pc='o1' for first orthogonal component)}
+\item{pc}{Integer or character. Component to plot: use \code{1} for predictive,
+or \code{'o1'}, \code{'o2'}, etc., for orthogonal components.}
 
-\item{p_adj}{str, p value adjustment method, see \code{?p.adjust}}
+\item{p_adj}{Character string. Method for p-value adjustment. See \code{\link[stats]{p.adjust}}.}
 
-\item{invert_es}{logical, swap reference distribution for calculation of effect size estimate Cliff's delta}
+\item{invert_es}{Logical. If \code{TRUE}, swaps the reference group for Cliff's delta calculation.}
 }
 \value{
-dataframe of effect size estimate (Cd), model loadings of OPLS predictive component (p_pred), p value (adjusted, if specified)
+A list with:
+\describe{
+\item{\code{data}}{A \code{data.frame} with model loadings, Cliff's delta, and (adjusted) p-values.}
+\item{\code{plot}}{A \code{ggplot} object for visualisation.}
+}
 }
 \description{
-Visualise variable importances in OPLS context, p value is generated with Kruskal Walis rank sum test, effect size measure is Cliff's delta.
+Generates an eruption plot to visualise variable importance in an OPLS-DA model.
+Variables are plotted by their model loading (from predictive or orthogonal component),
+effect size (Cliff's delta), and adjusted p-value from the Kruskal-Wallis rank sum test.
 }
-\section{}{
-NA
+\details{
+Designed for binary classification OPLS-DA models. Effect size is calculated with Cliff's delta,
+and variable-level p-values are obtained via Kruskal-Wallis tests. Color indicates the negative log10
+of (adjusted) p-values. This plot is designed for a low nb of features, ie. not full res NMR data
 }
+\examples{
+set.seed(123)
+X <- matrix(rnorm(200), 10, 20)
+grp <- rep(c("A", "B"), each = 5)
+X[grp == "B", 1:5] <- X[grp == "B", 1:5] + 2
+X[grp == "B", 5] <- X[grp == "B", 4] * 0.9 + rnorm(5, 0, 0.1)
+colnames(X) <- paste0("metabolite", 1:20)
 
+mod = opls(X,grp)
+er = eruption(mod)
+head(er[[1]]); plot(er[[2]])
+}
+\references{
+Torben Kimhofer
+Eriksson, L. et al. (2008). CV-ANOVA for significance testing of PLS and OPLS models.
+\emph{J. Chemometrics}, 22, 594–600.
+}
 \seealso{
 \code{\link{opls}}
-}
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }

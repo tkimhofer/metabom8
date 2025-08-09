@@ -2,18 +2,39 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.load_stat_reconstr_nmr}
 \alias{.load_stat_reconstr_nmr}
-\title{cor / cov model scores and NMR data}
+\title{Correlation and Covariance of Scores with NMR Data}
 \usage{
 .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
 }
+\arguments{
+\item{mod}{An object of class \code{PCA_metabom8} or \code{OPLS_metabom8}.}
+
+\item{pc}{Character or numeric. Component identifier (e.g., \code{1}, \code{"o1"}).}
+
+\item{X}{Numeric matrix. NMR spectra matrix (samples × variables).}
+
+\item{idx}{Integer vector. Indices specifying the region of interest in the chemical shift vector.}
+
+\item{ppm}{Numeric vector. Chemical shift values (ppm).}
+}
 \value{
-data frame with column cor, cov, ppm
+A \code{data.frame} with the following columns:
+\describe{
+\item{cor}{Absolute correlation between model scores and spectral intensities.}
+\item{cov}{Covariance between model scores and spectral intensities.}
+\item{ppm}{Chemical shift values (ppm).}
+}
 }
 \description{
-cor / cov model scores and NMR data
+Computes the correlation and covariance between model component scores and NMR spectral variables.
+This is typically used to reconstruct statistical relevance maps (e.g., statistical total correlation spectroscopy, STOCSY-like plots).
 }
-\section{}{
-NA
+\details{
+Correlations are computed as Pearson coefficients between the selected component's scores and each spectral variable across samples.
+Covariances are similarly computed. This provides insight into variables driving component separation.
 }
+\examples{
+# df <- .load_stat_reconstr_nmr(model, "1", X, get_idx(c(0.5, 4.5), ppm), ppm)
 
+}
 \keyword{internal}

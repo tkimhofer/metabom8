@@ -2,31 +2,39 @@
 % Please edit documentation in R/read1d.R
 \name{.detect1d_procs}
 \alias{.detect1d_procs}
-\title{Check for intact file systems - helper function read1d!}
+\title{Check for Intact File Systems - Helper Function for read1d}
 \usage{
-.detect1d_procs(datapath, n_max = 10, filter = TRUE, recursive, verbose)
+.detect1d_procs(
+  datapath,
+  n_max = 10,
+  filter = TRUE,
+  recursive = TRUE,
+  verbose = 1
+)
 }
 \arguments{
-\item{datapath}{char, File directory containing spectra}
+\item{datapath}{character. Path to directory containing spectra.}
 
-\item{n_max}{int, Maximum number of spectra to read-in}
+\item{n_max}{integer. Maximum number of spectra to read (default 10).}
 
-\item{filter}{lobic, filter for intact file systems (TRUE is recommended)}
+\item{filter}{logical. Whether to filter out incomplete file sets (default TRUE).}
 
-\item{procs_exp}{num, Topspin processing experiment ID}
+\item{recursive}{logical. Whether to search directories recursively.}
+
+\item{verbose}{integer. Verbosity level for messaging.}
 }
 \value{
-list of file descriptors: experiment folder path, folder id, procs file, acqus file, 1r file.
-list(path=p_intact, exp_no=exp_no, f_procs=f_procs, f_acqus=f_acqus, f_1r=f_1r)
+A list with elements:
+\describe{
+\item{path}{Character vector of experiment folder paths (intact).}
+\item{exp_no}{Character vector of experiment folder IDs.}
+\item{f_procs}{Character vector of paths to 'procs' files.}
+\item{f_acqus}{Character vector of paths to 'acqus' files.}
+\item{f_1r}{Character vector of paths to '1r' files.}
+}
 }
 \description{
-Check for intact file systems - helper function read1d!
-}
-\section{}{
-NA
-}
-
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
+Scans the specified directory recursively to find intact sets of Bruker NMR files:
+'procs', 'acqus', and '1r' files. Optionally filters incomplete experiments.
 }
 \keyword{internal}

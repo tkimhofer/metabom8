@@ -1,24 +1,25 @@
 Package: metabom8
 Type: Package
 Title: NMR-based metabolic profiling 
-Version: 1.0.0
-Authors@R: person("Torben", "Kimhofer", email = "tkimhofer@gmail.com", 
-  role = c("aut", "cre"))
+Version: 1.2.0
+Authors@R: person(given = "Torben",
+           family = "Kimhofer",
+           role = c("aut", "cre"),
+           email = "tkimhofer@gmail.com",
+           comment = c(ORCID = "0000-0001-7158-9930"))
 Description: Functions to perform 1D NMR data import, spectral data preprocessing, multivariate statistical analysis and statistical total correlation for putative metabolite identification!
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
-Depends: R (>= 4.0)
+Depends: R (>= 4.5)
 Imports: 
     abind, 
-    BiocManager,
     colorRamps,
     ellipse,
     ggplot2, 
     ggrepel,
     graphics,
     grDevices,
-    htmlTable,
+    magrittr,
     methods, 
     parallel,
     pcaMethods,
@@ -29,6 +30,7 @@ Imports:
     RColorBrewer,
     Rcpp (>= 1.0.4.6), 
     reshape2, 
+    rlang,
     scales, 
     signal,
     stats, 
@@ -37,12 +39,17 @@ LinkingTo:
     Rcpp,
     RcppArmadillo,
     RcppEigen
-biocViews: Metabolomics, Cheminformatics, Preprocessing, DataImport
+biocViews: Metabolomics, Cheminformatics, Preprocessing, DataImport, Alignment
+BugReports: https://github.com/tkimhofer/metabom8/issues
+URL: https://tkimhofer.github.io/metabom8/
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
-Suggests: 
+RoxygenNote: 7.3.2
+Suggests:
+    BiocStyle,
+    dplyr,
+    DT,
+    htmlTable,
     knitr,
-    nmrdata,
     rmarkdown,
     testthat
 VignetteBuilder: knitr

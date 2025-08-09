@@ -2,23 +2,23 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.checkDimXY}
 \alias{.checkDimXY}
-\title{Check X and Y shapes (PLS context)}
+\title{Check Dimensions of X and Y Matrices (PLS Context)}
 \usage{
 .checkDimXY(X, Y)
 }
 \arguments{
-\item{X}{X matrix (observations x variables)}
+\item{X}{Numeric matrix. Predictor data matrix (observations x variables).}
 
-\item{Y}{Y matrix (observations x variables)}
+\item{Y}{Numeric matrix. Response data matrix (observations x variables).}
 }
 \value{
-NULL if all's fine and throws error otherwise
+Invisibly returns \code{NULL} if checks pass.
+Throws an error if dimensions are incompatible.
 }
 \description{
-This function checks for matching dimensions (X - Y).
+Checks that the input matrices \code{X} and \code{Y} have compatible dimensions
+for Partial Least Squares (PLS) analysis.
+Specifically, the number of observations (rows) must match, and
+the number of variables (columns) in \code{X} must be greater than in \code{Y}.
 }
-\section{}{
-NA
-}
-
 \keyword{internal}

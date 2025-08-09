@@ -2,23 +2,28 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.kFoldStratified}
 \alias{.kFoldStratified}
-\title{Y-stratified k-fold subsets for cross validation (CV)}
+\title{Stratified k-fold cross-validation index generator}
 \usage{
 .kFoldStratified(k, stratified)
 }
 \arguments{
-\item{k}{int CV parameter k}
+\item{k}{Integer. Number of folds.}
 
-\item{stratified}{list with 3 elements: 1) char: R for regression (Y is numeric), DA for discriminant analysis (Y treated as categorical), prefix '-mY' indicates multi-column Y (see Y) 2) Y matrix (observations times variables), always with ncol = 1 (stratified CV generation for multi-Y to be implemented) and 3) quantile function probabilities for stratification of numberic Y}
+\item{stratified}{List with three elements:
+\itemize{
+\item \code{type}: Character. Either \code{"R"} for regression or \code{"DA"} for discriminant analysis.
+\item \code{Y}: Matrix. Outcome matrix with a single column.
+\item \code{probs}: Numeric vector. Probabilities used for stratification of numeric \code{Y} (regression only).
+}}
 }
 \value{
-list of Y row-indices for each fold
+A list of length \code{k}, each element containing the training set row indices (integers) for one CV fold.
+Returns \code{NULL} and a warning if stratification is not feasible due to class imbalance.
 }
 \description{
-This function creates a list of indices that represent k fold subsets for CV, stratified by the first column in Y. If type is regression, then Y will be categorised accroding to quantile function using probabilities igven in the thrid element of stratified list (see parameter).
+Generates a list of training set indices for stratified k-fold cross-validation (CV).
+Stratification is performed based on the first column of \code{Y}. For regression tasks,
+\code{Y} is binned by quantiles to emulate class balance. Ensures class proportions are
+preserved across folds when possible.
 }
-\section{}{
-NA
-}
-
 \keyword{internal}

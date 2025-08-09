@@ -3,19 +3,68 @@
 \docType{class}
 \name{OPLS_metabom8-class}
 \alias{OPLS_metabom8-class}
-\title{An S4 class to represent an OPLS model constructed with metabom8}
+\title{OPLS model object from metabom8}
 \description{
-An S4 class to represent an OPLS model constructed with metabom8
+An S4 class to represent an OPLS model constructed with metabom8.
 }
-\section{}{
-NA
-}
+\section{Slots}{
+
+\describe{
+\item{\code{type}}{Character string indicating model type (e.g., "OPLS")}
+
+\item{\code{t_pred}}{Predictive component scores (matrix)}
+
+\item{\code{p_pred}}{Predictive loadings (matrix)}
+
+\item{\code{w_pred}}{Predictive weights (matrix)}
+
+\item{\code{betas_pred}}{Regression coefficients (numeric)}
+
+\item{\code{Qpc}}{Predicted Y values per component (matrix)}
+
+\item{\code{t_pred_cv}}{Cross-validated predictive scores (matrix)}
+
+\item{\code{t_orth_cv}}{Cross-validated orthogonal scores (matrix)}
+
+\item{\code{t_orth}}{Orthogonal scores (matrix)}
+
+\item{\code{p_orth}}{Orthogonal loadings (matrix)}
+
+\item{\code{w_orth}}{Orthogonal weights (matrix)}
+
+\item{\code{nPC}}{Number of predictive components (numeric)}
+
+\item{\code{summary}}{Model performance metrics (data.frame)}
+
+\item{\code{X_orth}}{Orthogonal part of X (matrix)}
+
+\item{\code{Y_res}}{Residuals of Y (matrix)}
+
+\item{\code{X_res}}{Residuals of X (matrix)}
+
+\item{\code{X_mean}}{Mean of each feature in X (numeric)}
+
+\item{\code{X_sd}}{Standard deviation of each feature in X (numeric)}
+
+\item{\code{Y_mean}}{Mean of Y (numeric)}
+
+\item{\code{Y_sd}}{Standard deviation of Y (numeric)}
+
+\item{\code{Parameters}}{List of parameters used during training}
+
+\item{\code{X}}{Original input data (matrix)}
+
+\item{\code{X_scaled}}{Scaled version of X (matrix)}
+
+\item{\code{Y}}{Target variable (list)}
+}}
 
 \seealso{
 Other NMR & MS: 
-\code{\link{PCA_metabom8-class}}
+\code{\link{PCA_metabom8-class}},
+\code{\link{PLS_metabom8-class}}
 }
 \author{
-\email{torben.kimhofer@murdoch.edu.au}
+\email{tkimhofer@gmail.com}
 }
 \concept{NMR & MS}

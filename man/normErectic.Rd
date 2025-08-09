@@ -2,48 +2,53 @@
 % Please edit documentation in R/normErectic.R
 \name{normErectic}
 \alias{normErectic}
-\title{Normalise by the ERETIC signal}
+\title{Normalize Spectra Using ERETIC Signal}
 \usage{
 normErectic(X, integr = FALSE)
 }
 \arguments{
-\item{X}{num matrix, NMR data, spectra in row with ppm values as column names}
+\item{X}{Numeric matrix. NMR data with spectra in rows and chemical shift positions as column names.}
 
-\item{integr}{logic, FALSE: fct returns integral of ERETIC, TRUE: fct returns spectra normalised with ERETIC integral}
+\item{integr}{Logical. If \code{TRUE}, the function returns the ERETIC integral for each spectrum. If \code{FALSE}, returns the normalized spectra.}
 }
 \value{
 \itemize{
-\item num matrix: X-normalised with ERETIC integral (urine - 12 ppm, plasma = 15 ppm)
-\item num vector: ERETIC integrals (urine - 12 ppm, plasma = 15 ppm)
+\item If \code{integr = TRUE}: numeric vector of ERETIC integrals per spectrum.
+\item If \code{integr = FALSE}: numeric matrix of spectra normalized by ERETIC integral.
 }
 }
 \description{
-Normalise by the ERETIC signal
+This function normalizes 1D NMR spectra using the ERETIC reference signal. If \code{integr = TRUE}, it returns the ERETIC integral only. The reference region is inferred automatically based on the observed ERETIC peak (around 12 ppm for urine or 15 ppm for plasma).
 }
-\section{}{
-NA
+\details{
+The function identifies the dominant ERETIC peak within the range 10–16 ppm and then uses a narrow window around 12 ppm (urine) or 15 ppm (plasma) to compute the normalization factor.
 }
+\examples{
+set.seed(123)
+n <- 1000
+ppm <- seq(0, 14, length.out = n)
+gauss <- function(x, c, h, w=0.05) h * exp(-((x - c)^2) / (2 * w^2))
+heights <- c(100, 80, 60, 40, 20)
+spectra <- sapply(heights, function(h) rnorm(n, 0, 0.01) + gauss(ppm, 12, h))
+spectra <- t(spectra)  # 5 spectra x 1000 points
+colnames(spectra) = ppm
+matspec(spectra, ppm, shift=c(11, 13))
 
+X_norm = normErectic(spectra)
+matspec(X_norm, ppm, shift=c(11, 13))
+}
 \seealso{
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
+\code{\link{binning}()},
+\code{\link{cvanova}()},
+\code{\link{get_idx}()},
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
 \code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
+\code{\link{read1d_raw}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
 \code{\link{storm}()}
-}
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR}

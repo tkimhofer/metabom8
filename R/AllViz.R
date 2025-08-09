@@ -1,501 +1,519 @@
-#' Plot single NMR spectrum
-#' @export
-#' @param ppm num array, ppm vector.
-#' @param x num array, NMR spectrum.
-#' @param shift num array, chemical shift region to be plotted.
-#' @param add logical, indicating if spectrum should be added to a current plot generated with \code{spec()} or \code{matspec()}.
-#' @param interactive logical, interactive version (plotly package)
-#' @param name string, name of trace (only used in interactive mode)
-#' @param mode string, plot mode for interactive version: 'lines' (recommended), 'lines+markers' or 'markers'
-#' @param ... Additional parameters to be passed on to the graphics generic plot function.
-#' @return NULL
-#' @seealso  \code{\link{matspec}} \code{\link{plot}}
-#' @details Non-interactive mode: Base graphics for single NMR spectrum. Interactive mode: Plotly graphics.
-#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @title Plot a Single NMR Spectrum
+#'
+#' @description
+#' Plots a 1D NMR spectrum using either base R or interactive Plotly graphics.
+#'
+#' @param x Numeric vector. NMR spectrum intensity values.
+#' @param ppm Numeric vector. Chemical shift positions.
+#' @param shift Numeric length-2 vector. Chemical shift range to plot (e.g., \code{c(0, 11)}).
+#' @param interactive Logical. Use plotly for interactive output? Defaults to TRUE.
+#' @param name Character. Label for trace (Plotly only).
+#' @param mode Character. Plotly trace mode: 'lines', 'markers', or 'lines+markers'.
+#' @param base Logical. If TRUE, use base R plot (overrides \code{interactive}).
+#' @param add Logical. If TRUE, add to an existing base R plot.
+#' @param ... Additional arguments passed to base \code{plot()} or \code{points()}.
+#'
+#' @return If \code{interactive = TRUE}, returns a \code{plotly} object. Otherwise, returns \code{NULL}.
+#'
+#' @importFrom graphics plot points
+#' @importFrom plotly plot_ly add_trace layout
+#' @importFrom magrittr %>%
 #' @examples
 #' data(covid)
-#' spec(X[1,], ppm) # interactive
-#' spec(X[2,], ppm, add=TRUE) # add trace
-#' spec(X[1,], ppm, interactive=FALSE) # static
-#' @importFrom graphics points
-#' @importFrom plotly plot_ly add_lines layout %>% add_trace
-#' @family NMR
-#' @section
-spec <- function(x, ppm, shift = c(0, 11), add = FALSE, interactive = TRUE, name = "A",
-    mode = "lines", ...) {
+#' p <- spec(X[1, ], ppm, shift = c(0, 11), interactive = TRUE)
+#' if (interactive()) p
+#'
+#' spec(X[2, ], ppm, shift = c(0, 11), interactive = FALSE)
+#' spec(X[3, ], ppm, shift = c(0, 11), interactive = FALSE, add = TRUE, col = 'red')
+#' @export
+spec <- function(x, ppm, shift = c(0, 11), interactive = TRUE, name = "A", mode = "lines",
+                 base = FALSE, add = FALSE, ...) {
 
-    if (!is.null(ncol(x))) {
-        stop("More than one spectrum provided.")
-    }
-    if (length(x) != length(ppm)) {
-        stop("X and ppm don't match.")
-    }
-    idx <- get_idx(shift, ppm)
+  if (!is.null(ncol(x))) stop("x must be a numeric vector (single spectrum).")
+  if (length(x) != length(ppm)) stop("x and ppm must have equal length.")
 
-    if (interactive) {
-        sp <- data.frame(ppm = ppm[idx], spec = x[idx])
-        if (add) {
-            if (!exists(".ind_interactive", envir = parent.frame())) {
-                stop("First create interactive plot (set add=FALSE), then add desired spectrum")
-            }
-            p <- get(".p", envir = parent.frame())
-            p <- suppressWarnings(p %>% add_trace(data = sp, y = ~spec, name = name, mode = mode))
-            assign(".p", p, envir = parent.frame())
-            return(p)
-        } else {
-            # if(!exists('mm8_plot', mode='environment')) mm8_plot <- new.env(parent =
-            # globalenv())
-            assign(".ind_interactive", TRUE, envir = globalenv())
-            x <- list(title = "ppm", autorange = "reversed")
-            y <- list(title = "Intensity")
-            p <- suppressWarnings(plot_ly(data = sp, x = ~ppm, y = ~spec, name = name, type = "scatter",
-                mode = mode, hovertemplate = "%{x} ppm<extra></extra>") %>% layout(xaxis = x,
-                yaxis = y))
-            assign(".p", p, envir = parent.frame())
-        }
-        return(p)
-    }
+  idx <- get_idx(shift, ppm)
+  ppm_sub <- ppm[idx]
+  x_sub <- x[idx]
 
-
-    if (exists(".ind_interactive", envir = parent.frame())) {
-        assign(".ind_interactive", FALSE, envir = globalenv())
-    }
+  if (interactive && !base) {
+    plotly::plot_ly(x = ~ppm_sub, y = ~x_sub, type = "scatter", mode = mode, name = name,
+                    hovertemplate = "%{x} ppm<extra></extra>") %>%
+      plotly::layout(
+        xaxis = list(title = "ppm", autorange = "reversed"),
+        yaxis = list(title = "Intensity")
+      )
+  } else {
     if (add) {
-        points(ppm[idx], x[idx], type = "l", ...)
+      graphics::points(ppm_sub, x_sub, type = "l", ...)
     } else {
-        plot(ppm[idx], as.numeric(x[idx]), type = "l", xlim = rev(range(ppm[idx])),
-            xlab = "ppm", ylab = "Intensity", ...)
+      graphics::plot(ppm_sub, x_sub, type = "l", xlim = rev(range(ppm_sub)),
+                     xlab = "ppm", ylab = "Intensity", ...)
     }
-
+    invisible(NULL)
+  }
 }
-# spec(Xb[1,], ppm, shift=c(-1,11), name='A', interactive=T, mode='lines')
-# spec(X[4,], ppm, shift=c(-1,11), name='C', add=T, interactive=T, mode='lines')
 
 
 
-
-
-#' Plot overlayed NMR spectra
-#' @export
-#' @param ppm  num array, ppm vector.
-#' @param X num matrix, NMR matrix with spectra represented in rows.
-#' @param shift num array, hemical shift region to be plotted (in ppm).
-#' @param interactive logical, interactive version (plotly package)
-#' @param ... additional parameters to be passed on to the graphics generic plot function.
-#' @seealso \code{\link{spec}} \code{\link{plot}}
-#' @details Non-interactive mode: Base graphics for NMR spectra. Interactive mode: Plotly graphics.
-#' @return NULL
-#' @importFrom graphics matplot matpoints
-# #' @importFrom RColorBrewer brewer.pal
+#' @title Plot Overlayed NMR Spectra
+#'
+#' @description
+#' Plots multiple 1D NMR spectra using either base R or interactive Plotly graphics.
+#'
+#' @param X Numeric matrix. NMR data matrix with spectra in rows.
+#' @param ppm Numeric vector. Chemical shift axis (must match \code{ncol(X)}).
+#' @param shift Numeric vector of length 2. Chemical shift window to plot (e.g., \code{c(0, 9.5)}).
+#' @param interactive Logical. Use plotly for interactive plotting (default: \code{TRUE}).
+#' @param ... Additional arguments passed to \code{matplot()} for non-interactive plots.
+#'
+#' @return A \code{plotly} object if \code{interactive = TRUE}; otherwise, \code{NULL}.
+#'
+#' @importFrom plotly plot_ly add_lines layout
+#' @importFrom graphics matplot
+#' @importFrom reshape2 melt
 #' @importFrom grDevices colorRampPalette
-#' @author \email{torben.kimhofer@@murdoch.edu.au}
-#' @family NMR
 #' @examples
 #' data(covid)
-#' matspec(X[1:2,], ppm) # interactive
-#' matspec(X[1:2,], ppm, interactive=FALSE) # static
-#' @section
+#' X <- covid$X
+#' ppm <- covid$ppm
+#' matspec(X[1:3,], ppm, interactive = TRUE)
+#' matspec(X[1:3,], ppm, interactive = FALSE)
+#' @seealso \code{\link{spec}}, \code{\link{plot}}
+#' @family NMR
+#' @export
 matspec <- function(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...) {
-    if (is.null(ppm)) {
-        ppm <- as.numeric(colnames(X))
-    } else {
-        if (!.check_X_ppm(X, ppm))
-            stop("Non-matching dimensions X matrix and ppm vector or missing values in ppm.")
-    }
+  if (!.check_X_ppm(X, ppm)) {
+    stop("X and ppm dimensions do not match or ppm contains NA/Inf values.")
+  }
 
-    idx <- get_idx(shift, ppm)
+  idx <- get_idx(shift, ppm)
+  ppm_sub <- ppm[idx]
+  X_sub <- X[, idx, drop = FALSE]
 
-    if (interactive) {
-        df <- melt(X[, idx])
-        x <- list(title = "ppm", autorange = "reversed")
-        y <- list(title = "Intensity")
+  if (interactive) {
+    df <- reshape2::melt(X_sub)
+    colnames(df) <- c("spectrum", "index", "intensity")
+    df$ppm <- rep(ppm_sub, each = nrow(X_sub))
 
-        cols <- suppressWarnings(colorRampPalette(brewer.pal(8, "Set2"))(nrow(X)))
-        df$col <- rep(cols, length(idx))
+    col_fun <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))
+    col_vec <- col_fun(nrow(X_sub))
+    df$color <- rep(col_vec, times = length(idx))
 
-        p <-suppressWarnings(plot_ly(data = df, x = ~Var2, y = ~value, color = ~I(col), name = ~Var1,
-            hovertemplate = "%{x} ppm<extra></extra>") %>% layout(xaxis = x, yaxis = y) %>%
-            add_lines())
-        return(p)
-    }
+    p <- plotly::plot_ly(data = df, x = ~ppm, y = ~intensity, color = ~I(color),
+                         type = "scatter", mode = "lines", name = ~spectrum,
+                         hovertemplate = "%{x} ppm<extra></extra>") %>%
+      plotly::layout(
+        xaxis = list(title = "ppm", autorange = "reversed"),
+        yaxis = list(title = "Intensity")
+      )
 
-    matplot(ppm[idx], t(X[, idx]), type = "l", xlim = rev(range(ppm[idx])), xlab = "ppm",
-        ylab = "Intensity", ...)
+    return(p)
+  }
 
+  graphics::matplot(ppm_sub, t(X_sub), type = "l", xlab = "ppm", ylab = "Intensity",
+                    xlim = rev(range(ppm_sub)), ...)
+  invisible(NULL)
 }
 
 
 
-
-#' @title  Higher level plotting function to overlay NMR spectra (ggplot2 based)
-#' @aliases specOverlay
-#' @export
-#' @param X Input NMR data matrix with row representing spectra.
-#' @param ppm ppm vector with its length equals to \code{nrow(X)}.
-#' @param shift Chemical shift area to be plotted. This should be kept as small as possible (see Details).
-#' @param an List with one to three elements specifying facetting, colour and linetype (see Details).
-#' @param alp Alpha value for lines (number between 0 and 1 whereas 0 is fully transparent and 1 is fully opaque).
-#' @param title Plot title.
-#' @param size Line width (0.5 is a good start).
-#' @param ... Additional paramters passed on to ggplot's facet function.
-#' @description  Plotting overlayed NMR specra. This function is based on ggplot2, a high-level plotting R package. For large ppm ranges the computation time is relatively long, so the chemical \code{shift} range should be as small as possible. For list argument \code{an}, the first element describes the colour and must be defined (even if it is only a single value). If colour and line width are specified, then at least one list elements of \code{an} must have the same length as \code{X}.
-#' @return ggplot2 plot object
-#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @title Overlay NMR Spectra Using ggplot2
+#'
+#' @description
+#' Overlay multiple NMR spectra in a specified chemical shift region using `ggplot2`.
+#' Faceting, coloring, and line types can be controlled via an annotation list. Useful
+#' for QC and visual inspection of subsets or trends in spectral data.
+#'
+#' @param X Numeric matrix. NMR data with spectra in rows.
+#' @param ppm Numeric vector. Chemical shift values corresponding to columns of `X`.
+#' @param shift Numeric vector of length 2. Region in ppm to plot (recommended to be small for performance).
+#' @param an Named list of 1–3 elements for grouping: 1st for facetting, 2nd for color, 3rd for line type.
+#' @param alp Numeric. Alpha transparency of lines (0 to 1).
+#' @param size Numeric. Line width (e.g., 0.5).
+#' @param title Character. Plot title.
+#' @param ... Additional arguments passed to `facet_grid`.
+#'
+#' @return A `ggplot` object.
+#'
+#' @details
+#' The first element in `an` defines the facet grouping and must always be specified. Additional
+#' elements define coloring and line type. Use short ppm ranges (e.g., 5.15–4.6) to improve performance.
+#'
 #' @examples
 #' data(covid)
-#' panel=sample(c('A', 'B'), nrow(X), replace = TRUE)
-#' specOverlay(X, shift=c(5.15, 4.6), an=list(panel, Date=meta$a_DATE, AUNM=meta$a_AUNM))
-#' specOverlay(X, shift=c(5.15, 5.3), an=list(panel, RunOrder=as.numeric(meta$a_DATE), AUNM=meta$a_AUNM))
+#' X <- covid$X
+#' ppm <- covid$ppm
+#' an <- covid$an
+#' specOverlay(X, ppm, shift = c(5.15, 4.6), an = list(Group = meta$Group))
+#'
 #' @importFrom reshape2 melt
-#' @importFrom ggplot2 aes_string scale_x_reverse ggtitle xlab facet_grid theme_bw theme element_text geom_line scale_colour_gradientn
+#' @importFrom ggplot2 ggplot geom_line aes scale_x_reverse ggtitle xlab facet_grid theme_bw theme element_text scale_y_continuous
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales breaks_pretty
 #' @importFrom stats as.formula
-#' @section
-specOverlay <- function(X, ppm = NULL, shift = c(-0.01, 0.01), an = list("facet",
-    "col", "ltype"), alp = 0.7, size = 0.5, title = "", ...) {
+#' @export
+specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7, size = 0.5, title = "", ...) {
+  if (!.check_X_ppm(X, ppm)) {
+    stop("Non-matching dimensions or invalid values in 'ppm'.")
+  }
 
-    if (is.null(ppm)) {
-        ppm <- as.numeric(colnames(X))
-    } else {
-        if (!.check_X_ppm(X, ppm))
-            stop("Non-matching dimensions X matrix and ppm vector or missing values in ppm.")
-    }
+  idx <- get_idx(shift, ppm)
+  specs <- X[, idx, drop = FALSE]
+  colnames(specs) <- paste0("ppm_", idx)
 
-    if (is.null(names(an))) {
-        cat("No facet, colour and linetype names given. See an argument in ?specOverlay\n")
-        names(an) <- paste("an", seq_len(length(an)), sep = "")
-    }
-    le.arg <- paste(length(an))
-    if ("" %in% names(an)) {
-        idx <- which(names(an) == "")
-        names(an)[idx] <- paste("an", idx, sep = "")
-    }
-    names(an) <- gsub(" ", ".", names(an))
-    idx <- get_idx(shift, ppm)
-    specs <- X[, idx]
-    colnames(specs) <- paste("Idx", idx, sep = "_")
-    # create dataframe for ggplot function
-    df <- data.frame(do.call(cbind.data.frame, an), ID = seq_len(nrow(specs)), alp,
-        specs)
-    colnames(df)[seq_len(le.arg)] <- names(an)
-    df <- melt(df, id.vars = c("alp", "ID", names(an)))
-    df$variable <- ppm[as.numeric(gsub("Idx_", "", df$variable))]
-    # initiate generic ggplot object
-    g <- ggplot() + scale_x_reverse(breaks = seq(shift[1], shift[2], by = abs(diff(shift))/20),
-        name = expression(delta ~ {
-        }^1 * H ~ "(ppm)")) + scale_y_continuous(breaks = breaks_pretty(), name = "Intensity") +
-        ggtitle(title) + facet_grid(as.formula(paste(names(an)[1], "~ ."))) + theme_bw() +
-        theme(axis.text = element_text(colour = "black"), axis.text.x = element_text(angle = 45,
-            hjust = 1))
-    # add colour and line type
-    switch(le.arg, `1` = {
-        g <- g + geom_line(data = df, aes_string(x = "variable", y = "value", group = "ID"),
-            colour = "black", alpha = alp, size = size)
-    }, `2` = {
-        g <- g + geom_line(data = df, aes_string(x = "variable", y = "value", group = "ID",
-            colour = names(an)[2]), alpha = alp, size = size)
-        # add multi-colour gradient if colour vector is not factor/char
-        col.cat <- is.factor(an[[2]]) | is.character(an[[2]]) | is.logical(an[[2]])
-        if (!col.cat) {
-            g <- g + scale_colour_gradientn(colors = matlab.like2(length(an[[2]])))
-        }
-    }, `3` = {
-        an[[3]] <- factor(an[[3]])
-        g <- g + geom_line(data = df, aes_string(x = "variable", y = "value", group = "ID",
-            colour = names(an)[2], linetype = names(an)[3]), alpha = alp, size = size)
-        # add multi-colour gradient if colour vector is not factor/char
-        col.cat <- is.factor(an[[2]]) | is.character(an[[2]]) | is.logical(an[[2]])
-        if (!col.cat) {
-            g <- g + scale_colour_gradientn(colors = matlab.like2(length(an[[2]])))
-        }
-    })
-    return(g)
+  if (is.null(names(an))) {
+    names(an) <- paste0("an", seq_along(an))
+  }
+  names(an) <- make.names(names(an), unique = TRUE)
+
+  df <- data.frame(do.call(cbind.data.frame, an), ID = seq_len(nrow(specs)), alp, specs)
+  colnames(df)[seq_along(an)] <- names(an)
+  df <- reshape2::melt(df, id.vars = c("alp", "ID", names(an)))
+  df$variable <- ppm[as.numeric(gsub("ppm_", "", df$variable))]
+
+  g <- ggplot2::ggplot() +
+    ggplot2::scale_x_reverse(name = expression(delta ^ 1 * H ~ "(ppm)"),
+                             breaks = seq(min(shift), max(shift), length.out = 5))
+
+  # Add traces based on number of grouping variables
+  switch(as.character(length(an)),
+         "1" = {
+           g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID")),
+                                       alpha = alp, linewidth = size)
+         },
+         "2" = {
+           col_var <- names(an)[2]
+           g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID"), colour = !!sym(col_var)),
+                                       alpha = alp, linewidth = size)
+           if (!is.factor(an[[2]]) && !is.character(an[[2]])) {
+             g <- g + ggplot2::scale_colour_gradientn(colors = colorRamps::matlab.like2(100))
+           }
+         },
+         "3" = {
+           df[[names(an)[3]]] <- factor(df[[names(an)[3]]])
+           g <- g + ggplot2::geom_line(data = df, aes(x = !!sym("variable"), y = !!sym("value"), group = !!sym("ID"),
+                                                             colour = !!sym(names(an)[2]), linetype = !!sym(names(an)[3])),
+                                       alpha = alp, linewidth = size)
+           if (!is.factor(an[[2]]) && !is.character(an[[2]])) {
+             g <- g + ggplot2::scale_colour_gradientn(colors = colorRamps::matlab.like2(100))
+           }
+         })
+
+  g <- g +
+    ggplot2::scale_y_continuous(breaks = scales::breaks_pretty(), name = "Intensity") +
+    ggplot2::ggtitle(title) +
+    ggplot2::facet_grid(stats::as.formula(paste0(names(an)[1], " ~ .")), ...) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      axis.text = element_text(colour = "black"),
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    )
+
+  return(g)
 }
 
 
-#' Overlay PCA or OPLS loadings with spectra
-#' @export
-#' @param mod PCA or OPLS model generated via \emph{MetaboMate} package functions.
-#' @param shift ppm region to visualise.
-#' @param pc index of principal component to visualise, set to 1 if input model is OPLS
-#' @param type Type of loadings visualisation, either \code{'Statistical reconstruction'} or \code{'Backscaled'} (see Details).
-#' @param an List with one to three elements specifying facetting, colour and linetype (see Details).
-#' @param alp Alpha value for spectral lines.
-#' @param title Plot title.
-#' @param size plot line width.
-#' @param r_scale logical, adjust limits of color gradient to 0 and 1 (only applies for argument \code{type='stat reconstruction'})
-#' @description  Plotting overlayed NMR spectra. This function is based on ggplot2, a high-level plotting R package. For high ppm ranges computation time is relatively, so the range of input argument \code{shift} should be as small as possible. List argument \code{an} must have the first element define, even if it is only a single value. If colour and line width is specified, then at least one list elements of \code{an} must have the same length as \code{X}.
-#' @details OPLS: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical reconstruction.
-# @seealso \code{\link{plotload}} \code{\link{specOverlay}}
-# \code{\link[=OPLS_MetaboMate-class]{OPLS_MetaboMate}} \code{\link{opls}}
-# \code{\link[=PCA_MetaboMate-class]{PCA_MetaboMate}} \code{\link{pca}}
-#' @author Torben Kimhofer \email{tkimhofer@@gmail.com}
-#' @importFrom reshape2 melt
-#' @importFrom ggplot2 aes_string scale_x_reverse ggtitle xlab ylab facet_grid theme_bw theme element_text geom_line scale_colour_gradientn
+#' @title Overlay Loadings with NMR Spectra
+#'
+#' @description
+#' This function overlays loadings from a PCA or OPLS model on top of NMR spectra using `ggplot2`.
+#' It supports two types of loadings visualization: statistical reconstruction or backscaling.
+#'
+#' @param mod A model object of class `PCA_metabom8` or `OPLS_metabom8`.
+#' @param shift Numeric vector (length 2), chemical shift region to visualize (in ppm).
+#' @param pc Integer. Component to visualize (for OPLS, set to 1).
+#' @param type Character. Either `"Statistical reconstruction"` or `"Backscaled"` (case-insensitive).
+#' @param an List of up to three grouping variables (for facet, color, linetype). First must be defined.
+#' @param alp Numeric (0–1). Alpha level for spectra.
+#' @param title Character. Plot title.
+#' @param size Numeric. Line width for plotted spectra.
+#' @param r_scale Logical. If `TRUE`, correlation color scale is fixed to \code{[0, 1]}. Only used in statistical reconstruction.
+#'
+#' @details
+#' - **Statistical reconstruction**: Correlates predictive scores with spectral variables.
+#' - **Backscaled**: Multiplies model loadings by feature SDs.
+#'
+#' @return A `ggplot` object.
+#'
+#' @seealso \code{\link{specOverlay}}, \code{\link{pca}}, \code{\link{opls}}
+#'
+#' @examples
+#' X <- covid$X
+#' an <- covid$an
+#'
+#' model <- pca(X)
+#' specload(model, shift = c(1, 2), an = list(an$type), pc = 1, alp = 0.8)
+#'
+#' @importFrom ggplot2 ggplot geom_line aes_string scale_x_reverse scale_y_continuous
+#' @importFrom ggplot2 facet_grid ggtitle xlab ylab theme_bw theme element_text
 #' @importFrom colorRamps matlab.like2
+#' @importFrom reshape2 melt
 #' @importFrom stats as.formula
-#' @return ggplot2 plot object
-#' @author \email{torben.kimhofer@@murdoch.edu.au}
+#' @export
+specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1,
+                     type = "Backscaled", title = "", r_scale = FALSE) {
+
+  if (!inherits(mod, c("OPLS_metabom8", "PCA_metabom8"))) {
+    stop("Requires 'PCA_metabom8' or 'OPLS_metabom8' object.")
+  }
+
+  X <- mod@X
+  ppm <- as.numeric(colnames(X))
+  idx <- get_idx(shift, ppm)
+  if (length(idx) < 3) stop("Insufficient shift region selected.")
+
+  type <- if (grepl("st|recon", type, ignore.case = TRUE)) {
+    "Statistical reconstruction"
+  } else {
+    "Backscaled"
+  }
+
+  if (type == "Statistical reconstruction") {
+    df_l <- .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
+    y <- df_l$cov
+    cols <- df_l$cor
+    raCol <- if (r_scale) c(0, 1) else c(0, max(abs(cols)))
+  } else {
+    df_l <- .load_backscaled_nmr(mod, pc, idx, ppm)
+    y <- df_l$p_bs
+    cols <- abs(df_l$p_abs)
+  }
+
+  specs <- X[, idx, drop = FALSE]
+  limY <- range(specs)
+  colnames(specs) <- paste0("ppm_", ppm[idx])
+
+  an <- .check_an_viz(an, mod)
+  df <- data.frame(ID = seq_len(nrow(specs)), do.call(cbind.data.frame, an), specs)
+  df <- melt(df, id.vars = c("ID", names(an)))
+  df$variable <- as.numeric(gsub("^\\.", "-", gsub("ppm_", "", df$variable)))
+  colnames(df)[match(names(an)[1], colnames(df))] <- "facet"
+
+  # Convert y (loading) to display range within intensity
+  cv1 <- (minmax(y) * (limY[2]/3)) + limY[2] * 0.67
+  if (max(cv1) > limY[2]) {
+    cv1 <- cv1 - abs(max(cv1 - limY[2]))
+  }
+
+  # Create loadings dataframe
+  fac_lev <- unique(df$facet)
+  df1 <- do.call(rbind, lapply(seq_along(fac_lev), function(i) {
+    data.frame(alp, ID = nrow(X) + i, facet = fac_lev[i], Group = "load",
+               ppm = ppm[idx], Intensity = cv1, load = cols)
+  }))
+
+  g <- ggplot() +
+    geom_line(data = df1, aes(x=!!sym("ppm"), y=!!sym("Intensity"), color = !!sym("load"), group = !!sym("ID")),
+              linewidth = 0.8) +
+    geom_line(data = df, aes(x=!!sym("variable"), y=!!sym("value"), group = !!sym("ID")),
+              alpha = alp, linewidth = size) +
+    facet_grid(facet ~ .) +
+    scale_x_reverse(breaks = round(seq(shift[1], shift[2], length.out = 10), 3)) +
+    scale_y_continuous(limits = limY) +
+    ggtitle(title) +
+    xlab(expression(delta ^ 1 * H ~ "(ppm)")) +
+    ylab("Intensity (AU)") +
+    theme_bw() +
+    theme(axis.text = element_text(color = "black"),
+          axis.text.x = element_text(angle = 45, hjust = 1))
+
+  g <- g + scale_colour_gradientn(colors = matlab.like2(10),
+                                  name = if (type == "Statistical reconstruction") {
+                                    "cor(t, x)"
+                                  } else {
+                                    expression(abs * w[pred ~ "," ~ sc])
+                                  },
+                                  limits = if (type == "Statistical reconstruction") raCol else NULL)
+
+  return(g)
+}
+
+
+#' @title Visualize PCA or OPLS Loadings for NMR Data
+#'
+#' @description
+#' Overlay PCA or OPLS loadings on the ppm axis for NMR data. Visualizations can be based on statistical reconstruction
+#' or backscaling, providing insights into spectral regions that contribute most to variation or separation.
+#'
+#' @param mod A PCA or OPLS model object generated via the \emph{metabom8} package.
+#' @param shift Numeric vector of length 2. Chemical shift (ppm) range to display.
+#' @param pc Integer. Index of component to visualize (use 1 for OPLS).
+#' @param type Character. Either `"Statistical reconstruction"` or `"Backscaled"` (case-insensitive).
+#' @param title Optional plot title.
+#' @param r_scale Logical. If `TRUE`, correlation color gradient is fixed between 0 and 1 (only for statistical reconstruction).
+#'
+#' @details
+#' For OPLS:
+#' - **Statistical reconstruction** visualizes correlation (`r`) and covariance between scores and predictors.
+#' - **Backscaled** multiplies loadings by feature standard deviations, highlighting consistent spectral influence.
+#'
+#' For PCA, only statistical reconstruction is available.
+#'
+#' @return A `ggplot2` object.
+#'
+#' @references
+#' Cloarec, O., et al. (2005). *Anal. Chem.* 77(2), 517–526.
+#'
+#' @seealso \code{\link{specload}}, \code{\link{pca}}, \code{\link{opls}}
+#'
 #' @examples
 #' data(covid)
-#' model=pca(X)
-#' specload(model, shift=c(1,2), an=list(an$type), pc=1, alp=0.8)
-#' @family NMR
-#' @section
-specload <- function(mod, shift = c(0, 10), an, alp = 0.3, size = 0.5, pc = 1, type = "Backscaled",
-    title = "", r_scale = FALSE) {
-
-    if (!class(mod)[1] %in% c("OPLS_metabom8", "PCA_metabom8")) {
-        stop("Need metabom8 PCA or OPLS object.")
-    }
-
-    # calc loadings
-    if (grepl("st|recon", type, ignore.case = TRUE)) {
-        type <- "Statistical reconstruction"
-    } else {
-        type <- "Backscaled"
-    }
-
-    X <- mod@X
-    ppm <- as.numeric(colnames(mod@X))
-
-
-    idx <- get_idx(shift, ppm)
-    if (length(idx) < 3) {
-        stop("Shift area not in ppm variable.")
-    }
-
-
-
-    idx <- get_idx(shift, ppm)
-
-
-    if (type == "Statistical reconstruction") {
-
-        # extrat data t_mod <- .viz_df_helper(mod, pc, an=NA, type='t')
-
-
-        df_l <- .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
-        if (r_scale) {
-            raCol <- c(0, 1)
-        } else {
-            raCol <- c(0, max(abs(df$cor)))
-        }
-
-        y <- df_l$cov
-        cols <- df_l$cor
-
-    }
-    if (type == "Backscaled") {
-        # extract data p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
-
-        # backscaling
-        df_l <- .load_backscaled_nmr(mod, pc, idx, ppm)
-
-        y <- df_l$p_bs
-        cols <- abs(df_l[, 1])
-
-    }
-
-    specs <- X[, idx]
-    limY <- range(specs)
-
-    colnames(specs) <- paste("ppm", ppm[idx], sep = "_")
-
-    an <- .check_an_viz(an, mod)
-
-    df <- data.frame(ID = seq(nrow(specs)), do.call(cbind.data.frame, an), specs,
-        row.names = NULL)
-    df <- melt(df, id.vars = c("ID", names(an)))
-    df$variable <- as.numeric(gsub("^\\.", "-", gsub("ppm_", "", df$variable)))
-    colnames(df)[match(names(an)[1], colnames(df))] <- "facet"
-
-
-    # scale loadings to appear in spectral range
-
-    # scale colour line to dimensions of spectrum intensity
-    cv1 <- (minmax(y) * (limY[2]/3)) + limY[2] * 0.67
-    if (max(cv1) > limY[2]) {
-        cv1 <- cv1 - abs(max(cv1 - limY[2]))
-    }
-
-    fac_lev <- unique(an[[1]])
-    # define loadings
-    df1 <- data.frame(alp, ID = nrow(X) + 1, facet = fac_lev[1], Group = "load",
-        ppm = ppm[idx], Intensity = cv1, load = cols)
-
-    # add loadings for each facet level
-    if (length(fac_lev) > 1) {
-        for (i in 2:length(fac_lev)) {
-            df1 <- rbind(df1, data.frame(alp, ID = nrow(X) + i, facet = fac_lev[i],
-                Group = "load", ppm = ppm[idx], Intensity = cv1, load = cols))
-        }
-    }
-
-    g <- ggplot() + geom_line(data = df1, aes_string("ppm", "Intensity", color = "load",
-        group = "ID"), size = 0.8) + geom_line(data = df, aes_string("variable",
-        "value", group = "ID"), alpha = alp, size = 0.1) + facet_grid(facet ~ .) +
-        scale_x_reverse(breaks = round(seq(shift[1], shift[2], by = abs(diff(shift))/20),
-            3)) + scale_y_continuous(limits = limY) + ggtitle(title) + xlab(expression(delta ~
-        {
-        }^1 * H ~ "(ppm)")) + ylab("Intensity (AU)") + facet_grid(facet ~ .) + theme_bw() +
-        theme(axis.text = element_text(colour = "black"), axis.text.x = element_text(angle = 45,
-            hjust = 1))
-
-
-
-    if (type == "Statistical reconstruction") {
-        g <- g + scale_colour_gradientn(colors = matlab.like2(10), name = "cor(t,x)",
-            limits = raCol)
-    } else {
-        g <- g + scale_colour_gradientn(colors = matlab.like2(10), name = expression(abs ~
-            w[pred * "," ~ sc]))
-    }
-
-    return(g)
-}
-
-
-
-#' Visualising PCA or OPLS loadings for NMR data
-#' @export
-#' @param mod PCA or OPLS model generated via \emph{metabom8} package functions.
-#' @param shift ppm region to visualise.
-#' @param pc index of principal component to visualise, set to 1 if input model is OPLS
-#' @param type Type of loadings visualisation, either \code{'Statistical reconstruction'} or \code{'Backscaled'} (see Details).
-#' @param title Plot title.
-#' @param r_scale logical, adjust limits of color gradient to 0 and 1 (only applies for type stat reconstruction)
-#' @details OPLS loadinsg visualisatoin for NMR data: If \code{type='Statistical reconstruction'} the function calculates the covariance (y axis) and Pearson's correlation (colouring) of the predictive OPLS scores with each X variable (x axis is ppm variable). If \code{type='Backscaled'} the OPLS loadings are backscaled with X feature standard deviations. Results are plotted over ppm, coloured according to OPLS model weights. Often, the latter method visualises model importance more robust due to the presence of false positive correlations. PCA: Function always calculates the statistical recostruction.
-#' @author Torben Kimhofer \email{tkimhofer@@gmail.com}
-#' @references Cloarec, O., \emph{et al.} (2005). Evaluation of the Orthogonal Projection on Latent Structure Model Limitations Caused by Chemical Shift Variability and Improved Visualization of Biomarker Changes in 1H NMR Spectroscopic Metabonomic Studies. \emph{Analytical Chemistry} 77.2, 517-26.
-#' @importFrom stats cor cov
-#' @importFrom ggplot2 ggplot geom_line scale_x_reverse ggtitle xlab ylab theme_bw ggtitle aes_string scale_colour_gradientn geom_point
+#' X <- covid$X
+#'
+#' model <- pca(X)
+#' plotload(model, pc = 1)
+#'
+#' @importFrom ggplot2 ggplot geom_line aes_string scale_x_reverse
+#'   ggtitle xlab ylab theme_bw scale_colour_gradientn labs
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales breaks_pretty
-#' @return ggplot2 plot object
-#' @author \email{torben.kimhofer@@murdoch.edu.au}
-#' @seealso \code{\link{plotload_cat}}
-#' @examples
-#' data(covid)
-#' model=pca(X)
-#' plotload(model, pc=1)
-#' @family NMR
-#' @section
+#' @export
+plotload <- function(mod, shift = c(0, 10), pc = 1,
+                     type = "Backscaled", title = NULL, r_scale = FALSE) {
 
-plotload <- function(mod, shift = c(0, 10), pc = 1, type = "Backscaled", title = NULL,
-    r_scale = FALSE) {
+  if (!inherits(mod, c("OPLS_metabom8", "PLS_metabom8", "PCA_metabom8"))) {
+    stop("Input must be a metabom8 PCA, PLS or OPLS model.")
+  }
 
-    if (!class(mod)[1] %in% c("OPLS_metabom8", "PCA_metabom8")) {
-        stop("Need metabom8 PCA or OPLS object.")
-    }
+  type <- if (grepl("st|recon", type, ignore.case = TRUE)) {
+    "Statistical reconstruction"
+  } else {
+    "Backscaled"
+  }
 
-    if (grepl("st|recon", type, ignore.case = TRUE)) {
-        type <- "Statistical reconstruction"
-    } else {
-        type <- "Backscaled"
-    }
+  X <- mod@X
+  ppm <- as.numeric(colnames(X))
+  idx <- get_idx(shift, ppm)
 
-    X <- mod@X
-    ppm <- as.numeric(colnames(mod@X))
+  if (length(idx) < 3) stop("Insufficient shift range selected.")
 
-    idx <- get_idx(shift, ppm)
+  if (type == "Statistical reconstruction") {
+    df <- .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
+    raCol <- if (r_scale) c(0, 1) else c(0, max(abs(df$cor)))
 
+    g <- ggplot(df, aes(x=!!sym("ppm"), y=!!sym("cov"), colour = !!sym("cor"))) +
+      geom_line() +
+      scale_x_reverse(breaks = breaks_pretty(n = 15)) +
+      scale_colour_gradientn(colors = matlab.like2(10), limits = raCol, name = "r") +
+      labs(
+        title = title,
+        x = expression(delta ^ 1 * H ~ "(ppm)"),
+        y = "cov(t, x)",
+        caption = paste(gsub("_metabom8", "", class(mod)[1]), "-", mod@type, "component", pc)
+      ) +
+      theme_bw()
+  } else {
+    df <- .load_backscaled_nmr(mod, pc, idx, ppm)
 
-    if (type == "Statistical reconstruction") {
-        # extrat data p_mod <- .viz_df_helper(mod, pc, an=NA, type='p')
+    g <- ggplot(df, aes(x=!!sym("ppm"), y=!!sym("p_bs"), colour = !!sym("p_abs"))) +
+      geom_line() +
+      scale_x_reverse(breaks = breaks_pretty(n = 15)) +
+      scale_colour_gradientn(colors = matlab.like2(10), name = expression("|p[sc]|")) +
+      labs(
+        title = title,
+        x = expression(delta ^ 1 * H ~ "(ppm)"),
+        y = expression(p * "*" * sigma[x]),
+        caption = paste(gsub("_metabom8", "", class(mod)[1]), "-", mod@type, "component", pc)
+      ) +
+      theme_bw()
+  }
 
-        df <- .load_stat_reconstr_nmr(mod, pc, X, idx, ppm)
-
-        if (r_scale) {
-            raCol <- c(0, 1)
-        } else {
-            raCol <- c(0, max(abs(df$cor)))
-        }
-
-        g <- ggplot(df, aes_string("ppm", "cov", colour = "cor")) + geom_line() +
-            scale_x_reverse(breaks = breaks_pretty(n = 15)) + scale_colour_gradientn(colors = matlab.like2(10),
-            limits = raCol, name = "r") + labs(title = title, x = expression(delta ~
-            {
-            }^1 * H ~ (ppm)), y = "cov(t,x)", caption = paste(gsub("_metabom8", "",
-            class(mod)[1]), "-", mod@type, "component", pc)) + theme_bw()
-    }
-    if (type == "Backscaled") {
-        # extract data p_mod=.viz_df_helper(mod, pc, an=NA, type='p')
-
-        # backscaling
-        df <- .load_backscaled_nmr(mod, pc, idx, ppm)
-
-        g <- ggplot(df, aes_string("ppm", "p_bs", colour = "p_abs")) + geom_line() +
-            scale_x_reverse(breaks = breaks_pretty(n = 15)) + scale_colour_gradientn(colors = matlab.like2(10),
-            name = expression("|p"["sc"] * "|")) + labs(title = title, x = expression(delta ~
-            {
-            }^1 * H ~ (ppm)), y = expression(p * "*" * sigma[x]), caption = paste(gsub("_metabom8",
-            "", class(mod)[1]), "-", mod@type, "component", pc)) + theme_bw()
-    }
-    return(g)
+  return(g)
 }
 
 
-
-#' Calculating distance to the model in X space
-#' @export
-#' @param mod OPLS model of type \code{OPLS_metabom8}.
-#' @param plot Logical indicating if results should be visualised.
-#' @return The projection distance of each observation in the model (\code{DModX}).
-#' @references Bylesjö M., \emph{et al.} (2002) OPLS discriminant analysis: combining the strengths of PLS-DA and SIMCA classification. \emph{Journal of Chemometrics}, 20, 341-51.
-#' @references Wold S. (1976) Pattern recognition by means of disjoint principal components models.  \emph{Pattern Recognition}, 8, 127-39.
-#' @seealso \code{\link{opls}}
-#' @importFrom ggplot2 ggplot aes_string geom_point scale_colour_gradientn geom_hline xlab scale_y_continuous theme_bw theme element_blank element_text geom_segment
-#' @importFrom colorRamps matlab.like
+#' @title Distance to the Model in X-Space (DModX)
+#'
+#' @description
+#' Calculates the orthogonal distance of each observation to the OPLS model in X-space. The DModX is used for identifying outliers.
+#'
+#' @param mod An OPLS model object of class \code{OPLS_metabom8}.
+#' @param plot Logical. If \code{TRUE}, a plot of DModX values with a cutoff line based on a t-test is shown.
+#'
+#' @return A data frame with columns:
+#' \describe{
+#'   \item{ID}{Sample index}
+#'   \item{DmodX}{Distance to the model in X-space}
+#'   \item{passedT.test}{Logical. TRUE if within the 95\\% confidence interval}
+#' }
+#'
+#' @details
+#' DModX is calculated as the scaled root-mean-squared residual. An approximate upper 95\\% confidence limit is drawn using a one-sided t-test.
+#'
+#' @references
+#' Bylesjo, M. et al. (2006). *J. Chemometrics*, 20, 341–351.
+#' Wold, S. (1976). *Pattern Recognition*, 8, 127–139.
+#'
+#' @seealso \code{\link{opls}}, \code{\link{plotload}}
+#'
 #' @importFrom stats t.test sd
-#' @author \email{torben.kimhofer@@murdoch.edu.au}
-#' @family NMR and other
+#' @importFrom ggplot2 ggplot aes geom_point geom_segment geom_hline
+#'   scale_y_continuous xlab theme_bw theme element_blank element_text
+#'   scale_colour_gradientn labs
+#' @importFrom colorRamps matlab.like2
+#'
 #' @examples
 #' data(covid)
-#' model=opls(X, Y=an$type)
-#' dmx=dmodx(model)
-#' @section
-# E=residual Matrix N=number of samples K=number of variables A=number of model
-# components A0= (1 if mean centred, 0 otherwise)
-
+#' X <- covid$X
+#' an <- covid$an
+#' model <- opls(X, Y = an$type)
+#' dmx <- dmodx(model)
+#'
+#' @export
 dmodx <- function(mod, plot = TRUE) {
-    if (class(mod)[1] != "OPLS_metabom8") {
-        stop("Please provide a OPLS_metabom8 object.")
+  if (!inherits(mod, "OPLS_metabom8")) {
+    stop("Please provide an OPLS_metabom8 object.")
+  }
+
+  E <- mod@X_res
+  N <- nrow(E)
+  K <- ncol(E)
+  A <- ncol(mod@t_pred)
+  A0 <- if (isTRUE(mod@Parameters$center)) 1 else 0
+
+  ss_res <- rowSums(E^2)
+  dmodX <- sqrt(ss_res / (K - A)) / sqrt(sum(ss_res) / ((N - A - A0) * (K - A)))
+
+  # 95% CI via one-sided t-test
+  tt <- t.test(dmodX, alternative = "less")
+  ci95 <- tt$conf.int[2] + 2 * sd(dmodX)
+
+  df <- data.frame(
+    ID = seq_len(N),
+    DmodX = dmodX,
+    passedT.test = dmodX < ci95
+  )
+
+  if (plot) {
+    df$Group <- mod@Y$ori
+
+    g <- ggplot(df, aes(x = ID, y = DmodX, colour = Group)) +
+      geom_segment(aes(xend = ID, yend = min(dmodX) - 0.1), colour = "grey60", linewidth = 0.1) +
+      geom_point() +
+      geom_hline(yintercept = ci95, linetype = 2, colour = "black") +
+      scale_y_continuous(
+        limits = c(min(dmodX) - 0.1, max(c(dmodX, ci95)) + 0.2),
+        expand = c(0, 0),
+        name = "DModX"
+      ) +
+      xlab("Sample index") +
+      theme_bw() +
+      theme(
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        axis.text = element_text(colour = "black")
+      ) +
+      labs(caption = "Dashed line indicates upper limit of 95% CI")
+
+    if (!is.null(mod@type) && mod@type == "R") {
+      g <- g + scale_colour_gradientn(colours = matlab.like2(10), name = expression(t[pred]))
     }
-    E <- mod@X_res
-    N <- nrow(E)
-    K <- ncol(E)
-    A <- ncol(mod@t_pred)  # in case of OPLS-DA (alwasy one predictive component)
-    if (mod@Parameters$center) {
-        A0 <- 1
-    } else {
-        A0 <- 0
-    }
-    # loop over all observations in residual matrix, calc SS residuals / observations
-    # and normalise by TSS
-    ss_res <- apply(E, 1, function(x) sum(x^2))
-    dmodX <- sqrt(ss_res/(K - A))/sqrt(sum(ss_res)/((N - A - A0) * (K - A)))
-    tt <- t.test(dmodX, alternative = "less")
-    ci95 <- tt$conf.int[2] + 2 * sd(dmodX)
-    df <- data.frame(col = mod@t_pred_cv[, 1], ID = seq_len(length(dmodX)), DmodX = dmodX,
-        passedT.test = dmodX < tt$conf.int[2] + 2 * sd(dmodX))
-    if (plot) {
-        df$Y <- mod@Y$ori
-        g <- ggplot(data = df) + geom_segment(aes_string(x = "ID", xend = "ID", y = "min(dmodX)-0.1",
-            yend = "DmodX"), colour = "gray60", size = 0.1) + geom_point(aes_string(x = "ID",
-            y = "DmodX", colour = "Y")) + # scale_colour_gradientn(colours = matlab.like2(10), name = expression(t[pred]))
-        # +
-        scale_y_continuous(limits = c(min(dmodX) - 0.1, max(c(dmodX, ci95)) + 0.2),
-            name = "DModX", expand = c(0, 0)) + geom_hline(yintercept = ci95, linetype = 2,
-            colour = "black") + xlab("Sample index") + theme_bw() + theme(panel.grid.minor.x = element_blank(),
-            panel.grid.major.x = element_blank(), panel.grid.minor.y = element_blank(),
-            axis.text = element_text(colour = "black")) + labs(caption = "Dashed line indicates uppler limit of 95% CI")
-        if (mod@type == "R") {
-            g <- g + scale_colour_gradientn(colours = matlab.like2(10), name = expression(t[pred]))
-        }
-        plot(g)
-    }
-    return(df[, -1])
+
+    plot(g)
+  }
+
+  return(df)
 }
 

@@ -2,45 +2,37 @@
 % Please edit documentation in R/AllGenerics.R
 \name{minmax}
 \alias{minmax}
-\title{Min-max scaling}
+\title{Min-Max Scaling to \link{0, 1}}
 \usage{
 minmax(x)
 }
 \arguments{
-\item{x}{num array to be scaled}
+\item{x}{Numeric vector. Input values to be scaled.}
 }
 \value{
-num array, same length as x
+A numeric vector of the same length as \code{x}, scaled to the range \code{[0, 1]}.
 }
 \description{
-Min-max scaling
+Scales a numeric vector to the range \link{0, 1} using min-max normalization.
+This is a special case of \code{\link{scRange}}.
 }
 \details{
-Output values are scaled to range between 0 and 1
-\deqn{x_{s}=\frac{x-x_{min}}{x_{max}-x_{min}}}
-}
-\section{}{
-NA
-}
+The scaled values are computed as:
+\deqn{x_{scaled} = \frac{x - \min(x)}{\max(x) - \min(x)}}
 
+Equivalent to \code{scRange(x, ra = c(0, 1))}.
+}
 \examples{
-x=rnorm(20, 0, 1)
-plot(x, type='l'); abline(h=range(x), lty=2)
-points(minmax(x), type='l', col='red'); abline(h=c(0,1), col='red', lty=2)
+x <- rnorm(20)
+plot(x, type = 'l'); abline(h = range(x), lty = 2)
+points(minmax(x), type = 'l', col = 'blue'); abline(h = c(0, 1), col = 'blue', lty = 2)
+
 }
 \seealso{
+\code{\link{scRange}} for flexible output ranges.
+
 Other NMR ++: 
 \code{\link{.hotellingsT2}()},
-\code{\link{cvanova}()},
-\code{\link{es_cdelta}()},
-\code{\link{opls_perm}()},
-\code{\link{pca}()},
-\code{\link{plotscores}()},
-\code{\link{pqn}()},
-\code{\link{predict_opls}()},
 \code{\link{scRange}()}
-}
-\author{
-\email{torben.kimhofer@gmail.com}
 }
 \concept{NMR ++}

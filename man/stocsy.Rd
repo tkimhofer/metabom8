@@ -7,52 +7,31 @@
 stocsy(X, ppm, driver, plotting = TRUE, title = NULL)
 }
 \arguments{
-\item{X}{Numeric matrix or dataframe where each row represents a NMR spectrum and each column a chemical shift variable.}
+\item{X}{Numeric matrix or data frame where rows are spectra and columns are chemical shift variables.}
 
-\item{ppm}{num array of chemical shift variables, matched to columns in X}
+\item{ppm}{Numeric vector of chemical shift values corresponding to columns in \code{X}.}
 
-\item{driver}{num, chemical shift indicating STOCSY driver signal}
+\item{driver}{Numeric scalar or vector. A ppm value (for internal STOCSY) or external numeric vector of same length as number of rows in \code{X}.}
 
-\item{plotting}{logical, indicing if results should be plotted}
+\item{plotting}{Logical. If TRUE, display a STOCSY plot.}
 
-\item{title}{char, plot title}
+\item{title}{Character string for the plot title.}
 }
 \value{
-S4 object of class stocsy1d_metabom8
+An S4 object of class \code{stocsy1d_metabom8} containing correlation, covariance, driver, and metadata.
 }
 \description{
-Statistical Total Correlation Spectroscopy (STOCSY)
+Performs STOCSY analysis on 1D NMR spectra. The function calculates correlation and covariance of all variables in \code{X} against a given driver variable (either a ppm value or external vector).
 }
-\section{}{
-NA
-}
-
 \examples{
 data(covid)
-stcy_glucose=stocsy(X, ppm, driver=5.233)
-plotStocsy(stcy_glucose, shift=c(5.15, 5.30), title='Alpha-anomeric proton of glucose (doublet)')
-points(speaks[[1]]$ppm, speaks[[1]]$Int, col=factor(speaks[[1]]$type))
-}
-\seealso{
-Other NMR: 
-\code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
-\code{\link{lw}()},
-\code{\link{matspec}()},
-\code{\link{noise.est}()},
-\code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
-\code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
-\code{\link{stocsy1d_metabom8-class}},
-\code{\link{storm}()}
+X <- covid$X
+ppm <- covid$ppm
+
+stcy_glucose <- stocsy(X, ppm, driver = 5.233)
+plotStocsy(stcy_glucose, shift = c(5.15, 5.30), title = "Alpha-anomeric proton of glucose (doublet)")
+
 }
 \author{
-\email{torben.kimhofer@murdoch.edu.au}
+Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
 }
-\concept{NMR}

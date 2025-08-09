@@ -2,13 +2,13 @@
 % Please edit documentation in R/AllViz.R
 \name{specOverlay}
 \alias{specOverlay}
-\title{Higher level plotting function to overlay NMR spectra (ggplot2 based)}
+\title{Overlay NMR Spectra Using ggplot2}
 \usage{
 specOverlay(
   X,
-  ppm = NULL,
-  shift = c(-0.01, 0.01),
-  an = list("facet", "col", "ltype"),
+  ppm,
+  shift = c(0, 0.1),
+  an = list("Group"),
   alp = 0.7,
   size = 0.5,
   title = "",
@@ -16,38 +16,39 @@ specOverlay(
 )
 }
 \arguments{
-\item{X}{Input NMR data matrix with row representing spectra.}
+\item{X}{Numeric matrix. NMR data with spectra in rows.}
 
-\item{ppm}{ppm vector with its length equals to \code{nrow(X)}.}
+\item{ppm}{Numeric vector. Chemical shift values corresponding to columns of \code{X}.}
 
-\item{shift}{Chemical shift area to be plotted. This should be kept as small as possible (see Details).}
+\item{shift}{Numeric vector of length 2. Region in ppm to plot (recommended to be small for performance).}
 
-\item{an}{List with one to three elements specifying facetting, colour and linetype (see Details).}
+\item{an}{Named list of 1–3 elements for grouping: 1st for facetting, 2nd for color, 3rd for line type.}
 
-\item{alp}{Alpha value for lines (number between 0 and 1 whereas 0 is fully transparent and 1 is fully opaque).}
+\item{alp}{Numeric. Alpha transparency of lines (0 to 1).}
 
-\item{size}{Line width (0.5 is a good start).}
+\item{size}{Numeric. Line width (e.g., 0.5).}
 
-\item{title}{Plot title.}
+\item{title}{Character. Plot title.}
 
-\item{...}{Additional paramters passed on to ggplot's facet function.}
+\item{...}{Additional arguments passed to \code{facet_grid}.}
 }
 \value{
-ggplot2 plot object
+A \code{ggplot} object.
 }
 \description{
-Plotting overlayed NMR specra. This function is based on ggplot2, a high-level plotting R package. For large ppm ranges the computation time is relatively long, so the chemical \code{shift} range should be as small as possible. For list argument \code{an}, the first element describes the colour and must be defined (even if it is only a single value). If colour and line width are specified, then at least one list elements of \code{an} must have the same length as \code{X}.
+Overlay multiple NMR spectra in a specified chemical shift region using \code{ggplot2}.
+Faceting, coloring, and line types can be controlled via an annotation list. Useful
+for QC and visual inspection of subsets or trends in spectral data.
 }
-\section{}{
-NA
+\details{
+The first element in \code{an} defines the facet grouping and must always be specified. Additional
+elements define coloring and line type. Use short ppm ranges (e.g., 5.15–4.6) to improve performance.
 }
-
 \examples{
 data(covid)
-panel=sample(c('A', 'B'), nrow(X), replace = TRUE)
-specOverlay(X, shift=c(5.15, 4.6), an=list(panel, Date=meta$a_DATE, AUNM=meta$a_AUNM))
-specOverlay(X, shift=c(5.15, 5.3), an=list(panel, RunOrder=as.numeric(meta$a_DATE), AUNM=meta$a_AUNM))
-}
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
+X <- covid$X
+ppm <- covid$ppm
+an <- covid$an
+specOverlay(X, ppm, shift = c(5.15, 4.6), an = list(Group = meta$Group))
+
 }

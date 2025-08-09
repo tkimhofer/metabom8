@@ -2,58 +2,48 @@
 % Please edit documentation in R/AllViz.R
 \name{matspec}
 \alias{matspec}
-\title{Plot overlayed NMR spectra}
+\title{Plot Overlayed NMR Spectra}
 \usage{
 matspec(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...)
 }
 \arguments{
-\item{X}{num matrix, NMR matrix with spectra represented in rows.}
+\item{X}{Numeric matrix. NMR data matrix with spectra in rows.}
 
-\item{ppm}{num array, ppm vector.}
+\item{ppm}{Numeric vector. Chemical shift axis (must match \code{ncol(X)}).}
 
-\item{shift}{num array, hemical shift region to be plotted (in ppm).}
+\item{shift}{Numeric vector of length 2. Chemical shift window to plot (e.g., \code{c(0, 9.5)}).}
 
-\item{interactive}{logical, interactive version (plotly package)}
+\item{interactive}{Logical. Use plotly for interactive plotting (default: \code{TRUE}).}
 
-\item{...}{additional parameters to be passed on to the graphics generic plot function.}
+\item{...}{Additional arguments passed to \code{matplot()} for non-interactive plots.}
+}
+\value{
+A \code{plotly} object if \code{interactive = TRUE}; otherwise, \code{NULL}.
 }
 \description{
-Plot overlayed NMR spectra
+Plots multiple 1D NMR spectra using either base R or interactive Plotly graphics.
 }
-\details{
-Non-interactive mode: Base graphics for NMR spectra. Interactive mode: Plotly graphics.
-}
-\section{}{
-NA
-}
-
 \examples{
 data(covid)
-matspec(X[1:2,], ppm) # interactive
-matspec(X[1:2,], ppm, interactive=FALSE) # static
+X <- covid$X
+ppm <- covid$ppm
+matspec(X[1:3,], ppm, interactive = TRUE)
+matspec(X[1:3,], ppm, interactive = FALSE)
 }
 \seealso{
-\code{\link{spec}} \code{\link{plot}}
+\code{\link{spec}}, \code{\link{plot}}
 
 Other NMR: 
 \code{\link{alignSegment}()},
-\code{\link{bline}()},
-\code{\link{excise1d}()},
-\code{\link{get.idx}()},
+\code{\link{binning}()},
+\code{\link{cvanova}()},
+\code{\link{get_idx}()},
 \code{\link{lw}()},
 \code{\link{noise.est}()},
 \code{\link{normErectic}()},
-\code{\link{plotload}()},
-\code{\link{ppick}()},
-\code{\link{read1d_raw}()},
 \code{\link{read1d}()},
-\code{\link{specload}()},
-\code{\link{spec}()},
+\code{\link{read1d_raw}()},
 \code{\link{stocsy1d_metabom8-class}},
-\code{\link{stocsy}()},
 \code{\link{storm}()}
-}
-\author{
-\email{torben.kimhofer@murdoch.edu.au}
 }
 \concept{NMR}

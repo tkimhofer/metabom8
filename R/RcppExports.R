@@ -5,12 +5,38 @@
     .Call(`_metabom8_nip_pca_comp_rcpp`, X)
 }
 
-.multiY_TwRcpp <- function(X, Y) {
-    .Call(`_metabom8_multiY_Tw_rcpp`, X, Y)
+#' Summarise Multivariate Y Weights via PCA
+#'
+#' Computes X-weight vectors for each response variable in a multivariate outcome matrix `Y`,
+#' then performs PCA on these weights to extract shared predictive structure.
+#' Useful when `Y` has multiple columns (e.g., for multiclass problems).
+#' Conecptually similar to Canonical Correlation Analysis (CCA) and Multiblock PLS.
+#'
+#' @param X A numeric matrix (n × p): predictor matrix.
+#' @param Y A numeric matrix (n × k): response matrix with k variables.
+#' @param it_max Maximum nb of iterations for NIPALS converge.
+#' @param eps Threshold for sum of squares quotient below which NIPALS is considered converged
+#'
+#' @return A matrix (p × r) of PCA scores, where r is the number of retained components.
+#' @details
+#' The function first computes weights for each column in `Y` using least-squares projection,
+#' forming a weight matrix `W_x`. PCA is then applied to this matrix using NIPALS,
+#' and score components are extracted until the explained variance ratio drops below a threshold.
+#' @examples
+#' # Simulate data: 30 samples, 10 predictors, 3 response variables
+#' set.seed(123)
+#' X <- matrix(rnorm(30 * 10), nrow = 30)
+#' Y <- matrix(rnorm(30 * 3), nrow = 30)
+#' # Compute multivariate Y weights via PCA
+#' T_w <- multiY_Tw_rcpp(X, Y, it_max = 50, eps = 1e-4)
+#'
+#' @export
+multiY_Tw_rcpp <- function(X, Y, it_max, eps) {
+    .Call(`_metabom8_multiY_Tw_rcpp`, X, Y, it_max, eps)
 }
 
-.nipPlsCompRcpp <- function(X, Y) {
-    .Call(`_metabom8_nip_PLS_comp_rcpp`, X, Y)
+.nipPlsCompRcpp <- function(X, Y, it_max, eps) {
+    .Call(`_metabom8_nip_PLS_comp_rcpp`, X, Y, it_max, eps)
 }
 
 .orthoGramSchmidtRcpp <- function(u, v) {
@@ -34,37 +60,31 @@
 }
 
 #' @keywords internal
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .calcPhi <- function(ph0, ph1, le) {
     .Call(`_metabom8_calcPhi`, ph0, ph1, le)
 }
 
 #' @keywords internal
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .phase1d <- function(sp_re, sp_im, ph0, ph1) {
     .Call(`_metabom8_phase1d`, sp_re, sp_im, ph0, ph1)
 }
 
 #' @keywords internal
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .phaseTsp <- function(sp_re, sp_im, ppm, ph0, ph1, idx_tsp) {
     .Call(`_metabom8_phaseTsp`, sp_re, sp_im, ppm, ph0, ph1, idx_tsp)
 }
 
 #' @keywords internal
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .zerofil <- function(fid, zf, le_ori) {
     .Call(`_metabom8_zerofil`, fid, zf, le_ori)
 }
 
 #' @keywords internal
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .cplxFft <- function(fid) {
     .Call(`_metabom8_cplxFft`, fid)
 }
 
 #' @keywords internal
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .defineChemShiftPpm <- function(sf_mhz, sw_hz, n_sp_re, dref, ref) {
     .Call(`_metabom8_defineChemShiftPpm`, sf_mhz, sw_hz, n_sp_re, dref, ref)
 }
@@ -72,7 +92,6 @@
 #' @title Calibrate
 #' @return Shift-adjusted ppm vector
 #' @keywords internal
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
 .calibTsp <- function(spec, ppm) {
     .Call(`_metabom8_calibTsp`, spec, ppm)
 }
@@ -81,7 +100,6 @@
 #' @param X num matrix
 #' @keywords internal
 #' @return list: 1. sd (num vec), 2. mean (sd vec)
-#' @author \email{torben.kimhofer@@murdoch.edu.au}
 .sdRcpp <- function(X) {
     .Call(`_metabom8_sd_rcpp`, X)
 }
@@ -94,7 +112,6 @@
 #' @param scale_type int 0: no scaling, 1: SD scaling, 2: Pareto scaling
 #' @return list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
 #' @keywords internal
-#' @author \email{torben.kimhofer@@murdoch.edu.au}
 .scaleMatRcpp <- function(X, idc, center, scale_type) {
     .Call(`_metabom8_scale_rcpp`, X, idc, center, scale_type)
 }

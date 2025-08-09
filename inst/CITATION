@@ -1,0 +1,12 @@
+citEntry(
+  entry = "Manual",
+  title = "metabom8: A High-Performance R Package for Metabolomics Modeling and Analysis",
+  author = person(given = "Torben", family = "Kimhofer",
+                  email = "tkimhofer@gmail.com",
+                  role = c("aut", "cre"),
+                  comment = c(ORCID = "https://orcid.org/0000-0001-7158-9930")),
+  year = 2025,
+  version = "1.2.0",
+  url = "https://github.com/tkimhofer/metabom8",
+  note = "If you use this software, please cite it as above."
+)

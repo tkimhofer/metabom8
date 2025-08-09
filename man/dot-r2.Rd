@@ -2,28 +2,26 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.r2}
 \alias{.r2}
-\title{R2 and Q2}
+\title{R² and Q² Calculation for OPLS Models}
 \usage{
-.r2(Y, Yhat, ytss)
+.r2(Y, Yhat, ytss = NULL)
 }
 \arguments{
-\item{Y}{num matrix Y: OPLS outcome, dummy matrix in case it is categorical}
+\item{Y}{Numeric matrix. True response values. For classification, this should be a dummy matrix.}
 
-\item{Yhat}{num matrix, predicted Y}
+\item{Yhat}{Numeric matrix. Predicted response values from the model.}
 
-\item{ytss}{num, total sum of squares of Y}
+\item{ytss}{Numeric (optional). Total sum of squares of \code{Y}. If not provided, it will be computed internally.}
 }
 \value{
-R2=1-(PRESS/TSS)
+A single numeric value representing R² or Q².
 }
 \description{
-R2 and Q2
-}
-\section{}{
-NA
-}
+Computes the coefficient of determination (R² or Q²) for OPLS regression models using the formula:
+\deqn{R^2 = 1 - \frac{PRESS}{TSS}}, where PRESS is the prediction error sum of squares,
+and TSS is the total sum of squares. If \code{ytss} is not provided, it is computed directly from \code{Y}.
 
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
+This function supports matrix inputs (e.g., for multi-class outcomes) and averages across columns
+to return a single summary R²/Q² value.
 }
 \keyword{internal}
