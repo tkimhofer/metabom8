@@ -1025,7 +1025,7 @@ get.idx <- function(range = c(1, 5), ppm) {
 #' plot(x, type = 'l'); abline(h = range(x), lty = 2)
 #' points(scRange(x, ra = c(5, 10)), type = 'l', col = 'red'); abline(h = c(5, 10), col = 'red', lty = 2)
 #'
-#' @seealso \code{\link{minmax}}
+#' @seealso [minmax()]
 #' @export
 scRange <- function(x, ra) {
   ra <- sort(ra)

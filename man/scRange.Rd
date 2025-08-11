@@ -29,5 +29,5 @@ points(scRange(x, ra = c(5, 10)), type = 'l', col = 'red'); abline(h = c(5, 10),
 
 }
 \seealso{
-\code{\link{minmax}}
+\code{\link[=minmax]{minmax()}}
 }
