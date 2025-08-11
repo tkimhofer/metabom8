@@ -1038,7 +1038,8 @@ scRange <- function(x, ra) {
 #' This is a special case of \code{\link{scRange}}.
 #'
 #' @param x Numeric vector. Input values to be scaled.
-#'
+#' @param na.rm Logical; if `TRUE`, ignore `NA`s when computing the range.
+
 #' @return A numeric vector of the same length as \code{x}, scaled to the range \code{[0, 1]}.
 #'
 #' @details
@@ -1055,7 +1056,7 @@ scRange <- function(x, ra) {
 #' @seealso [scRange()] for flexible output ranges.
 #' @family NMR ++
 #' @export
-minmax <- function(x) {
+minmax <- function(x, na.rm = FALSE) {
   stopifnot(is.numeric(x))
   r <- range(x, na.rm = na.rm)
   d <- r[2] - r[1]

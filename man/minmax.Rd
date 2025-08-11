@@ -4,10 +4,12 @@
 \alias{minmax}
 \title{Min-Max Scaling to \eqn{[0,1]}}
 \usage{
-minmax(x)
+minmax(x, na.rm = FALSE)
 }
 \arguments{
 \item{x}{Numeric vector. Input values to be scaled.}
+
+\item{na.rm}{Logical; if \code{TRUE}, ignore \code{NA}s when computing the range.}
 }
 \value{
 A numeric vector of the same length as \code{x}, scaled to the range \code{[0, 1]}.
