@@ -1,13 +1,17 @@
 Package: metabom8
 Type: Package
-Title: NMR-based metabolic profiling 
+Title: NMR-Based Metabolic Profiling
 Version: 1.2.0
 Authors@R: person(given = "Torben",
-           family = "Kimhofer",
-           role = c("aut", "cre"),
-           email = "tkimhofer@gmail.com",
-           comment = c(ORCID = "0000-0001-7158-9930"))
-Description: Functions to perform 1D NMR data import, spectral data preprocessing, multivariate statistical analysis and statistical total correlation for putative metabolite identification!
+            family = "Kimhofer",
+            role = c("aut", "cre"),
+            email = "tkimhofer@gmail.com",
+            comment = c(ORCID = "0000-0001-7158-9930"))
+Description: Tools for 1D NMR metabolomics workflows, including import and 
+              preprocessing of Bruker data, multivariate modeling (PCA, OPLS), metabolite 
+              identification, and visualization with ggplot2 and plotly. Performance-critical 
+              routines are implemented in C++ and use the Armadillo and Eigen linear algebra 
+              libraries to improve runtime.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 4.1)
