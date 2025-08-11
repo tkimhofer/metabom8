@@ -241,6 +241,7 @@ specOverlay <- function(X, ppm, shift = c(0, 0.1), an = list("Group"), alp = 0.7
 #' @seealso \code{\link{specOverlay}}, \code{\link{pca}}, \code{\link{opls}}
 #'
 #' @examples
+#' data(covid)
 #' X <- covid$X
 #' an <- covid$an
 #'
