@@ -1034,13 +1034,13 @@ scRange <- function(x, ra) {
 
 #' @title Min-Max Scaling to \eqn{[0,1]}
 #' @description
-#' Scales a numeric vector to the range [0, 1] using min-max normalization.
+#' Scales a numeric vector to the range \eqn{[0,1]} using min-max normalization.
 #' This is a special case of \code{\link{scRange}}.
 #'
 #' @param x Numeric vector. Input values to be scaled.
 #' @param na.rm Logical; if `TRUE`, ignore `NA`s when computing the range.
 
-#' @return A numeric vector of the same length as \code{x}, scaled to the range \code{[0, 1]}.
+#' @return A numeric vector of the same length as \code{x}, scaled to the range \eqn{[0,1]}.
 #'
 #' @details
 #' The scaled values are computed as:

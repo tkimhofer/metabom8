@@ -12,10 +12,10 @@ minmax(x, na.rm = FALSE)
 \item{na.rm}{Logical; if \code{TRUE}, ignore \code{NA}s when computing the range.}
 }
 \value{
-A numeric vector of the same length as \code{x}, scaled to the range \code{[0, 1]}.
+A numeric vector of the same length as \code{x}, scaled to the range \eqn{[0,1]}.
 }
 \description{
-Scales a numeric vector to the range \link{0, 1} using min-max normalization.
+Scales a numeric vector to the range \eqn{[0,1]} using min-max normalization.
 This is a special case of \code{\link{scRange}}.
 }
 \details{
