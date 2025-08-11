@@ -2,18 +2,20 @@
 % Please edit documentation in R/AllGenerics.R
 \name{minmax}
 \alias{minmax}
-\title{Min-Max Scaling to \link{0, 1}}
+\title{Min-Max Scaling to \eqn{[0,1]}}
 \usage{
-minmax(x)
+minmax(x, na.rm = FALSE)
 }
 \arguments{
 \item{x}{Numeric vector. Input values to be scaled.}
+
+\item{na.rm}{Logical; if \code{TRUE}, ignore \code{NA}s when computing the range.}
 }
 \value{
-A numeric vector of the same length as \code{x}, scaled to the range \code{[0, 1]}.
+A numeric vector of the same length as \code{x}, scaled to the range \eqn{[0,1]}.
 }
 \description{
-Scales a numeric vector to the range \link{0, 1} using min-max normalization.
+Scales a numeric vector to the range \eqn{[0,1]} using min-max normalization.
 This is a special case of \code{\link{scRange}}.
 }
 \details{
@@ -25,14 +27,14 @@ Equivalent to \code{scRange(x, ra = c(0, 1))}.
 \examples{
 x <- rnorm(20)
 plot(x, type = 'l'); abline(h = range(x), lty = 2)
-points(minmax(x), type = 'l', col = 'blue'); abline(h = c(0, 1), col = 'blue', lty = 2)
+points(minmax(x), type = 'l', col = 'blue')
+abline(h = c(0, 1), col = 'blue', lty = 2)
 
 }
 \seealso{
-\code{\link{scRange}} for flexible output ranges.
+\code{\link[=scRange]{scRange()}} for flexible output ranges.
 
 Other NMR ++: 
-\code{\link{.hotellingsT2}()},
-\code{\link{scRange}()}
+\code{\link{.hotellingsT2}()}
 }
 \concept{NMR ++}

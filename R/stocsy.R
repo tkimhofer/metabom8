@@ -103,7 +103,7 @@ stocsy <- function(X, ppm, driver, plotting = TRUE, title = NULL) {
 #' X <- covid$X
 #' ppm <- covid$ppm
 #' sy_glucose <- stocsy(X, ppm, driver = 5.233)
-#' plotStocsy(sy_glucose, shift = c(5.15, 5.30), title = "Alpha-anomeric proton of glucose (doublet)")
+#' plotStocsy(sy_glucose, shift = c(5.15, 5.30), title = "d = 5.233")
 #'
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_vline scale_x_reverse scale_colour_gradientn labs theme_bw theme element_text ggtitle
 #' @importFrom colorRamps matlab.like2

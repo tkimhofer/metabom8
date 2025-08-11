@@ -9,7 +9,7 @@
 \arguments{
 \item{type}{Character. Either 'R' for regression or 'DA' for discriminant analysis. May be prefixed with '-mY' to indicate multi-column Y.}
 
-\item{q2s}{Numeric vector of Q² values for fitted components (used for regression).}
+\item{q2s}{Numeric vector of \eqn{Q^2} values for fitted components (used for regression).}
 
 \item{auroc_cv}{Numeric vector of AUROC values computed on test folds during cross-validation (used for classification).}
 
@@ -21,8 +21,8 @@ Logical. Returns \code{FALSE} if another component should be fitted;
 }
 \description{
 Determines whether an additional component improves model generalization based on cross-validated performance indices:
-Q² for regression (R) and AUROC for discriminant analysis (DA).
+\eqn{Q^2} for regression (R) and AUROC for discriminant analysis (DA).
 AUROC is computed on cross-validation test folds to ensure it reflects out-of-sample classification performance,
-analogous to Q² in regression.
+analogous to \eqn{Q^2} in regression.
 }
 \keyword{internal}

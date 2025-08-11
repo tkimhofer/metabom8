@@ -49,6 +49,7 @@ It supports two types of loadings visualization: statistical reconstruction or b
 }
 }
 \examples{
+data(covid)
 X <- covid$X
 an <- covid$an
 

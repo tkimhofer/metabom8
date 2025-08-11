@@ -10,7 +10,7 @@
 \item{k}{Integer. Number of CV folds. If \code{k} is not valid or too high relative to number of rows in Y,
 it defaults to leave-one-out CV (LOO-CV).}
 
-\item{Y}{Matrix. Outcome matrix (observations × variables).}
+\item{Y}{Matrix. Outcome matrix (observations x variables).}
 }
 \value{
 A list of length \code{k}, where each element contains the training indices (integers)
