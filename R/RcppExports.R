@@ -29,7 +29,7 @@
 #' Y <- matrix(rnorm(30 * 3), nrow = 30)
 #' # Compute multivariate Y weights via PCA
 #' T_w <- multiY_Tw_rcpp(X, Y, it_max = 50, eps = 1e-4)
-#'
+#' @keywords internal
 #' @export
 multiY_Tw_rcpp <- function(X, Y, it_max, eps) {
     .Call(`_metabom8_multiY_Tw_rcpp`, X, Y, it_max, eps)
