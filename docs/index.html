@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>NMR-Based Metabolic Profiling • metabom8</title>
+<title>A High-Performance R Package for Metabolomics Modeling and Analysis • metabom8</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="NMR-Based Metabolic Profiling">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="A High-Performance R Package for Metabolomics Modeling and Analysis">
 <meta name="description" content="Tools for 1D NMR metabolomics workflows, including import and preprocessing of Bruker data, multivariate modeling (PCA, OPLS), metabolite identification, and visualization with ggplot2 and plotly. Performance-critical routines are implemented in C++ and use the Armadillo and Eigen linear algebra libraries to improve runtime.">
 <meta property="og:description" content="Tools for 1D NMR metabolomics workflows, including import and preprocessing of Bruker data, multivariate modeling (PCA, OPLS), metabolite identification, and visualization with ggplot2 and plotly. Performance-critical routines are implemented in C++ and use the Armadillo and Eigen linear algebra libraries to improve runtime.">
 </head>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">metabom8</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="metabom8">metabom8<a class="anchor" aria-label="anchor" href="#metabom8"></a>
 </h1></div>
-<p><img src="https://img.shields.io/badge/R-C%2B%2B-blue" alt="R-C++"><a href="https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-CHECK.yml" class="external-link"><img src="https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-CHECK.yml/badge.svg?branch=master" alt="R-CMD-check"></a> <a href="https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment" class="external-link"><img src="https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment/badge.svg" alt="pages-build-deployment"></a></p>
+<p><a href="https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-CHECK.yml" class="external-link"><img src="https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-CHECK.yml/badge.svg?branch=master" alt="R-CMD-check"></a> <a href="https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment" class="external-link"><img src="https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment/badge.svg" alt="pages-build-deployment"></a></p>
 <p><strong>An R library for NMR-based metabolic profiling</strong></p>
 <p><code>metabom8</code> (pronounced <em>metabo-mate</em>) provides pipelines for 1D NMR data import, preprocessing, multivariate modeling (PCA, O-PLS), metabolite identification, and visualization — with core functions accelerated using C++ (<code>Rcpp</code>, <code>Armadillo</code>, <code>Eigen</code>) for improved computational performance.</p>
 <hr>
