@@ -101,7 +101,7 @@ If you find `metabom8` useful, please consider giving it a ⭐ — it makes it e
 ## 📝 License & Citation
 
 MIT License © Torben Kimhofer  
-If `metabom8` or any of its components contributes to your work, please ensure appropriate citation. See [`CITATION`](https://github.com/tkimhofer/metabom8/blob/master/CITATION) for citation details.
+If `metabom8` or any of its components contributes to your work, please ensure appropriate citation. See [`CITATION`](https://github.com/tkimhofer/metabom8/inst/CITATION) for citation details.
 
 ---
 
