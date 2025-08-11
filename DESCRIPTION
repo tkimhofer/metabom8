@@ -1,6 +1,6 @@
 Package: metabom8
 Type: Package
-Title: NMR-Based Metabolic Profiling
+Title: A High-Performance R Package for Metabolomics Modeling and Analysis
 Version: 1.2.0
 Authors@R: person(given = "Torben",
             family = "Kimhofer",
