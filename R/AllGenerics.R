@@ -1051,7 +1051,8 @@ scRange <- function(x, ra) {
 #' @examples
 #' x <- rnorm(20)
 #' plot(x, type = 'l'); abline(h = range(x), lty = 2)
-#' points(minmax(x), type = 'l', col = 'blue'); abline(h = c(0, 1), col = 'blue', lty = 2)
+#' points(minmax(x), type = 'l', col = 'blue')
+#' abline(h = c(0, 1), col = 'blue', lty = 2)
 #'
 #' @seealso [scRange()] for flexible output ranges.
 #' @family NMR ++
