@@ -1,10 +1,6 @@
 
 # metabom8 
 
-[![R-CMD-check](https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-CHECK.yml/badge.svg?branch=master)](https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-CHECK.yml)
-[![pages-build-deployment](https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment)
-
-
 **An R library for NMR-based metabolic profiling**  
 
 `metabom8` (pronounced *metabo-mate*) provides pipelines for 1D NMR data import, preprocessing, multivariate modeling (PCA, O-PLS), metabolite identification, and visualization — with core functions accelerated using C++ (`Rcpp`, `Armadillo`, `Eigen`) for improved computational performance.
@@ -105,7 +101,7 @@ If you find `metabom8` useful, please consider giving it a ⭐ — it makes it e
 ## 📝 License & Citation
 
 MIT License © Torben Kimhofer  
-If `metabom8` or any of its components contributes to your work, please ensure appropriate citation. See [`CITATION.cff`](https://github.com/tkimhofer/metabom8/blob/master/CITATION.cff) for citation details.
+If `metabom8` or any of its components contributes to your work, please ensure appropriate citation. See [`CITATION`](https://github.com/tkimhofer/metabom8/blob/master/CITATION) for citation details.
 
 ---
 
