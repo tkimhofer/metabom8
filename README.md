@@ -3,7 +3,6 @@
 
 [![R-CMD-check](https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-CHECK.yml/badge.svg?branch=master)](https://github.com/tkimhofer/metabom8/actions/workflows/R-CMD-CHECK.yml)
 [![pages-build-deployment](https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/tkimhofer/metabom8/actions/workflows/pages/pages-build-deployment)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5487113.svg)](https://doi.org/10.5281/zenodo.5487113)
 
 
 **An R library for NMR-based metabolic profiling**  
