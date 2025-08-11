@@ -2,7 +2,7 @@
 % Please edit documentation in R/AllGenerics.R
 \name{minmax}
 \alias{minmax}
-\title{Min-Max Scaling to \code{[0, 1]}}
+\title{Min-Max Scaling to \eqn{[0,1]}}
 \usage{
 minmax(x)
 }
@@ -29,7 +29,7 @@ points(minmax(x), type = 'l', col = 'blue'); abline(h = c(0, 1), col = 'blue', l
 
 }
 \seealso{
-\code{\link{scRange}} for flexible output ranges.
+\code{\link[=scRange]{scRange()}} for flexible output ranges.
 
 Other NMR ++: 
 \code{\link{.hotellingsT2}()}

@@ -1032,7 +1032,7 @@ scRange <- function(x, ra) {
   (ra[2] - ra[1]) * (x - min(x)) / (max(x) - min(x)) + ra[1]
 }
 
-#' @title Min-Max Scaling to \code{[0, 1]}
+#' @title Min-Max Scaling to \eqn{[0,1]}
 #' @description
 #' Scales a numeric vector to the range [0, 1] using min-max normalization.
 #' This is a special case of \code{\link{scRange}}.
@@ -1052,11 +1052,17 @@ scRange <- function(x, ra) {
 #' plot(x, type = 'l'); abline(h = range(x), lty = 2)
 #' points(minmax(x), type = 'l', col = 'blue'); abline(h = c(0, 1), col = 'blue', lty = 2)
 #'
-#' @seealso \code{\link{scRange}} for flexible output ranges.
+#' @seealso [scRange()] for flexible output ranges.
 #' @family NMR ++
 #' @export
 minmax <- function(x) {
-  (x - min(x)) / (max(x) - min(x))
+  stopifnot(is.numeric(x))
+  r <- range(x, na.rm = na.rm)
+  d <- r[2] - r[1]
+  if (is.na(d) || d == 0) {
+    return(ifelse(is.na(x), NA_real_, 0))
+  }
+  (x - r[1]) / d
 }
 
 #' @title Full Width at Half Maximum (FWHM) Estimation
