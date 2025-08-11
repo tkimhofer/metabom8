@@ -20,6 +20,8 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' data(covid)
+#' X <- covid$X
+#' ppm <- covid$ppm
 #' p <- spec(X[1, ], ppm, shift = c(0, 11), interactive = TRUE)
 #' if (interactive()) p
 #'
@@ -145,7 +147,7 @@ matspec <- function(X, ppm, shift = c(0, 9.5), interactive = TRUE, ...) {
 #' X <- covid$X
 #' ppm <- covid$ppm
 #' an <- covid$an
-#' specOverlay(X, ppm, shift = c(5.15, 4.6), an = list(Group = meta$Group))
+#' specOverlay(X, ppm, shift = c(5.15, 4.6), an = list(Group = an$type))
 #'
 #' @importFrom reshape2 melt
 #' @importFrom ggplot2 ggplot geom_line aes scale_x_reverse ggtitle xlab facet_grid theme_bw theme element_text scale_y_continuous

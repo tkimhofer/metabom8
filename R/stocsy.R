@@ -11,8 +11,6 @@
 #'
 #' @return An S4 object of class `stocsy1d_metabom8` containing correlation, covariance, driver, and metadata.
 #'
-#' @author Torben Kimhofer \email{torben.kimhofer@@murdoch.edu.au}
-#'
 #' @examples
 #' data(covid)
 #' X <- covid$X
@@ -102,8 +100,10 @@ stocsy <- function(X, ppm, driver, plotting = TRUE, title = NULL) {
 #'
 #' @examples
 #' data(covid)
-#' stcy_glucose <- stocsy(X, ppm, driver = 5.233)
-#' plotStocsy(stcy_glucose, shift = c(5.15, 5.30), title = "Alpha-anomeric proton of glucose (doublet)")
+#' X <- covid$X
+#' ppm <- covid$ppm
+#' sy_glucose <- stocsy(X, ppm, driver = 5.233)
+#' plotStocsy(sy_glucose, shift = c(5.15, 5.30), title = "Alpha-anomeric proton of glucose (doublet)")
 #'
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_vline scale_x_reverse scale_colour_gradientn labs theme_bw theme element_text ggtitle
 #' @importFrom colorRamps matlab.like2

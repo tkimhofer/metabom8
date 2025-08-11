@@ -49,6 +49,6 @@ data(covid)
 X <- covid$X
 ppm <- covid$ppm
 an <- covid$an
-specOverlay(X, ppm, shift = c(5.15, 4.6), an = list(Group = meta$Group))
+specOverlay(X, ppm, shift = c(5.15, 4.6), an = list(Group = an$type))
 
 }

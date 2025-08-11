@@ -21,7 +21,9 @@ Generates a plot of the results from a STOCSY analysis.
 }
 \examples{
 data(covid)
-stcy_glucose <- stocsy(X, ppm, driver = 5.233)
-plotStocsy(stcy_glucose, shift = c(5.15, 5.30), title = "Alpha-anomeric proton of glucose (doublet)")
+X <- covid$X
+ppm <- covid$ppm
+sy_glucose <- stocsy(X, ppm, driver = 5.233)
+plotStocsy(sy_glucose, shift = c(5.15, 5.30), title = "Alpha-anomeric proton of glucose (doublet)")
 
 }

@@ -32,6 +32,3 @@ stcy_glucose <- stocsy(X, ppm, driver = 5.233)
 plotStocsy(stcy_glucose, shift = c(5.15, 5.30), title = "Alpha-anomeric proton of glucose (doublet)")
 
 }
-\author{
-Torben Kimhofer \email{torben.kimhofer@murdoch.edu.au}
-}

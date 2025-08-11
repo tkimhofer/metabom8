@@ -43,6 +43,8 @@ Plots a 1D NMR spectrum using either base R or interactive Plotly graphics.
 }
 \examples{
 data(covid)
+X <- covid$X
+ppm <- covid$ppm
 p <- spec(X[1, ], ppm, shift = c(0, 11), interactive = TRUE)
 if (interactive()) p
 
