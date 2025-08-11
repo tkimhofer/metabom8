@@ -32,7 +32,6 @@ points(minmax(x), type = 'l', col = 'blue'); abline(h = c(0, 1), col = 'blue', l
 \code{\link{scRange}} for flexible output ranges.
 
 Other NMR ++: 
-\code{\link{.hotellingsT2}()},
-\code{\link{scRange}()}
+\code{\link{.hotellingsT2}()}
 }
 \concept{NMR ++}

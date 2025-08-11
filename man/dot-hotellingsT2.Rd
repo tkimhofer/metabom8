@@ -24,8 +24,7 @@ Geladi, P. and Kowalski, B.R. (1986). Partial least squares regression: a tutori
 }
 \seealso{
 Other NMR ++: 
-\code{\link{minmax}()},
-\code{\link{scRange}()}
+\code{\link{minmax}()}
 }
 \author{
 Torben Kimhofer
