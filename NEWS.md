@@ -1,11 +1,30 @@
-# metabom8 0.4.4
+# metabom8 1.2.0 (2025-08-11)
 
-* Added `alignSegment()` for aligning spectral regions with peak shift
-* Updated NIPALS convergence threhold for PCA (eps<10^-6^)
+## Added
+- GitHub Actions: R CMD check matrix and pkgdown site deployment.
+
+## Changed
+- Minimum R version is now 4.1.
+- Switched docs/labels to plotmath/UTF-8 escapes for Greek letters (e.g., `alpha`) to avoid locale issues.git 
+- Standardized plotting text to be Unicode-safe across OSes.
+
+## Fixed
+- Non-portable filenames in pkgdown outputs (`docs/` excluded via `.Rbuildignore`).
+- Vignette install error on macOS (ensure `inst/doc` not ignored).
+- Rd cross-reference warning caused by `[0, 1]` being parsed as links.
+
+## Internal
+- Build uses C++17 via `src/Makevars` (`CXX_STD = CXX17`); removed non-portable compiler flags.
+- Added unit tests (`testthat`) and improved example coverage.
 
 
-# metabom8 0.4.3
+# metabom8 1.1.0 (prior to 2025)
 
-* Updated `binning()` function
-* Added `excise1d()` for automated 1D chemical shift excision (capping, water, urea)
-* Added `normErectic()` to normalise std 1D spec with the ERECTIC integral (Bruker IVDr method)
+## Added
+- Datasets: `covid` (processed) and `covid_raw` (raw) with documentation.
+- Expanded preprocessing and modeling workflows (PCA/OPLS) 
+- Apdated examples for ANPC release.
+
+
+
+

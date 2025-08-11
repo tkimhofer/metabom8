@@ -36,7 +36,6 @@ reference:
   - '`pca`'
   - '`ppick`'
   - '`plotload`'
-  - '`plotload_cat`'
   - '`plotscores`'
   - '`predict_opls`'
   - '`specload`'
