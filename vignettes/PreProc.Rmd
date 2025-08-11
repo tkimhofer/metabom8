@@ -96,7 +96,7 @@ Plotting functions for visualising NMR spectra include **`spec()`** and **`matsp
 
 Example script for plotting NMR spectra:
 
-```{r spec_overlay_single, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
+```{r spec-overlay-single, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
 
 # use 'spec' to plot a single spectrum, e.g., in row position 15:
 spec(X[15,], ppm, shift = range(ppm), interactive=FALSE)
@@ -117,7 +117,7 @@ Plot formatting using colour, text labels and sub-divisions can create insight i
 
 For illustration purposes, the following code plot the TSP singlet (-0.05 to 0.05 ppm) and annotate spectra with information on spectrometer metadata (found in the *meta* dataframe). One panel is created for each experiment type, the line colour represents the instrument run order (this is based on the acquisition *a_Date*) and the linetype indicates the NMR pulse program (*a_PULPROG*):
 
-```{r spec_overlay_mlt, fig.show='hold', fig.width = 7, fig.height = 5, message=FALSE, warning=FALSE}
+```{r spec-overlay-mlt, fig.show='hold', fig.width = 7, fig.height = 5, message=FALSE, warning=FALSE}
 # create run-order based on acquistion date
 meta$runOrder<-rank(as.POSIXct(meta$a_DATE))
 
@@ -178,7 +178,7 @@ In metabolic phenotyping and in any other field where NMR spectra are compared i
 
 Visual assessment of spectral quality:
 
-```{r spec qc I, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
+```{r spec-qc-I, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
 # calculate quality control measures
 matspec(X_cal, ppm, shift=c(4.5,5), interactive=FALSE, main='Residual Water')
 matspec(X_cal, ppm, shift=c(9,11), interactive=FALSE, main='LowField Cap')
@@ -252,7 +252,7 @@ hist(dilf, xlab='PQN calculated dilution factor')
 
 The final step in this preprocessing tutorial is the visual inspection of the pre-processed NMR spectra: 
 
-```{r visual check, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
+```{r visual-check, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
 matspec(X_pqn, ppm, shift = range(ppm), interactive=FALSE)
 matspec(X_pqn, ppm, shift = c(1.2, 1.7), interactive=FALSE)
 ```

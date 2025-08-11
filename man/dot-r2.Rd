@@ -2,7 +2,7 @@
 % Please edit documentation in R/AllGenerics.R
 \name{.r2}
 \alias{.r2}
-\title{R² and Q² Calculation for OPLS Models}
+\title{\eqn{R^2} and \eqn{Q^2} Calculation for OPLS Models}
 \usage{
 .r2(Y, Yhat, ytss = NULL)
 }
@@ -14,14 +14,14 @@
 \item{ytss}{Numeric (optional). Total sum of squares of \code{Y}. If not provided, it will be computed internally.}
 }
 \value{
-A single numeric value representing R² or Q².
+A single numeric value representing \eqn{R^2} or \eqn{Q^2}.
 }
 \description{
-Computes the coefficient of determination (R² or Q²) for OPLS regression models using the formula:
+Computes the coefficient of determination (\eqn{R^2} or \eqn{Q^2}) for OPLS regression models using the formula:
 \deqn{R^2 = 1 - \frac{PRESS}{TSS}}, where PRESS is the prediction error sum of squares,
 and TSS is the total sum of squares. If \code{ytss} is not provided, it is computed directly from \code{Y}.
 
 This function supports matrix inputs (e.g., for multi-class outcomes) and averages across columns
-to return a single summary R²/Q² value.
+to return a single summary \eqn{R^2}/\eqn{Q^2} value.
 }
 \keyword{internal}

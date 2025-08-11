@@ -87,12 +87,12 @@
 #'
 #' @description
 #' Determines whether an additional component improves model generalization based on cross-validated performance indices:
-#' Q² for regression (R) and AUROC for discriminant analysis (DA).
+#' \eqn{Q^2} for regression (R) and AUROC for discriminant analysis (DA).
 #' AUROC is computed on cross-validation test folds to ensure it reflects out-of-sample classification performance,
-#' analogous to Q² in regression.
+#' analogous to \eqn{Q^2} in regression.
 #'
 #' @param type Character. Either 'R' for regression or 'DA' for discriminant analysis. May be prefixed with '-mY' to indicate multi-column Y.
-#' @param q2s Numeric vector of Q² values for fitted components (used for regression).
+#' @param q2s Numeric vector of \eqn{Q^2} values for fitted components (used for regression).
 #' @param auroc_cv Numeric vector of AUROC values computed on test folds during cross-validation (used for classification).
 #' @param pc_max Integer. Maximum number of components allowed for fitting.
 #'
@@ -117,7 +117,7 @@
   switch(type,
          R = {
            if (any(is.na(cv_est))) {
-             stop("Something went wrong: Q² is NA.")
+             stop("Something went wrong: Q2 is NA.")
            }
            if (nc > 1 && (diff(cv_est[(nc - 1):nc]) < 0.05 || cv_est[nc] > 0.98)) return(TRUE)
          },
@@ -140,7 +140,7 @@
 #'
 #' @param k Integer. Number of CV folds. If \code{k} is not valid or too high relative to number of rows in Y,
 #' it defaults to leave-one-out CV (LOO-CV).
-#' @param Y Matrix. Outcome matrix (observations × variables).
+#' @param Y Matrix. Outcome matrix (observations x variables).
 #'
 #' @return
 #' A list of length \code{k}, where each element contains the training indices (integers)
@@ -252,7 +252,7 @@
 #' @title Generate Monte Carlo Cross-Validation (MCCV) Training Indices
 #' @description Generates a list of training set indices for Monte Carlo Cross-Validation.
 #' @param k Integer. Number of MCCV iterations (i.e., training sets to generate).
-#' @param Y A matrix (n × p), where rows are observations and columns are outcomes. Only the number of rows is used here.
+#' @param Y A matrix (n x p), where rows are observations and columns are outcomes. Only the number of rows is used here.
 #' @param split Numeric. Fraction of the data to include in each training set. Should be between 0 and 1.
 #' @return A list of length \code{k}, each containing a vector of training set indices.
 #' @details For each fold, a random sample (with replacement) of size \code{floor(nrow(Y) * split)} is drawn.
@@ -490,7 +490,7 @@
 #' For the first orthogonal component (\code{nc = 1}), the full model structure is initialized.
 #' For later components (\code{nc > 1}), modeling proceeds on residual matrices carried over from previous iterations.
 #'
-#' @param X Numeric matrix. Input data matrix (samples × features); only required for \code{nc = 1}.
+#' @param X Numeric matrix. Input data matrix (samples x features); only required for \code{nc = 1}.
 #' @param Y Numeric matrix. Response variable (can be dummy-coded for classification).
 #' @param cv.set List of integer vectors. Each element contains training indices for one CV round.
 #'   These indices are adjusted internally by -1 due to 0-based indexing in the underlying C++ (Rcpp) routines.
@@ -499,8 +499,8 @@
 #'
 #' @return A list of the same length as \code{cv.set}. Each list element contains:
 #' \itemize{
-#'   \item \code{t_xo}: Orthogonal component scores (matrix, samples × components).
-#'   \item \code{t_xp}: Predictive component scores (matrix, samples × 1).
+#'   \item \code{t_xo}: Orthogonal component scores (matrix, samples x components).
+#'   \item \code{t_xp}: Predictive component scores (matrix, samples x 1).
 #'   \item \code{y_pred_train}: Predicted responses for training samples.
 #'   \item \code{y_pred_test}: Predicted responses for held-out test samples.
 #'   \item \code{x_res}: Residual matrix after filtering out orthogonal structure.
@@ -577,7 +577,7 @@
 #'
 #' @return A numeric matrix or array of the requested feature:
 #' \itemize{
-#'   \item For Monte Carlo CV and single-column Y: matrix with rows `"mean"`, `"sd"`, and `"coverage"` × samples.
+#'   \item For Monte Carlo CV and single-column Y: matrix with rows `"mean"`, `"sd"`, and `"coverage"` x samples.
 #'   \item For Monte Carlo CV and multi-column Y: 3D array with shape \code{[3, samples, outcomes]}.
 #'   \item For k-fold CV: matrix or array containing values for each sample (no aggregation, just fold values).
 #' }
@@ -667,21 +667,21 @@
 
 
 
-#' @title R² and Q² Calculation for OPLS Models
+#' @title \eqn{R^2} and \eqn{Q^2} Calculation for OPLS Models
 #'
 #' @description
-#' Computes the coefficient of determination (R² or Q²) for OPLS regression models using the formula:
+#' Computes the coefficient of determination (\eqn{R^2} or \eqn{Q^2}) for OPLS regression models using the formula:
 #' \deqn{R^2 = 1 - \frac{PRESS}{TSS}}, where PRESS is the prediction error sum of squares,
 #' and TSS is the total sum of squares. If `ytss` is not provided, it is computed directly from `Y`.
 #'
 #' This function supports matrix inputs (e.g., for multi-class outcomes) and averages across columns
-#' to return a single summary R²/Q² value.
+#' to return a single summary \eqn{R^2}/\eqn{Q^2} value.
 #'
 #' @param Y Numeric matrix. True response values. For classification, this should be a dummy matrix.
 #' @param Yhat Numeric matrix. Predicted response values from the model.
 #' @param ytss Numeric (optional). Total sum of squares of `Y`. If not provided, it will be computed internally.
 #'
-#' @return A single numeric value representing R² or Q².
+#' @return A single numeric value representing \eqn{R^2} or \eqn{Q^2}.
 #'
 #' @keywords internal
 .r2 <- function(Y, Yhat, ytss = NULL) {
@@ -711,14 +711,14 @@
 #'
 #' @description
 #' Generates a tabular and graphical summary of orthogonal and predictive components from an OPLS model.
-#' Includes explained variance (R²), predictive accuracy (Q²), and AUROC metrics (for classification models).
+#' Includes explained variance (\eqn{R^2}), predictive accuracy (\eqn{Q^2}), and AUROC metrics (for classification models).
 #'
-#' For discriminant models (DA), AUROC values are included. For regression models (R), R² and Q² are reported.
+#' For discriminant models (DA), AUROC values are included. For regression models (R), \eqn{R^2} and \eqn{Q^2} are reported.
 #'
 #' @param type Character. Model type: either "DA" (discriminant analysis) or "R" (regression). May include prefix "-mY" for multi-response models.
 #' @param r2x_comp Numeric vector. Proportion of X variance explained by each orthogonal component.
 #' @param r2_comp Numeric vector. Proportion of Y variance explained by the predictive component.
-#' @param q2_comp Numeric vector. Cross-validated predictive accuracy per component (Q²).
+#' @param q2_comp Numeric vector. Cross-validated predictive accuracy per component (\eqn{Q^2}).
 #' @param aucs_tr Numeric vector. AUROC values for training sets (only for "DA").
 #' @param aucs_te Numeric vector. AUROC values for test sets (only for "DA").
 #' @param cv List. Cross-validation configuration as used in the `opls()` function.
@@ -822,14 +822,14 @@
 #'
 #' @description
 #' Generates a tabular and graphical summary of PLS model components.
-#' Includes explained variance in X Space (R²X), predictive accuracy (Q²Y), and AUROC metrics, depending on model type.
+#' Includes explained variance in X Space (\eqn{R^2X}), predictive accuracy (\eqn{Q^2Y}), and AUROC metrics, depending on model type.
 #'
-#' For discriminant models (DA), AUROC values are included. For regression models (R), R²Y and Q² are reported.
+#' For discriminant models (DA), AUROC values are included. For regression models (R), \eqn{R^2Y} and \eqn{Q^2} are reported.
 #'
 #' @param type Character. Model type: either "DA" (discriminant analysis) or "R" (regression). May include prefix "-mY" for multi-response models.
 #' @param r2x_comp Numeric vector. Proportion of X variance explained by each component.
 #' @param r2_comp Numeric vector. Proportion of Y variance explained by each component.
-#' @param q2_comp Numeric vector. Cross-validated predictive accuracy per component (Q²).
+#' @param q2_comp Numeric vector. Cross-validated predictive accuracy per component (\eqn{Q^2}).
 #' @param aucs_tr Numeric vector. in-sample prediction accuracy for categorical Y ("DA").
 #' @param aucs_te Numeric vector. out-of-sample prediction accuracy for categorical Y ("DA").
 #' @param cv List. Cross-validation parameters.
@@ -1025,21 +1025,22 @@ get.idx <- function(range = c(1, 5), ppm) {
 #' plot(x, type = 'l'); abline(h = range(x), lty = 2)
 #' points(scRange(x, ra = c(5, 10)), type = 'l', col = 'red'); abline(h = c(5, 10), col = 'red', lty = 2)
 #'
-#' @seealso \code{\link{minmax}} for standard \code{0–1} scaling.
+#' @seealso [minmax()]
 #' @export
 scRange <- function(x, ra) {
   ra <- sort(ra)
   (ra[2] - ra[1]) * (x - min(x)) / (max(x) - min(x)) + ra[1]
 }
 
-#' @title Min-Max Scaling to [0, 1]
+#' @title Min-Max Scaling to \eqn{[0,1]}
 #' @description
-#' Scales a numeric vector to the range [0, 1] using min-max normalization.
+#' Scales a numeric vector to the range \eqn{[0,1]} using min-max normalization.
 #' This is a special case of \code{\link{scRange}}.
 #'
 #' @param x Numeric vector. Input values to be scaled.
-#'
-#' @return A numeric vector of the same length as \code{x}, scaled to the range \code{[0, 1]}.
+#' @param na.rm Logical; if `TRUE`, ignore `NA`s when computing the range.
+
+#' @return A numeric vector of the same length as \code{x}, scaled to the range \eqn{[0,1]}.
 #'
 #' @details
 #' The scaled values are computed as:
@@ -1050,13 +1051,20 @@ scRange <- function(x, ra) {
 #' @examples
 #' x <- rnorm(20)
 #' plot(x, type = 'l'); abline(h = range(x), lty = 2)
-#' points(minmax(x), type = 'l', col = 'blue'); abline(h = c(0, 1), col = 'blue', lty = 2)
+#' points(minmax(x), type = 'l', col = 'blue')
+#' abline(h = c(0, 1), col = 'blue', lty = 2)
 #'
-#' @seealso \code{\link{scRange}} for flexible output ranges.
+#' @seealso [scRange()] for flexible output ranges.
 #' @family NMR ++
 #' @export
-minmax <- function(x) {
-  (x - min(x)) / (max(x) - min(x))
+minmax <- function(x, na.rm = FALSE) {
+  stopifnot(is.numeric(x))
+  r <- range(x, na.rm = na.rm)
+  d <- r[2] - r[1]
+  if (is.na(d) || d == 0) {
+    return(ifelse(is.na(x), NA_real_, 0))
+  }
+  (x - r[1]) / d
 }
 
 #' @title Full Width at Half Maximum (FWHM) Estimation
@@ -1137,7 +1145,7 @@ lw <- function(X, ppm, shift = c(-0.1, 0.1), sf) {
 #' Estimates the noise level for each spectrum in a 1D NMR dataset by analyzing a signal-free region.
 #' Useful for quality control (QC) before or after spectral processing such as normalization or baseline correction.
 #'
-#' @param X Numeric matrix. NMR data with spectra represented in rows (samples × chemical shift bins).
+#' @param X Numeric matrix. NMR data with spectra represented in rows (samples x chemical shift bins).
 #' @param ppm Numeric vector. Chemical shift positions in ppm. Must match the number of columns in \code{X}.
 #' @param where Numeric vector of length 2. Specifies the ppm range to use for noise estimation.
 #'   This range should be free of peaks (i.e., no expected metabolite signal). Default is \code{c(14.6, 14.7)}.
@@ -1284,7 +1292,7 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 .check_pc_model <- function(pc, mod, le = 1, type = 'p') {
 
   if (is.na(pc) || is.infinite(pc) || length(pc) > le) {
-    stop("Check 'pc' argument: it must be finite and of expected length.")
+    stop("Check 'pc' argument: It must be finite and of expected length.")
   }
 
   mod_class <- class(mod)[1]
@@ -1360,7 +1368,7 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 #'
 #' @param mod An object of class \code{PCA_metabom8} or \code{OPLS_metabom8}.
 #' @param pc Character or numeric. Component identifier (e.g., \code{1}, \code{"o1"}).
-#' @param X Numeric matrix. NMR spectra matrix (samples × variables).
+#' @param X Numeric matrix. NMR spectra matrix (samples x variables).
 #' @param idx Integer vector. Indices specifying the region of interest in the chemical shift vector.
 #' @param ppm Numeric vector. Chemical shift values (ppm).
 #'
@@ -1452,7 +1460,7 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 #' Performs OPLS modeling on permuted Y to estimate cross-validated model performance under the null hypothesis.
 #' Extracts predictive performance (R2, Q2, AUROC) from cross-validation for either regression or classification.
 #'
-#' @param Xs Numeric matrix. Input data matrix (samples × features).
+#' @param Xs Numeric matrix. Input data matrix (samples x features).
 #' @param Y Numeric matrix. Response variable (numeric or dummy-coded).
 #' @param cv List. Cross-validation parameters, including \code{method} and \code{cv_sets}.
 #' @param type Character. Model type: \code{"DA"}, \code{"R"}, possibly with \code{"-mY"} suffix for multi-column Y.

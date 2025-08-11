@@ -7,7 +7,7 @@
 .oplsComponentCv(X, Y, cv.set, nc, mod.cv)
 }
 \arguments{
-\item{X}{Numeric matrix. Input data matrix (samples × features); only required for \code{nc = 1}.}
+\item{X}{Numeric matrix. Input data matrix (samples x features); only required for \code{nc = 1}.}
 
 \item{Y}{Numeric matrix. Response variable (can be dummy-coded for classification).}
 
@@ -21,8 +21,8 @@ These indices are adjusted internally by -1 due to 0-based indexing in the under
 \value{
 A list of the same length as \code{cv.set}. Each list element contains:
 \itemize{
-\item \code{t_xo}: Orthogonal component scores (matrix, samples × components).
-\item \code{t_xp}: Predictive component scores (matrix, samples × 1).
+\item \code{t_xo}: Orthogonal component scores (matrix, samples x components).
+\item \code{t_xp}: Predictive component scores (matrix, samples x 1).
 \item \code{y_pred_train}: Predicted responses for training samples.
 \item \code{y_pred_test}: Predicted responses for held-out test samples.
 \item \code{x_res}: Residual matrix after filtering out orthogonal structure.

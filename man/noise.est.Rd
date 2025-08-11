@@ -7,7 +7,7 @@
 noise.est(X, ppm, where = c(14.6, 14.7))
 }
 \arguments{
-\item{X}{Numeric matrix. NMR data with spectra represented in rows (samples × chemical shift bins).}
+\item{X}{Numeric matrix. NMR data with spectra represented in rows (samples x chemical shift bins).}
 
 \item{ppm}{Numeric vector. Chemical shift positions in ppm. Must match the number of columns in \code{X}.}
 

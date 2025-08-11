@@ -5,26 +5,34 @@
 \alias{covid_raw}
 \title{COVID-19 blood plasma proton NMR spectra (raw)}
 \format{
-A data frame with 11 rows and 131,072 columns:
+A numeric matrix/data frame with 23 rows and 29,782 columns:
 \describe{
 \item{rows}{Spectra (samples)}
 \item{columns}{Chemical shift variables in parts per million (ppm)}
 }
 }
 \source{
-Australian National Phenome Centre (ANPC), Murdoch University
+Australian National Phenome Centre (ANPC), Murdoch University.
 }
 \usage{
-covid_raw
+data(covid_raw)
 }
 \description{
-1D proton NMR spectra from SARS-CoV-2 positive patients (n=10) and healthy controls (n=13), collected in a research study in Perth, Western Australia. Spectra are raw and require processing before statistical analysis (see \code{?covid} for processed spectra).
-FIDs were acquired using a Carr-Purcell-Meiboom-Gill (CPMG) pulse sequence on a 600 MHz Avance II spectrometer using Bruker IVDr methods for blood plasma (300 K, 32 scans). The spectrometer was equipped with a double resonance broadband probe (BBI) and a refrigerated autosampler at 4˚C.
-Detailed information is available in Kimhofer et al., \emph{Integrative Modelling of Quantitative Plasma Lipoprotein, Metabolic and Amino Acid Data Reveals a Multi-organ Pathological Signature of SARS-CoV-2 Infection}, Journal of Proteome Research (Aug 2020).
+1D proton NMR spectra from SARS-CoV-2–positive patients (n = 10) and healthy controls (n = 13),
+collected in a research study in Perth, Western Australia. Spectra are raw and require processing
+before statistical analysis (see \code{?covid} for processed spectra).
+}
+\details{
+FIDs were acquired using a Carr–Purcell–Meiboom–Gill (CPMG) pulse sequence on a 600 MHz Bruker
+Avance II spectrometer using IVDr methods for blood plasma (300 K, 32 scans). The spectrometer was
+equipped with a double-resonance broadband (BBI) probe and a refrigerated autosampler at
+4\eqn{^{\circ}}C.
 }
 \examples{
 data(covid_raw)
-head(covid_raw)
-
+dim(covid_raw)
+}
+\references{
+Kimhofer et al. (2020) \doi{10.1021/acs.jproteome.0c00280}
 }
 \keyword{datasets}
