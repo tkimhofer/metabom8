@@ -13,7 +13,7 @@ calibrate(X, ppm, type = c("tsp", "glucose", "alanine"))
 
 \item{type}{Either a character string or numeric vector. Options include:
 \itemize{
-\item{\code{"tsp"}: calibrates to 0 ppm using the highest peak in the interval \code{[−0.2, 0.2]} ppm (TSP signal).}
+\item{\code{"tsp"}: calibrates to 0 ppm using the highest peak in the interval \code{[-0.2, 0.2]} ppm (TSP signal).}
 \item{\code{"glucose"}: calibrates to 5.23 ppm using glucose doublet (5.15–5.30 ppm).}
 \item{\code{"alanine"}: calibrates to 1.48 ppm using alanine doublet (1.40–1.53 ppm).}
 \item{Numeric vector of length 2: custom ppm range. Spectrum is shifted so the maximum peak in this interval aligns with \code{mean(type)}.}

@@ -4,7 +4,7 @@
 #' #' Fits an Orthogonal Projections to Latent Structures (O-PLS) model for regression or classification.
 #' #' The number of orthogonal components is automatically selected using internal cross-validation.
 #' #' To avoid underfitting, components are added incrementally, while overfitting is prevented by requiring
-#' that each new component improves predictive performance beyond a defined threshold (ΔQ² / ΔAUROC > 0.05).
+#' that each new component improves predictive performance beyond a defined threshold (\eqn{(\Delta Q)^{2}} / \eqn{\delta}AUROC > 0.05).
 #' This ensures the model captures relevant structure without modelling noise or irrelevant variation.
 #'
 #' @param X Numeric matrix or data frame of predictors. Rows are samples; columns are features.
