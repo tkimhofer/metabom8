@@ -36,5 +36,5 @@ X <- matrix(rnorm(30 * 10), nrow = 30)
 Y <- matrix(rnorm(30 * 3), nrow = 30)
 # Compute multivariate Y weights via PCA
 T_w <- multiY_Tw_rcpp(X, Y, it_max = 50, eps = 1e-4)
-
 }
+\keyword{internal}
