@@ -41,13 +41,6 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
           
-      - name: Show 00install.out (and 00check.log) on failure
-        if: failure()
-        run: |
-          set -eux
-          find . -name 00install.out -print -exec sh -c 'echo "===== {} ====="; tail -n +500 "{}"' \;
-          find . -name 00check.log   -print -exec sh -c 'echo "===== {} ====="; tail -n +500 "{}"' \;
-  
         
 
       # - name: Ensure UTF-8 locale (Linux)
@@ -80,5 +73,9 @@ jobs:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
 
-
-   
+      - name: Show 00install.out and 00check.log on failure
+        if: failure()
+        run: |
+          set -eux
+          find . -name 00install.out -print -exec sh -c 'echo "===== {} ====="; tail -n 200 "{}"' \;
+          find . -name 00check.log   -print -exec sh -c 'echo "===== {} ====="; tail -n 200 "{}"' \;
