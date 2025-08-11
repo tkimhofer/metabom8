@@ -67,7 +67,7 @@ Rcpp::List nip_pca_comp_rcpp(Eigen::MatrixXd X) {
 //' Y <- matrix(rnorm(30 * 3), nrow = 30)
 //' # Compute multivariate Y weights via PCA
 //' T_w <- multiY_Tw_rcpp(X, Y, it_max = 50, eps = 1e-4)
-//'
+//' @keywords internal
 //' @export
 // [[Rcpp::export]]
 Eigen::MatrixXd multiY_Tw_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y, int it_max, double eps) {

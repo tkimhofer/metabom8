@@ -4,4 +4,7 @@ pkgdown_sha: ~
 articles:
   MVA: MVA.html
   PreProc: PreProc.html
-last_built: 2025-08-11T12:02Z
+last_built: 2025-08-11T12:12Z
+urls:
+  reference: https://tkimhofer.github.io/metabom8/reference
+  article: https://tkimhofer.github.io/metabom8/articles
