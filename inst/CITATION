@@ -1,12 +1,15 @@
-citEntry(
-  entry = "Manual",
-  title = "metabom8: A High-Performance R Package for Metabolomics Modeling and Analysis",
-  author = person(given = "Torben", family = "Kimhofer",
-                  email = "tkimhofer@gmail.com",
-                  role = c("aut", "cre"),
-                  comment = c(ORCID = "https://orcid.org/0000-0001-7158-9930")),
-  year = 2025,
-  version = "1.2.0",
-  url = "https://github.com/tkimhofer/metabom8",
-  note = "If you use this software, please cite it as above."
+citHeader("To cite metabom8, please use:")
+
+bibentry(
+  bibtype = "Manual",
+  title   = "metabom8: A High-Performance R Package for Metabolomics Modeling and Analysis",
+  author  = person(given = "Torben", family = "Kimhofer",
+                   email = "tkimhofer@gmail.com",
+                   role = c("aut", "cre"),
+                   comment = c(ORCID = "0000-0001-7158-9930")),
+  year    = 2025,
+  note    = "R package version 1.2.0",
+  doi     = "10.5281/zenodo.16794445",
+  url     = "https://doi.org/10.5281/zenodo.16794445",
+  textVersion = "Kimhofer T (2025). metabom8: A High-Performance R Package for Metabolomics Modeling and Analysis (R package version 1.2.0). doi:10.5281/zenodo.16794445."
 )
