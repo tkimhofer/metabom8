@@ -11,7 +11,7 @@
 
 \item{pc}{Character or numeric. Component identifier (e.g., \code{1}, \code{"o1"}).}
 
-\item{X}{Numeric matrix. NMR spectra matrix (samples × variables).}
+\item{X}{Numeric matrix. NMR spectra matrix (samples x variables).}
 
 \item{idx}{Integer vector. Indices specifying the region of interest in the chemical shift vector.}
 

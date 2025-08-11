@@ -7,7 +7,7 @@
 .permYmod(Xs, Y, cv, type, nc_o)
 }
 \arguments{
-\item{Xs}{Numeric matrix. Input data matrix (samples × features).}
+\item{Xs}{Numeric matrix. Input data matrix (samples x features).}
 
 \item{Y}{Numeric matrix. Response variable (numeric or dummy-coded).}
 

@@ -9,7 +9,7 @@
 \arguments{
 \item{k}{Integer. Number of MCCV iterations (i.e., training sets to generate).}
 
-\item{Y}{A matrix (n × p), where rows are observations and columns are outcomes. Only the number of rows is used here.}
+\item{Y}{A matrix (n x p), where rows are observations and columns are outcomes. Only the number of rows is used here.}
 
 \item{split}{Numeric. Fraction of the data to include in each training set. Should be between 0 and 1.}
 }

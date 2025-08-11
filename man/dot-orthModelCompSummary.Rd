@@ -13,7 +13,7 @@
 
 \item{r2_comp}{Numeric vector. Proportion of Y variance explained by the predictive component.}
 
-\item{q2_comp}{Numeric vector. Cross-validated predictive accuracy per component (Q²).}
+\item{q2_comp}{Numeric vector. Cross-validated predictive accuracy per component (\eqn{Q^2}).}
 
 \item{aucs_tr}{Numeric vector. AUROC values for training sets (only for "DA").}
 
@@ -30,8 +30,8 @@ A list with:
 }
 \description{
 Generates a tabular and graphical summary of orthogonal and predictive components from an OPLS model.
-Includes explained variance (R²), predictive accuracy (Q²), and AUROC metrics (for classification models).
+Includes explained variance (\eqn{R^2}), predictive accuracy (\eqn{Q^2}), and AUROC metrics (for classification models).
 
-For discriminant models (DA), AUROC values are included. For regression models (R), R² and Q² are reported.
+For discriminant models (DA), AUROC values are included. For regression models (R), \eqn{R^2} and \eqn{Q^2} are reported.
 }
 \keyword{internal}

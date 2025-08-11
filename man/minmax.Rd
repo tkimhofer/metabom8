@@ -2,7 +2,7 @@
 % Please edit documentation in R/AllGenerics.R
 \name{minmax}
 \alias{minmax}
-\title{Min-Max Scaling to \link{0, 1}}
+\title{Min-Max Scaling to \code{[0, 1]}}
 \usage{
 minmax(x)
 }

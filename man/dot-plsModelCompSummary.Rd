@@ -13,7 +13,7 @@
 
 \item{r2_comp}{Numeric vector. Proportion of Y variance explained by each component.}
 
-\item{q2_comp}{Numeric vector. Cross-validated predictive accuracy per component (Q²).}
+\item{q2_comp}{Numeric vector. Cross-validated predictive accuracy per component (\eqn{Q^2}).}
 
 \item{aucs_tr}{Numeric vector. in-sample prediction accuracy for categorical Y ("DA").}
 
@@ -30,8 +30,8 @@ A list with:
 }
 \description{
 Generates a tabular and graphical summary of PLS model components.
-Includes explained variance in X Space (R²X), predictive accuracy (Q²Y), and AUROC metrics, depending on model type.
+Includes explained variance in X Space (\eqn{R^2X}), predictive accuracy (\eqn{Q^2Y}), and AUROC metrics, depending on model type.
 
-For discriminant models (DA), AUROC values are included. For regression models (R), R²Y and Q² are reported.
+For discriminant models (DA), AUROC values are included. For regression models (R), \eqn{R^2Y} and \eqn{Q^2} are reported.
 }
 \keyword{internal}
