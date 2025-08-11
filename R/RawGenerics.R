@@ -130,7 +130,7 @@
     # handle scalar or vector case
     idx_filt <- (fmat == 1)
   }
-  if (!any(idx_filt)) {
+  if (all(!idx_filt)) {
     stop("No files found that match the specified parameter specification levels.")
   }
 

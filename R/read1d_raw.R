@@ -36,7 +36,7 @@
 #'
 #' @examples
 #' path <- system.file("extdata", package = "metabom8")
-#' read1d_raw(path, exp_type = list(exp = "noesygppr1d"),
+#' read1d_raw(path, exp_type = list(pulprog = "noesygppr1d"),
 #'            apodisation = list(fun = "exponential", lb = 0.2), n_max = 3)
 #'
 #' @family NMR

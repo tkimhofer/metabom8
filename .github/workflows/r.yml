@@ -27,6 +27,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GH_PAT }}
       R_KEEP_PKG_SOURCE: yes
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
 
     steps:
       - uses: actions/checkout@v4
@@ -38,6 +40,23 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+
+      - name: Ensure UTF-8 locale (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y locales
+          sudo locale-gen en_US.UTF-8
+          sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+
+      - name: Force UTF-8 + cairo on macOS
+        if: runner.os == 'macOS'
+        run: |
+          echo 'Sys.setlocale("LC_ALL", "en_US.UTF-8")' >> ~/.Rprofile
+          echo 'options(encoding = "UTF-8")' >> ~/.Rprofile
+          echo 'options(bitmapType = "cairo")' >> ~/.Rprofile
+          # Helpful to confirm in logs:
+          echo 'print(Sys.getlocale()); print(l10n_info())' >> ~/.Rprofile
           
       - name: Install nmrData from GitHub
         run: Rscript -e 'if (!requireNamespace("remotes", quietly=TRUE)) install.packages("remotes"); remotes::install_github("tkimhofer/nmrData")'
