@@ -58,7 +58,7 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ..
     geom_hline(yintercept = 0, colour = "gray70") +
     geom_vline(xintercept = 0, colour = "gray70") +
     theme_bw() +
-    labs(caption = expression("Dashed line: Hotelling's " * italic(T)^2 * " ellipse (" * alpha == 0.95 * ")"))
+    labs(caption = expression("Dashed line: Hotelling's " * italic("T")^2 * " ellipse (" * alpha == 0.95 * ")"))
 
   # Add points and optional annotation
   aes_args <- aes(x = !!sym(colnames(sc)[1]), y = !!sym(colnames(sc)[2]))
