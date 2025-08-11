@@ -10,7 +10,7 @@ Authors@R: person(given = "Torben",
 Description: Functions to perform 1D NMR data import, spectral data preprocessing, multivariate statistical analysis and statistical total correlation for putative metabolite identification!
 License: MIT + file LICENSE
 Encoding: UTF-8
-Depends: R (>= 4.5)
+Depends: R (>= 4.1)
 Imports: 
     abind, 
     colorRamps,
