@@ -12,7 +12,7 @@
 - Preprocessing and analysis of 1D NMR and MS spectral data
 - Prinicpal Component Analysis (PCA) for unsupervised analysis 
 - Orthogonal Partial Least Squares (OPLS) modeling based on NIPALS
-- OPLS with automatic selection of the optimal number of components based on R^2, Q^2 and cross-valdated AUC
+- OPLS with automatic selection of the optimal number of components based on R2, Q2 and cross-valdated AUC
 - Robust statistical validation for small to large sample sizes: stratified Monte Carlo CV and k-fold CV
 - Custom model visualisations using `ggplot2` and `plotly`
 - Model diagnostics & validation (DModX, Permutation Testing)
