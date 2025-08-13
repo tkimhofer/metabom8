@@ -9,7 +9,7 @@
 
 ## 🛠️ Features
 
-- Preprocessing and analysis of 1D NMR and MS spectral data
+- Preprocessing and analysis of 1D NMR
 - Prinicpal Component Analysis (PCA) for unsupervised analysis 
 - Orthogonal Partial Least Squares (OPLS) modeling based on NIPALS
 - OPLS with automatic selection of the optimal number of components based on R2, Q2 and cross-valdated AUC
