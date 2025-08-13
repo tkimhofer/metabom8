@@ -10,8 +10,8 @@
 ## 🛠️ Features
 
 - Preprocessing and analysis of 1D NMR spectra
-- Prinicpal Component Analysis (PCA) for unsupervised analysis 
-- Orthogonal Partial Least Squares (OPLS) modeling based on NIPALS
+- Prinicpal Component Analysis (PCA) and backscaled model loadings
+- Orthogonal Partial Least Squares (OPLS) modeling via the NIPALS algorithm
 - OPLS with automatic selection of the optimal number of components based on R2, Q2 and cross-valdated AUC
 - Robust statistical validation for small to large sample sizes: stratified Monte Carlo CV and k-fold CV
 - Custom model visualisations using `ggplot2` and `plotly`
