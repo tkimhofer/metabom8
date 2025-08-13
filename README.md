@@ -10,8 +10,8 @@
 ## 🛠️ Features
 
 - Preprocessing and analysis of 1D NMR and MS spectral data
-- Unsupervised PCA and supervised Orthogonal Partial Least Squares (OPLS) modeling
-- OPLS with automatic selection of the optimal number of predictive and orthogonal components
+- Prinicpal Component Analysis (PCA) for unsupervised analysis 
+- Orthogonal Partial Least Squares (OPLS) modeling with automatic selection of the optimal number of components
 - Robust statistical validation: k-fold and stratified Monte Carlo CV
 - Metabolite identification via STOCSY and STORM
 - Custom plotting functions using `ggplot2` and `plotly`
