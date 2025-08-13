@@ -11,10 +11,12 @@
 
 - Preprocessing and analysis of 1D NMR and MS spectral data
 - Prinicpal Component Analysis (PCA) for unsupervised analysis 
-- Orthogonal Partial Least Squares (OPLS) modeling with automatic selection of the optimal number of components
-- Robust statistical validation: k-fold and stratified Monte Carlo CV
+- Orthogonal Partial Least Squares (OPLS) modeling based on NIPALS
+- OPLS with automatic selection of the optimal number of components based on R^2, Q^2 and cross-valdated AUC
+- Robust statistical validation for small to large sample sizes: stratified Monte Carlo CV and k-fold CV
+- Custom model visualisations using `ggplot2` and `plotly`
+- Model diagnostics & validation (DModX, Permutation Testing)
 - Metabolite identification via STOCSY and STORM
-- Custom plotting functions using `ggplot2` and `plotly`
 - Native C++ acceleration via `RcppArmadillo` and `RcppEigen`
 
 ---
