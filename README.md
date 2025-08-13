@@ -13,7 +13,7 @@
 - Unsupervised PCA and supervised Orthogonal Partial Least Squares (OPLS) modeling
 - OPLS with automatic selection of the optimal number of predictive and orthogonal components
 - Robust statistical validation: k-fold and stratified Monte Carlo CV
-- Metabolite identification via STOCSY (Statistical Total Correlation Spectroscopy)
+- Metabolite identification via STOCSY (Statistical Total Correlation Spectroscopy) and STORM (Subset Optimisation by Reference Matching)
 - Custom plotting functions using `ggplot2` and `plotly`
 - Native C++ acceleration via `RcppArmadillo` and `RcppEigen`
 
