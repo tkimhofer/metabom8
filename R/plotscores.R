@@ -17,12 +17,13 @@
 #' Hotelling H. (1931) The generalization of Student’s ratio. \emph{Annals of Mathematical Statistics}, 2:360–378.
 #'
 #' @importFrom ggplot2 ggplot aes geom_point geom_vline geom_hline geom_polygon labs theme_bw scale_colour_gradientn scale_x_continuous scale_y_continuous guides unit element_text theme
-#' @importFrom rlang sym
+#' @importFrom rlang sym .data
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom colorRamps matlab.like2
 #' @importFrom ellipse ellipse
 #' @importFrom stats cov
 #' @importFrom scales breaks_pretty
+#' @importFrom utils modifyList
 #' @export
 #' @examples
 #' data("covid")
@@ -83,8 +84,8 @@ plotscores <- function(obj, pc, an, title = "", qc, legend = "in", cv = TRUE, ..
 
   # Add QC points
   if (!missing(qc) && length(qc) > 0) {
-    df_qc <- data.frame(x = sc[qc, 1], y = sc[qc, 2])
-    g <- g + geom_point(data = df_qc, aes(x = x, y = y), colour = "black", shape = 21)
+    df_qc <- sc[qc, seq_len(2), drop = FALSE]
+    g <- g + geom_point(data = df_qc, aes(x = .data[[colnames(sc)[1]]], y = .data[[colnames(sc)[2]]]), colour = "black", shape = 21)
   }
 
   # Axis labeling per model

@@ -13,22 +13,18 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+if (!requireNamespace("nmrdata", quietly = TRUE)) {
+  message("The vignette requires the 'nmrdata' package, which is not installed.")
+  knitr::knit_exit()
+}
+library(nmrdata)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval = requireNamespace("nmrData", quietly = TRUE)
+  comment = "#>"
 )
-
-has_data <- requireNamespace("nmrData", quietly = TRUE)
 ```
 
-```{r no-data-msg, echo = FALSE, results = "asis"}
-if (!has_data) {
-  message("The 'yourGitHubPackage' package is not installed. Please install it manually to run this example.")
-}else{
-  library(nmrdata)
-}
-```
 
 # Data import, quality control and spectral pre-processing
 
@@ -36,7 +32,7 @@ if (!has_data) {
 
 This tutorial runs through a typical data import and pre-processing workflow for Magnetic Resonance spectroscopy (MRS) - based metabolic profiling with the *metabom8* R package. Tutorial data are available in the *nmrData* R package. Both of these packages are available on the author's GitHub page and can be installed using the commands below.
 
-```{r load-pack, fig.show='hold', message=FALSE, warning=FALSE}
+```{r load-pack, fig.show='hold', message=FALSE}
 # load packages
 library(metabom8)
 
@@ -51,7 +47,7 @@ library(dplyr)
 
 ## Data
 
-Proton (^1^H) NMR data are available in the *nmrData* package (www.github.com/tkimhofer) and constitute standard 1D experiments acquired from murine urine samples. Samples were collected longitudinally with a single collection point before and multiple collection points after bariatric surgery was performed. Data acquisition was performed on a 600 MHz Bruker Avance III spectrometer, equipped with a 5 mm triple resonance (TXI) probe operating at 300 K. Further information on study design, experimental setup and data collection can be found in Jia Li *et al.*^[Li, Jia V., *et al.* (2011) Metabolic surgery profoundly influences gut microbial-host metabolic cross-talk. *Gut* 60.9, 1214-1223.]
+Proton (^1^H) NMR data are available in the *nmrdata* package (available throug Bioconductor) and constitute standard 1D experiments acquired from murine urine samples. Samples were collected longitudinally with a single collection point before and multiple collection points after bariatric surgery was performed. Data acquisition was performed on a 600 MHz Bruker Avance III spectrometer, equipped with a 5 mm triple resonance (TXI) probe operating at 300 K. Further information on study design, experimental setup and data collection can be found in Jia Li *et al.*^[Li, Jia V., *et al.* (2011) Metabolic surgery profoundly influences gut microbial-host metabolic cross-talk. *Gut* 60.9, 1214-1223.]
 
 &nbsp;
 
@@ -64,12 +60,12 @@ The **`read1d_proc()`** function imports Bruker NMR spectra into the R workspace
 
 In this tutorial all standard 1D experiments are imported. The selection parameter is based on the pulse sequence name: `PULPROG='noesypr1d'`:
 
-```{r read-in, fig.show='hold', message=FALSE, warning=FALSE}
+```{r read-in, fig.show='hold'}
 # define path to NMR experiments
 path <- system.file("extdata/", package = "nmrdata"); print(path)
 
-# import 1D NMRS data
-read1d_proc(path, exp_type=list(PULPROG='noesypr1d'))
+# import 1D NMR data
+read1d_proc(path, exp_type=list(PULPROG='noesypr1d'), n_max=100)
 ```
 By default, the variables X, ppm, and meta are exported into the global R workspace and can be accessed directly after running read1d_proc().
 
@@ -96,10 +92,10 @@ Plotting functions for visualising NMR spectra include **`spec()`** and **`matsp
 
 Example script for plotting NMR spectra:
 
-```{r spec-overlay-single, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
+```{r spec-overlay-single, fig.show='hold', fig.width = 7.2, fig.height = 4}
 
-# use 'spec' to plot a single spectrum, e.g., in row position 15:
-spec(X[15,], ppm, shift = range(ppm), interactive=FALSE)
+# use 'spec' to plot a single spectrum, e.g., in row position 10:
+spec(X[10,], ppm, shift = range(ppm), interactive=FALSE)
 
 # use 'matspec' to overlay spectra, in ppm range 0 to 10
 matspec(X, ppm, shift = c(1.2, 1.7), interactive=FALSE)
@@ -117,7 +113,7 @@ Plot formatting using colour, text labels and sub-divisions can create insight i
 
 For illustration purposes, the following code plot the TSP singlet (-0.05 to 0.05 ppm) and annotate spectra with information on spectrometer metadata (found in the *meta* dataframe). One panel is created for each experiment type, the line colour represents the instrument run order (this is based on the acquisition *a_Date*) and the linetype indicates the NMR pulse program (*a_PULPROG*):
 
-```{r spec-overlay-mlt, fig.show='hold', fig.width = 7, fig.height = 5, message=FALSE, warning=FALSE}
+```{r spec-overlay-mlt, fig.show='hold', fig.width = 7, fig.height = 5}
 # create run-order based on acquistion date
 meta$runOrder<-rank(as.POSIXct(meta$a_DATE))
 
@@ -137,7 +133,7 @@ The plot above shows that two different experiment types were performed (i.e., t
 Chemical shift calibration refers to a horizontal shift of an entire spectrum to place a signal of a standard compound at a defined chemical shift position. In urine metabolic profiling, the standard compound is TSP^[3-(trimethylsilyl)-2,2′,3,3′-tetradeuteropropionic acid] (usually added to the sample buffer), which gives rise to a singlet that is defined to resonate at 0 ppm.^[Dona, A.C., *et al.* (2014) Precision high-throughput proton NMR spectroscopy of human urine, serum, and plasma for large-scale metabolic phenotyping. *Analytical Chemistry*. 86.19. 9887-94.]
 
 We can reference the urine spectra using the **`calibrate()`** function, as shown with the following code:
-```{r calibration, fig.show='hold', fig.width = 7.2, fig.height = 6, message=FALSE, warning=FALSE}
+```{r calibration, fig.show='hold', fig.width = 7.2, fig.height = 6}
 # perform TSP calibration
 X_cal<-calibrate(X, ppm, type='tsp')
 
@@ -154,7 +150,7 @@ After calibration of the urine spectra, the TSP peak apex is centered at zero pp
 ## Filtering based on spectrometer parameters
 For statistical analysis all calibration experiments are to be excluded and only standard 1D experiments are kept (*\<JL-noe1d\>*). Filtering can be performed using the following code:
 
-```{r filter, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
+```{r filter, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Exclude calibration experiments
 idx<-grep('noe1d', meta$a_EXP) 
 X_cal<-X_cal[idx,]
@@ -178,7 +174,7 @@ In metabolic phenotyping and in any other field where NMR spectra are compared i
 
 Visual assessment of spectral quality:
 
-```{r spec-qc-I, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
+```{r spec-qc-I, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # calculate quality control measures
 matspec(X_cal, ppm, shift=c(4.5,5), interactive=FALSE, main='Residual Water')
 matspec(X_cal, ppm, shift=c(9,11), interactive=FALSE, main='LowField Cap')
@@ -197,7 +193,7 @@ Further downstream analysis requires the excision of chemical shift regions bear
 
 The function **`get_idx()`** can be used to obtain indices of the desired shift range from the ppm vector. These indices can then be further used to exclude the relevant columns in the NMR matrix and ppm vector. This is illustrated in the following code snippet.
 
-```{r excision, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
+```{r excision, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Indexing TSP region and upfield noise...
 idx_tsp<-get_idx(range=c(min(ppm), 0.5), ppm)
 # ... water region...
@@ -219,7 +215,7 @@ ppm<-ppm[-idx_rm]
 
 Macromolecules such as proteins produce broad resonances in an NMR spectrum, these are termed spectral baselines. Baseline differences across spectra can produce artifacts, and a spectra are typically baseline corrected to more accurate results. In *metabom8*, the  **`bline()`** implements a non-linear baseline correction using asymmetric least squares. See the example below on how to apply this function. 
 
-```{r baseline, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
+```{r baseline, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Baseline correction
 X_bl<-bline(X_cut)
 
@@ -241,7 +237,7 @@ There are several normalisation methods available, which method is most suitable
 
 The function **`pqn()`** requires at least one input, which is the NMR matrix to be normalised (**X_bl**), the output of this function will be the PQN normalised data matrix. In the code below, there is one additional input argument provided (*add_DilF = 'dilf'*), which indicates that the calculated dilution factors should be exported to the R workspace as an array named *dilf*. Checking the dilution factors can be very informative. For example, if pooled quality control samples were periodically included in the study run, then these should have very comparable dilution factors. 
 
-```{r normalisation, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
+```{r normalisation, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # PQN normalisation
 X_pqn<-pqn(X_bl, add_DilF = 'dilf')
 
@@ -252,7 +248,7 @@ hist(dilf, xlab='PQN calculated dilution factor')
 
 The final step in this preprocessing tutorial is the visual inspection of the pre-processed NMR spectra: 
 
-```{r visual-check, fig.show='hold', fig.width = 7.2, fig.height = 4, message=FALSE, warning=FALSE}
+```{r visual-check, fig.show='hold', fig.width = 7.2, fig.height = 4}
 matspec(X_pqn, ppm, shift = range(ppm), interactive=FALSE)
 matspec(X_pqn, ppm, shift = c(1.2, 1.7), interactive=FALSE)
 ```

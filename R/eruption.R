@@ -31,7 +31,7 @@
 #'   theme_bw theme element_blank element_text labs scale_x_continuous
 #' @importFrom ggrepel geom_label_repel
 #' @importFrom colorRamps matlab.like2
-#' @importFrom stats p.adjust kruskal.test
+#' @importFrom stats p.adjust p.adjust.methods kruskal.test
 #' @seealso \code{\link{opls}}
 #' @export
 #'

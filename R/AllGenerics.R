@@ -187,7 +187,8 @@
 #' @return
 #' A list of length \code{k}, each element containing the training set row indices (integers) for one CV fold.
 #' Returns \code{NULL} and a warning if stratification is not feasible due to class imbalance.
-#'
+#' 
+#' @importFrom stats quantile 
 #' @keywords internal
 .kFoldStratified <- function(k, stratified){
 
@@ -305,6 +306,8 @@
 #'   }
 #' @return A list of length \code{k}, each element containing a vector of row indices for the training set.
 #' @details Each round samples a class-balanced subset with replacement. Useful for high-variance, imbalanced-class modeling.
+#' 
+#' @importFrom stats quantile 
 #' @keywords internal
 .mcBalanced <- function(k, split, stratified) {
 
@@ -1161,6 +1164,7 @@ lw <- function(X, ppm, shift = c(-0.1, 0.1), sf) {
 #' Signal-free regions are typically at the high or low ppm ends (e.g., >10 ppm or <0 ppm).
 #'
 #' @importFrom ptw asysm
+#' @importFrom stats quantile 
 #' @export
 #'
 #' @examples
@@ -1504,9 +1508,6 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
 
   cv_method <- strsplit(cv$method, "_")[[1]][1]
 
-
-
-
   # Performance evaluation
   if (cv_method == 'MC') {
     if (grepl('DA', type)) {
@@ -1528,7 +1529,7 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
     if (grepl('DA', type)) {
       if (grepl("mY", type)) {
         Y_vec <- factor(apply(Y, 1, function(x, nam=colnames(Y)){nam[which(x==max(x))]}))
-        colnames(preds_test) <- colnames(preds_train) <- class_memb
+        colnames(preds_test) <- colnames(preds_train) <- colnames(Y)
         auc_te <- multiclass.roc(response = Y_vec, predictor = preds_test, quiet = TRUE)$auc
         auc_tr <- multiclass.roc(response = Y_vec, predictor = preds_train, quiet = TRUE)$auc
       } else {
@@ -1541,64 +1542,6 @@ noise.est <- function(X, ppm, where = c(14.6, 14.7)) {
       list(q2 = .r2(Y, preds_test, NULL), r2 = .r2(Y, as.vector(preds_train), NULL), aucs_te = NA, aucs_tr = NA)
     }
   }
-
-  # if (cv_method == "MC") {
-  #   if (grepl("DA", type)) {
-  #     if (grepl("mY", type)) {
-  #       pred_mean <- preds_test[1, , ]
-  #       colnames(pred_mean) <- colnames(Y)
-  #       mod <- multiclass.roc(response = factor(Y), predictor = pred_mean)
-  #       aucs_te[nc] <- mod$auc
-  #       pred_tr_mean <- preds_train[1, , ]
-  #       colnames(pred_tr_mean) <- colnames(Y)
-  #       mod <- multiclass.roc(response = factor(Y), predictor = pred_tr_mean)
-  #       aucs_tr[nc] <- mod$auc
-  #     } else {
-  #       mod <- roc(response = Y, predictor = preds_test[1, ], quiet = TRUE)
-  #       aucs_te[nc] <- mod$auc
-  #       mod <- roc(response = Y, predictor = preds_train[1, ], quiet = TRUE)
-  #       aucs_tr[nc] <- mod$auc
-  #     }
-  #   } else {
-  #     if (grepl("mY", type)) {
-  #       r2_comp[nc] <- .r2(Y, preds_test[1, , ], NULL)
-  #       q2_comp[nc] <- .r2(Y, preds_test[1, , ], tssy)
-  #     } else {
-  #       r2_comp[nc] <- .r2(Y, preds_test[1, ], NULL)
-  #       q2_comp[nc] <- .r2(Y, preds_test[1, ], tssy)
-  #     }
-  #   }
-  # } else if (cv_method == "k-fold") {
-  #   if (grepl("DA", type)) {
-  #     if (grepl("mY", type)) {
-  #       colnames(preds_test) <- colnames(Y)
-  #       mod <- multiclass.roc(response = Y, predictor = apply(preds_test, 2, as.numeric))
-  #       aucs_te[nc] <- mod$auc
-  #       preds_te <- preds_train[1, , ]
-  #       colnames(preds_te) <- colnames(Y)
-  #       mod <- multiclass.roc(response = Y, predictor = preds_te, quiet = TRUE)
-  #       aucs_tr[nc] <- mod$auc
-  #     } else {
-  #       mod <- roc(response = as.vector(Y), predictor = as.vector(preds_test), quiet = TRUE)
-  #       aucs_te[nc] <- mod$auc
-  #       mod <- roc(response = as.vector(Y), predictor = preds_train[1, ], quiet = TRUE)
-  #       aucs_tr[nc] <- mod$auc
-  #     }
-  #   } else {
-  #     if (grepl("mY", type)) {
-  #       r2_comp[nc] <- .r2(Y, preds_test[1, , ], NULL)
-  #       q2_comp[nc] <- .r2(Y, preds_test[4, , ], tssy)
-  #     } else {
-  #       r2_comp[nc] <- .r2(Y, t(t(preds_train[1,])), NULL)
-  #       q2_comp[nc] <- .r2(Y, as.array(preds_test), tssy)
-  #
-  #       # r2_comp[nc] <- .r2(Y, preds_test[1, ], NULL)
-  #       # q2_comp[nc] <- .r2(Y, preds_test[4, ], tssy)
-  #     }
-  #   }
-  # }
-
-  # return(list(r2_comp = r2_comp, q2_comp = q2_comp, aucs_tr = auc_tr, aucs_te = auc_te))
 }
 
 

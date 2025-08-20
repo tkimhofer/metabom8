@@ -99,7 +99,7 @@
 #' @return A list with filtered and sorted `f_list` and `pars`.
 #' @keywords internal
 #' @seealso \code{\link{.extract_acq_pars1d}}, \code{\link{.check1d_files_fid}}
-#' @importFrom plyr ddply .
+#' @importFrom stats aggregate
 .filterExp_files <- function(pars, exp_type, f_list, n_max) {
   idx <- match(toupper(names(exp_type)), toupper(gsub("[ap]_", "", colnames(pars))))
   if (length(idx) == 0) {
@@ -143,8 +143,11 @@
   }
 
   pars <- pars[idx_filt, ]
-  fnam <- strsplit(ifelse(!(any(is.na(f_list$f_1r)) || is.null(f_list$f_1r)), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
-  # fnam <- strsplit(ifelse(!(is.na(f_list$f_1r)), f_list$f_1r, f_list$f_fid), .Platform$file.sep)
+  
+  fnam <- strsplit(
+    if (is.null(f_list$f_1r)) f_list$f_fid else ifelse(!is.na(f_list$f_1r) & f_list$f_1r != 0, f_list$f_1r, f_list$f_fid),
+    .Platform$file.sep
+  )
 
   fmat_comb <- do.call(rbind, fnam)
   uniq_cols <- vapply(seq_len(ncol(fmat_comb)), function(i) length(unique(fmat_comb[, i])) == nrow(fmat_comb), logical(1))
@@ -156,8 +159,12 @@
     }, FUN.VALUE = c("", "")))
 
     colnames(rack_) <- c("a", "b")
-    rack_order_ <- ddply(as.data.frame(rack_), .(a), function(x) mean(as.POSIXct(x$b)))
-    rord_fac <- order(rack_order_$V1) * 1e5
+    
+    df <- as.data.frame(rack_)
+    
+    rack_order_ <- aggregate(as.POSIXct(b) ~ a, data = df, FUN = mean)
+    colnames(rack_order_) <- c("a", "mean_b")
+    rord_fac <- order(as.numeric(rack_order_$mean_b)) * 1e5
 
     fnam1 <- vapply(fnam, function(x) x[idx_keep[length(idx_keep) - 1]], FUN.VALUE = "")
     rord_fac <- rord_fac[match(fnam1, rack_order_$a)]

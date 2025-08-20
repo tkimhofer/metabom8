@@ -14,7 +14,7 @@ Description: Tools for 1D NMR metabolomics workflows, including import and
               libraries to improve runtime.
 License: MIT + file LICENSE
 Encoding: UTF-8
-Depends: R (>= 4.1)
+Depends: R (>= 4.5.0)
 Imports: 
     abind, 
     colorRamps,
@@ -28,7 +28,6 @@ Imports:
     parallel,
     pcaMethods,
     plotly,
-    plyr,
     pROC, 
     ptw,
     RColorBrewer,
@@ -54,6 +53,7 @@ Suggests:
     DT,
     htmlTable,
     knitr,
+    nmrdata,
     rmarkdown,
     testthat
 VignetteBuilder: knitr

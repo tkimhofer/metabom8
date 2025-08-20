@@ -31,6 +31,8 @@
 #' peaks <- ppick(X, ppm)
 #' spec(X[1, ], ppm, shift = c(4.2, 5.3))
 #' points(peaks[[1]]$ppm, peaks[[1]]$Int, col = factor(peaks[[1]]$Etype))
+#' 
+#' @importFrom utils head tail
 #' @export
 ppick <- function(X, ppm, fil_p = 3, fil_n = 5, type = "max") {
   X <- .dimX(X)

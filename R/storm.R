@@ -33,7 +33,7 @@
 storm <- function(X, ppm, b=30, q=0.05, idx.refSpec, shift){
 
   # center X, define reference index and reference spectrum
-  X_sc <- .scaleMatRcpp(X, seq.int(0, nrow(X) - 1), center=TRUE, scale=0)
+  X_sc <- .scaleMatRcpp(X, seq.int(0, nrow(X) - 1), center=TRUE, scale_type=0)
   X <- X_sc[[1]]
   ref.idx <- get_idx(range=shift, ppm)
   ref <- X[idx.refSpec, ref.idx]

@@ -33,10 +33,6 @@
   }
 
   test <- apply(X[, idx, drop = FALSE], 1, function(x, pp = ppm[idx]) {
-    result <- try(expr, silent = TRUE)
-    if (inherits(result, "try-error")) {
-      smoothed <- x - asysm(x, lambda = 100, maxit=1000)
-    }
     smoothed <- sgolayfilt(x - asysm(x, lambda = 100, maxit=1000), p = 3, n = sg_length)
 
     picks <- ppick(smoothed, pp, type = "max")

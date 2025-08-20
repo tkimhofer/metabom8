@@ -455,6 +455,7 @@ plotload <- function(mod, shift = c(0, 10), pc = 1,
 #'   scale_y_continuous xlab theme_bw theme element_blank element_text
 #'   scale_colour_gradientn labs
 #' @importFrom colorRamps matlab.like2
+#' @importFrom rlang .data
 #'
 #' @examples
 #' data(covid)
@@ -491,8 +492,8 @@ dmodx <- function(mod, plot = TRUE) {
   if (plot) {
     df$Group <- mod@Y$ori
 
-    g <- ggplot(df, aes(x = ID, y = DmodX, colour = Group)) +
-      geom_segment(aes(xend = ID, yend = min(dmodX) - 0.1), colour = "grey60", linewidth = 0.1) +
+    g <- ggplot(df, aes(x = .data$ID, y = .data$DmodX, colour = .data$Group)) +
+      geom_segment(aes(xend = .data$ID, yend = min(dmodX) - 0.1), colour = "grey60", linewidth = 0.1) +
       geom_point() +
       geom_hline(yintercept = ci95, linetype = 2, colour = "black") +
       scale_y_continuous(

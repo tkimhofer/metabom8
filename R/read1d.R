@@ -76,7 +76,10 @@ read1d <- function(path,
   assign("ppm", ppm_ref, envir = .GlobalEnv)
   assign("meta", pars, envir = .GlobalEnv)
 
-  if (verbose) message("Imported ", nrow(out), " spectra.")
+  if (verbose) {
+    if (nrow(out)==1) message("Imported ", nrow(out), " spectrum.") else{
+    message("Imported ", nrow(out), " spectra.")
+  }}
 
   invisible(list(X = out, ppm = ppm_ref, meta = pars))
 }
@@ -95,7 +98,8 @@ read1d_proc <- read1d
 #' @param f_list List of file paths. Output from `.detect1d_procs()`.
 #'
 #' @return A data frame of extracted acquisition and processing metadata. Row names correspond to spectrum filenames.
-#'
+#' 
+#' @importFrom stats setNames
 #' @keywords internal
 .extract_pars1d <- function(f_list) {
   out <- lapply(seq_along(f_list[[1]]), function(i) {
