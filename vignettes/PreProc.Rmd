@@ -13,10 +13,20 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-if (!requireNamespace("nmrdata", quietly = TRUE)) {
+if (!requireNamespace("nmrdata", quietly = TRUE) || 
+    !requireNamespace("ExperimentHub", quietly = TRUE)) {
   message("The vignette requires the 'nmrdata' package, which is not installed.")
   knitr::knit_exit()
 }
+
+eh <- ExperimentHub::ExperimentHub()
+ehid <- "EHxxxx" # placeholder until assigned
+
+if (ehid == "EHxxxx" || !ehid %in% names(eh)) {
+  message("ExperimentHub record not yet available for this vignette.")
+  knitr::knit_exit()
+}
+
 library(nmrdata)
 
 knitr::opts_chunk$set(
@@ -61,11 +71,14 @@ The **`read1d_proc()`** function imports Bruker NMR spectra into the R workspace
 In this tutorial all standard 1D experiments are imported. The selection parameter is based on the pulse sequence name: `PULPROG='noesypr1d'`:
 
 ```{r read-in, fig.show='hold'}
+
 # define path to NMR experiments
-path <- system.file("extdata/", package = "nmrdata"); print(path)
+# TODO: Replace EHxxxx once assigned, rm eval=F in code chunk pars
+raw_dir <- ExperimentHub()[[ehid]]  
+list.files(raw_dir)
 
 # import 1D NMR data
-read1d_proc(path, exp_type=list(PULPROG='noesypr1d'), n_max=100)
+read1d_proc(raw_dir, exp_type=list(PULPROG='noesypr1d'), n_max=100)
 ```
 By default, the variables X, ppm, and meta are exported into the global R workspace and can be accessed directly after running read1d_proc().
 

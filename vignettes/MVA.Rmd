@@ -17,6 +17,15 @@ if (!requireNamespace("nmrdata", quietly = TRUE)) {
   message("The vignette requires the 'nmrdata' package, which is not installed.")
   knitr::knit_exit()
 }
+
+eh <- ExperimentHub::ExperimentHub()
+ehid <- "EHxxxx" # placeholder until assigned
+
+if (ehid == "EHxxxx" || !ehid %in% names(eh)) {
+  message("ExperimentHub record not yet available for this vignette.")
+  knitr::knit_exit()
+}
+
 library(nmrdata)
 
 knitr::opts_chunk$set(
@@ -40,7 +49,7 @@ library(metabom8)
 
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Load data
-data(bariatric)
+bariatric <- BariatricData()
 
 # Declare variables
 Xn<-bariatric$X.pqn # PQN-normalised NMR data matrix

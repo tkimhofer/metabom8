@@ -51,6 +51,7 @@ Suggests:
     BiocStyle,
     dplyr,
     DT,
+    ExperimentHub,
     htmlTable,
     knitr,
     nmrdata,

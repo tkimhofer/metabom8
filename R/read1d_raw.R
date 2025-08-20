@@ -80,7 +80,7 @@ read1d_raw <- function(path,
   ppm_ref <- ppm_ref - ppm_ref[which.min(abs(ppm_ref - 0))]
 
   if (verbose >= 2) message("Defining apodisation function.")
-  apoFct <- .fidApodisationFct(n = (pars$a_TD[1] - (floor(pars$a_GRPDLY[1]) * 2)), apodisation)
+  apoFct <- .fidApodisationFct(n = (as.numeric(pars$a_TD[1]) - (floor(as.numeric(pars$a_GRPDLY[1])) * 2)), apodisation)
 
   if (verbose > 1) message("Reading FIDs and processing spectra.")
 
