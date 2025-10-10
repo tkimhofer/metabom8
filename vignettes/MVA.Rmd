@@ -13,20 +13,12 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-if (!requireNamespace("nmrdata", quietly = TRUE)) {
-  message("The vignette requires the 'nmrdata' package, which is not installed.")
+has_expHub <- requireNamespace("ExperimentHub", quietly = TRUE)
+if (!requireNamespace("ExperimentHub", quietly = TRUE)) {
+  message("This vignette requires the Bioconductor package 'ExperimentHub'. ",
+          "Please install it with: BiocManager::install('ExperimentHub').")
   knitr::knit_exit()
 }
-
-eh <- ExperimentHub::ExperimentHub()
-ehid <- "EHxxxx" # placeholder until assigned
-
-if (ehid == "EHxxxx" || !ehid %in% names(eh)) {
-  message("ExperimentHub record not yet available for this vignette.")
-  knitr::knit_exit()
-}
-
-library(nmrdata)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -43,25 +35,29 @@ This tutorial illustrates a multivariate statistical analysis workflow for NMR-b
 Proton (^1^H) NMR data are available in the *nmrdata* package (www.github.com/tkimhofer/nmrData) and constitute standard 1D experiments acquired from murine urine samples. Information on experimental setup and NMR data acquisition can be found in the original publication^[Li, Jia V., *et al.* (2011) Metabolic surgery profoundly influences gut microbial-host metabolic cross-talk. *Gut* 60.9, 1214-1223.].
 ```{r load-pack}
 library(metabom8)
+library(ExperimentHub)
+
+eh <- ExperimentHub::ExperimentHub()
+ehub_id <- "EH9905" # Load data
 ```
 
  Here, pre-processed data are imported.
 
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Load data
-bariatric <- BariatricData()
+bariatric <- eh[[ehub_id]]
 
 # Declare variables
-Xn<-bariatric$X.pqn # PQN-normalised NMR data matrix
+Xn <- bariatric$X.pqn # PQN-normalised NMR data matrix
 dim(Xn)
 
-ppm<-bariatric$ppm     # chemical shift vector in ppm
+ppm <- bariatric$ppm     # chemical shift vector in ppm
 length(ppm)
 
-meta<-bariatric$meta   # spectrometer metadata
+meta <- bariatric$meta   # spectrometer metadata
 dim(meta)
 
-an<-bariatric$an       # sample annotation
+an <- bariatric$an       # sample annotation
 dim(an)
 
 ```
@@ -87,7 +83,7 @@ In `metabom8`, Principal Component Analysis (PCA) can be performed using the  `p
 
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Perform PCA
-pca_model=pca(X=Xn, pc=2, scale='UV', center=TRUE)
+pca_model <- pca(X=Xn, pc=2, scale='UV', center=TRUE)
 ```
 
 The returned object, *pca_model*, is a structured S3 object containing model information such as:
@@ -114,7 +110,7 @@ Aesthetic mapping (colour, shape, labels) is flexible via the `an` list:
 
 ```{r, fig.show='hold', fig.width = 6, fig.height = 5}
 # define scores that should be labelled
-idx<-which(pca_model@t[,1]>200 | pca_model@t[,2]>200 & an$Class=='RYGB') # PC 2 scores above 20 and in group RYGB
+idx <- which(pca_model@t[,1]>200 | pca_model@t[,2]>200 & an$Class=='RYGB') # PC 2 scores above 20 and in group RYGB
 
 # construct label vector with mouse IDs
 outliers <- rep("", nrow(an)); outliers[idx] <- an$ID[idx]
@@ -167,16 +163,16 @@ This separation improves model interpretability and helps isolate biologically m
 ### Model Training
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Exclude pre-op group
-idx<-an$Class!='Pre-op'
-X<-Xn[idx,]
-Y<-an$Class[idx]
+idx <- an$Class!='Pre-op'
+X <- Xn[idx,]
+Y <- an$Class[idx]
 
 # Train O-PLS model
-opls.model<-opls(X,Y)
+opls.model <- opls(X,Y)
 ```
 The model summary plot displays configurations tested (e.g., 1+1 predictive+orthogonal components). The selected model minimizes overfitting using internal cross-validation.
 
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE}
 summary(opls.model)
 ```
 - $R^2X$: proportion of variance explained in the predictor matrix (X)
@@ -243,9 +239,9 @@ Metabolites often give rise to multiple resonances in NMR spectra. STOCSY is a c
 
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 5}
 # define driver peak (the ppm variable where all other spectral variables will be correlated to)
-driver1<-7.834
+driver1 <- 7.834
 # perform stocsy
-stocsy_model<-stocsy(Xn, ppm, driver1) 
+stocsy_model <- stocsy(Xn, ppm, driver1) 
 # zoom-in different plot regions
 plotStocsy(stocsy_model, shift=c(7,8))
 plotStocsy(stocsy_model, shift=c(3.9, 4))
@@ -261,12 +257,12 @@ These co-varying signals suggest they originate from the same compound.
 ## Subset-Optimisation by Reference Matching (STORM)
 ```{r, fig.show='hold', fig.width = 7.2, fig.height = 5}
 # define driver peak (the ppm variable where all other spectral variables will be correlated to)
-poi<-7.874
-sig = 0.02
+poi <- 7.874
+sig <- 0.02
 subset_idc <- storm(Xn, ppm, idx.refSpec = 2, shift=c(poi-sig, poi+sig), b=10)
 
-storm_sets = rep('not_matched', nrow(Xn))
-storm_sets[subset_idc] = 'matched'
+storm_sets <- rep('not_matched', nrow(Xn))
+storm_sets[subset_idc] <- 'matched'
 table(storm_sets)
 
 specOverlay(Xn, ppm, shift = c(poi-sig, poi+sig), an=list(type=storm_sets))

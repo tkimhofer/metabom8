@@ -13,23 +13,15 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-if (!requireNamespace("nmrdata", quietly = TRUE) || 
-    !requireNamespace("ExperimentHub", quietly = TRUE)) {
-  message("The vignette requires the 'nmrdata' package, which is not installed.")
+has_nmrdata <- requireNamespace("nmrdata", quietly = TRUE)
+if (!requireNamespace("nmrdata", quietly = TRUE)) {
+  message("This vignette requires the Bioconductor package 'nmrdata'. ",
+          "Please install it with: BiocManager::install('nmrdata').")
   knitr::knit_exit()
 }
-
-eh <- ExperimentHub::ExperimentHub()
-ehid <- "EHxxxx" # placeholder until assigned
-
-if (ehid == "EHxxxx" || !ehid %in% names(eh)) {
-  message("ExperimentHub record not yet available for this vignette.")
-  knitr::knit_exit()
-}
-
-library(nmrdata)
 
 knitr::opts_chunk$set(
+  error = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -45,11 +37,10 @@ This tutorial runs through a typical data import and pre-processing workflow for
 ```{r load-pack, fig.show='hold', message=FALSE}
 # load packages
 library(metabom8)
-
+library(nmrdata)
 library(DT)
 library(htmlTable)
 library(dplyr)
-
 ```
 
 &nbsp;
@@ -72,13 +63,14 @@ In this tutorial all standard 1D experiments are imported. The selection paramet
 
 ```{r read-in, fig.show='hold'}
 
-# define path to NMR experiments
-# TODO: Replace EHxxxx once assigned, rm eval=F in code chunk pars
-raw_dir <- ExperimentHub()[[ehid]]  
-list.files(raw_dir)
+# obtain data, get path to NMR experiments
+exp_dir <- nmrdata::getRawExpDir(quiet = TRUE)
+
+# show experiment folder content
+list.files(exp_dir, recursive = TRUE)[1:10]
 
 # import 1D NMR data
-read1d_proc(raw_dir, exp_type=list(PULPROG='noesypr1d'), n_max=100)
+read1d_proc(exp_dir, exp_type=list(PULPROG='noesypr1d'), n_max=100)
 ```
 By default, the variables X, ppm, and meta are exported into the global R workspace and can be accessed directly after running read1d_proc().
 
@@ -148,7 +140,7 @@ Chemical shift calibration refers to a horizontal shift of an entire spectrum to
 We can reference the urine spectra using the **`calibrate()`** function, as shown with the following code:
 ```{r calibration, fig.show='hold', fig.width = 7.2, fig.height = 6}
 # perform TSP calibration
-X_cal<-calibrate(X, ppm, type='tsp')
+X_cal <- calibrate(X, ppm, type='tsp')
 
 # plot TSP after calibration
 matspec(X_cal, ppm, shift=c(-0.1,0.1), interactive=FALSE)
@@ -165,16 +157,16 @@ For statistical analysis all calibration experiments are to be excluded and only
 
 ```{r filter, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Exclude calibration experiments
-idx<-grep('noe1d', meta$a_EXP) 
-X_cal<-X_cal[idx,]
-meta<-meta[idx,]
+idx <- grep('noe1d', meta$a_EXP) 
+X_cal <- X_cal[idx,]
+meta <- meta[idx,]
 
 # plot TSP signal
 specOverlay(X_cal, ppm, shift=c(-0.05,0.05), 
     an=list( 'Facet'=meta$a_EXP, # facet
              'Receiver Gain'=meta$a_RG, # colour
              'Pulse Program'=meta$a_PULPROG) # linetype
-    ) # linetype
+    )
 ```
 
 
@@ -192,9 +184,6 @@ Visual assessment of spectral quality:
 matspec(X_cal, ppm, shift=c(4.5,5), interactive=FALSE, main='Residual Water')
 matspec(X_cal, ppm, shift=c(9,11), interactive=FALSE, main='LowField Cap')
 matspec(X_cal, ppm, shift=c(-1,1), interactive=FALSE, main='UpField Cap')
-
-
-  
 ```
 
 &nbsp;
@@ -208,17 +197,17 @@ The function **`get_idx()`** can be used to obtain indices of the desired shift 
 
 ```{r excision, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Indexing TSP region and upfield noise...
-idx_tsp<-get_idx(range=c(min(ppm), 0.5), ppm)
+idx_tsp <- get_idx(range=c(min(ppm), 0.5), ppm)
 # ... water region...
-idx_water<-get_idx(range=c(4.6, 5), ppm)
+idx_water <- get_idx(range=c(4.6, 5), ppm)
 # ... as well as downfield noise regions
-idx_noise<-get_idx(range=c(9.5, max(ppm)), ppm)
+idx_noise <- get_idx(range=c(9.5, max(ppm)), ppm)
 
-idx_rm<-c(idx_tsp, idx_water, idx_noise)
+idx_rm <- c(idx_tsp, idx_water, idx_noise)
 
 # Excision of TSP, residual water signal and noise regions
-X_cut<-X_cal[,-idx_rm]
-ppm<-ppm[-idx_rm]
+X_cut <- X_cal[,-idx_rm]
+ppm <- ppm[-idx_rm]
 ```
 
 &nbsp;
@@ -230,10 +219,10 @@ Macromolecules such as proteins produce broad resonances in an NMR spectrum, the
 
 ```{r baseline, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Baseline correction
-X_bl<-bline(X_cut)
+X_bl <- bline(X_cut)
 
 # visual assessment
-Xcompare<-rbind(X_bl[1,], X_cut[1,])
+Xcompare <- rbind(X_bl[1,], X_cut[1,])
 matspec(Xcompare, ppm, shift = c(7, 9), interactive=FALSE)
 matspec(Xcompare, ppm, shift = c(3,4), interactive=FALSE)
 ```
@@ -252,7 +241,7 @@ The function **`pqn()`** requires at least one input, which is the NMR matrix to
 
 ```{r normalisation, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # PQN normalisation
-X_pqn<-pqn(X_bl, add_DilF = 'dilf')
+X_pqn <- pqn(X_bl, add_DilF = 'dilf')
 
 # Visualising the pqn dilution coefficient / scaling factor for each spectrum
 hist(dilf, xlab='PQN calculated dilution factor')

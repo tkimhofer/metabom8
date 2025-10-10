@@ -1,0 +1,6 @@
+Content of folder `inst/extdata/Rack_1` represent raw data from two 1D NMR experiments.
+The folders were copied from a Bruker NMR spectrometer and reduced to a
+minimal set of files required for I/O operations.
+
+For information on sample collection & processing please refer to
+publication doi:10.1021/acs.jproteome.1c00273

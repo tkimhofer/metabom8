@@ -38,38 +38,29 @@ arma::vec phaseTsp(arma::vec& sp_re, arma::vec& sp_im, arma::vec& ppm, arma::vec
   int tsp_max;
   int start;
   int end;
-  //int test;
 
   for(int i=0; i<ph0.n_elem; ++i)
   {
-
-   // Rcpp::Rcout << i << std::endl;
-   // Rcpp::Rcout << ph0(i) << std::endl;
     s_ph=phase1d(sp_re, sp_im, ph0(i), ph1);
     tsp_max=arma::index_max(abs(s_ph.elem(idx_tsp)));
 
-    //test=idx_tsp.n_elem;
     inter = (idx_tsp.n_elem - tsp_max);
-    bound << tsp_max << inter << arma::endr;
-   // Rcpp::Rcout << bound << std::endl;
-    bmin=bound.min()-2;
-   // bmin=bound.max()-1;
-   // Rcpp::Rcout << bmin << std::endl;
+    //bound << tsp_max << inter << arma::endr;
+    bound.set_size(2);
+    bound(0) = static_cast<double>(tsp_max);
+    bound(1) = static_cast<double>(inter);
 
+    bmin=bound.min()-2;
 
     start=tsp_max-bmin;
     end=tsp_max+bmin;
 
     iid=arma::linspace<arma::vec>(start, end, end-start+1);
     iiu=arma::conv_to<arma::uvec>::from(iid);
-    //Rcpp::Rcout << iiu << std::endl;
 
     iis=idx_tsp.elem(iiu);
-   // Rcpp::Rcout << iis(0) << std::endl;
-   // Rcpp::Rcout << iis.n_elem << std::endl;
 
     out[i] = arma::sum(abs(s_ph.elem(iis) - reverse(s_ph.elem(iis))));
-   // Rcpp::Rcout << out << std::endl;
   }
 
   float ang_best = ph0(arma::index_min(out));

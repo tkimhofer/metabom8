@@ -1,7 +1,13 @@
 # perpare data for package
-usethis::use_data("covid_raw")
+library(metabom8)
 
-load("/Users/TKimhofer/Rproj/cov19/CoV_rawCPMG_calibrated.Rdata")
+load("CoV_rawCPMG.Rdata") # imports R objects: Xc, ppm, meta, an
+### loading selected spectra from 1D CPMG experiments of human plasma samples
+### data represent a selection of NMR spectra reported in this publication:
+### https://doi.org/10.1021/acs.jproteome.1c00273
+
+## following pre-processing was applied
+
 matspec(Xc, ppm, shift = c(5.15, 5.3))
 Xc[is.na(Xc)] <- 0
 
@@ -10,16 +16,13 @@ Xc <- calibrate(Xc, ppm, type = "tsp")
 matspec(Xc, ppm, shift = c(-0.1, 0.1))
 
 idx <- which(an$ind_timepoint == 1 | an$sample_lab == "Healthy")
-# an=an[idx,colnames(an) %in% c('type', 'hospital')]
 X <- Xc[idx, ]
 meta <- meta[idx, ]
 
-# rownames(an)=1:nrow(an)
 rownames(X) <- 1:nrow(X)
 rownames(meta) <- rownames(X)
 
-# generate raw spectra, these need only be two, stats will be performed with
-# processed data
+# keep only 3 raw spectra (vignette uses nmrdata lib)
 idx <- get.idx(c(-0.1, 10), ppm)
 ppm <- ppm[idx]
 X <- X[1:2, idx]
