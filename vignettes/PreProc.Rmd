@@ -27,54 +27,145 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Introduction & data download
+This vignette demonstrates the **metabom8** data import and pre-processing workflow 
+for NMR-based metabolomics. Example data sets used in this vignette are 
+available in the **nmrdata** package (Bioconductor).
 
-# Data import, quality control and spectral pre-processing
 
-&nbsp;
+<!-- Data Set Description: Spectra used were acquired from standard 1D Proton (^1^H) NMR experiments of  -->
+<!-- murine urine samples in a a two-arm, sham-controlled RYGB model with longitudinal  -->
+<!-- sampling at baseline and weeks tow and eight post-surgery. Data acquisition was  -->
+<!-- performed on a 600 MHz Bruker Avance III spectrometer, equipped with a 5 mm  -->
+<!-- triple resonance (TXI) probe operating at 300 K. Further information on study  -->
+<!-- design, experimental setup and data collection can be found in  -->
+<!-- Jia Li *et al.*^[Li, Jia V., *et al.* (2011) Metabolic surgery profoundly  -->
+<!-- influences gut microbial-host metabolic cross-talk. *Gut* 60.9, 1214-1223.] -->
 
-This tutorial runs through a typical data import and pre-processing workflow for Magnetic Resonance spectroscopy (MRS) - based metabolic profiling with the *metabom8* R package. Tutorial data are available in the *nmrData* R package. Both of these packages are available on the author's GitHub page and can be installed using the commands below.
 
-```{r load-pack, fig.show='hold', message=FALSE}
-# load packages
+```{r get-data, fig.show='hold'}
 library(metabom8)
 library(nmrdata)
-library(DT)
-library(htmlTable)
-library(dplyr)
+
+# download and unpack raw NMR experiment data
+exp_dir <- nmrdata::getRawExpDir(quiet = TRUE)
+
+# head experiment folders
+list.files(exp_dir, recursive = TRUE)[1:10]
 ```
 
-&nbsp;
+
+# Importing NMR data
+In routine workflows the raw time-domain Free-Induction Decay (FID) is processed 
+with the spectrometer software (e.g., in TopSpin), and further downstream 
+processing is based on the frequency-domain spectra. Consequently, the vignette 
+section [Startpoint: TopSpin-processed spectra](#import-spectra) will be most relevant for the 
+typical users.
+
+For completeness - and for teaching purposes - the next section (
+[Startpoint: FID](#import-fid)) briefly demonstrates how to process raw
+FIDs to obtain spectra.
+
+## Startpoint: FID {#import-fid}
+
+Spectra are created by processing the  Free-Induction Decay (FID) as raw NMR signal, 
+with processing pipeline including:
+
+1. Digital-filter (group-delay) correction
+2. Apodisation (aka. windowing)
+3. Zero-filling (optional)
+4. FFT to the frequency domain.
+5. Phase correction.
+6. Ppm reference calibration (e.g., to TSP).
+
+You can visualise different apodisation functions with respective parameters:
+
+```{r apod, fig.show='hold'}
+# apod_sin =  metabom8:::.fidApodisationFct(100, list(fun="sine", plot=TRUE))
+# apod_cos =  metabom8:::.fidApodisationFct(100, list(fun="cosine", plot=TRUE))
+# apod_exp =  metabom8:::.fidApodisationFct(100, list(fun="exponential", lb=-0.2, plot=TRUE))
+# apod_sem = metabom8:::.fidApodisationFct(100, list(fun="sem", lb=0.2, plot=TRUE)) 
+```
+
+Although a detailed description of each signal-processing operation is beyond 
+the scope of this vignette, typical parameter settings used for small-molecule 
+1D NMR analysis are provided below.
+
+  - exponential apodisation with a small positive line-broadening parameter (e.g., lb=+0.2Hz) 
+    damps the FID tail, improving S/N at the cost of slight line broadening.
+  - zero-filling to double the number of data points 
+    finer digital resolution -> peaks fall closer to their true maxima
+  - implemented is an automatic two-parameter phasing (0th + 1st order), pivoted at TSP
+  - returning absorption rather than magnitude/dispersion mode
+    gives cleaner line shapes and lower baseline (best for quantitation & fitting) 
+  - Spectra are referenced by moving the TSP singlet maximum to 0.00 ppm
+
+```{r read-in-raw, fig.show='hold'}
+# import 1D NMR data
+read1d_raw(exp_dir,
+           exp_type=list(PULPROG="noesypr1d"),
+           apodisation = list(fun = "exponential", lb = 0.2),
+           zerofil = 1L,
+           mode = "absorption",
+           n_max=5)
+
+dim(X) # spectra matrix
+length(ppm) # chemical shift vector
+dim(meta) # acquisition parameters (data.frame)
+```
+
+The `read1d_raw()` function returns a named list containing three objects:
+
+- **X** — Matrix of NMR data (rows = spectra, columns = spectral variables, ppm)
+- **ppm** — Array of chemical-shift values (ppm)
+- **meta** — Data frame of the spectrometer setup
+
+By default (`to_global = TRUE`), these objects are also assigned to the global 
+environment (`.GlobalEnv`) for direct use in interactive sessions. For scripted
+or automated workflows, this behavior can be disabled by setting `to_global = FALSE`,
+in which case the function simply returns the list.
 
 
-## Data
 
-Proton (^1^H) NMR data are available in the *nmrdata* package (available throug Bioconductor) and constitute standard 1D experiments acquired from murine urine samples. Samples were collected longitudinally with a single collection point before and multiple collection points after bariatric surgery was performed. Data acquisition was performed on a 600 MHz Bruker Avance III spectrometer, equipped with a 5 mm triple resonance (TXI) probe operating at 300 K. Further information on study design, experimental setup and data collection can be found in Jia Li *et al.*^[Li, Jia V., *et al.* (2011) Metabolic surgery profoundly influences gut microbial-host metabolic cross-talk. *Gut* 60.9, 1214-1223.]
+## Startpoint: TopSpin-processed spectra {#import-spectra}
 
-&nbsp;
+The **`read1d_proc()`** function imports 1D NMR spectra from the `pdata` subdirectory
+of each Bruker experiment directory (typically `pdata/1`). This location contains 
+the phased (absorption-mode) spectrum (e.g., `1r`) and the associated processing 
+parameter files (e.g., `procs`) written by TopSpin.
 
+The function requires at minimum two input arguments:
 
-
-## Import of NMR spectra and metadata
-The **`read1d_proc()`** function imports Bruker NMR spectra into the R workspace. The function requires at minimum two input arguments:
 * `path`: path to the directory that encloses NMR experiments 
 * `exp_type`: list of spectrometer parameters to select desired experiment types.
 
-In this tutorial all standard 1D experiments are imported. The selection parameter is based on the pulse sequence name: `PULPROG='noesypr1d'`:
+The latter argument allows filtering of spectra based on acquisition and 
+processing parameters.
+
+This vignette imports TopSpin-processed standard 1D spectra and filters
+experiments by pulse program, keeping only those where `PULPROG` == `"noesypr1d"`.
+
 
 ```{r read-in, fig.show='hold'}
-
-# obtain data, get path to NMR experiments
-exp_dir <- nmrdata::getRawExpDir(quiet = TRUE)
-
-# show experiment folder content
-list.files(exp_dir, recursive = TRUE)[1:10]
-
 # import 1D NMR data
-read1d_proc(exp_dir, exp_type=list(PULPROG='noesypr1d'), n_max=100)
+read1d_proc(exp_dir, exp_type=list(PULPROG="noesypr1d"), n_max=100)
 ```
-By default, the variables X, ppm, and meta are exported into the global R workspace and can be accessed directly after running read1d_proc().
 
-```{r echo=FALSE, out.width='30%', include = TRUE}
+Note: Some labs use variants like `noesygppr1d` (gradient-assisted presaturation). 
+Adjust the filter to match your pulse program(s).
+
+The `read1d_proc()` function returns a named list containing three objects:
+
+- **X** — Matrix of NMR data (rows = spectra, columns = spectral variables, ppm)
+- **ppm** — Array of chemical-shift values (ppm)
+- **meta** — Data frame of acquisition and TopSpin processing parameters
+
+By default (`to_global = TRUE`), these objects are also assigned to the global 
+environment (`.GlobalEnv`) for direct use in interactive sessions. For scripted
+or automated workflows, this behavior can be disabled by setting `to_global = FALSE`,
+in which case the function simply returns the list.
+
+<!--```{r echo=FALSE, out.width='30%', include = TRUE}
 # create table
 df<-data.frame('Variable'=c('X', 'ppm', 'meta'), 
              'Description'=c('Matrix of NMR data (rows = spectra, columns = spectral variables (ppm))', 
@@ -83,40 +174,120 @@ df<-data.frame('Variable'=c('X', 'ppm', 'meta'),
 
 datatable(df, rownames = FALSE, options = list(dom = 't'), colnames = c('Variable Name' = 1))
 
-```
+```-->
+
+The row names of *X* store the folder paths of individual experiments, which can 
+further be used to join sample annotation data (e.g., a table that maps 
+experiment number with group-membership, etc.). 
+
+The *`meta`* data frame is row-aligned with *`X`* (one row per spectrum, in the 
+same order) and contains spectrometer acquisition metadata and TopSpin 
+processing parameters, including the acquisition date. See `?read1d_proc()` 
+for details. 
+
+## Data acquisition and processing metadata
+
+The Bruker experiment folders also contain metadata files documenting the 
+acquisition and processing settings used to generate each spectrum. These 
+parameters are automatically imported and stored for reference.
+
+Bruker NMR spectrometers store detailed acquisition and processing parameters 
+within the experiment directory structure. These metadata include essential 
+information such as spectrometer frequency, pulse program, receiver gain,
+acquisition size, spectral width, and processing details such as zero-filling, 
+apodisation, and phase corrections. 
+
+In **metabom8**, the import functions `read1d_raw()` and `read1d_proc()`return 
+metadata in the `meta` component of the output. 
+
+The function  `read1d_raw()` imports only acquisition parameters, as no 
+processing has been carried out in the spectrometer software. In contrast, 
+`read1d_proc()` reads both acquisition and processing parameters, reflecting the 
+information available after on-instrument processing. Parameter values are 
+extracted from the acquisition status (*acqus*) and processing status (*procs*) 
+files located in each experiment subfolder. Within `meta`, the parameter origin 
+is indicated by the prefixes `a_` (acquisition) and `p_` (processing).
 
 
-The rownames of *X* indicate the folder location of individual experiments, which can further be used to match sample annotation data (e.g., group-memberships). The dataframe *`meta`* is row-matched to the NMR data matrix (*`X`*) and contains information relating to spectrometer acquisition and TopSpin software processing parameters, including the acquisition date. See `?read1d()` for more information. 
+### Example acquisition parameters
+
+- `a_PROBHD`: Installed probehead (e.g., *5 mm TXI 1H-13C-15N Z-GRD 8323/0194*)
+- `a_SFO1`: Spectrometer frequency channel 1 in MHz (e.g., *600.29*)
+- `a_PULPROG`: Pulse program name (e.g., *noesypr1d*)
+- `a_RG`: Receiver gain value (e.g., *128*)
+- `a_SW_h`: Spectral width in Hz (e.g., *12019.23*)
+- `a_TE`: Temperature in Kelvin (e.g., *299.99*)
+
+### Example processing parameters
+
+- `p_AUNMP`: Bruker AU (Automation Unit) program name (e.g., *proc_no*)
+- `p_NC_proc`: Normalisation constant applied during processing (e.g., *-5*)
+- `p_WDW`: Apodisation function — 0: None, 1: EM, 2: GM, 3: SINE, 4: QSINE, ...
+- `p_LB`: Line broadening factor (e.g., *0.3*)
+- `p_SI`: Number of data points (size) after processing (e.g., *32768*)
+- `p_PHC*`: Phase correction angles (e.g., `p_PHC0 = 26.78`)
+- `p_BC*`: Baseline correction mode and filter width 
+  (e.g., `p_BC_mod = 1` [polynomial], `p_BCFW = 0` [none/raw])
 
 &nbsp;
 
-## Visualisation of NMR spectra
+# Visualising Spectra
 
-###  Basic plotting
-Plotting functions for visualising NMR spectra include **`spec()`** and **`matspec()`**.  **`spec()`** can be used to plot a single spectrum.  **`matspec()`** can be used to overlay multiple spectra. By default, both functions produce interactive line graphs based on *plotly*. However, due to formatting issues this tutorial will produce static graphics throughout (this is achieved by the function argument to `interactive=FALSE`). Please feel free to use interactive plot versions (just remove argument `interactive=FALSE`) as these often provide easier access to the data. 
+## Static base R graphics and interactive plotly plots
+Plotting functions for visualising NMR spectra include **`spec()`** to plot a 
+single spectrum and **`matspec()`** to overlay multiple spectra.
 
-Example script for plotting NMR spectra:
+By default, both functions return interactive line 
+plots via *plotly*. To disable interactivity and use base graphics set `interactive=FALSE`.
+Use the parameter `shift` to select the chemical shift region of interest. 
 
-```{r spec-overlay-single, fig.show='hold', fig.width = 7.2, fig.height = 4}
+To add a spectrum to an existing base graphic, use argument `add=TRUE`. Additional 
+graphical parameter arguments are passed on to R's `plot` function, e.g. 
+colour (`col`) or line type (`lty`).
 
-# use 'spec' to plot a single spectrum, e.g., in row position 10:
-spec(X[10,], ppm, shift = range(ppm), interactive=FALSE)
+```{r base-graphics-add, fig.show='hold', fig.width = 7.2, fig.height = 4}
+# visualise a single spectrum using base graphics
+spec(X[12,], ppm, interactive=FALSE, shift=c(1,3))
 
-# use 'matspec' to overlay spectra, in ppm range 0 to 10
-matspec(X, ppm, shift = c(1.2, 1.7), interactive=FALSE)
+# add another spectrum to the same graphic
+spec(X[10,], ppm, interactive=FALSE, add=TRUE, col='red', lty=2)
 ```
 
-From this overview we can see that the spectral width ranges from -5 to approximately 15 ppm with the residual water signal resonating around 4.8 ppm. All ^1^H NMR signals are situated within the ppm range of 0 and 10, therefore both ends can be capped and this will be illustrated further below.
+```{r interactive-plot-single, fig.show='hold', fig.width = 7.2, fig.height = 4}
+# interactive single spectrum
+spec(X[10,], ppm)
+```
 
-### ggplot2 
+```{r interactive-plot-matrix, fig.show='hold', fig.width = 7.2, fig.height = 4}
+# interactive spectral matrix
+matspec(X, ppm, shift = c(1.2, 1.7), interactive=TRUE)
+```
 
-There are different higher-level plotting functions available that allow more comprehensive plot formatting. These functions are based on the *ggplot2* package. One of these functions is **`specOverlay()`**, which is comparable to **`matspec()`** shown above, but enables to create different subplots (aka facetting) and to include colour scales and linetypes in a straightforward way. 
 
+## Higher-level visualisations with ggplot2 
 
-#### Function argument *an*
-Plot formatting using colour, text labels and sub-divisions can create insight into the data. In ggplot-based plotting functions of *metabom8*, these formatting options are passed a list element to the function argument *an*. The order in which the plotting parameters are provided matters and has the form: `an=list([facet], [colour], [linetype])`, whereas each list element is a vector with as many elements as there are spectra (=rows) in *X*.
+There are a few higher-level plotting functions available to allow more 
+comprehensive plot formatting. These functions are based on the *ggplot2* 
+package. One of these functions is **`specOverlay()`**, which is comparable 
+to **`matspec()`** shown above, but enables to create different subplots 
+(aka facetting)  and to include colour scales and linetypes in a straightforward 
+fashion. 
 
-For illustration purposes, the following code plot the TSP singlet (-0.05 to 0.05 ppm) and annotate spectra with information on spectrometer metadata (found in the *meta* dataframe). One panel is created for each experiment type, the line colour represents the instrument run order (this is based on the acquisition *a_Date*) and the linetype indicates the NMR pulse program (*a_PULPROG*):
+### Function argument *an*
+Plot formatting using colour, text labels and sub-divisions can create insight 
+into the data. In ggplot-based graphics of *metabom8*, these formatting 
+options relate to ordered variables describing facetting, line colour and line 
+type. These three variables are passed as a list to the function argument *an*. 
+The variable order matters, so `an=list([facet], [colour], [linetype])`, 
+where each list element is a vector with as many elements as there are 
+spectra (=n rows) in *X*.
+
+The following code is for plotting the TSP singlet (-0.05 to 0.05 ppm) 
+whith spectrometer metadata (found in the *meta* dataframe). 
+
+Each facet represents an experiment type, the line colour maps to the 
+instrument run order (this is based on the acquisition *a_Date*) and the linetype 
+indicates the NMR pulse program (*a_PULPROG*):
 
 ```{r spec-overlay-mlt, fig.show='hold', fig.width = 7, fig.height = 5}
 # create run-order based on acquistion date
@@ -130,14 +301,28 @@ specOverlay(X, ppm, shift=c(-0.05,0.05),
     )
 ```
 
-The plot above shows that two different experiment types were performed (i.e., two different panels), both based on the pulse program *\<noesypr1d\>*, which a Bruker term for a standard 90˚ pulse experiment with water pre-saturation. Experiment types labelled *\<\>* are calibration experiments and were performed before *\<JL-noe1D\>* were acquired (see Date information, i.e., run order).
+Experiment types labelled *\<\>* are calibration experiments and were performed 
+before *\<JL-noe1D\>* were acquired (see Date information in meta, i.e., run order).
 
 
-## Chemical shift calibration
+# Spectral Processing Pipeline
 
-Chemical shift calibration refers to a horizontal shift of an entire spectrum to place a signal of a standard compound at a defined chemical shift position. In urine metabolic profiling, the standard compound is TSP^[3-(trimethylsilyl)-2,2′,3,3′-tetradeuteropropionic acid] (usually added to the sample buffer), which gives rise to a singlet that is defined to resonate at 0 ppm.^[Dona, A.C., *et al.* (2014) Precision high-throughput proton NMR spectroscopy of human urine, serum, and plasma for large-scale metabolic phenotyping. *Analytical Chemistry*. 86.19. 9887-94.]
+## Chemical-shift referencing
 
-We can reference the urine spectra using the **`calibrate()`** function, as shown with the following code:
+Ppm calibration or chemical-shift referencing refers to a horizontal shift of an 
+entire spectrum in order  to fix the peak of a calibrant signal to a defined 
+chemical shift position. 
+
+A frequently used calibrant compound in urine metabolic profiling is 
+TSP^[3-(trimethylsilyl)-2,2′,3,3′-tetradeuteropropionic acid], 
+which is added to during sample processing. TSP gives rise to a 
+singlet that is defined to resonate at 0.00 ppm.^[Dona, A.C., *et al.* (2014) Precision high-throughput proton NMR spectroscopy of human urine, serum, and plasma for large-scale metabolic phenotyping. *Analytical Chemistry*. 86.19. 9887-94.] 
+
+Spectral referencing is often performed as part of the spectrometer processing. 
+However, it can also be done in `metabom8` via the **`calibrate()`** function, 
+using either pre-adjusted signals or providing a custom chemical shift range
+where the reference signal is expected. See **`?metabom8::calibrate()`** for details.
+
 ```{r calibration, fig.show='hold', fig.width = 7.2, fig.height = 6}
 # perform TSP calibration
 X_cal <- calibrate(X, ppm, type='tsp')
@@ -146,68 +331,32 @@ X_cal <- calibrate(X, ppm, type='tsp')
 matspec(X_cal, ppm, shift=c(-0.1,0.1), interactive=FALSE)
 ```
 
-After calibration of the urine spectra, the TSP peak apex is centered at zero ppm. 
-
-
-
-&nbsp;
-
-## Filtering based on spectrometer parameters
-For statistical analysis all calibration experiments are to be excluded and only standard 1D experiments are kept (*\<JL-noe1d\>*). Filtering can be performed using the following code:
-
-```{r filter, fig.show='hold', fig.width = 7.2, fig.height = 4}
-# Exclude calibration experiments
-idx <- grep('noe1d', meta$a_EXP) 
-X_cal <- X_cal[idx,]
-meta <- meta[idx,]
-
-# plot TSP signal
-specOverlay(X_cal, ppm, shift=c(-0.05,0.05), 
-    an=list( 'Facet'=meta$a_EXP, # facet
-             'Receiver Gain'=meta$a_RG, # colour
-             'Pulse Program'=meta$a_PULPROG) # linetype
-    )
-```
-
-
 &nbsp;
 
 
-## Assessment of spectral quality
+## Excision of chemical shift ranges
 
-In metabolic phenotyping and in any other field where NMR spectra are compared in a quantitative fashion, the quality of spectra is of particular importance. Spectral quality assessment includes visual inspection of the water suppression quality, peak symmetry, spectral linewidths, baseline level and stability as well as the average signal to noise (SN) ratio.
+Downstream analysis typically excludes chemical-shift regions that carry no 
+biological information or are not quantitatively reliable. In urinary NMR this 
+commonly includes the TSP reference peak (0.00 ppm), residual water (~4.7 ppm), 
+the urea resonance (~5.8–6.1 ppm), and noise-only regions.
 
-Visual assessment of spectral quality:
+Use **`get_idx()`** to obtain the indices for a given ppm range from the `ppm`
+vector. This function handles reversed bounds so users don’t have to worry about
+ppm direction.
 
-```{r spec-qc-I, fig.show='hold', fig.width = 7.2, fig.height = 4}
-# calculate quality control measures
-matspec(X_cal, ppm, shift=c(4.5,5), interactive=FALSE, main='Residual Water')
-matspec(X_cal, ppm, shift=c(9,11), interactive=FALSE, main='LowField Cap')
-matspec(X_cal, ppm, shift=c(-1,1), interactive=FALSE, main='UpField Cap')
-```
-
-&nbsp;
-
-
-## Excision of signals
-
-Further downstream analysis requires the excision of chemical shift regions bearing no biological or non-quantitative information. In urinary NMR analyses this includes the TSP signal, the residual water and urea signal as well as ppm regions where there is no signal but only noise.
-
-The function **`get_idx()`** can be used to obtain indices of the desired shift range from the ppm vector. These indices can then be further used to exclude the relevant columns in the NMR matrix and ppm vector. This is illustrated in the following code snippet.
+You can then use these indices to remove the corresponding columns from 
+the spectra matrix `X` and the matching entries from `ppm`.
 
 ```{r excision, fig.show='hold', fig.width = 7.2, fig.height = 4}
-# Indexing TSP region and upfield noise...
-idx_tsp <- get_idx(range=c(min(ppm), 0.5), ppm)
-# ... water region...
-idx_water <- get_idx(range=c(4.6, 5), ppm)
-# ... as well as downfield noise regions
-idx_noise <- get_idx(range=c(9.5, max(ppm)), ppm)
+idx  <- get_idx(range=c(4.5, 5.0), ppm)   # indices covering 4.5–5.0 ppm
+X_cal    <- X_cal[, -idx]
+ppm  <- ppm[-idx]
 
-idx_rm <- c(idx_tsp, idx_water, idx_noise)
-
-# Excision of TSP, residual water signal and noise regions
-X_cut <- X_cal[,-idx_rm]
-ppm <- ppm[-idx_rm]
+ranges <- list(c(min(ppm), 0.5), c(4.6, 4.9), c(5.7, 6.1), c(9, max(ppm))) # water, urea, min/TSP/max cap
+idx <- unique(unlist(lapply(ranges, function(r) get_idx(r, ppm))))
+X_cut   <- X_cal[, -idx]
+ppm <- ppm[-idx]
 ```
 
 &nbsp;
@@ -215,7 +364,13 @@ ppm <- ppm[-idx_rm]
 
 ## Baseline correction
 
-Macromolecules such as proteins produce broad resonances in an NMR spectrum, these are termed spectral baselines. Baseline differences across spectra can produce artifacts, and a spectra are typically baseline corrected to more accurate results. In *metabom8*, the  **`bline()`** implements a non-linear baseline correction using asymmetric least squares. See the example below on how to apply this function. 
+Macromolecules (e.g., proteins) add broad resonances that form the spectral 
+baseline. Baseline variation can introduce artefacts, so spectra are typically 
+baseline-corrected. In `metabom8`, `bline()` applies a non-linear asymmetric 
+least-squares (AsLS) baseline correction.
+
+Baseline curvature can be adjusted with the parameter `lambda`, with larger 
+values lead to broader baseline estimates (see also `?bline()`).
 
 ```{r baseline, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # Baseline correction
@@ -227,32 +382,68 @@ matspec(Xcompare, ppm, shift = c(7, 9), interactive=FALSE)
 matspec(Xcompare, ppm, shift = c(3,4), interactive=FALSE)
 ```
 
-The black line is the baseline corrected spectrum, the red and dotted line represents the uncorrected spectrum. 
+The black line is the baseline corrected spectrum, the red and dotted line 
+represents the uncorrected spectrum. 
+
 &nbsp;
 
 
-## Spectral normalisation
+## Normalisation
 
-Depending on the sample type, spectra may require normalisation prior to statistical analysis. For example, the signal strength in different urine samples can vary substantially, mainly related to the uptake of different amounts of water. Normalisation methods can account for these kind of dilution sensitivity.
+Depending on sample type, spectra may require normalisation before comparative 
+analysis. Urinary spectra vary widely with dilution (e.g., water intake); 
+normalisation methods mitigate these dilution effects.
 
-There are several normalisation methods available, which method is most suitable depends on the sample type and experimental setup. Among the most commonly applied ones are Total Area (TA) normalisation and Probabilistic Quotient Normalisation (PQN).^[Dieterly, F., \emph{et al.} (2006), Probabilistic Quotient Normalization as Robust Method to Account for Dilution of Complex Biological Mixtures. Application in 1H NMR Metabonomics, \emph{Analytical Chemistry}, 78.3, 4281-90] In this tutorial, spectra are normalised with the PQN method (**`pqn()`**). 
+There are several normalisation methods available, which method is most suitable 
+depends on the sample type and experimental setup. Among the most commonly 
+applied ones are Total Area (TA) normalisation and Probabilistic Quotient 
+Normalisation (PQN).^[Dieterly, F., \emph{et al.} (2006), 
+Probabilistic Quotient Normalization as Robust Method to Account for Dilution of
+Complex Biological Mixtures. Application in 1H NMR 
+Metabonomics, \emph{Analytical Chemistry}, 78.3, 4281-90] 
 
-The function **`pqn()`** requires at least one input, which is the NMR matrix to be normalised (**X_bl**), the output of this function will be the PQN normalised data matrix. In the code below, there is one additional input argument provided (*add_DilF = 'dilf'*), which indicates that the calculated dilution factors should be exported to the R workspace as an array named *dilf*. Checking the dilution factors can be very informative. For example, if pooled quality control samples were periodically included in the study run, then these should have very comparable dilution factors. 
+Here, spectra are normalised with PQN vai **`pqn()`**. The function takes the 
+NMR matrix to be normalised (**X_bl**), and returns the PQN-normalised matrix.
+
+In the example below we also pass `add_DilF = "dilf"` to assign the computed 
+dilution factors to `dilf` in the workspace - useful for QC checks 
+(e.g., pooled QC samples should show similar dilution factors).
+
+See `?pqn` for additional parameters such as selection of reference spectrum.
 
 ```{r normalisation, fig.show='hold', fig.width = 7.2, fig.height = 4}
 # PQN normalisation
 X_pqn <- pqn(X_bl, add_DilF = 'dilf')
 
-# Visualising the pqn dilution coefficient / scaling factor for each spectrum
-hist(dilf, xlab='PQN calculated dilution factor')
+# summary of dilution quotients used to normalise spectra (log for zero centering)
+print(quantile(dilf))
+plot(ecdf(log10(dilf)), main='ECDF')
 ```
 
+<!-- Visual inspection of the pre-processed NMR spectra:  -->
 
-The final step in this preprocessing tutorial is the visual inspection of the pre-processed NMR spectra: 
+<!-- ```{r visual-check, fig.show='hold', fig.width = 7.2, fig.height = 4} -->
+<!-- matspec(X_pqn, ppm, shift = range(ppm), interactive=FALSE) -->
+<!-- matspec(X_pqn, ppm, shift = c(1.2, 1.7), interactive=FALSE) -->
+<!-- ``` -->
 
-```{r visual-check, fig.show='hold', fig.width = 7.2, fig.height = 4}
-matspec(X_pqn, ppm, shift = range(ppm), interactive=FALSE)
-matspec(X_pqn, ppm, shift = c(1.2, 1.7), interactive=FALSE)
+&nbsp;
+
+# Diagnostic Visualisations for Quality Control
+
+In metabolic phenotyping - as in any context with quantitative comparisons - 
+spectral quality is critical. QC typically involves visual checks of water 
+suppression, peak symmetry, linewidth, baseline level/stability, and overall 
+signal-to-noise.
+
+Visual assessment of spectral quality:
+
+```{r spec-qc-I, fig.show='hold', fig.width = 7.2, fig.height = 4}
+# calculate quality control measures
+matspec(X_pqn, ppm, shift=c(0,3), interactive=FALSE, main='Aliphatic')
+matspec(X_pqn, ppm, shift=c(3,4), interactive=FALSE, main='Carbohydrate & choline')
+matspec(X_pqn, ppm, shift=c(4,6), interactive=FALSE, main='Residual water?')
+matspec(X_pqn, ppm, shift=c(6,11), interactive=FALSE, main='Aromatics & downfield')
 ```
 
 &nbsp;
@@ -260,9 +451,14 @@ matspec(X_pqn, ppm, shift = c(1.2, 1.7), interactive=FALSE)
 
 # Summary and further steps
 
-1D NMR spectra were imported, quality checked and pre-processed which included referencing to TSP, baseline correction, excision of spectral areas that bear no quantitative biological information. Urinary spectra were normalised with PQN to account for different sample dilutions. 
+1D NMR spectra were imported, quality-checked, and pre-processed: chemical-shift 
+referencing to TSP, baseline correction, and exclusion of 
+non-informative/non-quantitative regions. Urinary spectra were normalised with 
+PQN to account for sample dilution.
 
-The pre-processed spectra can now be statistically interrogated, e.g., using multivariate methods Principal Component Analysis (PCA) and Orthogonal-Partial Least Squares (O-PLS). You can find more information on this in the vignette **Multivariate Statistical Analysis**.
+The pre-processed spectra can now be analysed statistically—for example with 
+Principal Component Analysis (PCA) and Orthogonal Partial Least Squares (OPLS/O-PLS). 
+See the vignette **Multivariate Statistical Analysis** for details.
 
 
 ## Session Info

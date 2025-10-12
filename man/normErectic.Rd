@@ -46,7 +46,6 @@ Other NMR:
 \code{\link{lw}()},
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
-\code{\link{read1d}()},
 \code{\link{read1d_raw}()},
 \code{\link{stocsy1d_metabom8-class}},
 \code{\link{storm}()}

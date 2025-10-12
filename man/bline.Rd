@@ -12,7 +12,8 @@ bcor(X, lambda = 1e+07, iter_max = 30)
 \arguments{
 \item{X}{Numeric matrix or data frame. NMR data with spectra in rows.}
 
-\item{lambda}{Numeric. Smoothing parameter passed to \code{\link[ptw]{asysm}}. Larger values result in smoother baselines.}
+\item{lambda}{Numeric. Smoothing parameter passed to \code{\link[ptw]{asysm}}.
+Larger values result in smoother baselines (broader curvature)}
 
 \item{iter_max}{Integer. Maximum number of iterations for the baseline estimation algorithm.}
 }

@@ -9,7 +9,6 @@ arma::vec calcPhi(double ph0, double& ph1, int& le) {
   return ang;
 }
 
-
 //' @keywords internal
 // [[Rcpp::export(.phase1d)]]
 arma::vec phase1d(arma::vec& sp_re, arma::vec& sp_im, double ph0, double ph1){
@@ -66,33 +65,10 @@ arma::vec phaseTsp(arma::vec& sp_re, arma::vec& sp_im, arma::vec& ppm, arma::vec
   float ang_best = ph0(arma::index_min(out));
   arma::vec spec_phase=phase1d(sp_re, sp_im, ang_best, 0);
   return spec_phase;
-
-//  return out;
-
-// //  return bound;
-//   return Rcpp::List::create(Rcpp::Named("idx_tsp") = idx_tsp,
-//                             Rcpp::Named("idx_tsp1") = idx_tsp1,
-//                             Rcpp::Named("s_ph") = s_ph,
-//                             Rcpp::Named("tsp_max")       = tsp_max,
-//                             Rcpp::Named("test")  = test,
-//                             Rcpp::Named("inter")  = inter,
-//                             Rcpp::Named("bound")=bound,
-//                             Rcpp::Named("bmin")=bmin,
-//                             Rcpp::Named("start")=start,
-//                             Rcpp::Named("end")=end,
-//                             Rcpp::Named("iid")=iid,
-//                             Rcpp::Named("iiu") = iiu,
-//                             Rcpp::Named("iis") = iis,
-//                             Rcpp::Named("out")=out,
-//                             Rcpp::Named("spec_phase")=spec_phase,
-//                             Rcpp::Named("ang_best")=ang_best
-//                             );
-
 }
 
-
 //' @keywords internal
-// [[Rcpp::export(.zerofil)]]
+// [[Rcpp::export(.zerofill)]]
 arma::vec zerofil(arma::vec fid, const int zf, int le_ori){
   int n_zero= (pow(2, log2(le_ori) +zf)) - fid.n_elem;
 
@@ -116,7 +92,6 @@ arma::cx_vec cplxFft(arma::vec fid){
 
   arma::cx_vec spec = fft(fid_cplx);
 
-
    // re-arrange axis to get a spectrum from min to max
    int split = spec.n_elem / 2;
 
@@ -135,8 +110,6 @@ arma::cx_vec cplxFft(arma::vec fid){
    return out;
 }
 
-
-
 //' @keywords internal
 // [[Rcpp::export(.defineChemShiftPpm)]]
 arma::vec defineChemShiftPpm(const float sf_mhz, const float sw_hz, const int n_sp_re, const float dref, bool ref){
@@ -154,11 +127,6 @@ arma::vec defineChemShiftPpm(const float sf_mhz, const float sw_hz, const int n_
   return ppm;
 }
 
-// # define ppm
-// ppmDist<-pars$a_SW_h[s]/length(sp_re)
-//   pps=seq(0, pars$a_SW_h[s], by=ppmDist)[-1]
-// ppm=(pps-(pps[length(sp_re)/2]-(4.79 * pars$a_SFO1[s])))/pars$a_SFO1[s]
-
 //' @title Calibrate
 //' @return Shift-adjusted ppm vector
 //' @keywords internal
@@ -175,38 +143,3 @@ arma::vec calibTsp(arma::vec spec, arma::vec ppm){
   arma::vec ppm_shift=ppm-shift;
   return ppm_shift;
 }
-
-//
-// idx <- get.idx(c(-0.2, 0.2), ppm)
-//   zero.ppm <- which.min(abs(ppm[idx]))
-//   maxInt <- array()
-//   for (i in 1:nrow(X)) {
-//     maxInt[i] <- which.max(X[i, idx])
-//   }
-//   Int.corr <- zero.ppm - maxInt
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

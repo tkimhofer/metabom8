@@ -19,6 +19,7 @@ Imports:
     abind, 
     colorRamps,
     ellipse,
+    fs,
     ggplot2, 
     ggrepel,
     graphics,
@@ -46,7 +47,7 @@ biocViews: Metabolomics, Cheminformatics, Preprocessing, DataImport, Alignment
 BugReports: https://github.com/tkimhofer/metabom8/issues
 URL: https://tkimhofer.github.io/metabom8/
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests:
     BiocStyle,
     dplyr,

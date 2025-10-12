@@ -11,7 +11,8 @@ read1d(
   n_max = 1000,
   filter = TRUE,
   recursive = TRUE,
-  verbose = 1
+  verbose = 1,
+  to_global = TRUE
 )
 
 read1d_proc(
@@ -20,7 +21,8 @@ read1d_proc(
   n_max = 1000,
   filter = TRUE,
   recursive = TRUE,
-  verbose = 1
+  verbose = 1,
+  to_global = TRUE
 )
 }
 \arguments{
@@ -35,38 +37,26 @@ read1d_proc(
 \item{recursive}{Logical. Search path recursively. Default: TRUE.}
 
 \item{verbose}{Logical or numeric. Verbosity level.}
+
+\item{to_global}{Logical. Objects will be added to global environment}
 }
 \value{
-The following objects are assigned to the global environment:
-\itemize{
-\item \code{X}: Numeric matrix of spectra (samples x variables)
-\item \code{ppm}: Numeric vector of chemical shift values
-\item \code{meta}: Data frame of acquisition/processing metadata
+A named list with three elements:
+\describe{
+\item{X}{A numeric matrix of spectra (rows = samples, columns = ppm values).}
+\item{ppm}{A numeric vector of chemical-shift axis (ppm).}
+\item{meta}{A data frame of acquisition/processing metadata, row-aligned with \code{X}.}
 }
-Also returns a (named) list invisibly for testing.
+
+If \code{to_global = TRUE}, these objects are also assigned to the global environment.
+In that case, any existing objects with the same names will be overwritten.
 }
 \description{
-Imports Bruker TopSpin-processed 1D NMR spectra. Spectrometer and processing
-parameters are extracted from \code{acqus} and \code{procs} files. Optionally filters
-experiments using acquisition metadata.
+Imports TopSpin-processed 1D NMR spectra, together with spectrometer acquisition
+and TopSpin processing parameters (\code{acqus} and \code{procs}, respectively).
 }
 \examples{
 path <- system.file("extdata", package = "metabom8")
 read1d(path, exp_type = list(pulprog = "noesygppr1d"), n_max = 2)
 
 }
-\seealso{
-Other NMR: 
-\code{\link{alignSegment}()},
-\code{\link{binning}()},
-\code{\link{cvanova}()},
-\code{\link{get_idx}()},
-\code{\link{lw}()},
-\code{\link{matspec}()},
-\code{\link{noise.est}()},
-\code{\link{normErectic}()},
-\code{\link{read1d_raw}()},
-\code{\link{stocsy1d_metabom8-class}},
-\code{\link{storm}()}
-}
-\concept{NMR}

@@ -1,9 +1,8 @@
 #' @title Import 1D NMR spectra (TopSpin processed)
 #'
 #' @description
-#' Imports Bruker TopSpin-processed 1D NMR spectra. Spectrometer and processing
-#' parameters are extracted from `acqus` and `procs` files. Optionally filters
-#' experiments using acquisition metadata.
+#' Imports TopSpin-processed 1D NMR spectra, together with spectrometer acquisition
+#' and TopSpin processing parameters (`acqus` and `procs`, respectively).
 #'
 #' @param path Character. Directory path containing Bruker NMR experiments.
 #' @param exp_type Named list. Filter experiments by acquisition parameters (e.g., list(pulprog = 'noesygppr1d')).
@@ -11,28 +10,32 @@
 #' @param filter Logical. Filter out experiments with incomplete file systems.
 #' @param recursive Logical. Search path recursively. Default: TRUE.
 #' @param verbose Logical or numeric. Verbosity level.
+#' @param to_global Logical. Objects will be added to global environment
 #'
 #' @return
-#' The following objects are assigned to the global environment:
-#' \itemize{
-#'   \item \code{X}: Numeric matrix of spectra (samples x variables)
-#'   \item \code{ppm}: Numeric vector of chemical shift values
-#'   \item \code{meta}: Data frame of acquisition/processing metadata
+#' A named list with three elements:
+#' \describe{
+#'   \item{X}{A numeric matrix of spectra (rows = samples, columns = ppm values).}
+#'   \item{ppm}{A numeric vector of chemical-shift axis (ppm).}
+#'   \item{meta}{A data frame of acquisition/processing metadata, row-aligned with \code{X}.}
 #' }
-#' Also returns a (named) list invisibly for testing.
+#'
+#' If \code{to_global = TRUE}, these objects are also assigned to the global environment.
+#' In that case, any existing objects with the same names will be overwritten.
 #'
 #' @examples
 #' path <- system.file("extdata", package = "metabom8")
 #' read1d(path, exp_type = list(pulprog = "noesygppr1d"), n_max = 2)
 #'
-#' @family NMR
+#' @importFrom fs path_common path_rel
 #' @export
 read1d <- function(path,
                    exp_type = list(pulprog = "noesygppr1d"),
                    n_max = 1000,
                    filter = TRUE,
                    recursive = TRUE,
-                   verbose = 1) {
+                   verbose = 1,
+                   to_global = TRUE) {
   path <- path.expand(path)
 
   if (as.character(match.call()[[1]]) == "read1d") {
@@ -64,24 +67,39 @@ read1d <- function(path,
   out <- t(out)
   colnames(out) <- ppm_ref
 
-  fnam <- vapply(strsplit(f_list$f_1r, .Platform$file.sep), function(x) {
-    paste(x, collapse = .Platform$file.sep)
-  }, character(1))
+
+  pars$exp_dir = dirname(f_list$f_1r)
+
+  if (length(f_list$f_1r) ==1){
+    x <- strsplit(f_list$f_1r, .Platform$file.sep)[[1]]
+    xr = x[(length(x) - 3):(length(x)-1)]
+    fnam <- paste(xr, collapse = .Platform$file.sep)
+  } else{
+    cpath <- path_common(f_list$f_1r)
+    fnam <- path_rel(pars$exp_dir, cpath)
+  }
 
   rownames(out) <- fnam
   rownames(pars) <- fnam
   out[is.na(out)] <- 0
 
-  assign("X", out, envir = .GlobalEnv)
-  assign("ppm", ppm_ref, envir = .GlobalEnv)
-  assign("meta", pars, envir = .GlobalEnv)
 
   if (verbose) {
     if (nrow(out)==1) message("Imported ", nrow(out), " spectrum.") else{
-    message("Imported ", nrow(out), " spectra.")
-  }}
+      message("Imported ", nrow(out), " spectra.")
+    }}
 
-  invisible(list(X = out, ppm = ppm_ref, meta = pars))
+  collect_out <- list(X = out, ppm = ppm_ref, meta = pars)
+
+  if (to_global) {
+    if (verbose > 0) message("Assigning objects X, ppm, meta to global environment.")
+    list2env(collect_out, envir = .GlobalEnv)
+    # assign("X", out, envir = .GlobalEnv)
+    # assign("ppm", ppm_ref, envir = .GlobalEnv)
+    # assign("meta", pars, envir = .GlobalEnv)
+  }
+
+  invisible(collect_out)
 }
 
 #' @rdname read1d
@@ -98,7 +116,7 @@ read1d_proc <- read1d
 #' @param f_list List of file paths. Output from `.detect1d_procs()`.
 #'
 #' @return A data frame of extracted acquisition and processing metadata. Row names correspond to spectrum filenames.
-#' 
+#'
 #' @importFrom stats setNames
 #' @keywords internal
 .extract_pars1d <- function(f_list) {

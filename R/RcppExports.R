@@ -75,7 +75,7 @@ multiY_Tw_rcpp <- function(X, Y, it_max, eps) {
 }
 
 #' @keywords internal
-.zerofil <- function(fid, zf, le_ori) {
+.zerofill <- function(fid, zf, le_ori) {
     .Call(`_metabom8_zerofil`, fid, zf, le_ori)
 }
 

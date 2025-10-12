@@ -4,7 +4,8 @@
 #' Non-linear baseline correction for NMR spectra based on asymmetric least squares. This function estimates a smooth, non-linear baseline trend for each spectrum. The estimated baseline is then subtracted, returning the corrected spectrum. See \code{\link[ptw]{asysm}} for more information on the smoothing parameter \code{lambda}.
 #'
 #' @param X Numeric matrix or data frame. NMR data with spectra in rows.
-#' @param lambda Numeric. Smoothing parameter passed to \code{\link[ptw]{asysm}}. Larger values result in smoother baselines.
+#' @param lambda Numeric. Smoothing parameter passed to \code{\link[ptw]{asysm}}.
+#'              Larger values result in smoother baselines (broader curvature)
 #' @param iter_max Integer. Maximum number of iterations for the baseline estimation algorithm.
 #'
 #' @return A numeric matrix of the same dimensions as the input, containing the baseline-corrected spectra.

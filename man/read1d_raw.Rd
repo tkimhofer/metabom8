@@ -2,69 +2,110 @@
 % Please edit documentation in R/read1d_raw.R
 \name{read1d_raw}
 \alias{read1d_raw}
-\title{Read Raw 1D NMR FIDs and Process to Spectra}
+\title{Read raw FIDs and process to spectra}
 \usage{
 read1d_raw(
   path,
   exp_type = list(exp = "PROF_PLASMA_CPMG128_3mm", pulprog = "noesygppr1d"),
   apodisation = list(fun = "exponential", lb = 0.2),
-  zerofil = 1L,
-  return = "absorption",
+  zerofill = 1L,
+  mode = "absorption",
   verbose = 1,
   recursive = TRUE,
   n_max = 1000,
-  filter = TRUE
+  filter = TRUE,
+  to_global = TRUE
 )
 }
 \arguments{
 \item{path}{Character. Path to the root directory containing Bruker experiment folders.}
 
-\item{exp_type}{Named list. Filter for acquisition parameters to select experiments (e.g., \code{list(exp = "noesygppr1d")}).}
+\item{exp_type}{Named list. Acquisition-parameter filter to select experiments
+(e.g., \code{list(PULPROG = "noesygppr1d")}).}
 
-\item{apodisation}{Named list. Specifies apodisation function and parameters. \code{fun} must be one of: \code{"exponential"}, \code{"cosine"}, \code{"sine"}, \code{"sem"}.}
+\item{apodisation}{Named list. Apodisation function and parameters. \code{fun}
+must be one of \code{"exponential"}, \code{"cosine"}, \code{"sine"}, \code{"sem"}.}
 
-\item{zerofil}{Integer. Zerofilling exponent (e.g., 1 doubles points, 2 quadruples).}
+\item{zerofill}{Integer. Zero-filling exponent (\code{1} doubles points, \code{2} quadruples, …).}
 
-\item{return}{Character. Spectrum type to return: \code{"absorption"}, \code{"dispersion"}, or \code{"magnitude"}.}
+\item{mode}{Character. Spectrum type to return: \code{"absorption"}, \code{"dispersion"}, or \code{"magnitude"}.}
 
-\item{verbose}{Integer. Verbosity level: 0 = silent, 1 = summary (default), 2 = detailed, 3 = debug mode.}
+\item{verbose}{Integer. Verbosity level: \code{0} = silent, \code{1} = summary (default),
+\code{2} = detailed, \code{3} = debug.}
 
-\item{recursive}{Logical. Whether to recursively search subdirectories for FIDs.}
+\item{recursive}{Logical. Recursively search subdirectories for FIDs.}
 
 \item{n_max}{Integer. Maximum number of experiments to process.}
 
-\item{filter}{Logical. Whether to remove experiments with incomplete file structures.}
+\item{filter}{Logical. Remove experiments with incomplete file structures.}
+
+\item{to_global}{Logical. If TRUE, objects are also assigned to the global
+environment; otherwise, only an invisible list is returned.}
 }
 \value{
-The function assigns three objects into the global environment:
+A named list with three elements:
 \describe{
-\item{X}{Numeric matrix of spectra (rows = samples, columns = ppm values).}
-\item{ppm}{Numeric vector of chemical shift axis (ppm).}
-\item{meta}{Data.frame with spectrometer parameters, row-matched to \code{X}.}
+\item{X}{A numeric matrix of spectra (rows = samples, columns = ppm values).}
+\item{ppm}{A numeric vector of chemical-shift axis (ppm).}
+\item{meta}{A data frame of acquisition metadata, row-aligned with \code{X}.}
 }
-Existing objects named \code{X}, \code{ppm}, or \code{meta} will be overwritten.
+
+If \code{to_global = TRUE}, these objects are also assigned to the global environment.
+In that case, any existing objects with the same names will be overwritten.
 }
 \description{
-Reads Bruker 1D NMR FIDs from directories, applies apodisation and FFT, phases and calibrates the spectrum, and returns absorption, dispersion, or magnitude mode spectra. Results are assigned to the global environment.
+Reads Bruker 1D NMR FIDs, corrects the digital filter (group delay),
+applies apodisation (windowing), optional zero-filling, FFT, phasing and
+ppm calibration.
+
+Returns either absorption-, dispersion-, or magnitude-mode
+spectra.
+
+Results are assigned to the global environment.
 }
 \details{
-Reads FID data from Bruker acquisition folders and applies digital signal processing:
-apodisation, zerofilling, FFT, phase correction, and calibration to TSP. A common ppm scale is interpolated across spectra.
+FIDs are read from Bruker acquisition folders and processed by the following pipeline:
+\enumerate{
+\item Digital-filter (group-delay) correction: the initial \emph{n} complex points
+are invalid due to the causal DSP decimation filter and are discarded; \emph{n}
+equals \code{GRPDLY} when present, or is looked up from Bruker tables indexed by
+\code{DECIM} and \code{DSPFVS} on older systems.
+\item Apodisation (windowing).
+\item Zero-filling (optional).
+\item FFT to the frequency domain.
+\item Phase correction.
+\item PPM calibration (e.g., to TSP).
+}
+A common ppm scale is then interpolated across spectra.
 
-Apodisation functions:
+\strong{Digital filter note:} On newer systems \code{GRPDLY} is written in \code{acqus}/\code{acqu2s}
+and should be used directly. For older data sets (\code{GRPDLY < 0} or missing), the group delay
+is derived from \code{DECIM} and \code{DSPFVS} via an internal look-up table.
+
+\strong{Apodisation functions}:
 \itemize{
-\item \code{"exponential"} (requires \code{lb})
-\item \code{"cosine"}, \code{"sine"}, \code{"sem"}
+\item \code{"uniform"}
+\item \code{"cosine"},
+\item \code{"sine"},
+\item \code{"exponential"} (parameter: \code{lb})
+\item \code{"sem"} (sine * exponential, parameter: \code{lb})
+\item \code{"gauss"} (parameter: \code{lb}, \code{'gb'}, and \code{'para'})
+\item \code{"expGaus_resyG"} (parameter: \code{lb}, \code{'gb'}, and \code{'aq_t'})
 }
 }
 \examples{
 path <- system.file("extdata", package = "metabom8")
-read1d_raw(path, exp_type = list(pulprog = "noesygppr1d"),
-           apodisation = list(fun = "exponential", lb = 0.2), n_max = 3)
+read1d_raw(
+  path,
+  exp_type    = list(PULPROG = "noesygppr1d"),
+  apodisation = list(fun = "exponential", lb = 0.2),
+  zerofill    = 1,
+  n_max       = 3
+)
 
 }
 \seealso{
-\code{\link{read1d}} for TopSpin-processed spectra
+\code{\link{read1d_proc}} for importing TopSpin-processed spectra
 
 Other NMR: 
 \code{\link{alignSegment}()},
@@ -75,7 +116,6 @@ Other NMR:
 \code{\link{matspec}()},
 \code{\link{noise.est}()},
 \code{\link{normErectic}()},
-\code{\link{read1d}()},
 \code{\link{stocsy1d_metabom8-class}},
 \code{\link{storm}()}
 }
