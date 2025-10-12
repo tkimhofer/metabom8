@@ -24,14 +24,6 @@ Performs Y-permutation tests to assess the robustness of OPLS models by comparin
 \details{
 Each permutation shuffles the response labels and fits a new OPLS model. The function captures model statistics (R2, Q2, AUC) to compare against the non-permuted model. This helps determine whether the original model performance is better than expected by chance.
 }
-\examples{
-data(covid)
-X <- covid$X
-an <- covid$an
-
-model <- opls(X, Y = an$type)
-perm_results <- opls_perm(model, n = 10)
-}
 \references{
 Wiklund, S. et al. (2008). A Tool for Improved Validation of OPLS Models. \emph{Journal of Chemometrics}, 22(11–12), 594–600.
 }

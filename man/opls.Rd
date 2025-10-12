@@ -2,14 +2,7 @@
 % Please edit documentation in R/opls.R
 \name{opls}
 \alias{opls}
-\title{#' @title Orthogonal Partial Least Squares (O-PLS)
-#'
-#' @description
-#' Fits an Orthogonal Projections to Latent Structures (O-PLS) model for regression or classification.
-#' The number of orthogonal components is automatically selected using internal cross-validation.
-#' To avoid underfitting, components are added incrementally, while overfitting is prevented by requiring
-that each new component improves predictive performance beyond a defined threshold (\eqn{(\Delta Q)^{2}} / \eqn{\delta}AUROC > 0.05).
-This ensures the model captures relevant structure without modelling noise or irrelevant variation.}
+\title{Orthogonal Partial Least Squares (O-PLS)}
 \usage{
 opls(
   X,
@@ -40,12 +33,9 @@ opls(
 An S4 object of class OPLS_metabom8.
 }
 \description{
-#' @title Orthogonal Partial Least Squares (O-PLS)
-#'
-#' @description
-#' Fits an Orthogonal Projections to Latent Structures (O-PLS) model for regression or classification.
-#' The number of orthogonal components is automatically selected using internal cross-validation.
-#' To avoid underfitting, components are added incrementally, while overfitting is prevented by requiring
+Fits an Orthogonal Projections to Latent Structures (O-PLS) model for regression or classification.
+The number of orthogonal components is automatically selected using internal cross-validation.
+To avoid underfitting, components are added incrementally, while overfitting is prevented by requiring
 that each new component improves predictive performance beyond a defined threshold (\eqn{(\Delta Q)^{2}} / \eqn{\delta}AUROC > 0.05).
 This ensures the model captures relevant structure without modelling noise or irrelevant variation.
 }

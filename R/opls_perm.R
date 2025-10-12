@@ -20,14 +20,14 @@
 #' @importFrom reshape2 melt
 #' @importFrom stats cor median
 #' @importFrom parallel detectCores
-#' @export
-#' @examples
-#' data(covid)
-#' X <- covid$X
-#' an <- covid$an
-#'
-#' model <- opls(X, Y = an$type)
-#' perm_results <- opls_perm(model, n = 10)
+
+# examples
+# data(covid)
+# X <- covid$X
+# an <- covid$an
+#
+# model <- opls(X, Y = an$type)
+# perm_results <- opls_perm(model, n = 10)
 opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
   if (!inherits(smod, "OPLS_metabom8")) {
     stop("Input must be an OPLS_metabom8 object.")

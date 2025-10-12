@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Introduction & data download
+# Introduction & data retrieval
 This vignette demonstrates the **metabom8** data import and pre-processing workflow 
 for NMR-based metabolomics. Example data sets used in this vignette are 
 available in the **nmrdata** package (Bioconductor).
@@ -57,14 +57,13 @@ list.files(exp_dir, recursive = TRUE)[1:10]
 
 # Importing NMR data
 In routine workflows the raw time-domain Free-Induction Decay (FID) is processed 
-with the spectrometer software (e.g., in TopSpin), and further downstream 
+with the spectrometer software TopSpin, and further downstream 
 processing is based on the frequency-domain spectra. Consequently, the vignette 
 section [Startpoint: TopSpin-processed spectra](#import-spectra) will be most relevant for the 
 typical users.
 
-For completeness - and for teaching purposes - the next section (
-[Startpoint: FID](#import-fid)) briefly demonstrates how to process raw
-FIDs to obtain spectra.
+For completeness - and for teaching purposes - the next section ([Startpoint: FID](#import-fid)) 
+briefly demonstrates how to process raw FIDs to obtain spectra.
 
 ## Startpoint: FID {#import-fid}
 
@@ -460,8 +459,14 @@ The pre-processed spectra can now be analysed statistically—for example with
 Principal Component Analysis (PCA) and Orthogonal Partial Least Squares (OPLS/O-PLS). 
 See the vignette **Multivariate Statistical Analysis** for details.
 
+# Citation
+To cite the **metabom8** package in publications, please use:
 
-## Session Info
+```{r citation, echo=FALSE, results='asis'}
+citation("metabom8")
+```
+
+# Session Info
 
 ```{r session-info, echo=FALSE}
 sessionInfo()

@@ -108,7 +108,7 @@ read1d_raw <- function(path,
 
   if (verbose > 0) {
     if (length(f_list[[1]])==1) message("Processing 1 experiment.") else{
-      message("Processing ", nrow(out), " experiments.")
+      message("Processing ", length(f_list[[1]]), " experiments.")
     }
   }
 
