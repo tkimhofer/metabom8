@@ -7,7 +7,9 @@ src/*.so
 src/*.dll
 doc
 Meta
+R/.Rapp.history
 
 .DS_Store
 **/.DS_Store
 ._*
+*.Rproj
