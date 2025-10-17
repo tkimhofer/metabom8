@@ -1,7 +1,7 @@
 Package: metabom8
 Type: Package
 Title: A High-Performance R Package for Metabolomics Modeling and Analysis
-Version: 0.99.0
+Version: 0.99.1
 Authors@R: person(given = "Torben",
             family = "Kimhofer",
             role = c("aut", "cre"),
