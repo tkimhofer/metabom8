@@ -24,7 +24,7 @@
 ## 📦 Installation
 
 ```r
-# official release
+# official release (to be added with next bioc release)
 install.packages("BiocManager")
 BiocManager::install('metabom8')
 
