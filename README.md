@@ -24,8 +24,13 @@
 ## 📦 Installation
 
 ```r
-install.packages("remotes")
-remotes::install_github("tkimhofer/metabom8")
+# official release
+install.packages("BiocManager")
+BiocManager::install('metabom8')
+
+# dev-build
+# install.packages("remotes")
+# remotes::install_github("tkimhofer/metabom8")
 ```
 
 ---
