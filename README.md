@@ -39,27 +39,46 @@ BiocManager::install('metabom8')
 
 ```r
 library(metabom8)
-library(nmrdata)
 
 # Load example data
-data(bariatric, package = "nmrdata")
+data(hiit_raw, package = "metabom8")
 
-idx <- bariatric$an$Class %in% c("Pre-op", "RYGB")
-X <- bariatric$X.pqn[idx, ]
-Y <- bariatric$an$Class[idx]
+# plot spectra interactively with plotly
+plot_spec(hiit_raw)
 
-# Fit an OPLS model using Monte Carlo Cross-Valdation
-model <- opls(
-  X = X,
-  Y = Y,
-  center = TRUE,
-  scale = "UV",
-  cv = list(method = "MC", k = 7, split=2/3)
-)
+# piped preprocessing 
+hiit <- hiit_raw |> 
+  calibrate(type = "tsp") |>
+  excise() |>
+  correct_baseline(method='asls') |>
+  align_spectra() |>
+  pqn()
 
-# Plot scores and loadings
-plotscores(model)
-plotload(model)
+## Provenance logging
+print_provenance(hiit)
+
+
+data(covid, package = "metabom8")
+X <- covid$X
+Y <- covid$an$type
+
+# Modelling Context
+uv = UVScaling(center = TRUE)
+mc_cv <- balanced_mc(k=15, split=2/3, type="DA")
+
+# PCA
+pca_model <- pca(covid$X, scaling = uv, ncomp=2)
+
+# PLS
+pls_model <- pls(X, Y, scaling = uv, validation_strategy=mc_cv)
+show(pls_model)
+
+# OPLS
+opls_model <- opls(X, Y, scaling = uv, validation_strategy=mc_cv)
+
+Tx <- scores(opls_model)
+Px <- loadings(opls_model)
+vip <- vip(opls_model)
 ```
 
 ---
@@ -90,10 +109,6 @@ bench::mark(
 
 Comprehensive documentation and vignettes are available at:  
 🔗 https://tkimhofer.github.io/metabom8/
-
-- [MVA vignette](https://tkimhofer.github.io/metabom8/articles/MVA.html)
-- [Preprocessing pipeline](https://tkimhofer.github.io/metabom8/articles/PreProc.html)
-- [Function reference](https://tkimhofer.github.io/metabom8/reference/)
 
 ---
 

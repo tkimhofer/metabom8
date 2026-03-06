@@ -1,15 +1,15 @@
 Package: metabom8
 Type: Package
 Title: A High-Performance R Package for Metabolomics Modeling and Analysis
-Version: 0.99.1
+Version: 0.99.2
 Authors@R: person(given = "Torben",
             family = "Kimhofer",
             role = c("aut", "cre"),
             email = "tkimhofer@gmail.com",
             comment = c(ORCID = "0000-0001-7158-9930"))
 Description: Tools for 1D NMR metabolomics workflows, including import and 
-              preprocessing of Bruker data, multivariate modeling (PCA, OPLS), metabolite 
-              identification, and visualization with ggplot2 and plotly. Performance-critical 
+              preprocessing of Bruker data, multivariate modeling (PCA, PLS, OPLS), metabolite 
+              identification, and visualization with plotly and ggplot2. Performance-critical 
               routines are implemented in C++ and use the Armadillo and Eigen linear algebra 
               libraries to improve runtime.
 License: MIT + file LICENSE
@@ -23,15 +23,13 @@ Imports:
     ggplot2, 
     ggrepel,
     graphics,
-    grDevices,
-    magrittr,
     methods, 
     parallel,
     pcaMethods,
     plotly,
-    pROC, 
+    pROC,
+    progress,
     ptw,
-    RColorBrewer,
     Rcpp (>= 1.0.4.6), 
     reshape2, 
     rlang,
@@ -43,7 +41,7 @@ LinkingTo:
     Rcpp,
     RcppArmadillo,
     RcppEigen
-biocViews: Metabolomics, Cheminformatics, Preprocessing, DataImport, Alignment
+biocViews: Metabolomics, Cheminformatics, Preprocessing, DataImport, Alignment, WorkflowStep
 BugReports: https://github.com/tkimhofer/metabom8/issues
 URL: https://tkimhofer.github.io/metabom8/
 Roxygen: list(markdown = TRUE)

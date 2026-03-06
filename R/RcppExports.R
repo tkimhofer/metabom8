@@ -5,32 +5,6 @@
     .Call(`_metabom8_nip_pca_comp_rcpp`, X)
 }
 
-#' Summarise Multivariate Y Weights via PCA
-#'
-#' Computes X-weight vectors for each response variable in a multivariate outcome matrix `Y`,
-#' then performs PCA on these weights to extract shared predictive structure.
-#' Useful when `Y` has multiple columns (e.g., for multiclass problems).
-#' Conecptually similar to Canonical Correlation Analysis (CCA) and Multiblock PLS.
-#'
-#' @param X A numeric matrix (n × p): predictor matrix.
-#' @param Y A numeric matrix (n × k): response matrix with k variables.
-#' @param it_max Maximum nb of iterations for NIPALS converge.
-#' @param eps Threshold for sum of squares quotient below which NIPALS is considered converged
-#'
-#' @return A matrix (p × r) of PCA scores, where r is the number of retained components.
-#' @details
-#' The function first computes weights for each column in `Y` using least-squares projection,
-#' forming a weight matrix `W_x`. PCA is then applied to this matrix using NIPALS,
-#' and score components are extracted until the explained variance ratio drops below a threshold.
-#' @examples
-#' # Simulate data: 30 samples, 10 predictors, 3 response variables
-#' set.seed(123)
-#' X <- matrix(rnorm(30 * 10), nrow = 30)
-#' Y <- matrix(rnorm(30 * 3), nrow = 30)
-#' # Compute multivariate Y weights via PCA
-#' T_w <- multiY_Tw_rcpp(X, Y, it_max = 50, eps = 1e-4)
-#' @keywords internal
-#' @export
 multiY_Tw_rcpp <- function(X, Y, it_max, eps) {
     .Call(`_metabom8_multiY_Tw_rcpp`, X, Y, it_max, eps)
 }
@@ -97,6 +71,7 @@ multiY_Tw_rcpp <- function(X, Y, it_max, eps) {
 }
 
 #' @title Column-wise standard deviation and mean for a matrix
+#'  Welford algorithm (single loop for mean/sd)
 #' @param X num matrix
 #' @keywords internal
 #' @return list: 1. sd (num vec), 2. mean (sd vec)
@@ -105,7 +80,6 @@ multiY_Tw_rcpp <- function(X, Y, it_max, eps) {
 }
 
 #' @title Column-wise matrix scaling
-#' @export
 #' @param X num matrix
 #' @param idc int row indices of X
 #' @param center bool mean centering

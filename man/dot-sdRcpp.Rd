@@ -2,7 +2,8 @@
 % Please edit documentation in R/RcppExports.R
 \name{.sdRcpp}
 \alias{.sdRcpp}
-\title{Column-wise standard deviation and mean for a matrix}
+\title{Column-wise standard deviation and mean for a matrix
+Welford algorithm (single loop for mean/sd)}
 \usage{
 .sdRcpp(X)
 }
@@ -14,5 +15,6 @@ list: 1. sd (num vec), 2. mean (sd vec)
 }
 \description{
 Column-wise standard deviation and mean for a matrix
+Welford algorithm (single loop for mean/sd)
 }
 \keyword{internal}

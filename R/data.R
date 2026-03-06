@@ -12,14 +12,13 @@
 #'   (chemical shift variables in parts per million, ppm).
 #' @source Australian National Phenome Centre (ANPC), Murdoch University.
 #' @references Kimhofer et al. (2020) \doi{10.1021/acs.jproteome.0c00280}
-#' @usage data(covid)
+#'
 #' @examples
 #' data(covid)
-#' dim(covid)
 #' @docType data
 #' @keywords datasets
 #' @name covid
-"covid"
+NULL
 
 #' COVID-19 blood plasma proton NMR spectra (raw)
 #'
@@ -40,11 +39,38 @@
 #'
 #' @source Australian National Phenome Centre (ANPC), Murdoch University.
 #' @references Kimhofer et al. (2020) \doi{10.1021/acs.jproteome.0c00280}
-#' @usage data(covid_raw)
+#'
 #' @examples
 #' data(covid_raw)
-#' dim(covid_raw)
 #' @docType data
 #' @keywords datasets
 #' @name covid_raw
-"covid_raw"
+NULL
+
+#' High-intensity interval training (HIIT) 1H NMR urine dataset
+#'
+#' Urine samples collected from a single individual performing a \eqn{VO_2max}-type
+#' exercise protocol over a time period of 3h.
+#'
+#' @docType data
+#'
+#' @format A list with four elements:
+#' \describe{
+#'   \item{X}{Numeric matrix of spectral intensities (samples x variables).}
+#'   \item{ppm}{Numeric vector of chemical shift values corresponding to columns of \code{X}.}
+#'   \item{meta}{Data frame containing acquisition metadata.}
+#'   \item{df}{Data frame containing sample annotations.}
+#' }
+#'
+#' @details
+#' The spectra were acquired on a 600 MHz Bruker NMR spectrometer.
+#' The dataset is included for demonstration of preprocessing and
+#' modelling workflows in \pkg{metabom8}.
+#'
+#' @source Example dataset bundled with the package.
+#' @examples
+#' data(hiit_raw)
+#'
+#' @keywords datasets
+#' @name hiit_raw
+NULL

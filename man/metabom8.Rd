@@ -23,7 +23,6 @@ with an \emph{automatic stopping criterion} to determine the optimal number of c
 and cross-validated AUC for classification), with safeguards against overfitting.
 \item Robust statistical validation for small to large sample sizes:
 stratified Monte Carlo cross-validation and k-fold CV.
-\item Custom model visualizations using \pkg{ggplot2} and \pkg{plotly}.
 \item Model diagnostics and validation (DModX, permutation testing).
 \item Metabolite identification via STOCSY and STORM.
 \item Native C++ acceleration via \pkg{RcppArmadillo} and \pkg{RcppEigen}.
@@ -33,9 +32,7 @@ stratified Monte Carlo cross-validation and k-fold CV.
 \section{Vignettes}{
 
 \itemize{
-\item Data import and preprocessing: \code{vignette("Preproc")}
-\item Multivariate analysis and metabolite identification: \code{vignette("MVA")}
-\item All vignettes: \code{browseVignettes("metabom8")}
+\item Getting Started: \code{vignette("Getting Started")}
 }
 }
 

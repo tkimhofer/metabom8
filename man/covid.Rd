@@ -11,9 +11,6 @@ A numeric matrix/data frame with 23 rows (samples) and 27,819 columns
 \source{
 Australian National Phenome Centre (ANPC), Murdoch University.
 }
-\usage{
-data(covid)
-}
 \description{
 1D proton NMR spectra from SARS-CoV-2–positive patients (n = 10) and healthy controls (n = 13),
 collected in Perth, Western Australia. Spectra were pre-processed (residual water and signal-free
@@ -26,7 +23,6 @@ with a double-resonance broadband (BBI) probe and a refrigerated autosampler.
 }
 \examples{
 data(covid)
-dim(covid)
 }
 \references{
 Kimhofer et al. (2020) \doi{10.1021/acs.jproteome.0c00280}

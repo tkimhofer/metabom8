@@ -38,13 +38,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // nip_PLS_comp_rcpp
-Rcpp::List nip_PLS_comp_rcpp(Eigen::MatrixXd X, Eigen::MatrixXd Y, int it_max, double eps);
+Rcpp::List nip_PLS_comp_rcpp(Eigen::Map<Eigen::MatrixXd> X, Eigen::Map<Eigen::MatrixXd> Y, int it_max, double eps);
 RcppExport SEXP _metabom8_nip_PLS_comp_rcpp(SEXP XSEXP, SEXP YSEXP, SEXP it_maxSEXP, SEXP epsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Eigen::MatrixXd >::type X(XSEXP);
-    Rcpp::traits::input_parameter< Eigen::MatrixXd >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map<Eigen::MatrixXd> >::type X(XSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map<Eigen::MatrixXd> >::type Y(YSEXP);
     Rcpp::traits::input_parameter< int >::type it_max(it_maxSEXP);
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
     rcpp_result_gen = Rcpp::wrap(nip_PLS_comp_rcpp(X, Y, it_max, eps));
@@ -52,12 +52,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // ortho_gram_schmidt_rcpp
-Eigen::MatrixXd ortho_gram_schmidt_rcpp(Eigen::MatrixXd u, Eigen::MatrixXd v);
+Eigen::MatrixXd ortho_gram_schmidt_rcpp(Eigen::VectorXd u, Eigen::MatrixXd v);
 RcppExport SEXP _metabom8_ortho_gram_schmidt_rcpp(SEXP uSEXP, SEXP vSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Eigen::MatrixXd >::type u(uSEXP);
+    Rcpp::traits::input_parameter< Eigen::VectorXd >::type u(uSEXP);
     Rcpp::traits::input_parameter< Eigen::MatrixXd >::type v(vSEXP);
     rcpp_result_gen = Rcpp::wrap(ortho_gram_schmidt_rcpp(u, v));
     return rcpp_result_gen;
@@ -76,12 +76,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // tss_rcpp
-Rcpp::NumericVector tss_rcpp(Eigen::MatrixXd X);
+double tss_rcpp(const Eigen::Map<Eigen::MatrixXd>& X);
 RcppExport SEXP _metabom8_tss_rcpp(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Eigen::MatrixXd >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type X(XSEXP);
     rcpp_result_gen = Rcpp::wrap(tss_rcpp(X));
     return rcpp_result_gen;
 END_RCPP
@@ -206,24 +206,24 @@ BEGIN_RCPP
 END_RCPP
 }
 // sd_rcpp
-List sd_rcpp(NumericMatrix X);
+Rcpp::List sd_rcpp(const Rcpp::NumericMatrix& X);
 RcppExport SEXP _metabom8_sd_rcpp(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type X(XSEXP);
     rcpp_result_gen = Rcpp::wrap(sd_rcpp(X));
     return rcpp_result_gen;
 END_RCPP
 }
 // scale_rcpp
-List scale_rcpp(NumericMatrix X, IntegerVector idc, bool center, int scale_type);
+Rcpp::List scale_rcpp(const Rcpp::NumericMatrix& X, const Rcpp::IntegerVector& idc, bool center, int scale_type);
 RcppExport SEXP _metabom8_scale_rcpp(SEXP XSEXP, SEXP idcSEXP, SEXP centerSEXP, SEXP scale_typeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type idc(idcSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type idc(idcSEXP);
     Rcpp::traits::input_parameter< bool >::type center(centerSEXP);
     Rcpp::traits::input_parameter< int >::type scale_type(scale_typeSEXP);
     rcpp_result_gen = Rcpp::wrap(scale_rcpp(X, idc, center, scale_type));
