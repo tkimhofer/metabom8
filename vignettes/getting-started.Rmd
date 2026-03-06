@@ -308,7 +308,7 @@ params <- list(
  
 # create note with env parameters
 hiit_proc <- add_note(hiit_proc, 
-         '🔎 dilution-adaptive acquisition mode -> verify snr after normalisation', 
+         'Excluding outlier sample XX - reason is ...', 
          params)
 
 # check provenance out
