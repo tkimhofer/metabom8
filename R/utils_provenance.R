@@ -318,7 +318,7 @@ get_provenance <- function(x, step = NULL, param = NULL) {
 #' hiit_proc <- hiit_raw |>
 #'   calibrate(type = "tsp") |>
 #'   excise() |>
-#'   add_note('🔎 dilution-adaptive acquisition mode -> verify snr after normalisation',
+#'   add_note('dilution-adaptive acquisition mode -> verify snr after normalisation',
 #'     params)
 #'
 #' print_provenance(hiit_proc)
@@ -355,7 +355,7 @@ print_provenance <- function(x, detail = FALSE, max_items = 8) {
 #' hiit_proc <- hiit_raw |>
 #'   calibrate(type = "tsp") |>
 #'   excise() |>
-#'   add_note('🔎 dilution-adaptive acquisition mode -> verify snr after normalisation',
+#'   add_note('dilution-adaptive acquisition mode -> verify snr after normalisation',
 #'     params)
 #'
 #' print_provenance(hiit_proc)

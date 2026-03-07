@@ -42,7 +42,7 @@ print_provenance(hiit_raw)
 hiit_proc <- hiit_raw |>
   calibrate(type = "tsp") |>
   excise() |>
-  add_note('🔎 dilution-adaptive acquisition mode -> verify snr after normalisation',
+  add_note('dilution-adaptive acquisition mode -> verify snr after normalisation',
     params)
 
 print_provenance(hiit_proc)
