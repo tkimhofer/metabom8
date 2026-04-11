@@ -16,3 +16,4 @@
 ^revdep$
 ^\.vscode$
 ^\.devcontainer$
+^LICENSE\.md$
