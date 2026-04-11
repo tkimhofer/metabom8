@@ -91,10 +91,6 @@ using namespace Rcpp;
 //' @param center logical mean centering
 //' @param scale_type int 0: no scaling, 1: SD scaling, 2: Pareto scaling
 //' @return list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
-//' @examples
-//' X <- matrix(rnorm(20), ncol = 4)
-//' idc <- seq_len(nrow(X)) -1 # ! cpp indexing starts at zero !
-//' .scaleMatRcpp(X, idc, TRUE, 1L)
 //' @keywords internal
 // [[Rcpp::export(.scaleMatRcpp)]]
 Rcpp::List scale_rcpp(const Rcpp::NumericMatrix& X,

@@ -1,9 +1,13 @@
 # metabom8 NEWS
 
+## Changes in version 0.99.7
+- Fix Rcpp example
+
 ## Changes in version 0.99.6
 - Simplified S4 class structure; retained only the core modelling class
 - Updated vignette “getting-started” (improve wordings, enable eval)
 - refactoring: replace `aes_string()`, improve fct signature & docstrings
+- added effect size Cliff's d
 
 ## Changes in version 0.99.5
 
