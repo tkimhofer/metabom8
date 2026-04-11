@@ -56,10 +56,10 @@ binning <- function(X, ppm = NULL, width = NULL, npoints = NULL, fun = sum) {
   X <- .dimX(X)
 
   if (!is.function(fun))
-    stop("`fun` must be a function.")
+    stop("`fun` must be a function.", call. = FALSE)
   .test <- fun(c(1, 2))
   if (!is.numeric(.test) || length(.test) != 1L)
-    stop("`fun` must return a single numeric value.")
+    stop("`fun` must return a single numeric value.", call. = FALSE)
 
   X0 <- X
 
@@ -73,15 +73,15 @@ binning <- function(X, ppm = NULL, width = NULL, npoints = NULL, fun = sum) {
     }
   }
   if (is.null(ppm))
-    stop("`ppm` not provided and not found in list input, attr(X,'m8_axis'), or numeric colnames(X).")
+    stop("`ppm` not provided and not found in list input, attr(X,'m8_axis'), or numeric colnames(X).", call. = FALSE)
 
   ppm <- as.numeric(ppm)
   if (!.check_X_ppm(X, ppm))
-    stop("Non-matching dimensions X matrix and ppm vector or missing values in ppm.")
+    stop("Non-matching dimensions X matrix and ppm vector or missing values in ppm.", call. = FALSE)
 
   if (!is.null(width) && !is.null(npoints)) width <- NULL
   if (is.null(width) && is.null(npoints))
-    stop("Define bin width in ppm or desired number of bins.")
+    stop("Define bin width in ppm or desired number of bins.", call. = FALSE)
 
   ord <- order(ppm, decreasing = TRUE)
   ppm <- ppm[ord]
@@ -100,8 +100,8 @@ binning <- function(X, ppm = NULL, width = NULL, npoints = NULL, fun = sum) {
     dppm <- abs(diff(ppm))
     res <- stats::median(dppm, na.rm = TRUE)
 
-    if (!is.finite(res) || res <= 0) stop("Cannot determine ppm grid spacing.")
-    if (width <= res) stop("Bin width is smaller or equal to the ppm grid spacing.")
+    if (!is.finite(res) || res <= 0) stop("Cannot determine ppm grid spacing.", call. = FALSE)
+    if (width <= res) stop("Bin width is smaller or equal to the ppm grid spacing.", call. = FALSE)
 
     step <- max(1L, as.integer(round(width / res)))
     new_res <- width / step
@@ -109,7 +109,7 @@ binning <- function(X, ppm = NULL, width = NULL, npoints = NULL, fun = sum) {
     ppm_new <- seq(from = max(ppm), to = min(ppm), by = -new_res)
 
     nbins <- floor(length(ppm_new) / step)
-    if (nbins < 1L) stop("Binning width too large for the ppm range.")
+    if (nbins < 1L) stop("Binning width too large for the ppm range.", call. = FALSE)
 
     ybin <- rep(seq_len(nbins), each = step)[seq_len(nbins * step)]
     ppm_new <- ppm_new[seq_along(ybin)]
@@ -154,8 +154,8 @@ binning <- function(X, ppm = NULL, width = NULL, npoints = NULL, fun = sum) {
   if (!is.null(npoints)) {
 
     npoints <- as.integer(npoints)
-    if (npoints >= length(ppm)) stop("npoints cannot be larger or equal than length(ppm).")
-    if (npoints < 2L) stop("npoints must be >= 2.")
+    if (npoints >= length(ppm)) stop("npoints cannot be larger or equal than length(ppm).", call. = FALSE)
+    if (npoints < 2L) stop("npoints must be >= 2.", call. = FALSE)
 
     breaks <- floor(seq(0, length(ppm), length.out = npoints + 1L))
     breaks[1] <- 0L

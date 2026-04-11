@@ -1,173 +1,17 @@
-#####################
-### PREPROCESSING ###
-#####################
 
-#' @rdname prep
-setMethod("prep", "m8_preprocess",
-          function(object, X){
-
-            msd <- .sdRcpp(X)
-
-            Xcs <- .scaleMatRcpp(
-              X,
-              0:(nrow(X)-1),
-              center = object@center,
-              scale_type =
-                switch(object@scale,
-                       "None"=0,
-                       "UV"=1,
-                       "Pareto"=2)
-            )[[1]]
-
-            object@X_mean <- msd[[2]]
-            object@X_sd   <- msd[[1]]
-
-            list(X=Xcs, prep=object)
-          })
-
-
-#########################################################
-### STATISTICAL VALIDATION - RESAMPLING INSTANTIATION ###
-#########################################################
-
-# seed from random number generator (rng) does not exist on new R session,
-# that instantiation will fail (needs seed values). To avoid this,
-# rng is set up by calling a sampling function runif.
-#' @importFrom stats runif
-.ensureRNG <- function() {
-  if (!exists(".Random.seed", envir = .GlobalEnv))
-    runif(1)
-}
-
-setMethod(".rngPreflight",
-          "ResamplingStrategy",
-          function(object) .ensureRNG())
-
-
-#' @rdname instantiate
-setMethod("instantiate",
-          "KFold",
-          function(object, Y){
-
-            .rngPreflight(object)
-            seed <- .Random.seed
-
-            idx <- .kFold(object@k, Y)
-
-            methods::new("ResamplingInstance",
-                train    = idx,
-                strategy = object,
-                n        = nrow(Y),
-                seed     = seed)
-          })
-
-#' @rdname instantiate
-setMethod("instantiate",
-          "StratifiedKFold",
-          function(object, Y){
-
-            .rngPreflight(object)
-            seed <- .Random.seed
-
-            idx <- .kFoldStratified(
-              object@k,
-              stratified = list(object@type,
-                                as.matrix(Y),
-                                object@probs)
-            )
-
-            methods::new("ResamplingInstance",
-                train    = idx,
-                strategy = object,
-                n        = nrow(Y),
-                seed     = seed)
-          })
-
-#' @rdname instantiate
-setMethod("instantiate",
-          "MonteCarlo",
-          function(object, Y){
-
-            .rngPreflight(object)
-            seed <- .Random.seed
-
-            idx <- .mc(object@k,
-                       as.matrix(Y),
-                       object@split)
-
-            methods::new("ResamplingInstance",
-                train    = idx,
-                strategy = object,
-                n        = nrow(Y),
-                seed     = seed)
-          })
-
-#' @rdname instantiate
-setMethod("instantiate",
-          "BalancedMonteCarlo",
-          function(object, Y){
-
-            .rngPreflight(object)
-            seed <- .Random.seed
-
-            idx <- .mcBalanced(
-              object@k,
-              object@split,
-              stratified = list(object@type,
-                                as.matrix(Y),
-                                object@probs)
-            )
-
-            methods::new("ResamplingInstance",
-                train    = idx,
-                strategy = object,
-                n        = nrow(Y),
-                seed     = seed)
-          })
-
-#' @rdname instantiate
-setMethod("instantiate",
-          "BalancedBootstrap",
-          function(object, Y){
-
-            .rngPreflight(object)
-            seed <- .Random.seed
-
-            idx <- .balanced_bootstrap_mc(
-              object@k,
-              object@split,
-              stratified = list(object@type,
-                                as.matrix(Y),
-                                object@probs)
-            )
-
-            methods::new("ResamplingInstance",
-                train    = idx,
-                strategy = object,
-                n        = nrow(Y),
-                seed     = seed)
-          })
-
-#' @rdname train_idc
-setMethod("train_idc", "ResamplingInstance", function(object) {
-  object@train
-})
-
-######################
-### MODEL FEATURES ###
-######################
+# --- vips -----------------------------------------------------------
 
 #' @rdname vip
 setMethod("vip", "m8_model",
           function(object){
 
             if (!object@engine %in% c("opls", "pls"))
-              stop("Method not available for this model")
+              stop("Method not available for this model", call. = FALSE)
 
             if (object@engine == "opls") {
 
               if(object@ctrl$ncomp_selected == 0)
-                stop('No model components found')
+                stop('No model components found', call. = FALSE)
 
               W <- t(as.matrix(object@fit$pred_comp$w_x))
               Tx <- as.matrix(object@fit$pred_comp$t_x)
@@ -187,18 +31,23 @@ setMethod("vip", "m8_model",
           }
 )
 
+# --- yfitted -----------------------------------------------------------
+
 #' @rdname fitted
 setMethod('fitted', "m8_model",
           function(object){
             if(object@engine == "opls"){
 
               if(object@ctrl$ncomp_selected == 0)
-                stop('No model components found')
+                stop('No model components found', call. = FALSE)
 
               return(object@fit$pred_comp$y_pred)
             }
           }
           )
+
+
+# --- weights -----------------------------------------------------------
 
 #' @rdname weights
 #' @param orth Logical indicating whether orthogonal scores should be returned
@@ -208,11 +57,11 @@ setMethod("weights","m8_model",
 
 
             if (!object@engine %in% c('opls', 'pls'))
-              stop("Method not available for this model")
+              stop("Method not available for this model", call. = FALSE)
 
 
             if(isTRUE(orth) && object@engine != "opls")
-              stop("Orthogonal weights not available for this model")
+              stop("Orthogonal weights not available for this model", call. = FALSE)
 
 
             key <- paste(if(isTRUE(orth) || is.numeric(orth)) "orth" else "pred",
@@ -222,7 +71,7 @@ setMethod("weights","m8_model",
             if(object@engine == "opls"){
 
               if(object@ctrl$ncomp_selected == 0)
-                stop('No model components found')
+                stop('No model components found', call. = FALSE)
 
               map <- list(
                 pred_fit = .ensure_matrix(object@fit$pred_comp$w_x, ncol=object@dims$p),
@@ -234,14 +83,14 @@ setMethod("weights","m8_model",
               }
 
             if(!key %in% names(map))
-              stop("Requested weight type not available.")
+              stop("Requested weight type not available.", call. = FALSE)
 
             out <- map[[key]]
 
             if(is.numeric(orth)){
 
               if(orth > nrow(out))
-                stop("Orthogonal component index exceeds available components")
+                stop("Orthogonal component index exceeds available components", call. = FALSE)
 
               out <- out[orth, ,drop = FALSE]
             }
@@ -252,6 +101,8 @@ setMethod("weights","m8_model",
     )
 
 
+# --- loadings -----------------------------------------------------------
+
 #' Model loadings
 #' @param x An object of class \code{m8_model}.
 #' @param orth Logical indicating whether orthogonal scores should be returned
@@ -261,7 +112,7 @@ setMethod("weights","m8_model",
 #' @examples
 #' data(covid)
 #' cv <- balanced_mc(k=5, split=2/3)
-#' scaling <- UVScaling(center=TRUE)
+#' scaling <- uv_scaling(center=TRUE)
 #' model <-opls(X=covid$X, Y=covid$an$type, scaling, cv)
 #' show(model)
 #' P <- loadings(model)
@@ -275,10 +126,10 @@ setMethod("loadings","m8_model",
             object <- x
 
             if (!object@engine %in% c('opls', 'pls', 'pca'))
-              stop("Object needs to be of class m8_model.")
+              stop("Object needs to be of class m8_model.", call. = FALSE)
 
             if(isTRUE(orth) && object@engine != "opls")
-              stop("Orthogonal loadings not available for this model")
+              stop("Orthogonal loadings not available for this model", call. = FALSE)
 
             key <- paste(if(isTRUE(orth) || is.numeric(orth)) "orth" else "pred",
                          "fit",
@@ -287,7 +138,7 @@ setMethod("loadings","m8_model",
             if(object@engine == "opls"){
 
               if(object@ctrl$ncomp_selected == 0)
-                stop('No model components found')
+                stop('No model components found', call. = FALSE)
 
               map <- list(
                 pred_fit = .ensure_matrix(object@fit$pred_comp$p_x, ncol=length(object@fit$pred_comp$p_x)),
@@ -307,7 +158,7 @@ setMethod("loadings","m8_model",
               if(is.numeric(orth)){
 
                 if(orth > nrow(out))
-                  stop("Orthogonal component index exceeds available components")
+                  stop("Orthogonal component index exceeds available components", call. = FALSE)
 
                 out <- out[orth, ,drop = FALSE]
               }
@@ -318,24 +169,27 @@ setMethod("loadings","m8_model",
 
           })
 
+
+# --- scores -----------------------------------------------------------
+
 #' @rdname scores
 setMethod("scores","m8_model",
           function(object, orth = FALSE, cv=FALSE){
 
             if (!object@engine %in% c('opls', 'pls', 'pca'))
-              stop("Method not available for this model")
+              stop("Method not available for this model", call. = FALSE)
 
 
             needs_orth <- isTRUE(orth) || is.numeric(orth)
 
             if(needs_orth && object@engine != "opls")
-              stop("Orthogonal scores not available for this model")
+              stop("Orthogonal scores not available for this model", call. = FALSE)
 
             if(needs_orth && isTRUE(cv) && object@engine == "opls")
-              stop("Cross-validated orthogonal scores not available for this model")
+              stop("Cross-validated orthogonal scores not available for this model", call. = FALSE)
 
             if(isTRUE(cv) && object@engine %in% c("pls", "pca"))
-              stop("Cross-validated scores not available for this model")
+              stop("Cross-validated scores not available for this model", call. = FALSE)
 
             key <- paste(if(isTRUE(orth) || is.numeric(orth)) "orth" else "pred",
                          if(cv)"cv"   else "fit",
@@ -344,7 +198,7 @@ setMethod("scores","m8_model",
             if(object@engine == "opls"){
 
               if(object@ctrl$ncomp_selected == 0)
-                stop('No model components found')
+                stop('No model components found', call. = FALSE)
 
               map <- list(
                 pred_fit = .ensure_matrix(object@fit$pred_comp$t_x, ncol=1),
@@ -368,10 +222,10 @@ setMethod("scores","m8_model",
               if(is.numeric(orth)){
 
                 if(object@engine != "opls")
-                  stop("Orthogonal components only available for OPLS")
+                  stop("Orthogonal components only available for OPLS", call. = FALSE)
 
                 if(orth > ncol(out))
-                  stop("Orthogonal component index exceeds available components")
+                  stop("Orthogonal component index exceeds available components", call. = FALSE)
 
                 out <- out[, orth, drop = FALSE]
               }
@@ -380,27 +234,30 @@ setMethod("scores","m8_model",
            return(out)
           })
 
+
+# --- xres -----------------------------------------------------------
+
 #' @rdname xres
 setMethod("xres", "m8_model",
           function(object) {
 
             if (!identical(object@engine, "opls")) {
-              stop("xres() is only available for OPLS models (engine = 'opls').")
+              stop("xres() is only available for OPLS models (engine = 'opls').", call. = FALSE)
             }
 
             if(object@ctrl$ncomp_selected == 0)
-              stop('No model components found')
+              stop('No model components found', call. = FALSE)
 
             Xcs <- object@fit$X_prepped
-            if (is.null(Xcs)) stop("Missing fit$X_prepped.")
+            if (is.null(Xcs)) stop("Missing fit$X_prepped.", call. = FALSE)
 
             To <- object@fit$t_orth
             Po <- object@fit$p_orth
             Tp <- .ensure_matrix(object@fit$pred_comp$t_x, ncol=1)
             Pp <- .ensure_matrix(object@fit$pred_comp$p_x, ncol=ncol(Po))
 
-            if (is.null(To) || is.null(Po)) stop("Missing orthogonal components fit$t_o and/or fit$p_o.")
-            if (is.null(Tp) || is.null(Pp)) stop("Missing predictive components fit$t_p and/or fit$p_p.")
+            if (is.null(To) || is.null(Po)) stop("Missing orthogonal components fit$t_o and/or fit$p_o.", call. = FALSE)
+            if (is.null(Tp) || is.null(Pp)) stop("Missing predictive components fit$t_p and/or fit$p_p.", call. = FALSE)
 
             Xhat_o <- To %*% Po
             Xhat_p <- Tp %*% Pp
@@ -410,9 +267,7 @@ setMethod("xres", "m8_model",
 )
 
 
-############################
-### MODEL SUMMARY / SHOW ###
-############################
+# --- summary -----------------------------------------------------------
 
 #' @describeIn m8_model-class Summarise model performance and component selection.
 #' @param object An object of class \code{m8_model}.
@@ -428,11 +283,9 @@ setMethod("summary", "m8_model",
               n_sel <- as.integer(ctrl$ncomp_selected)
               n_tst <- as.integer(ctrl$ncomp_tested)
 
-              # Fallback if older objects exist
               if (is.na(n_sel) || length(n_sel) == 0L) n_sel <- as.integer(ctrl$nc)
               if (is.na(n_tst) || length(n_tst) == 0L) n_tst <- length(ctrl$q2)
 
-              # Guard
               n_sel <- max(0L, n_sel)
               n_tst <- max(n_sel, n_tst, 0L)
 
@@ -446,10 +299,14 @@ setMethod("summary", "m8_model",
                 df$AUCv <- ctrl$aucs_te[seq_len(min(length(ctrl$aucs_te), n_tst))]
               }
 
-              # Mark which are actually selected (kept)
+              df$R2X <- NA_real_
+              if (!is.null(ctrl$r2x_comp) && length(ctrl$r2x_comp) > 0L) {
+                idx <- seq_len(min(n_tst, length(ctrl$r2x_comp)))
+                df$R2X[idx] <- ctrl$r2x_comp[seq_len(length(idx))]
+              }
+
               df$selected <- df$comp <= n_sel
 
-              # Optional: human-readable label
               df$fit <- ifelse(df$selected, "fitted", "not fitted")
 
               df$stop_reason <- NA_character_
@@ -460,7 +317,7 @@ setMethod("summary", "m8_model",
               df$stop_delta[n_tst] <- ctrl$stop_delta
 
 
-              return(methods::new("m8_modelSummary",
+              return(list(
                          perf   = df,
                          engine = eng,
                          y_type = ctrl$type
@@ -469,8 +326,8 @@ setMethod("summary", "m8_model",
 
             if (eng == "opls") {
 
-              n_sel <- as.integer(ctrl$ncomp_selected)-1 # combined 1/0 pred + x orth
-              n_tst <- as.integer(ctrl$ncomp_tested)-1 # combined 1 pred + x orth
+              n_sel <- as.integer(ctrl$ncomp_selected)-1
+              n_tst <- as.integer(ctrl$ncomp_tested)-1
 
               if (is.na(n_tst) || length(n_tst) == 0L) n_tst <- length(ctrl$q2)
               if (is.na(n_sel) || length(n_sel) == 0L) n_sel <- n_tst
@@ -511,7 +368,7 @@ setMethod("summary", "m8_model",
                 df$stop_delta[n_tst]  <- ctrl$stop_delta
               }
 
-              return(methods::new("m8_modelSummary",
+              return(list(
                          perf   = df,
                          engine = eng,
                          y_type = ctrl$type
@@ -520,27 +377,28 @@ setMethod("summary", "m8_model",
 
             if (eng == "pca") {
 
+              n_sel <- as.integer(ctrl$ncomp_selected)
+              df <- data.frame(comp = seq_len(n_sel))
+
               expl <- ctrl$r2x_comp
               if (is.null(expl)) {
-                stop("PCA summary requires ctrl$r2x_comp (proportion variance explained per component).")
+                stop("PCA summary requires ctrl$r2x_comp (proportion variance explained per component).", call. = FALSE)
               }
+              df$R2X <- expl
+              df$R2X_cum <- cumsum(as.numeric(df$R2X))
+              df$selected <- df$comp <= n_sel
+              df$fit <- ifelse(df$selected, "fitted", "not fitted")
 
-              nc <- length(expl)
-              df <- data.frame(
-                comp   = seq_len(nc),
-                var    = as.numeric(expl),
-                cumvar = cumsum(as.numeric(expl))
-              )
+              alg <- object@ctrl$method
 
-
-              return(methods::new("m8_modelSummary",
-                         perf   = df,
-                         engine = eng,
+              return(list(
+                         perf = df,
+                         engine = paste0(eng, " (", alg, ")"),
                          y_type = "unsupervised"
               ))
             }
 
-            methods::new("m8_modelSummary",
+            list(
                 perf   = data.frame(),
                 engine = eng,
                 y_type = if (!is.null(ctrl$type)) ctrl$type else NA_character_
@@ -549,6 +407,7 @@ setMethod("summary", "m8_model",
 )
 
 
+# --- show -----------------------------------------------------------
 
 #' @describeIn m8_model-class Show a compact model header.
 #' @param object An object of class \code{m8_model}.
@@ -577,9 +436,9 @@ setMethod("show", "m8_model",
             prep <- tryCatch(object@prep, error = function(e) NULL)
             if (!is.null(prep)) {
               cat("Preprocess  :",
-                  ifelse(prep@center, "center", "no-center"),
+                  ifelse(prep$center, "center", "no-center"),
                   "|",
-                  prep@scale, "\n")
+                  prep$scale, "\n")
             }
 
             ctrl <- object@ctrl
@@ -599,8 +458,8 @@ setMethod("show", "m8_model",
             }
 
             if (!is.null(object@cv)) {
-              cv_method <- tryCatch(class(object@cv@strategy)[1], error = function(e) NULL)
-              cv_k <- tryCatch(object@cv@strategy@k, error = function(e) NULL)
+              cv_method <- tryCatch(object@cv$strategy, error = function(e) NULL)
+              cv_k <- tryCatch(length(object@cv$train), error = function(e) NULL)
               if (!is.null(cv_method)) {
                 line <- paste0("Validation  : ", cv_method)
 
@@ -621,5 +480,3 @@ setMethod("show", "m8_model",
             cat("Use summary() for performance metrics.\n\n")
           }
 )
-
-

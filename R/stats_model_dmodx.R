@@ -26,7 +26,7 @@
 #' @examples
 #' data(covid)
 #' cv <- balanced_mc(k=5, split=2/3)
-#' scaling <- UVScaling(center=TRUE)
+#' scaling <- uv_scaling(center=TRUE)
 #' model <-opls(X=covid$X, Y=covid$an$type, scaling, cv)
 #' dX <- dmodx(model)
 #' print(dX[[1]])
@@ -36,23 +36,23 @@
 dmodx <- function(mod, plot = TRUE) {
 
   if (!inherits(mod, "m8_model") || !identical(mod@engine, "opls")) {
-    stop("Please provide an m8_model object with engine = 'opls'.")
+    stop("Please provide an m8_model object with engine = 'opls'.", call. = FALSE)
   }
 
   E <- xres(mod)
 
   if (is.null(E)) {
-    stop("Could not find X residual matrix.")
+    stop("Could not find X residual matrix.", call. = FALSE)
   }
 
   N <- nrow(E)
   K <- ncol(E)
   A <- 1L
 
-  A0 <- if (isTRUE(mod@prep@center)) 1L else 0L
+  A0 <- if (isTRUE(mod@prep$center)) 1L else 0L
 
-  if ((K - A) <= 0) stop("Invalid dimensions for DModX: need K - A > 0.")
-  if ((N - A - A0) <= 0) stop("Invalid dimensions for DModX: need N - A - A0 > 0.")
+  if ((K - A) <= 0) stop("Invalid dimensions for DModX: need K - A > 0.", call. = FALSE)
+  if ((N - A - A0) <= 0) stop("Invalid dimensions for DModX: need N - A - A0 > 0.", call. = FALSE)
 
   ss_res <- rowSums(E^2)
   denom_global <- sqrt(sum(ss_res) / ((N - A - A0) * (K - A)))
@@ -142,7 +142,7 @@ dmodx <- function(mod, plot = TRUE) {
       g <- g + scale_colour_gradientn(colours = matlab.like2(10), name = "Y")
     }
 
-    return(list(g, df))
+    plot(g)
   }
 
   df

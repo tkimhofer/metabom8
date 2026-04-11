@@ -73,30 +73,30 @@ norm_eretic <- function(X, integr = FALSE,
 
   if (is.null(ppm) && !is.null(colnames(X))) {
     ppm <- as.numeric(colnames(X))
-    if (anyNA(ppm)) stop("ppm could not be inferred from colnames(X): non-numeric column names.")
+    if (anyNA(ppm)) stop("ppm could not be inferred from colnames(X): non-numeric column names.", call. = FALSE)
   }
   if (!.check_X_ppm(X, ppm))
-    stop("Non-matching dimensions X matrix and ppm vector or invalid ppm values.")
+    stop("Non-matching dimensions X matrix and ppm vector or invalid ppm values.", call. = FALSE)
   ppm <- as.numeric(ppm)
 
   if (!is.null(pos)) {
     if (!is.numeric(pos) || length(pos) != 1L || !is.finite(pos))
-      stop("`pos` must be a single finite numeric value or NULL.")
+      stop("`pos` must be a single finite numeric value or NULL.", call. = FALSE)
   }
   if (!is.numeric(search) || length(search) != 2L)
-    stop("`search` must be a numeric vector of length 2.")
+    stop("`search` must be a numeric vector of length 2.", call. = FALSE)
   if (!is.numeric(width) || length(width) != 1L || !is.finite(width) || width <= 0)
-    stop("`width` must be a single positive numeric value.")
+    stop("`width` must be a single positive numeric value.", call. = FALSE)
   if (!is.numeric(noise_win) || length(noise_win) != 2L)
-    stop("`noise_win` must be a numeric vector of length 2.")
+    stop("`noise_win` must be a numeric vector of length 2.", call. = FALSE)
   if (!is.numeric(snr_factor) || length(snr_factor) != 1L || !is.finite(snr_factor) || snr_factor <= 0)
-    stop("`snr_factor` must be a single positive numeric value.")
+    stop("`snr_factor` must be a single positive numeric value.", call. = FALSE)
 
   discovered <- FALSE
   if (is.null(pos)) {
     idx_scan <- get_idx(search, ppm)
     if (length(idx_scan) < 3L)
-      stop("Search window not present in ppm axis (too few points).")
+      stop("Search window not present in ppm axis (too few points).", call. = FALSE)
     mean_spec <- colMeans(X, na.rm = TRUE)
     pos <- ppm[idx_scan][which.max(mean_spec[idx_scan])]
     discovered <- TRUE
@@ -106,11 +106,11 @@ norm_eretic <- function(X, integr = FALSE,
   win <- c(pos - half, pos + half)
   idx_eretic <- get_idx(win, ppm)
   if (length(idx_eretic) < 2L)
-    stop("ERETIC integration window not present in ppm axis.")
+    stop("ERETIC integration window not present in ppm axis.", call. = FALSE)
 
   idx_noise <- get_idx(noise_win, ppm)
   if (length(idx_noise) < 2L)
-    stop("Noise window not present in ppm axis (adjust `noise_win`).")
+    stop("Noise window not present in ppm axis (adjust `noise_win`).", call. = FALSE)
 
   integrals <- rowSums(X[, idx_eretic, drop = FALSE], na.rm = TRUE)
 

@@ -4,7 +4,14 @@
 \alias{.cvSetsMethod}
 \title{Generate Cross-Validation (CV) Training Set Indices}
 \usage{
-.cvSetsMethod(Y, type, method = "k-fold_stratified", k = 7, split = 2/3)
+.cvSetsMethod(
+  Y,
+  type,
+  method = "k-fold_stratified",
+  k = 7,
+  split = 2/3,
+  probs = NULL
+)
 }
 \arguments{
 \item{Y}{matrix or data.frame. Outcome matrix. If multi-column, only the first column will be used.}
@@ -16,6 +23,8 @@
 \item{k}{integer. Number of CV iterations/folds.}
 
 \item{split}{numeric. For Monte Carlo methods, the fraction of samples to use in the training set (0 < split < 1).}
+
+\item{probs}{Numeric vector. Probabilities used for stratification of numeric \code{Y} (regression only).}
 }
 \value{
 A list of integer vectors. Each vector contains row indices representing a training set.

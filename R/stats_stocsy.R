@@ -20,7 +20,7 @@
 #' # plotStocsy(st, shift = c(5.15, 5.30))
 #'
 #' @family structural_annotation
-#' @importFrom ggplot2 ggplot aes_string geom_line geom_vline scale_x_reverse
+#' @importFrom ggplot2 ggplot geom_line geom_vline scale_x_reverse
 #'   scale_colour_gradientn labs theme_bw theme element_text
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales breaks_pretty
@@ -32,34 +32,34 @@
 stocsy <- function(X, ppm = NULL, driver, plotting = TRUE, title = NULL) {
 
   if (!is.matrix(X) && !is.data.frame(X)) {
-    stop("X must be a numeric matrix or data frame.")
+    stop("X must be a numeric matrix or data frame.", call. = FALSE)
   }
   X <- as.matrix(X)
-  if (!is.numeric(X)) stop("X must be numeric.")
+  if (!is.numeric(X)) stop("X must be numeric.", call. = FALSE)
 
   if (missing(ppm) || is.null(ppm)) {
     ppm_try <- as.numeric(colnames(X))
     if (is.null(ppm_try) || all(is.na(ppm_try))) {
-      stop("Provide 'ppm' or ensure colnames(X) are numeric ppm values.")
+      stop("Provide 'ppm' or ensure colnames(X) are numeric ppm values.", call. = FALSE)
     }
     ppm <- ppm_try
   }
   if (!is.numeric(ppm) || length(ppm) != ncol(X)) {
-    stop("'ppm' must be numeric and have length ncol(X).")
+    stop("'ppm' must be numeric and have length ncol(X).", call. = FALSE)
   }
 
-  if (!is.numeric(driver)) stop("'driver' must be numeric.")
+  if (!is.numeric(driver)) stop("'driver' must be numeric.", call. = FALSE)
   extD <- length(driver) > 1L
 
   if (extD) {
-    if (length(driver) != nrow(X)) stop("External driver must have length nrow(X).")
+    if (length(driver) != nrow(X)) stop("External driver must have length nrow(X).", call. = FALSE)
     idx <- which(!is.na(driver))
-    if (length(idx) < 2L) stop("External driver has <2 non-NA entries.")
+    if (length(idx) < 2L) stop("External driver has <2 non-NA entries.", call. = FALSE)
     driver_use <- driver[idx]
     X_use <- X[idx, , drop = FALSE]
   } else {
     if (driver < min(ppm) || driver > max(ppm)) {
-      stop("Internal STOCSY driver must lie within the ppm range.")
+      stop("Internal STOCSY driver must lie within the ppm range.", call. = FALSE)
     }
     driver_use <- driver
     X_use <- X
@@ -74,15 +74,15 @@ stocsy <- function(X, ppm = NULL, driver, plotting = TRUE, title = NULL) {
   cc <- apply(X_use, 2, function(x) cor(x, l, use = "pairwise.complete.obs"))
   cv <- apply(X_use, 2, function(x) cov(x, l, use = "pairwise.complete.obs"))
 
-  stoc_mod <- structure(list(
-    version = "0.9",
+  stoc_mod <- list(
+    # version = "0.9",
     X       = X_use,
     ppm     = as.numeric(ppm),
     driver  = driver_use,
     r       = as.numeric(cc),
     cov     = as.numeric(cv),
     extD    = extD
-  ), class = "m8_stocsy1d")
+  )
 
   if (isTRUE(plotting)) {
     print(plotStocsy(stoc_mod, shift = range(ppm, na.rm = TRUE), title = title))
@@ -107,7 +107,7 @@ stocsy <- function(X, ppm = NULL, driver, plotting = TRUE, title = NULL) {
 #' # st <- stocsy(X, ppm, driver = 5.233, plotting = FALSE)
 #' # plotStocsy(st, shift = c(5.15, 5.30), title = "Glucose")
 #'
-#' @importFrom ggplot2 ggplot aes_string geom_line geom_vline scale_x_reverse
+#' @importFrom ggplot2 ggplot geom_line geom_vline scale_x_reverse
 #'   scale_colour_gradientn labs theme_bw theme element_text ggtitle
 #' @importFrom colorRamps matlab.like2
 #' @importFrom scales breaks_pretty
@@ -121,8 +121,8 @@ stocsy <- function(X, ppm = NULL, driver, plotting = TRUE, title = NULL) {
 #' @export
 plotStocsy <- function(stoc_mod, shift = c(0, 10), title = NULL) {
 
-  if (!inherits(stoc_mod, "m8_stocsy1d")) {
-    stop("Input must be a 'm8_stocsy1d' object returned by stocsy().")
+  if (!is.list(stoc_mod)) {
+    stop("Input must be a list instance returned by `stocsy()`.")
   }
   if (!is.numeric(shift) || length(shift) != 2L) {
     stop("'shift' must be a numeric vector of length 2.")

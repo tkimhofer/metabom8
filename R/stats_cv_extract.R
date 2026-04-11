@@ -136,7 +136,7 @@
 .extMeanCvFeat <- function(cv_obj, feat = "t_xp") {
 
   if (!feat %in% names(cv_obj[[1]]))
-    stop("Feature name not in feature list.")
+    stop("Feature name not in feature list.", call. = FALSE)
 
   inter <- lapply(cv_obj, `[[`, feat)
 

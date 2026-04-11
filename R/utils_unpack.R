@@ -4,7 +4,7 @@
     if (is.null(meta)) meta <- x$meta
     x <- x$X
     if (!.check_X_ppm(x, ppm))
-      stop("Dimensions of X and ppm do not match.")
+      stop("Dimensions of X and ppm do not match.", call. = FALSE)
   }
 
 

@@ -1,5 +1,5 @@
 #########################
-### MODEL VALIDATIOIN ###
+### MODEL VALIDATION ###
 #########################
 
 setValidity("m8_model", function(object) {
@@ -28,7 +28,6 @@ setValidity("m8_model", function(object) {
     msg <- c(msg, "slot 'ctrl' must be a list.")
   } else {
     ctrl <- object@ctrl
-
     if (!is.null(ctrl$type)) {
       if (!is.character(ctrl$type) || length(ctrl$type) != 1L || is.na(ctrl$type)) {
         msg <- c(msg, "ctrl$type must be a single character string.")
@@ -106,8 +105,8 @@ setValidity("m8_model", function(object) {
   if (!is.list(object@provenance)) msg <- c(msg, "slot 'provenance' must be a list.")
   if (!is.list(object@session)) msg <- c(msg, "slot 'session' must be a list.")
 
-  if (!is.null(object@cv) && !is(object@cv, "ResamplingInstance")) {
-    msg <- c(msg, "slot 'cv' must be NULL or extend class 'ResamplingInstance'.")
+  if (!is.list(object@cv) && !is.null(object@cv)) {
+    msg <- c(msg, "slot 'cv' must be a list'.")
   }
   if (length(msg)) msg else TRUE
 })

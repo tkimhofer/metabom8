@@ -10,7 +10,7 @@ pca(X, scaling, ncomp, method = "nipals")
 \item{X}{Numeric matrix (rows = samples, columns = variables).}
 
 \item{scaling}{A \code{ScalingStrategy} object defining model-internal
-centering and scaling (e.g. \code{UVScaling(center = TRUE)}).}
+centering and scaling (e.g. \code{uv_scaling(center = TRUE)}).}
 
 \item{ncomp}{Integer. Number of principal components to compute.}
 
@@ -56,15 +56,29 @@ The original input matrix is not modified.
 }
 \examples{
 data(covid)
-uv <- UVScaling(center=TRUE)
-model <-pca(X=covid$X, scaling=uv, ncomp=2)
+
+uv <- uv_scaling(center=TRUE)
+model <- pca(X=covid$X, scaling=uv, ncomp=2)
+
 show(model)
 summary(model)
+
 Tx <- scores(model)
 Px <- loadings(model)
+
+t2 <- hotellingsT2(Tx)
+ell <-ellipse2d(t2)
+
+# scores plot
+plot(Tx, asp = 1,
+  col = as.factor(covid$an$type),
+  xlim = range(c(Tx[1,], ell$x)),
+  ylim = range(c(Tx[2,], ell$y))
+ )
+lines(ell$x, ell$y, col = "grey", lty=2)
 }
 \seealso{
-\code{\link{pls}}, \code{\link{opls}}
+\code{\link{uv_scaling}}
 
 Other modelling: 
 \code{\link{opls}()},

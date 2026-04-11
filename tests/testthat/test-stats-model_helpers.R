@@ -232,8 +232,6 @@ test_that(".prepareY errors on multi-column numeric input", {
 })
 
 
-#### .prepareInputs
-
 test_that("prepareInputs produces consistent modeling input", {
 
   set.seed(1)

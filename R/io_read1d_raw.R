@@ -83,7 +83,7 @@ read1d_raw <- function(path,
                        exp_type = list(exp = "PROF_PLASMA_CPMG128_3mm", pulprog = "noesygppr1d"),
                        apodisation = list(fun = "exponential", lb = 0.2),
                        zerofill = 1L,
-                       mode = "absorption",
+                       mode = c("absorption", "dispersion", "magnitude"),
                        verbose = 1,
                        recursive = TRUE,
                        n_max = 1000,
@@ -113,7 +113,7 @@ read1d_raw <- function(path,
   }
 
   if (length(unique(pars$a_TD)) > 2 || length(unique(pars$a_GRPDLY)) > 1) {
-    stop("Unequal TD or GRPDLY across experiments. Cannot proceed.")
+    stop("Unequal TD or GRPDLY across experiments. Cannot proceed.", call. = FALSE)
   }
 
   ppm_ref <- .defineChemShiftPpm(
@@ -154,7 +154,7 @@ read1d_raw <- function(path,
     if (length(apoFct) != length(fid_corF)) warning("Apodisation length mismatch.")
     spec_lb <- fid_corF * apoFct
 
-    if (zerofill != floor(zerofill)) stop("zerofill must be integer (e.g., 1, 2).")
+    if (zerofill != floor(zerofill)) stop("zerofill must be integer (e.g., 1, 2).", call. = FALSE)
     spec_zf <- .zerofill(fid = spec_lb, zf = zerofill, le_ori = length(fid))
     sp <- .cplxFft(spec_zf)[, 1]
 

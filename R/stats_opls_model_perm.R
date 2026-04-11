@@ -17,7 +17,7 @@
 #' Wiklund, S. et al. (2008). A Tool for Improved Validation of OPLS Models. *Journal of Chemometrics*, 22(11–12), 594–600.
 #'
 #' @family model_validation
-#' @importFrom ggplot2 ggplot aes_string theme_bw labs geom_point element_rect
+#' @importFrom ggplot2 ggplot theme_bw labs geom_point element_rect
 #' @importFrom reshape2 melt
 #' @importFrom stats cor median
 #' @importFrom parallel detectCores
@@ -32,7 +32,7 @@
 # perm_results <- opls_perm(model, n = 10)
 opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
   if (!inherits(smod, "m8_model") || smod@engine != "opls") {
-    stop("Input must be an m8_model instance with opls engine.")
+    stop("Input must be an m8_model instance with opls engine.", call. = FALSE)
   }
 
   nc_o <- smod@ctrl$ncomp_selected - 1
@@ -150,17 +150,17 @@ opls_perm <- function(smod, n = 10, plot = TRUE, mc = FALSE) {
                                  na_rm = TRUE) {
   alternative <- match.arg(alternative)
 
-  if (!is.data.frame(out_df)) stop("out_df must be a data.frame.")
-  if (!("model" %in% names(out_df))) stop("out_df must have a 'model' column.")
+  if (!is.data.frame(out_df)) stop("out_df must be a data.frame.", call. = FALSE)
+  if (!("model" %in% names(out_df))) stop("out_df must have a 'model' column.", call. = FALSE)
 
   obs_idx <- which(out_df$model == observed_label)
   if (length(obs_idx) != 1L) {
-    stop("Expected exactly one observed row with model == '", observed_label, "'. Found: ", length(obs_idx))
+    stop("Expected exactly one observed row with model == '", observed_label, "'. Found: ", length(obs_idx), call. = FALSE)
   }
 
   perm_df <- out_df[out_df$model != observed_label, , drop = FALSE]
   B <- nrow(perm_df)
-  if (B < 1L) stop("No permutation rows found (model != '", observed_label, "').")
+  if (B < 1L) stop("No permutation rows found (model != '", observed_label, "').", call. = FALSE)
 
   drop_cols <- c("model", "r_abs")  # keep r_abs out unless you want it as a metric
   metric_cols <- setdiff(names(out_df), drop_cols)

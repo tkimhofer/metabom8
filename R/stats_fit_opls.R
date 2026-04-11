@@ -13,7 +13,7 @@
 #'
 #' @param X Numeric matrix of predictors (rows = samples, columns = variables).
 #' @param Y Numeric matrix or factor vector of responses.
-#' @param scaling A scaling strategy object (e.g., \code{UVScaling(center = TRUE)}),
+#' @param scaling A scaling strategy object (e.g., \code{uv_scaling(center = TRUE)}),
 #'   specifying model-internal centering and/or scaling applied during fitting.
 #'   This does not modify the original spectral matrix.
 #' @param validation_strategy A cross-validation strategy object defining how
@@ -48,21 +48,49 @@
 #' An object of class \code{m8_model} containing the fitted O-PLS model,
 #' cross-validation results, and performance statistics.
 #'
-#' @seealso \code{\link{pls}}, \code{\link{UVScaling}}
+#' @seealso \code{\link{pls}}, \code{\link{uv_scaling}}
 #'
 #' @family modelling
 #' @examples
 #' data(covid)
+#'
 #' cv <- balanced_mc(k=5, split=2/3)
-#' scaling <- UVScaling(center=TRUE)
+#' scaling <- uv_scaling(center=TRUE)
 #' model <-opls(X=covid$X, Y=covid$an$type, scaling, cv)
+#'
 #' show(model)
 #' summary(model)
 #'
+#' # scores
 #' Tp <- scores(model)
 #' To <- scores(model, orth=TRUE)
+#'
+#' t2 <- hotellingsT2(cbind(Tp, To))
+#' ell <-ellipse2d(t2)
+#'
+#' plot(Tp, To, asp = 1,
+#'   col = as.factor(covid$an$type),
+#'   xlim = range(c(Tp, ell$x)),
+#'   ylim = range(c(To, ell$y))
+#'  )
+#' lines(ell$x, ell$y, col = "grey", lty=2)
+#'
+#' # loadings & vip's
 #' Pp <- loadings(model)
 #' Po <- loadings(model, orth=TRUE)
+#' vips <- vip(model)
+#'
+#' x=covid$ppm
+#' y = Pp * apply(covid$X, 2, sd)
+#'
+#' palette <-  colorRampPalette(c("blue", "cyan", "yellow", "red"))(100)
+#' idx <- cut(vips, breaks = 100, labels = FALSE)
+#' plot(x, y, type = "n", xlim = rev(range(x)), xlab='ppm', ylab='t_pred_sc')
+#'
+#' for (i in seq_len(length(x) - 1)) {
+#'   segments(x[i], y[i], x[i+1], y[i+1], col = palette[idx[i]], lwd = 2)
+#' }
+#'
 #' @export
 opls <- function(X, Y, scaling, validation_strategy) {
 
@@ -98,37 +126,39 @@ opls <- function(X, Y, scaling, validation_strategy) {
 
 .oplsEngine <- function(X, Y, scaling, validation_strategy, maxPCo, cv=NULL) {
 
-  inputs <- .prepareInputs(X, Y, scaling@center, scaling@scale)
+  #### checking scaling
+  .arg_check_scaling(scaling)
+
+  inputs <- .prepareInputs(X, Y, scaling$center, scaling$scale)
   type <- inputs$type
   is_multi_Y <- grepl('mY', type)
+  if (is_multi_Y) {stop("Multi-response Y is currently not supported", call. = FALSE)}
+  n  <- nrow(inputs$Y)
+  p  <- ncol(inputs$X)
+  mo <- maxPCo
 
-  if(is.null(cv))
-    cv <- instantiate(validation_strategy, inputs$Y)
+  cv <- .arg_check_cv(cv_pars=validation_strategy, model_type=type, n=n, Y_prepped=inputs$Y)
 
-  preppedX <- prep(scaling, inputs$X)
+  preppedX <- prep_X(scaling, inputs$X)
   XcsTot <- preppedX$X
+  YcsTot <- .scaleMatRcpp(inputs$Y, 0:(nrow(inputs$Y) - 1), center = scaling$center, scale_type = inputs$scale_code)[[1]]
 
-  YcsTot <- .scaleMatRcpp(inputs$Y, 0:(nrow(inputs$Y) - 1), center = scaling@center, scale_type = inputs$scale_code)[[1]]
   tssx <- .tssRcpp(XcsTot)
   tssy <- .tssRcpp(YcsTot) / ncol(YcsTot)
 
-  Ycs_fold <- lapply(cv@train, function(idc)
-    .scaleMatRcpp(inputs$Y, idc - 1, scaling@center, inputs$scale_code)[[1]]
+  Ycs_fold <- lapply(cv$train, function(idc)
+    .scaleMatRcpp(inputs$Y, idc - 1, scaling$center, inputs$scale_code)[[1]]
   )
 
   tt         <- NULL
   opls_filt  <- NULL
-
-  n  <- nrow(XcsTot)
-  p  <- ncol(XcsTot)
-  mo <- maxPCo
 
   t_orth <- matrix(0, n, mo)
   p_orth <- matrix(0, mo, p)
   w_orth <- matrix(0, mo, p)
 
   q <- ncol(inputs$Y)
-  k <- length(cv@train)
+  k <- length(cv$train)
 
   acc <- list(
     sum_test  = matrix(0, n, q),
@@ -147,7 +177,7 @@ opls <- function(X, Y, scaling, validation_strategy) {
     res <- if (nc == 1)
       .oplsComponentCv(
         X        = inputs$X,
-        cv.set   = cv@train,
+        cv.set   = cv$train,
         Ycs_fold = Ycs_fold,
         nc       = nc,
         mod.cv   = NULL,
@@ -156,7 +186,7 @@ opls <- function(X, Y, scaling, validation_strategy) {
     else
       .oplsComponentCv(
         X        = NULL,
-        cv.set   = cv@train,
+        cv.set   = cv$train,
         Ycs_fold = Ycs_fold,
         nc       = nc,
         mod.cv   = tt,
@@ -256,8 +286,8 @@ opls <- function(X, Y, scaling, validation_strategy) {
       t_orth = t_orth_out,
       p_orth = p_orth_out,
       w_orth = w_orth_out,
-      X_mean = preppedX$prep@X_mean,
-      X_sd = preppedX$prep@X_sd,
+      X_mean = preppedX$prep$X_mean,
+      X_sd = preppedX$prep$X_sd,
       X_prepped = preppedX$X,
       Y = inputs$Y
     ),
@@ -355,13 +385,13 @@ opls <- function(X, Y, scaling, validation_strategy) {
 
 .prepareInputs <- function(X, Y, center, scale) {
   if (is.data.frame(X)) X <- as.matrix(X)
-  if (!is.logical(center)) stop("Check center parameter argument!")
+  if (!is.logical(center)) stop("Check center parameter argument!", call. = FALSE)
 
   sc_num <- switch(scale,
                    "None" = 0,
                    "UV" = 1,
                    "Pareto" = 2,
-                   stop("Check scale parameter argument!"))
+                   stop("Check scale parameter argument!", call. = FALSE))
 
   x_check <- .checkXclassNas(X)
   y_check <- .checkYclassNas(Y)

@@ -73,11 +73,14 @@
 #'
 #' @examples
 #' data("covid")
+#'
 #' X <- covid$X
 #' Y <- as.numeric(factor(covid$an$type)) - 1
-#' scaling <- UVScaling(center=TRUE)
+#'
+#' scaling <- uv_scaling(center=TRUE)
 #' cv <- balanced_mc(10, split=2/3, type='R', probs = c(0, 0.5, 1))
 #' mod <- opls(X, Y, scaling, cv)
+#'
 #' cv_anova(mod)
 #'
 #' @family model_validation
@@ -85,7 +88,7 @@
 #' @importFrom stats lm pf residuals
 cv_anova <- function(smod) {
   if (!(inherits(smod, "m8_model") && smod@engine == "opls" && smod@ctrl$type == "R")) {
-    stop("Requires an m8_model with engine == 'opls' and type regression")
+    stop("Requires an m8_model with engine == 'opls' and type regression", call. = FALSE)
   }
 
   # pick response: numeric Y preferred; otherwise first dummy column
@@ -93,11 +96,11 @@ cv_anova <- function(smod) {
   if (!is.null(smod@fit$Y) && is.numeric(smod@fit$Y)) {
     y <- as.numeric(smod@fit$Y)
   } else {
-    stop("Could not find a usable response in smod@fit$Y.")
+    stop("Could not find a usable response in smod@fit$Y.", call. = FALSE)
   }
 
   tcv <- scores(smod, cv=TRUE)
-  if (length(y) != length(tcv)) stop("Length mismatch between Y and t_pred_cv.")
+  if (length(y) != length(tcv)) stop("Length mismatch between Y and t_pred_cv.", call. = FALSE)
 
   n <- length(y)
 

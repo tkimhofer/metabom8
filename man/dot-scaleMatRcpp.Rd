@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{.scaleMatRcpp}
 \alias{.scaleMatRcpp}
-\title{Column-wise matrix scaling}
+\title{Column-wise matrix scaling  (C++ backend)}
 \usage{
 .scaleMatRcpp(X, idc, center, scale_type)
 }
@@ -11,7 +11,7 @@
 
 \item{idc}{int row indices of X}
 
-\item{center}{bool mean centering}
+\item{center}{logical mean centering}
 
 \item{scale_type}{int 0: no scaling, 1: SD scaling, 2: Pareto scaling}
 }
@@ -19,6 +19,11 @@
 list: 1. scale X matrix, 2. mean (sd vec), 3: sd (num vec)
 }
 \description{
-Column-wise matrix scaling
+Column-wise matrix scaling  (C++ backend)
+}
+\examples{
+X <- matrix(rnorm(20), ncol = 4)
+idc <- seq_len(nrow(X)) -1 # ! cpp indexing starts at zero !
+.scaleMatRcpp(X, idc, TRUE, 1L)
 }
 \keyword{internal}

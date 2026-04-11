@@ -57,7 +57,7 @@ calibrate <- function(X, ppm = NULL, type = "tsp") {
   meta <- u$meta
 
   if (is.null(ppm))
-    stop("ppm must be supplied or inferable.")
+    stop("ppm must be supplied or inferable.", call. = FALSE)
 
   ppm <- as.numeric(ppm)
 
@@ -146,13 +146,13 @@ calibrate <- function(X, ppm = NULL, type = "tsp") {
   if (is.list(type) ) {
 
     if (!all(c("mode","window") %in% names(type)))
-      stop("Custom calibration list must include 'mode' and 'window'.")
+      stop("Custom calibration list must include 'mode' and 'window'.", call. = FALSE)
 
     if (!type$mode %in% c("singlet","doublet"))
-      stop("`mode` must be 'singlet' or 'doublet'.")
+      stop("`mode` must be 'singlet' or 'doublet'.", call. = FALSE)
 
     if (type$mode == "doublet" && is.null(type$j))
-      stop("Custom doublet requires 'j'.")
+      stop("Custom doublet requires 'j'.", call. = FALSE)
 
     if (is.null(type$centre))
       type$centre <- mean(type$window)
@@ -170,7 +170,7 @@ calibrate <- function(X, ppm = NULL, type = "tsp") {
     return(out)
   }
 
-  stop("Unsupported calibration target.")
+  stop("Unsupported calibration target.", call. = FALSE)
 }
 
 #' Align spectra to the maximum peak within a ppm interval.

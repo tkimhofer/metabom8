@@ -4,9 +4,9 @@ set.seed(15)
 
 test_that("kfold constructor returns valid object", {
 
-  cv <- kfold(5)
-  expect_s4_class(cv, "KFold")
-  expect_equal(cv@k, 5)
+  cv <- kfold(k=5)
+  expect_type(cv, "list")
+  expect_equal(cv$k, 5)
 
 })
 
@@ -20,21 +20,21 @@ test_that("stratified_kfold constructor works", {
 
   cv <- stratified_kfold(k = 5, type = "R", probs = c(0,0.5,1))
 
-  expect_s4_class(cv, "StratifiedKFold")
+  expect_type(cv, "list")
 
-  expect_equal(cv@k, 5)
-  expect_equal(cv@type, "R")
-  expect_equal(cv@probs, c(0,0.5,1))
+  expect_equal(cv$k, 5)
+  expect_equal(cv$type, "R")
+  expect_equal(cv$probs, c(0,0.5,1))
 })
 
 test_that("mc constructor works", {
 
   cv <- mc(k = 10, split = 0.7)
 
-  expect_s4_class(cv, "MonteCarlo")
+  expect_type(cv, "list")
 
-  expect_equal(cv@k, 10)
-  expect_equal(cv@split, 0.7)
+  expect_equal(cv$k, 10)
+  expect_equal(cv$split, 0.7)
 
 })
 
@@ -50,11 +50,11 @@ test_that("balanced_mc constructor works", {
 
   cv <- balanced_mc(k = 5, split = 0.7, type = "DA")
 
-  expect_s4_class(cv, "BalancedMonteCarlo")
+  expect_type(cv, "list")
 
-  expect_equal(cv@k, 5)
-  expect_equal(cv@split, 0.7)
-  expect_equal(cv@type, "DA")
+  expect_equal(cv$k, 5)
+  expect_equal(cv$split, 0.7)
+  expect_equal(cv$type, "DA")
 
 })
 
@@ -63,12 +63,13 @@ test_that("balanced_mc constructor works", {
 
 test_that("kfold instantiates correct folds", {
 
-  Y <- matrix(rnorm(100), ncol = 1)
+  n = 100
+  Y <- matrix(rnorm(n), ncol = 1)
 
   cv <- kfold(5)
-  inst <- instantiate(cv, Y)
+  inst <- .arg_check_cv(cv, model_type='R', n=n, Y_prepped = Y)
 
-  folds <- train_idc(inst)
+  folds <- inst$train
 
   expect_length(folds, 5)
   expect_true(all(sapply(folds, is.integer)))
@@ -82,11 +83,14 @@ test_that("kfold instantiates correct folds", {
 
 test_that("stratified_kfold preserves class balance", {
 
-  Y <- matrix(sample(c(0,1), 100, replace = TRUE, prob = c(0.8,0.2)), ncol=1)
-  cv <- stratified_kfold(5, type="DA")
-  inst <- instantiate(cv, Y)
+  n = 100
+  Y <- matrix(sample(c(0,1), n, replace = TRUE, prob = c(0.8,0.2)), ncol=1)
 
-  folds <- train_idc(inst)
+  cv <- stratified_kfold(5, type="DA")
+
+  inst <- .arg_check_cv(cv, model_type='DA', n=n, Y_prepped = Y)
+  folds <- inst$train
+
   props <- sapply(folds, function(i) mean(Y[i] == 1))
 
   expect_true(sd(props) < 0.1)
@@ -99,16 +103,18 @@ test_that("stratified_kfold preserves class balance", {
 
 test_that("mc generates correct training sizes", {
 
-  Y <- matrix(rnorm(100), ncol = 1)
+  n = 100
+  Y <- matrix(rnorm(n), ncol = 1)
   cv <- mc(10, split = 0.7)
-  inst <- instantiate(cv, Y)
 
-  folds <- train_idc(inst)
+  inst <- .arg_check_cv(cv, model_type='R', n=n, Y_prepped = Y)
+  folds <- inst$train
+
   sizes <- sapply(folds, length)
 
   expect_true(all(abs(sizes - 70) <= 2))
   expect_true(all(unlist(folds) >= 1))
-  expect_true(all(sizes == floor(100 * 0.7)))
+  expect_true(all(sizes == floor(n * 0.7)))
 })
 
 
@@ -167,12 +173,14 @@ test_that("balanced_mc detects extreme imbalance", {
 
 test_that("bootstrap sampling contains duplicates", {
 
-  Y <- matrix(rnorm(100), ncol = 1)
+  n = 100
+  Y <- matrix(rnorm(n), ncol = 1)
 
-  cv <- balanced_boot(5, split = 0.7, type = 'R')
-  inst <- instantiate(cv, Y)
+  cv <- balanced_boot(5, split = 0.7, type = 'R', probs=c(0, 0.5, 1))
 
-  folds <- train_idc(inst)
+  inst <- .arg_check_cv(cv, model_type='R', n=n, Y_prepped = Y)
+  folds <- inst$train
+
   expect_true(any(sapply(folds, function(i) any(duplicated(i)))))
   expect_true(all(unlist(folds) >= 1))
   expect_true(all(unlist(folds) <= nrow(Y)))

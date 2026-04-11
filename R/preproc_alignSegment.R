@@ -30,7 +30,7 @@
                          lag.max = 20) {
 
   if (!is.matrix(seg) || nrow(seg) < 2)
-    stop("Input must be a matrix with at least two rows.")
+    stop("Input must be a matrix with at least two rows.", call. = FALSE)
 
   seg <- .dimX(seg)
 
@@ -133,18 +133,17 @@ align_segment <- function(dat,
                          lag.max = 20) {
 
   if (!is.list(dat) || !all(c("X", "ppm") %in% names(dat)))
-    stop("dat must be a list with elements 'X' and 'ppm'.")
+    stop("dat must be a list with elements 'X' and 'ppm'.", call. = FALSE)
 
   X   <- dat$X
   ppm <- dat$ppm
 
   if (!is.matrix(X))
-    stop("dat$X must be a matrix.")
+    stop("dat$X must be a matrix.", call. = FALSE)
 
   if (ncol(X) != length(ppm))
-    stop("ppm length must match ncol(X).")
+    stop("ppm length must match ncol(X).", call. = FALSE)
 
-  # enforce decreasing ppm (NMR convention)
   if (ppm[1] < ppm[length(ppm)]) {
     ord <- order(ppm, decreasing = TRUE)
     ppm <- ppm[ord]
@@ -154,12 +153,11 @@ align_segment <- function(dat,
   idx <- get_idx(shift, ppm)
 
   if (length(idx) < 3)
-    stop("Selected shift window too small.")
+    stop("Selected shift window too small.", call. = FALSE)
 
   # extract segment
   seg <- X[, idx, drop = FALSE]
 
-  # align using existing function
   aligned_seg <- .alignSegment(
     seg      = seg,
     idx_ref  = idx_ref,
@@ -293,7 +291,7 @@ align_spectra <- function(x,
   X0  <- X
 
   if (!.check_X_ppm(X, ppm))
-    stop("Dimensions of X and ppm must match.")
+    stop("Dimensions of X and ppm must match.", call. = FALSE)
 
   ints <- .dynamicIntervalsMedian(X, ppm,
                                   half_win_ppm = half_win_ppm)

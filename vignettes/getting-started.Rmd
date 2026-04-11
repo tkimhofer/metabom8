@@ -25,8 +25,8 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This vignette demonstrates the **metabom8** data import and preprocessing 
-workflow for NMR-based metabolomics. 
+This vignette demonstrates data import and preprocessing workflow for NMR-based 
+metabolomics with **metabom8**. 
 
 ```{r get-data}
 library(metabom8)
@@ -74,8 +74,7 @@ names(nmr_data)
 Both import functions (`read1d_proc()` and `read1d_raw()`) return a named
 list containing three core components used throughout this vignette:
 the spectral matrix (`X`), the chemical-shift axis (`ppm`), and associated
-metadata (`meta`). By default (`to_global = FALSE`) the list is returned
-as a single object, which is recommended for scripted workflows.
+metadata (`meta`). 
 
 For interactive exploration, setting `to_global = TRUE` assigns the
 components `X`, `ppm`, and `meta` directly to the global environment
@@ -119,11 +118,13 @@ The function `read1d_raw()` performs these operations:
 
 ```{r read-in-raw, fig.show='hold'}
 # import 1D NMR data
-nmr_raw <- read1d_raw(exp_dir,
-           exp_type,
-           apodisation = list(fun = "exponential", lb = 0.2),
-           zerofil = 1L,
-           mode = "absorption")
+nmr_raw <- read1d_raw(
+  exp_dir,
+  exp_type,
+  apodisation = list(fun = "exponential", lb = 0.2),
+  zerofil = 1L,
+  mode = "absorption"
+  )
 
 names(nmr_raw)
 ```
@@ -131,15 +132,30 @@ names(nmr_raw)
 The following examples illustrate several commonly used apodisation
 profiles implemented internally in `metabom8`.
 
-```{r apod, eval=FALSE}
-# Internal helper (illustrative only)
-metabom8:::.fidApodisationFct(100, list(fun="sine", plot=TRUE))
-metabom8:::.fidApodisationFct(100, list(fun="cosine", plot=TRUE))
-metabom8:::.fidApodisationFct(100, list(fun="exponential", lb=-0.2, plot=TRUE))
-metabom8:::.fidApodisationFct(100, list(fun="sem", lb=0.2, plot=TRUE))
+```{r apod, eval=TRUE, fig.width=8}
+# selected FID apidisation functions
+f_apod <- c("sine","cosine","exponential","sem")
+
+# create toy fid
+n <- 200; t <- seq(0,1,len=n)
+fid <- exp(-5*t)*cos(20*pi*t)
+
+# apply apodisation
+A  <- sapply(f_apod, \(f) metabom8:::.fidApodisationFct(n, list(fun=f, lb=-0.2)))
+Fp <- sweep(A, 1, fid, `*`)
+S  <- apply(Fp, 2, \(x) Mod(fft(x))[1:(n/2)])
+
+# compare graphically
+cols <- 1:ncol(A)
+
+par(mfrow=c(2,2), mar=c(3,3,2,1))
+plot(t, fid, type="l", lwd=2, main="FID")
+matplot(t, A, type="l", lwd=2, col=cols, main="Apodisation windows")
+matplot(t, Fp, type="l", lwd=2, col=cols, main="Windowed FID")
+matplot(S, type="l", lwd=2, col=cols, main="Spectra")
+
+legend("topright", f_apod, col=cols, lty=1, bty="n", cex=.8)
 ```
-
-
 
 ## Visual inspection
 
@@ -147,13 +163,12 @@ Spectra can be visualised with the function `plot_spec()`. The minimum
 set of arguments include the spectral data `X` (array or matrix) and the
 chemical shift vector `ppm`.
 
-Three plotting backends are available: `"plotly"`, `"base"`, and
-`"ggplot2"`. The `"plotly"` backend (default) is set up to use WebGL, enabling
+Three plotting backends are available: `"plotly"` (default), `"base"`, and
+`"ggplot2"`. The `"plotly"` backend is set up to use WebGL, enabling
 smooth interactive graphics even when the number of data spectra is
-large. The `"ggplot2"` backend returns a `"ggplot"` object. While rendering is
-typically much slower than with `"plotly"`, the returned object integrates
-with the extensive `"ggplot2"` ecosystem and can be further customised
-for advanced visualisation and publication-quality figures.
+large. The `"ggplot2"` backend is not iteractive and renders much slower. 
+However, the returned object integrates with the extensive `"ggplot2"` ecosystem 
+and can be further customised to generate publication-quality figures.
 
 See `?plot_spec` for additional details.
 
@@ -163,7 +178,7 @@ data("covid", package = "metabom8")
 ## plot directly from the dataset object
 plot_spec(covid, shift = c(0.5, 2))
 
-## alternatively extract the components
+## alternatively extract data components: X, ppm
 X <- covid$X
 ppm <- covid$ppm
 
@@ -254,20 +269,21 @@ plot_spec(X_bli[1,], ppm_exi, shift = c(0,10))
 Data provenance refers to the documented record of how data were generated,
 processed, and transformed. Recording this information ensures that analyses
 remain reproducible and that individual preprocessing steps can be inspected,
-verified, or repeated at a later stage. Such transparency is particularly
-important in metabolomics workflows, where preprocessing decisions can
-substantially influence downstream statistical analyses and biological
-interpretation.
+verified, or repeated at a later stage. 
 
-In `metabom8`, each preprocessing operation automatically records its
-parameters and execution context as structured metadata attached to the
-spectral matrix `X`. The resulting dataset therefore remains
-self-describing: the complete processing history travels with the data and
-can be inspected programmatically at any time.
+In `metabom8`, particular emphasis is placed on transparent preprocessing, as 
+these decisions can substantially influence downstream statistical analyses and 
+biological interpretation. Each preprocessing operation automatically records 
+its parameters and execution context as structured metadata attached to the 
+spectral matrix `X`.
+
+The resulting dataset therefore remains self-describing: the complete processing 
+history is linked to the data matrix and can be inspected programmatically at 
+any time.
 
 ```{r preproc_provenance}
 
-## Inspect preprocessing provenance
+## Inspect preprocessing steps
 print_provenance(hiit_proc)
 
 # Retrieve specific step
@@ -280,8 +296,8 @@ log <- get_provenance(hiit_proc)
 
 Each entry stores: 
 
-* the sequential execution index
-* the preprocessing step name 
+* sequential execution index
+* preprocessing step name 
 * parameter settings
 * optional notes
 * timestamp and versioning info
@@ -340,28 +356,24 @@ Y <- covid$an$type
 X <- covid$X
 ```
 
-In order to ensure that high-intensity peaks do not disproportionately dominate 
-the model, variance scaling is applied prior to modeling. In NMR, this 
-typically involves Unit Variance (UV) Scaling combined with mean centering. 
-This procedure scales each variable to a mean of zero and a standard deviation 
-of one, giving all spectral features equal weight.
-
-Scaling and centering parameters are passed to the model function as class,
-defined like this:
+To prevent the natural dynamic range of metabolite concentrations from 
+dominating statistical modelling, data are scaled prior to analysis. In 
+**metabom8**, scaling and centering are passed explicitly to the model function:
 
 ```{r model_setup}
 # Define the scaling and centering strategy
-uv = UVScaling(center = TRUE)
+uv = uv_scaling(center = TRUE)
 ```
 
-See `?UVScaling` for further details and additional scaling strategies.
+See `?uv_scaling` for further details and additional scaling strategies.
 
 
 
 ## Principal Components Analysis (PCA)
 
-Unsupervised modelling using PCA requires specifying the scaling method and the 
-desired number of components.
+Unsupervised modelling with PCA is done by an iterative procedure
+(NIPALS) that calculates components iteratively, one at a time. Therefore, the
+number of desired components is provided in the function call.
 
 Here we compute two principal components using unit-variance scaling:
 
@@ -373,11 +385,8 @@ show(pca_model)
 summary(pca_model)
 ```
 
-
-See `?balanced_mc` for further details and additional validation strategies.
-
 ## Partial-Least Squares (PLS)
-Partial-Least-Squares (PLS) as  supervised modelling technique utilises 
+Partial-Least-Squares (PLS) as supervised modelling technique utilises 
 a statistical re-sampling techniques to determine the optimal number of components 
 and to safeguard against overfitting.
 
@@ -389,8 +398,7 @@ model predictive power generalizes well to unseen data.
 mc_cv <- balanced_mc(k=15, split=2/3, type="DA")
 ```
 
-See `?balanced_mc` for further details and additional validation strategies.
-
+See `?balanced_mc` for further details and additional statistical validation strategies.
 
 ```{r pls}
 pls_model <- pls(X, Y, validation_strategy=mc_cv, scaling = uv)
@@ -409,7 +417,7 @@ Pp <- loadings(pls_model)
 ## Orthogonal-Partial-Least Squares (OPLS)
 
 OPLS can be though of as PLS with an integrated orthogonality filter, which has 
-been reported to significantly increase model interpretability. While standard 
+been reported to improve model interpretability. While standard 
 PLS mixes predictive and non-predictive variation, OPLS partitions the variance 
 into two parts: variation correlated to the response ($Y$) and variation "orthogonal" 
 (unrelated) to it.
@@ -436,8 +444,6 @@ summary(opls_model)
 
 For detailed information on component stopping criteria used in `opls()` and`pls()` 
 see `?.evalFit()`.
-
-
 
 Methods implemented for both, `pls()` and `opls()`, models include `scores()`, 
 `loadings()` and `fitted()` (Y-fitted values from statistical resampling).
@@ -471,7 +477,8 @@ model's predictive ability (only for regression)
 
 ```{r opls-dx, fig.width=7.2, fig.height=4}
 # distance to the model in X space
-dmodx(opls_model)
+dex <- dmodx(opls_model)
+head(dex)
 ```
 
 This vignette demonstrated the core data import, preprocessing, and modelling workflow 

@@ -7,7 +7,7 @@ test_that("pca() runs and returns valid PCA_metabom8 object", {
   colnames(X) <- paste0("V", 1:10)
   rownames(X) <- paste0("S", 1:100)
 
-  sc <- UVScaling(center = TRUE)
+  sc <- uv_scaling(center = TRUE)
   model <- pca(X, ncomp = 2, scaling = sc, method = "nipals")
 
   Tx <- scores(model)
@@ -35,7 +35,7 @@ test_that("pca() runs and returns valid PCA_metabom8 object", {
 test_that("pca() handles too many components gracefully", {
   X <- matrix(rnorm(30), nrow = 5)
 
-  sc <- UVScaling(center = TRUE)
+  sc <- uv_scaling(center = TRUE)
   expect_warning(
     model <- pca(X, ncomp = 10, scaling = sc, method = "nipals"),
     regexp = "Too many"
@@ -49,11 +49,14 @@ test_that("pca() handles too many components gracefully", {
 # pls
 test_that("PLS-DA model runs correctly with numeric input", {
   data(iris)
-  X <- as.matrix(iris[, 1:4])
-  Y <- iris$Species
 
-  sc <- UVScaling(center = TRUE)
-  kf <- kfold(3)
+  idx = iris$Species %in% c('setosa', 'virginica')
+
+  X <- as.matrix(iris[idx,1:4])
+  Y <- as.character(iris$Species[idx])
+
+  sc <- uv_scaling(center = TRUE)
+  kf <- kfold(k=3)
   model <- pls(X, Y, scaling = sc, validation_strategy = kf)
 
   Tx <- scores(model)
@@ -92,8 +95,8 @@ test_that("PLS regression model runs correctly", {
   beta <- c(1.2, -0.8, 0.5, rep(0, p-3))
   Y <- X %*% beta + rnorm(n, sd = 0.2)
 
-  sc <- UVScaling(center = TRUE)
-  kf <- kfold(3)
+  sc <- uv_scaling(center = TRUE)
+  kf <- kfold(k=3)
 
   model <- pls(X, Y, scaling = sc, validation_strategy = kf)
 
@@ -120,11 +123,13 @@ test_that("OPLS-DA model runs correctly", {
 
   data(iris)
 
-  X <- as.matrix(iris[,1:4])
-  Y <- iris$Species
+  idx = iris$Species %in% c('setosa', 'virginica')
 
-  sc <- UVScaling(center = TRUE)
-  kf <- kfold(3)
+  X <- as.matrix(iris[idx,1:4])
+  Y <- as.character(iris$Species[idx])
+
+  sc <- uv_scaling(center = TRUE)
+  kf <- kfold(k=3)
 
   model <- opls(X, Y, scaling = sc, validation_strategy = kf)
 
@@ -155,18 +160,18 @@ test_that("OPLS-DA model runs correctly", {
 
 test_that("OPLS pred component correlates with Y, orthogonal comp is independent of Y", {
 
-  data(iris)
+  idx = iris$Species %in% c('setosa', 'virginica')
 
-  X <- as.matrix(iris[,1:4])
-  Y <- iris$Species
+  X <- as.matrix(iris[idx,1:4])
+  Y <- as.character(iris$Species[idx])
 
-  sc <- UVScaling(center = TRUE)
-  kf <- kfold(3)
+  sc <- uv_scaling(center = TRUE)
+  kf <- kfold(k=3)
 
   model <- opls(X, Y, scaling = sc, validation_strategy = kf)
   Tp <- scores(model)
 
-  Ynum <- as.numeric(Y)
+  Ynum <- as.numeric(as.factor(Y))
   expect_true(abs(cor(Tp[,1], Ynum)) > 0.2)
 
   Txo <- scores(model, orth = TRUE)

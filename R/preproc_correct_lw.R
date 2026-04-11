@@ -118,9 +118,9 @@ correct_lw <- function(x,
       if (anyNA(ppm)) ppm <- NULL
     }
   }
-  if (is.null(ppm)) stop("correct_lw(): `ppm` not provided and not found in attr(X,'m8_axis') or numeric colnames(X).")
+  if (is.null(ppm)) stop("correct_lw(): `ppm` not provided and not found in attr(X,'m8_axis') or numeric colnames(X).", call. = FALSE)
   ppm <- as.numeric(ppm)
-  if (!.check_X_ppm(X, ppm)) stop("correct_lw(): X and ppm mismatch or ppm contains NA/Inf.")
+  if (!.check_X_ppm(X, ppm)) stop("correct_lw(): X and ppm mismatch or ppm contains NA/Inf.", call. = FALSE)
 
   if (is.null(sf)) {
     if (is_list_input && !is.null(meta) && "a_SFO1" %in% names(meta)) {
@@ -134,7 +134,7 @@ correct_lw <- function(x,
   fwhm <- lw(X, ppm = ppm, shift = shift, sf = sf)
 
   idx <- get_idx(shift, ppm)
-  if (length(idx) < 3L) stop("correct_lw(): selected `shift` region too small.")
+  if (length(idx) < 3L) stop("correct_lw(): selected `shift` region too small.", call. = FALSE)
 
   I_ref <- apply(X[, idx, drop = FALSE], 1, max, na.rm = TRUE)
 

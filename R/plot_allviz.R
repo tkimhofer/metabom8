@@ -19,11 +19,11 @@
   if (is.vector(x)) {
     x <- matrix(x, nrow = 1)
   } else if (!is.matrix(x)) {
-    stop("x must be vector or matrix")
+    stop("x must be vector or matrix", call. = FALSE)
   }
 
   if (ncol(x) != length(ppm))
-    stop("ppm mismatch")
+    stop("ppm mismatch", call. = FALSE)
 
   if (ppm[1] < ppm[length(ppm)]) {
     ord <- order(ppm, decreasing = TRUE)

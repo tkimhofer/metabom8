@@ -9,7 +9,7 @@ read1d_raw(
   exp_type = list(exp = "PROF_PLASMA_CPMG128_3mm", pulprog = "noesygppr1d"),
   apodisation = list(fun = "exponential", lb = 0.2),
   zerofill = 1L,
-  mode = "absorption",
+  mode = c("absorption", "dispersion", "magnitude"),
   verbose = 1,
   recursive = TRUE,
   n_max = 1000,

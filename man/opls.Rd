@@ -11,7 +11,7 @@ opls(X, Y, scaling, validation_strategy)
 
 \item{Y}{Numeric matrix or factor vector of responses.}
 
-\item{scaling}{A scaling strategy object (e.g., \code{UVScaling(center = TRUE)}),
+\item{scaling}{A scaling strategy object (e.g., \code{uv_scaling(center = TRUE)}),
 specifying model-internal centering and/or scaling applied during fitting.
 This does not modify the original spectral matrix.}
 
@@ -61,19 +61,47 @@ The returned model object stores:
 }
 \examples{
 data(covid)
+
 cv <- balanced_mc(k=5, split=2/3)
-scaling <- UVScaling(center=TRUE)
+scaling <- uv_scaling(center=TRUE)
 model <-opls(X=covid$X, Y=covid$an$type, scaling, cv)
+
 show(model)
 summary(model)
 
+# scores
 Tp <- scores(model)
 To <- scores(model, orth=TRUE)
+
+t2 <- hotellingsT2(cbind(Tp, To))
+ell <-ellipse2d(t2)
+
+plot(Tp, To, asp = 1,
+  col = as.factor(covid$an$type),
+  xlim = range(c(Tp, ell$x)),
+  ylim = range(c(To, ell$y))
+ )
+lines(ell$x, ell$y, col = "grey", lty=2)
+
+# loadings & vip's
 Pp <- loadings(model)
 Po <- loadings(model, orth=TRUE)
+vips <- vip(model)
+
+x=covid$ppm
+y = Pp * apply(covid$X, 2, sd)
+
+palette <-  colorRampPalette(c("blue", "cyan", "yellow", "red"))(100)
+idx <- cut(vips, breaks = 100, labels = FALSE)
+plot(x, y, type = "n", xlim = rev(range(x)), xlab='ppm', ylab='t_pred_sc')
+
+for (i in seq_len(length(x) - 1)) {
+  segments(x[i], y[i], x[i+1], y[i+1], col = palette[idx[i]], lwd = 2)
+}
+
 }
 \seealso{
-\code{\link{pls}}, \code{\link{UVScaling}}
+\code{\link{pls}}, \code{\link{uv_scaling}}
 
 Other modelling: 
 \code{\link{pca}()},

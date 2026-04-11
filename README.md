@@ -24,13 +24,9 @@
 ## 📦 Installation
 
 ```r
-# official release (to be added with next bioc release)
+# official release (to be added with bioconductor release)
 install.packages("BiocManager")
 BiocManager::install('metabom8')
-
-# dev-build
-# install.packages("remotes")
-# remotes::install_github("tkimhofer/metabom8")
 ```
 
 ---
@@ -63,7 +59,7 @@ X <- covid$X
 Y <- covid$an$type
 
 # Modelling Context
-uv = UVScaling(center = TRUE)
+uv = uv_scaling(center = TRUE)
 mc_cv <- balanced_mc(k=15, split=2/3, type="DA")
 
 # PCA

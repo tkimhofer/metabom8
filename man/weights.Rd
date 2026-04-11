@@ -26,7 +26,7 @@ Extract model weights
 \examples{
 data(covid)
 cv <- balanced_mc(k=5, split=2/3)
-scaling <- UVScaling(center=TRUE)
+scaling <- uv_scaling(center=TRUE)
 model <-opls(X=covid$X, Y=covid$an$type, scaling, cv)
 show(model)
 W <- weights(model)

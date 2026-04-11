@@ -55,7 +55,7 @@ Model object returned by \code{pca()}, \code{pls()}, and \code{opls()}.
 \examples{
 data(covid)
 cv <- balanced_mc(k=5, split=2/3)
-scaling <- UVScaling(center=TRUE)
+scaling <- uv_scaling(center=TRUE)
 model <-opls(X=covid$X, Y=covid$an$type, scaling, cv)
 class(model)
 show(model)

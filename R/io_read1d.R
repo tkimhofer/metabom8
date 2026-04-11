@@ -58,7 +58,7 @@ read1d <- function(path,
   }
 
   f_list <- .detect1d_procs(path, n_max = n_max, filter = filter, recursive = recursive, verbose = verbose)
-  if (is.null(f_list)) stop("No valid experiments found.")
+  if (is.null(f_list)) stop("No valid experiments found.", call. = FALSE)
 
   pars <- .extract_pars1d(f_list)
   exp_filt <- .filterExp_files(pars, exp_type, f_list, n_max = n_max)
@@ -280,7 +280,7 @@ read1d_proc <- read1d
 
   if (length(common) == 0) {
     if (filter) return(NULL)
-    stop("No experiments with matching acqus, procs and 1r found.")
+    stop("No experiments with matching acqus, procs and 1r found.", call. = FALSE)
   }
 
   # map to common exp dirs

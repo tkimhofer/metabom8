@@ -44,7 +44,7 @@ excise <- function(x, ppm = NULL, regions = NULL) {
   ppm <- u$ppm
 
   if (!.check_X_ppm(X, ppm))
-    stop("Non-matching dimensions X matrix and ppm vector or invalid ppm values.")
+    stop("Non-matching dimensions X matrix and ppm vector or invalid ppm values.", call. = FALSE)
 
   ppm <- as.numeric(ppm)
 
@@ -58,12 +58,12 @@ excise <- function(x, ppm = NULL, regions = NULL) {
   }
 
   if (!is.list(regions))
-    stop("`regions` must be a list of numeric vectors (length 2).")
+    stop("`regions` must be a list of numeric vectors (length 2).", call. = FALSE)
 
   for (nm in names(regions)) {
     r <- regions[[nm]]
     if (!is.numeric(r) || length(r) != 2L)
-      stop("Each element of `regions` must be a numeric vector of length 2.")
+      stop("Each element of `regions` must be a numeric vector of length 2.", call. = FALSE)
   }
 
   idx_rm <- unique(unlist(

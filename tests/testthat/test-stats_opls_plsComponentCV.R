@@ -1,7 +1,5 @@
 set.seed(1)
 
-# test-plsComponentCv.R
-
 test_that(".plsComponentCv returns valid structure for first component", {
 
   n <- 30
@@ -135,11 +133,6 @@ test_that(".plsComponentCv produces matrices with correct dimensions", {
   expect_equal(ncol(m$x_res), p)
 
 })
-
-
-
-# .oplsComponentCv()
-
 
 
 test_that(".oplsComponentCv returns valid structure for first component", {

@@ -113,7 +113,7 @@ pqn <- function(X,
   if (!is.null(bin)) {
 
     if (!is.list(bin) || is.null(names(bin)))
-      stop("Argument 'bin' must be a named list.")
+      stop("Argument 'bin' must be a named list.", call. = FALSE)
 
     if (!("ppm" %in% names(bin))) {
 
@@ -122,22 +122,22 @@ pqn <- function(X,
       } else if (!is.null(colnames(X))) {
         ppm_infer <- as.numeric(colnames(X))
         if (anyNA(ppm_infer))
-          stop("ppm could not be inferred from colnames(X).")
+          stop("ppm could not be inferred from colnames(X).", call. = FALSE)
         bin$ppm <- ppm_infer
 
       } else {
-        stop("Binning requested but no ppm supplied.")
+        stop("Binning requested but no ppm supplied.", call. = FALSE)
       }
     }
 
     if (!.check_X_ppm(X, bin$ppm))
-      stop("Mismatch between X and ppm in binning specification.")
+      stop("Mismatch between X and ppm in binning specification.", call. = FALSE)
 
     has_width <- "width" %in% names(bin) && !is.null(bin$width)
     has_npts  <- "npoints" %in% names(bin) && !is.null(bin$npoints)
 
     if (!has_width && !has_npts)
-      stop("Argument 'bin' must include either 'width' or 'npoints'.")
+      stop("Argument 'bin' must include either 'width' or 'npoints'.", call. = FALSE)
 
     X1 <- binning(
       X = X,
@@ -162,9 +162,9 @@ pqn <- function(X,
   } else {
     ref_index <- as.integer(ref_index)
     if (any(!is.finite(ref_index)))
-      stop("ref_index contains non-finite values.")
+      stop("ref_index contains non-finite values.", call. = FALSE)
     if (any(ref_index < 1L | ref_index > nrow(X1)))
-      stop("ref_index contains out-of-range indices.")
+      stop("ref_index contains out-of-range indices.", call. = FALSE)
 
     if (length(ref_index) == 1L) {
       ref <- X1[ref_index, ]

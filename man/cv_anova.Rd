@@ -78,11 +78,14 @@ CV-ANOVA is intended for continuous response (regression) models.
 }
 \examples{
 data("covid")
+
 X <- covid$X
 Y <- as.numeric(factor(covid$an$type)) - 1
-scaling <- UVScaling(center=TRUE)
+
+scaling <- uv_scaling(center=TRUE)
 cv <- balanced_mc(10, split=2/3, type='R', probs = c(0, 0.5, 1))
 mod <- opls(X, Y, scaling, cv)
+
 cv_anova(mod)
 
 }

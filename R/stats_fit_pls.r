@@ -5,7 +5,7 @@
 #'
 #' @param X Numeric matrix of predictors (rows = samples, columns = variables).
 #' @param Y Numeric matrix or factor vector of responses.
-#' @param scaling A scaling strategy object (e.g., \code{UVScaling(center = TRUE)}),
+#' @param scaling A scaling strategy object (e.g., \code{uv_scaling(center = TRUE)}),
 #'   specifying model-internal centering and/or scaling applied during fitting.
 #'   This does not modify the original spectral matrix.
 #' @param validation_strategy A cross-validation strategy object defining how
@@ -38,16 +38,16 @@
 #' An object of class \code{m8_model} containing the fitted PLS model,
 #' cross-validation results, and performance statistics.
 #'
-#' @seealso \code{\link{opls}}, \code{\link{UVScaling}}
+#' @seealso \code{\link{opls}}, \code{\link{uv_scaling}}
 #'
 #' @family modelling
 #' @examples
-#' # example code
-#'
 #' data(covid)
+#'
 #' cv <- balanced_mc(k=5, split=2/3)
-#' scaling <- UVScaling(center=TRUE)
+#' scaling <- uv_scaling(center=TRUE)
 #' model <-pls(X=covid$X, Y=covid$an$type, scaling, cv)
+#'
 #' show(model)
 #' summary(model)
 #'
@@ -89,28 +89,37 @@ pls <- function(X, Y, scaling, validation_strategy, maxPCo=5) {
 
 .plsEngine <- function(X, Y, scaling, validation_strategy, maxPCo){
 
-  inputs <- .prepareInputs(X, Y, scaling@center, scaling@scale)
+  #### checking scaling
+  .arg_check_scaling(scaling)
+
+  inputs <- .prepareInputs(X, Y, scaling$center, scaling$scale)
   type <- inputs$type
   is_multi_Y <- grepl('mY', type)
+  n  <- nrow(inputs$Y)
+  p  <- ncol(inputs$X)
+  q <- ncol(inputs$Y)
+  mo <- maxPCo
 
-  cv <- instantiate(validation_strategy, inputs$Y)
+  cv <- .arg_check_cv(cv_pars=validation_strategy, model_type=type, n=n, Y_prepped=inputs$Y)
+  k <- length(cv$train)
 
-  preppedX <- prep(scaling, inputs$X)
+  preppedX <- prep_X(scaling, inputs$X)
   XcsTot <- preppedX$X
-  YcsTot <- .scaleMatRcpp(inputs$Y, 0:(nrow(inputs$Y) - 1), center = scaling@center, scale_type = inputs$scale_code)[[1]]
+  YcsTot <- .scaleMatRcpp(inputs$Y, 0:(nrow(inputs$Y) - 1), center = scaling$center, scale_type = inputs$scale_code)[[1]]
+
   tssx <- .tssRcpp(XcsTot)
   tssy <- .tssRcpp(YcsTot) / ncol(YcsTot)
 
-  Ycs_fold <- lapply(cv@train, function(idc)
-    .scaleMatRcpp(inputs$Y, idc - 1, scaling@center, inputs$scale_code)[[1]]
+  Ycs_fold <- lapply(cv$train, function(idc)
+    .scaleMatRcpp(inputs$Y, idc - 1, scaling$center, inputs$scale_code)[[1]]
   )
 
   tt <- NULL
   full_mod <- list()
 
-  n  <- nrow(XcsTot)
-  q <- ncol(inputs$Y)
-  k <- length(cv@train)
+  # n  <- nrow(XcsTot)
+  # q <- ncol(inputs$Y)
+  # k <- length(cv@train)
 
   acc <- list(
     sum_test  = matrix(0, n, q),
@@ -127,9 +136,9 @@ pls <- function(X, Y, scaling, validation_strategy, maxPCo=5) {
   while (!overfitted) {
 
     res <- if (nc == 1) {
-      .plsComponentCv(inputs$X, cv.set=cv@train, Ycs_fold = Ycs_fold,  nc=nc, mod.cv = NULL, acc=acc) # , it_max=800, eps=1e-6
+      .plsComponentCv(inputs$X, cv.set=cv$train, Ycs_fold = Ycs_fold,  nc=nc, mod.cv = NULL, acc=acc) # , it_max=800, eps=1e-6
     } else {
-      .plsComponentCv(NULL,cv.set=cv@train, Ycs_fold = Ycs_fold,  nc=nc, mod.cv = mod_cv, acc=acc)
+      .plsComponentCv(NULL,cv.set=cv$train, Ycs_fold = Ycs_fold,  nc=nc, mod.cv = mod_cv, acc=acc)
     }
 
     mod_cv <- res$mod.cv
@@ -194,8 +203,8 @@ pls <- function(X, Y, scaling, validation_strategy, maxPCo=5) {
 
         full <- list(comp=full_mod[seq_len(nc-1)])
 
-        full$X_mean <- preppedX$prep@X_mean
-        full$X_sd <- preppedX$prep@X_sd
+        full$X_mean <- preppedX$prep$X_mean
+        full$X_sd <- preppedX$prep$X_sd
         full$X_prepped <- preppedX$X
         full$Y <- inputs$Y
       }

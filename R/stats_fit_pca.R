@@ -12,7 +12,7 @@
 #'
 #' @param X Numeric matrix (rows = samples, columns = variables).
 #' @param scaling A \code{ScalingStrategy} object defining model-internal
-#'   centering and scaling (e.g. \code{UVScaling(center = TRUE)}).
+#'   centering and scaling (e.g. \code{uv_scaling(center = TRUE)}).
 #' @param ncomp Integer. Number of principal components to compute.
 #' @param method Character. PCA backend. Use \code{"nipals"} for the
 #'   internal implementation or any method supported by
@@ -44,17 +44,31 @@
 #'   \item \code{provenance}: Attributes inherited from the input matrix
 #' }
 #'
-#' @seealso \code{\link{pls}}, \code{\link{opls}}
+#' @seealso \code{\link{uv_scaling}}
 #'
 #' @family modelling
 #' @examples
 #' data(covid)
-#' uv <- UVScaling(center=TRUE)
-#' model <-pca(X=covid$X, scaling=uv, ncomp=2)
+#'
+#' uv <- uv_scaling(center=TRUE)
+#' model <- pca(X=covid$X, scaling=uv, ncomp=2)
+#'
 #' show(model)
 #' summary(model)
+#'
 #' Tx <- scores(model)
 #' Px <- loadings(model)
+#'
+#' t2 <- hotellingsT2(Tx)
+#' ell <-ellipse2d(t2)
+#'
+#' # scores plot
+#' plot(Tx, asp = 1,
+#'   col = as.factor(covid$an$type),
+#'   xlim = range(c(Tx[1,], ell$x)),
+#'   ylim = range(c(Tx[2,], ell$y))
+#'  )
+#' lines(ell$x, ell$y, col = "grey", lty=2)
 #' @export
 pca <- function(X, scaling, ncomp, method = "nipals") {
 
@@ -98,7 +112,7 @@ pca <- function(X, scaling, ncomp, method = "nipals") {
     stop("`ncomp` must be a positive integer.", call. = FALSE)
   ncomp <- as.integer(ncomp)
 
-  sc_num <- switch(as.character(scaling@scale),
+  sc_num <- switch(as.character(scaling$scale),
                    "None"   = 0L,
                    "UV"     = 1L,
                    "Pareto" = 2L,
@@ -115,7 +129,7 @@ pca <- function(X, scaling, ncomp, method = "nipals") {
   XcsTot <- .scaleMatRcpp(
     X,
     0:(nrow(X) - 1),
-    center     = scaling@center,
+    center     = scaling$center,
     scale_type = sc_num
   )[[1]]
 
@@ -159,8 +173,8 @@ pca <- function(X, scaling, ncomp, method = "nipals") {
       ncomp_tested  = ncomp,
       r2x_comp = r2x_comp,
       tssx = tssx,
-      center = scaling@center,
-      scale  = as.character(scaling@scale)
+      center = scaling$center,
+      scale  = as.character(scaling$scale)
     )
 
   } else {
@@ -198,8 +212,8 @@ pca <- function(X, scaling, ncomp, method = "nipals") {
       ncomp_tested  = ncomp,
       r2x_comp = r2x_comp,
       tssx = tssx,
-      center = scaling@center,
-      scale  = as.character(scaling@scale),
+      center = scaling$center,
+      scale  = as.character(scaling$scale),
       type = "unsupervised"
     )
   }

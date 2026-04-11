@@ -23,13 +23,13 @@
 #' @family NMR
 get_idx <- function(range = c(1, 5), ppm) {
   if (anyNA(ppm) || any(!is.finite(ppm)))
-    stop("`ppm` contains NA or non-finite values.")
+    stop("`ppm` contains NA or non-finite values.", call. = FALSE)
 
   if (length(range) != 2L)
-    stop("`range` must be a numeric vector of length 2.")
+    stop("`range` must be a numeric vector of length 2.", call. = FALSE)
 
   if (!is.numeric(ppm))
-    stop("`ppm` must be numeric.")
+    stop("`ppm` must be numeric.", call. = FALSE)
 
   lo <- min(range)
   hi <- max(range)

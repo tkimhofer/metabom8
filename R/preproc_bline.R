@@ -117,7 +117,7 @@ correct_baseline <- function(X, method = c("asls", "linear"), ...) {
   }
 
   if (!is.numeric(lambda) || lambda <= 0)
-    stop("`lambda` must be positive numeric.")
+    stop("`lambda` must be positive numeric.", call. = FALSE)
 
   X0 <- X
   X <- .dimX(X)

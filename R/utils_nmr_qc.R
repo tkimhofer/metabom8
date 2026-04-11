@@ -80,26 +80,26 @@ lw <- function(X, ppm = NULL, shift = c(-0.1, 0.1), sf) {
       if (anyNA(ppm)) ppm <- NULL
     }
   }
-  if (is.null(ppm)) stop("`ppm` not provided and not found in attr(X,'m8_axis') or numeric colnames(X).")
+  if (is.null(ppm)) stop("`ppm` not provided and not found in attr(X,'m8_axis') or numeric colnames(X).", call. = FALSE)
   ppm <- as.numeric(ppm)
-  if (!.check_X_ppm(X, ppm)) stop("X and ppm mismatch or ppm contains NA/Inf.")
+  if (!.check_X_ppm(X, ppm)) stop("X and ppm mismatch or ppm contains NA/Inf.", call. = FALSE)
 
   if (missing(sf)) {
     meta <- attr(X, "m8_meta", exact = TRUE)
     if (is.data.frame(meta) && "a_SFO1" %in% names(meta)) {
       sf <- meta$a_SFO1
     } else {
-      stop("`sf` missing. Provide sf (MHz) or supply meta$a_SFO1 via list input or attr(X,'m8_meta').")
+      stop("`sf` missing. Provide sf (MHz) or supply meta$a_SFO1 via list input or attr(X,'m8_meta').", call. = FALSE)
     }
   }
 
   sf <- as.numeric(sf)
-  if (any(!is.finite(sf))) stop("`sf` contains non-finite values.")
+  if (any(!is.finite(sf))) stop("`sf` contains non-finite values.", call. = FALSE)
   if (length(sf) == 1L) sf <- rep(sf, nrow(X))
-  if (length(sf) != nrow(X)) stop("`sf` must be length 1 or length nrow(X).")
+  if (length(sf) != nrow(X)) stop("`sf` must be length 1 or length nrow(X).", call. = FALSE)
 
   idx <- get_idx(shift, ppm)
-  if (length(idx) < 3L) stop("Selected `shift` region too small for FWHM estimation.")
+  if (length(idx) < 3L) stop("Selected `shift` region too small for FWHM estimation.", call. = FALSE)
 
   vapply(seq_len(nrow(X)), function(i) {
     x <- X[i, idx]
@@ -230,15 +230,15 @@ noise_sd <- function(X, ppm = NULL, where = c(14.6, 14.7),
       if (anyNA(ppm)) ppm <- NULL
     }
   }
-  if (is.null(ppm)) stop("`ppm` not provided and not found in list input, attr(X,'m8_axis'), or numeric colnames(X).")
+  if (is.null(ppm)) stop("`ppm` not provided and not found in list input, attr(X,'m8_axis'), or numeric colnames(X).", call. = FALSE)
   ppm <- as.numeric(ppm)
-  if (!.check_X_ppm(X, ppm)) stop("X and ppm mismatch or ppm contains NA/Inf.")
+  if (!.check_X_ppm(X, ppm)) stop("X and ppm mismatch or ppm contains NA/Inf.", call. = FALSE)
 
   method <- match.arg(method)
 
   idx <- get_idx(where, ppm)
   if (length(idx) < as.integer(min_points)) {
-    stop(sprintf("Insufficient number of points in selected region (need >= %d).", as.integer(min_points)))
+    stop(sprintf("Insufficient number of points in selected region (need >= %d).", as.integer(min_points)), call. = FALSE)
   }
 
   sigma <- apply(X[, idx, drop = FALSE], 1, function(x) {
@@ -252,11 +252,11 @@ noise_sd <- function(X, ppm = NULL, where = c(14.6, 14.7),
   })
 
   if (isTRUE(normalise_scans)) {
-    if (is.null(ns)) stop("normalise_scans=TRUE requires `ns` or meta$a_NS.")
+    if (is.null(ns)) stop("normalise_scans=TRUE requires `ns` or meta$a_NS.", call. = FALSE)
     ns <- as.numeric(ns)
     if (length(ns) == 1L) ns <- rep(ns, length(sigma))
-    if (length(ns) != length(sigma)) stop("`ns` must be length 1 or nrow(X).")
-    if (any(!is.finite(ns)) || any(ns <= 0)) stop("`ns` must be positive finite values.")
+    if (length(ns) != length(sigma)) stop("`ns` must be length 1 or nrow(X).", call. = FALSE)
+    if (any(!is.finite(ns)) || any(ns <= 0)) stop("`ns` must be positive finite values.", call. = FALSE)
     sigma <- sigma / sqrt(ns)
   }
 

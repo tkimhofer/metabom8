@@ -45,38 +45,115 @@
   minmax(out)
 }
 
+
 #' @title Apodisation function dispatcher
-#' @description Applies one of several apodisation functions to FID data.
-#' @param n Integer, number of data points.
-#' @param pars A list containing the apodisation parameters: must include `fun` and any required shape parameters (e.g. `lb`, `gb`, `para`).
-#' @return A numeric vector of apodisation weights.
+#' @description
+#' Generates apodisation (window) functions for FID processing.
+#' The function applies one of several predefined window shapes,
+#' selected via \code{pars$fun}.
+#' @param n Integer. Number of data points.
+#' @param pars List of parameters defining the apodisation.
+#' Must contain element \code{fun} specifying the window type.
+#' @details
+#' Supported apodisation functions and parameters:
+#' \describe{
+#'   \item{\code{"uniform"}}{No apodisation (all weights = 1).}
+#'
+#'   \item{\code{"exponential"}}{
+#'     Exponential decay window.
+#'     \describe{
+#'       \item{\code{lb}}{Line broadening parameter.}
+#'     }
+#'   }
+#'
+#'   \item{\code{"cosine"}}{
+#'     Cosine window (no additional parameters).
+#'   }
+#'
+#'   \item{\code{"sine"}}{
+#'     Sine window (no additional parameters).
+#'   }
+#'
+#'   \item{\code{"sem"}}{
+#'     Sine-modulated exponential window.
+#'     \describe{
+#'       \item{\code{lb}}{Exponential decay parameter.}
+#'     }
+#'   }
+#'
+#'   \item{\code{"expGaus_resyG"}}{
+#'     Exponential-Gaussian hybrid window.
+#'     \describe{
+#'       \item{\code{lb}}{Exponential decay parameter.}
+#'       \item{\code{gb}}{Gaussian broadening parameter.}
+#'       \item{\code{aq_t}}{Acquisition time.}
+#'     }
+#'   }
+#'
+#'   \item{\code{"gauss"}}{
+#'     Gaussian window (Bruker-style).
+#'     \describe{
+#'       \item{\code{lb}}{Line broadening parameter.}
+#'       \item{\code{gb}}{Gaussian broadening factor.}
+#'       \item{\code{para}}{List containing acquisition parameters
+#'         (e.g. \code{a_SW_h}, \code{a_TD}).}
+#'     }
+#'   }
+#' }
+#' @return Numeric vector of length \code{n} with apodisation weights.
+#' @examples
+#' # Internal FID apidisation functions (illustrative only)
+#' f_apod <- c("sine","cosine","exponential","sem")
+#'
+#' # create toy fid
+#' n <- 200; t <- seq(0,1,len=n)
+#' fid <- exp(-5*t)*cos(20*pi*t)
+#'
+#' # generate & apply apodisation windows
+#' A  <- sapply(f_apod, \(f) metabom8:::.fidApodisationFct(n, list(fun=f, lb=-0.2)))
+#' Fp <- sweep(A, 1, fid, `*`)
+#'
+#' # generate spectra
+#' S  <- apply(Fp, 2, \(x) Mod(fft(x))[1:(n/2)])
+#'
+#' # graphhics
+#' cols <- 1:ncol(A)
+#'
+#' par(mfrow=c(2,2), mar=c(3,3,2,1))
+#' plot(t, fid, type="l", lwd=2, main="FID")
+#' matplot(t, A, type="l", lwd=2, col=cols, main="Windows")
+#' matplot(t, Fp, type="l", lwd=2, col=cols, main="Windowed FID")
+#' matplot(S, type="l", lwd=2, col=cols, main="Spectrum")
+#'
+#' legend("topright", f_apod, col=cols, lty=1, bty="n", cex=.8)
+#'
 #' @keywords internal
 .fidApodisationFct <- function(n, pars) {
   if (is.null(pars$fun) || !pars$fun %in% c("uniform", "exponential", "cosine", "sine", "sem", "expGaus_resyG", "gauss")) {
-    stop("Invalid apodisation function specified. Choose one of: 'uniform', 'exponential', 'cosine', 'sine', 'sem', 'expGaus_resyG', or 'gauss'.")
+    stop("Invalid apodisation function specified. Choose one of: 'uniform', 'exponential', 'cosine', 'sine', 'sem', 'expGaus_resyG', or 'gauss'.", call. = FALSE)
   }
 
   afun <- switch(pars$fun,
                  "uniform" = rep(1, n),
                  "exponential" = {
-                   if (!"lb" %in% names(pars)) stop("Exponential apodisation requires 'lb' parameter.")
+                   if (!"lb" %in% names(pars)) stop("Exponential apodisation requires 'lb' parameter.", call. = FALSE)
                    .em(n, pars$lb)
                  },
                  "cosine" = .cosine(n),
                  "sine" = .sine(n),
                  "sem" = {
-                   if (!"lb" %in% names(pars)) stop("SEM apodisation requires 'lb' parameter.")
+                   if (!"lb" %in% names(pars)) stop("SEM apodisation requires 'lb' parameter.", call. = FALSE)
                    .sem(n, pars$lb)
                  },
                  "expGaus_resyG" = {
                    if (!all(c("lb", "gb", "aq_t") %in% names(pars))) {
-                     stop("expGaus_resyG apodisation requires 'lb', 'gb', and 'aq_t' parameters.")
+                     stop("expGaus_resyG apodisation requires 'lb', 'gb', and 'aq_t' parameters.", call. = FALSE)
                    }
                    .expGaus_resyG(n, pars$lb, pars$gb, pars$aq_t)
                  },
                  "gauss" = {
                    if (!all(c("lb", "gb", "para") %in% names(pars))) {
-                     stop("Gaussian apodisation requires 'lb', 'gb', and 'para' parameters.")
+                     stop("Gaussian apodisation requires 'lb', 'gb', and 'para' parameters.", call. = FALSE)
                    }
                    .gauss(n, pars$lb, pars$gb, pars$para)
                  }
@@ -109,7 +186,7 @@
 .filterExp_files <- function(pars, exp_type, f_list, n_max) {
 
   if (!is.data.frame(pars)) {
-    if (is.null(names(pars))) stop("`pars` must be named when not a data.frame.")
+    if (is.null(names(pars))) stop("`pars` must be named when not a data.frame.", call. = FALSE)
     pars <- as.data.frame(as.list(pars), stringsAsFactors = FALSE)
   }
 
@@ -118,13 +195,13 @@
   idx <- match(toupper(names(exp_type)), toupper(gsub("[ap]_", "", colnames(pars))))
 
   if (length(idx) == 0) {
-    stop("No parameter(s) found that match the specification. Check 'exp_type' and parameter choices in 'acqus' and 'procs'.")
+    stop("No parameter(s) found that match the specification. Check 'exp_type' and parameter choices in 'acqus' and 'procs'.", call. = FALSE)
   }
 
   idx_na <- which(is.na(idx))
   if (length(idx_na) > 0) {
     if (length(idx_na) == length(idx)) {
-      stop("No matching parameter names found. Check input argument 'exp_type'.")
+      stop("No matching parameter names found. Check input argument 'exp_type'.", call. = FALSE)
     } else {
       message(sprintf("Experiment filter %s not in NMR acquisition list. Using remaining arguments to filter: %s",
                       paste(names(exp_type)[idx_na], collapse = ", "),
@@ -148,7 +225,7 @@
           val <- cond$value
           return(!is.na(col) & do.call(op, list(col, val)))
         }
-        stop(sprintf("Unsupported numeric filter for '%s'.", names(exp_type)[i]))
+        stop(sprintf("Unsupported numeric filter for '%s'.", names(exp_type)[i]), call. = FALSE)
       }
       if (is.numeric(cond)) {
         if (length(cond) == 1) return(!is.na(col) & col == cond)
@@ -159,7 +236,7 @@
         if (length(condn) == 1) return(!is.na(col) & col == condn)
         return(!is.na(col) & col %in% condn)
       }
-      stop(sprintf("Numeric column '%s' needs numeric filter values.", names(exp_type)[i]))
+      stop(sprintf("Numeric column '%s' needs numeric filter values.", names(exp_type)[i]), call. = FALSE)
     }
 
     vars <- gsub("^<|>$", "", as.character(col))
@@ -172,7 +249,7 @@
     idx_filt <- (fmat == 1)
   }
   if (all(!idx_filt)) {
-    stop("No files found that match the specified parameter specification levels.")
+    stop("No files found that match the specified parameter specification levels.", call. = FALSE)
   }
 
   f_list <- lapply(f_list, function(x) x[idx_filt])
@@ -327,11 +404,11 @@
 
   idm_fid <- match(id_a, id_fid)
   if (any(is.na(idm_fid)) || any(diff(idm_fid) > 1)) {
-    stop("Check matching of experiment folders.")
+    stop("Check matching of experiment folders.", call. = FALSE)
   }
 
   if (length(unique(c(length(f_acqus), length(f_fid)))) != 1) {
-    stop("Mismatch in number of acquisitions and FID files.")
+    stop("Mismatch in number of acquisitions and FID files.", call. = FALSE)
   }
 
   if (n_max < length(f_fid)) {

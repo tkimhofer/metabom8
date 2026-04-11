@@ -13,7 +13,7 @@
   }
 
   if (anyNA(Y) || any(is.nan(Y)) || any(is.infinite(Y))) {
-    stop("Input Y contains NA, NaN, or Inf values.")
+    stop("Input Y contains NA, NaN, or Inf values.", call. = FALSE)
   }
 
   if (is.numeric(Y)) {
@@ -28,7 +28,7 @@
 
     levs <- unique(apply(Y, 2, function(x) length(unique(x))))
     if (length(levs) == 1 && levs[1] == 1) {
-      stop("Input Y has only a single level.")
+      stop("Input Y has only a single level.", call. = FALSE)
     }
     message("Performing discriminant analysis.")
   }
@@ -49,11 +49,11 @@
 #' @rdname checkXclassNas
 .checkXclassNas <- function(X) {
   if (!is.matrix(X) || !is.numeric(X)) {
-    stop(sprintf("Input X must be a numeric matrix. Use matrix() or as.matrix() to convert."))
+    stop(sprintf("Input X must be a numeric matrix. Use matrix() or as.matrix() to convert."), call. = FALSE)
   }
 
   if (any(is.na(X) | is.nan(X) | is.infinite(X))) {
-    stop("Input X contains missing (NA), NaN, or infinite values.")
+    stop("Input X contains missing (NA), NaN, or infinite values.", call. = FALSE)
   }
 
   return(invisible(NULL))
@@ -75,10 +75,10 @@
 #' @keywords internal
 .checkDimXY <- function(X, Y) {
   if (nrow(X) != nrow(Y)) {
-    stop("Dimensions of input X and Y do not match.")
+    stop("Dimensions of input X and Y do not match.", call. = FALSE)
   }
   if (ncol(X) <= ncol(Y)) {
-    stop("Number of variables (columns) in X should be higher than in Y.")
+    stop("Number of variables (columns) in X should be higher than in Y.", call. = FALSE)
   }
   invisible(NULL)
 }
@@ -139,7 +139,7 @@
   cv_est <- if (type == "R") q2s else cv_auc
 
   if (any(is.na(cv_est))) {
-    stop("Something went wrong: CV metric contains NA.")
+    stop("Something went wrong: CV metric contains NA.", call. = FALSE)
   }
 
   nc <- length(cv_est)
@@ -267,7 +267,7 @@
 
   } else {
     if (is.matrix(Y) && ncol(Y) > 1) {
-      stop("Only single-column numeric input is supported for Y at this time.")
+      stop("Only single-column numeric input is supported for Y at this time.", call. = FALSE)
     }
     return(list(matrix(Y, ncol = 1), data.frame()))
   }
@@ -319,14 +319,14 @@
 .check_pc_model <- function(pc, mod, le = 1, type = 'p') {
 
   if (is.na(pc) || is.infinite(pc) || length(pc) > le) {
-    stop("Check 'pc' argument: It must be finite and of expected length.")
+    stop("Check 'pc' argument: It must be finite and of expected length.", call. = FALSE)
   }
 
   mod_class <- class(mod)[1]
 
   if (mod_class == "PCA_metabom8") {
-    if (!is.numeric(pc)) stop("PC value must be numeric for PCA.")
-    if (max(pc) > ncol(mod@p)) stop("PC value exceeds number of PCA components.")
+    if (!is.numeric(pc)) stop("PC value must be numeric for PCA.", call. = FALSE)
+    if (max(pc) > ncol(mod@p)) stop("PC value exceeds number of PCA components.", call. = FALSE)
   }
 
   if (mod_class == "OPLS_metabom8") {
@@ -334,17 +334,17 @@
     if (any(idx_orth)) {
       pc1 <- as.numeric(gsub("o", "", pc))
       if (any(is.na(pc1)) || any(is.infinite(pc1))) {
-        stop("Invalid orthogonal component identifier in 'pc'.")
+        stop("Invalid orthogonal component identifier in 'pc'.", call. = FALSE)
       }
       if (any(pc1 > nrow(mod@p_orth))) {
-        stop("Requested orthogonal component exceeds available components.")
+        stop("Requested orthogonal component exceeds available components.", call. = FALSE)
       }
     } else {
       if (!is.numeric(as.numeric(pc))) {
-        stop("Predictive component index should be numeric or coercible to numeric.")
+        stop("Predictive component index should be numeric or coercible to numeric.", call. = FALSE)
       }
       if (length(mod@p_pred) == 0) {
-        stop("Predictive component appears to be missing in model object.")
+        stop("Predictive component appears to be missing in model object.", call. = FALSE)
       }
     }
   }
@@ -439,7 +439,7 @@
 .dimX <- function(X) {
 
   if (!is.numeric(X))
-    stop("X must be numeric.")
+    stop("X must be numeric.", call. = FALSE)
 
   if (is.atomic(X) && is.null(dim(X))) {
     return(matrix(X, nrow = 1L))
@@ -449,5 +449,5 @@
     return(as.matrix(X))
   }
 
-  stop("X must be a numeric vector, matrix, or data.frame.")
+  stop("X must be a numeric vector, matrix, or data.frame.", call. = FALSE)
 }

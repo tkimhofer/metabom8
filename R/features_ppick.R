@@ -39,24 +39,24 @@ ppick <- function(X, ppm, fil_p = 3, fil_n = 5, type = "max") {
 
   X <- .dimX(X)
 
-  if (is.null(ppm)) stop("`ppm` must be provided.")
+  if (is.null(ppm)) stop("`ppm` must be provided.", call. = FALSE)
   ppm <- as.numeric(ppm)
-  if (anyNA(ppm)) stop("`ppm` must be numeric and must not contain NA.")
+  if (anyNA(ppm)) stop("`ppm` must be numeric and must not contain NA.", call. = FALSE)
 
   if (!.check_X_ppm(X, ppm))
-    stop("Dimensions of X and ppm must match and ppm must not contain NA/Inf.")
+    stop("Dimensions of X and ppm must match and ppm must not contain NA/Inf.", call. = FALSE)
 
   type <- match.arg(type, c("max", "min", "both"))
 
   if (!is.numeric(fil_p) || length(fil_p) != 1L || fil_p < 1)
-    stop("`fil_p` must be a positive integer.")
+    stop("`fil_p` must be a positive integer.", call. = FALSE)
   if (!is.numeric(fil_n) || length(fil_n) != 1L || fil_n < 3)
-    stop("`fil_n` must be an integer >= 3.")
+    stop("`fil_n` must be an integer >= 3.", call. = FALSE)
   fil_p <- as.integer(fil_p)
   fil_n <- as.integer(fil_n)
 
-  if (fil_n %% 2L == 0L) stop("`fil_n` must be odd.")
-  if (fil_n <= fil_p) stop("`fil_n` must be greater than `fil_p`.")
+  if (fil_n %% 2L == 0L) stop("`fil_n` must be odd.", call. = FALSE)
+  if (fil_n <= fil_p) stop("`fil_n` must be greater than `fil_p`.", call. = FALSE)
 
   lapply(seq_len(nrow(X)), function(i) {
     x <- X[i, ]
@@ -66,7 +66,6 @@ ppick <- function(X, ppm, fil_p = 3, fil_n = 5, type = "max") {
 
     dsgn <- sign(diff(x_smooth))
 
-    # handle plateaus: carry forward last non-zero sign (simple approach)
     if (any(dsgn == 0)) {
       nz <- which(dsgn != 0)
       if (length(nz) > 0) {
@@ -79,7 +78,6 @@ ppick <- function(X, ppm, fil_p = 3, fil_n = 5, type = "max") {
     extrema_idx <- which(utils::head(dsgn, -1) != utils::tail(dsgn, -1)) + 1L
     if (length(extrema_idx) == 0L) return(NULL)
 
-    # Convention per your docs: minima = +1, maxima = -1
     extrema_type <- -dsgn[extrema_idx - 1L]
 
     res <- data.frame(
@@ -158,25 +156,25 @@ ppick2 <- function(X,
   X <- .dimX(X)
 
   if (is.null(ppm)) {
-    if (is.null(colnames(X))) stop("ppm is NULL and colnames(X) are missing.")
+    if (is.null(colnames(X))) stop("ppm is NULL and colnames(X) are missing.", call. = FALSE)
     ppm <-as.numeric(colnames(X))
-    if (anyNA(ppm)) stop("ppm could not be inferred from colnames(X): non-numeric column names.")
+    if (anyNA(ppm)) stop("ppm could not be inferred from colnames(X): non-numeric column names.", call. = FALSE)
   }
   ppm <- as.numeric(ppm)
-  if (!.check_X_ppm(X, ppm)) stop("X and ppm dimensions mismatch or ppm contains NA/Inf.")
+  if (!.check_X_ppm(X, ppm)) stop("X and ppm dimensions mismatch or ppm contains NA/Inf.", call. = FALSE)
 
   type <- match.arg(type)
 
   fil_p <- as.integer(fil_p)
   fil_n <- as.integer(fil_n)
-  if (fil_n < 5L) stop("fil_n should be >= 5 for stable derivative estimation.")
-  if (fil_n %% 2L == 0L) stop("fil_n must be odd.")
-  if (fil_n <= fil_p) stop("fil_n must be greater than fil_p.")
+  if (fil_n < 5L) stop("fil_n should be >= 5 for stable derivative estimation.", call. = FALSE)
+  if (fil_n %% 2L == 0L) stop("fil_n must be odd.", call. = FALSE)
+  if (fil_n <= fil_p) stop("fil_n must be greater than fil_p.", call. = FALSE)
 
   if (!is.null(noise_win)) {
-    if (!is.numeric(noise_win) || length(noise_win) != 2L) stop("noise_win must be numeric length 2 or NULL.")
+    if (!is.numeric(noise_win) || length(noise_win) != 2L) stop("noise_win must be numeric length 2 or NULL.", call. = FALSE)
     idx_noise <- get_idx(noise_win, ppm)
-    if (length(idx_noise) < 5L) stop("noise_win too small or not present in ppm axis.")
+    if (length(idx_noise) < 5L) stop("noise_win too small or not present in ppm axis.", call. = FALSE)
   } else {
     idx_noise <- NULL
   }
@@ -208,7 +206,7 @@ ppick2 <- function(X,
   .enforce_min_distance <- function(tab, min_dist_ppm) {
 
     if (is.null(min_dist_ppm) || nrow(tab) <= 1L) return(tab)
-    tab <- tab[order(-tab$height), , drop = FALSE] # keep strongest first
+    tab <- tab[order(-tab$height), , drop = FALSE]
     keep <- rep(TRUE, nrow(tab))
     for (i in seq_len(nrow(tab))) {
       if (!keep[i]) next
@@ -270,7 +268,7 @@ ppick2 <- function(X,
     curvature <- d2[zc]
 
     noise <- if (!is.null(idx_noise)) {
-      apply(abs(x[idx_noise, drop = TRUE]), 1, max, na.rm = TRUE) # not needed; x is vector
+      apply(abs(x[idx_noise, drop = TRUE]), 1, max, na.rm = TRUE)
       max(abs(x[idx_noise]), na.rm = TRUE)
     } else {
       .noise_mad_diff(x)

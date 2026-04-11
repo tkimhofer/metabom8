@@ -11,7 +11,7 @@ pls(X, Y, scaling, validation_strategy, maxPCo = 5)
 
 \item{Y}{Numeric matrix or factor vector of responses.}
 
-\item{scaling}{A scaling strategy object (e.g., \code{UVScaling(center = TRUE)}),
+\item{scaling}{A scaling strategy object (e.g., \code{uv_scaling(center = TRUE)}),
 specifying model-internal centering and/or scaling applied during fitting.
 This does not modify the original spectral matrix.}
 
@@ -51,12 +51,12 @@ The returned model object stores:
 }
 }
 \examples{
-# example code
-
 data(covid)
+
 cv <- balanced_mc(k=5, split=2/3)
-scaling <- UVScaling(center=TRUE)
+scaling <- uv_scaling(center=TRUE)
 model <-pls(X=covid$X, Y=covid$an$type, scaling, cv)
+
 show(model)
 summary(model)
 
@@ -64,7 +64,7 @@ Tp <- scores(model)
 Pp <- loadings(model)
 }
 \seealso{
-\code{\link{opls}}, \code{\link{UVScaling}}
+\code{\link{opls}}, \code{\link{uv_scaling}}
 
 Other modelling: 
 \code{\link{opls}()},

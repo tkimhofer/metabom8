@@ -7,14 +7,91 @@
 .fidApodisationFct(n, pars)
 }
 \arguments{
-\item{n}{Integer, number of data points.}
+\item{n}{Integer. Number of data points.}
 
-\item{pars}{A list containing the apodisation parameters: must include \code{fun} and any required shape parameters (e.g. \code{lb}, \code{gb}, \code{para}).}
+\item{pars}{List of parameters defining the apodisation.
+Must contain element \code{fun} specifying the window type.}
 }
 \value{
-A numeric vector of apodisation weights.
+Numeric vector of length \code{n} with apodisation weights.
 }
 \description{
-Applies one of several apodisation functions to FID data.
+Generates apodisation (window) functions for FID processing.
+The function applies one of several predefined window shapes,
+selected via \code{pars$fun}.
+}
+\details{
+Supported apodisation functions and parameters:
+\describe{
+\item{\code{"uniform"}}{No apodisation (all weights = 1).}
+
+\item{\code{"exponential"}}{
+Exponential decay window.
+\describe{
+\item{\code{lb}}{Line broadening parameter.}
+}
+}
+
+\item{\code{"cosine"}}{
+Cosine window (no additional parameters).
+}
+
+\item{\code{"sine"}}{
+Sine window (no additional parameters).
+}
+
+\item{\code{"sem"}}{
+Sine-modulated exponential window.
+\describe{
+\item{\code{lb}}{Exponential decay parameter.}
+}
+}
+
+\item{\code{"expGaus_resyG"}}{
+Exponential-Gaussian hybrid window.
+\describe{
+\item{\code{lb}}{Exponential decay parameter.}
+\item{\code{gb}}{Gaussian broadening parameter.}
+\item{\code{aq_t}}{Acquisition time.}
+}
+}
+
+\item{\code{"gauss"}}{
+Gaussian window (Bruker-style).
+\describe{
+\item{\code{lb}}{Line broadening parameter.}
+\item{\code{gb}}{Gaussian broadening factor.}
+\item{\code{para}}{List containing acquisition parameters
+(e.g. \code{a_SW_h}, \code{a_TD}).}
+}
+}
+}
+}
+\examples{
+# Internal FID apidisation functions (illustrative only)
+f_apod <- c("sine","cosine","exponential","sem")
+
+# create toy fid
+n <- 200; t <- seq(0,1,len=n)
+fid <- exp(-5*t)*cos(20*pi*t)
+
+# generate & apply apodisation windows
+A  <- sapply(f_apod, \(f) metabom8:::.fidApodisationFct(n, list(fun=f, lb=-0.2)))
+Fp <- sweep(A, 1, fid, `*`)
+
+# generate spectra
+S  <- apply(Fp, 2, \(x) Mod(fft(x))[1:(n/2)])
+
+# graphhics
+cols <- 1:ncol(A)
+
+par(mfrow=c(2,2), mar=c(3,3,2,1))
+plot(t, fid, type="l", lwd=2, main="FID")
+matplot(t, A, type="l", lwd=2, col=cols, main="Windows")
+matplot(t, Fp, type="l", lwd=2, col=cols, main="Windowed FID")
+matplot(S, type="l", lwd=2, col=cols, main="Spectrum")
+
+legend("topright", f_apod, col=cols, lty=1, bty="n", cex=.8)
+
 }
 \keyword{internal}
