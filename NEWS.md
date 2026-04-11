@@ -1,7 +1,7 @@
 # metabom8 NEWS
 
-## Changes in version 0.99.7
-- Fix Rcpp example
+## Changes in version 0.99.8
+- Update Rcpp examples 
 
 ## Changes in version 0.99.6
 - Simplified S4 class structure; retained only the core modelling class
