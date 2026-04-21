@@ -1,7 +1,10 @@
 # metabom8 NEWS
 
-## Changes in version 0.99.9
+## Changes in version 0.99.10
 - Corrected typo in vignette
+
+## Changes in version 0.99.9
+- Internal version update
 
 ## Changes in version 0.99.8
 - Update Rcpp examples 
