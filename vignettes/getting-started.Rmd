@@ -133,7 +133,7 @@ The following examples illustrate several commonly used apodisation
 profiles implemented internally in `metabom8`.
 
 ```{r apod, eval=TRUE, fig.width=8}
-# selected FID apidisation functions
+# selected FID apodisation functions
 f_apod <- c("sine","cosine","exponential","sem")
 
 # create toy fid
