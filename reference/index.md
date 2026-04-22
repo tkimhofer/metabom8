@@ -1,0 +1,203 @@
+# Package index
+
+## All functions
+
+- [`add_note()`](https://tkimhofer.github.io/metabom8/reference/add_note.md)
+  :
+
+  Add user note to metabom8 provenance Appends a user annotation to the
+  `"m8_prep"` attribute. The step title is formatted as
+  `"note {username}"`. The timestamp is stored in `params`, and the user
+  message is stored in `notes`.
+
+- [`align_segment()`](https://tkimhofer.github.io/metabom8/reference/align_segment.md)
+  : Align NMR Spectra in a Selected Shift Region
+
+- [`align_spectra()`](https://tkimhofer.github.io/metabom8/reference/align_spectra.md)
+  : Cohort-Guided Interval Alignment for 1D NMR Spectra
+
+- [`balanced_boot()`](https://tkimhofer.github.io/metabom8/reference/balanced_boot.md)
+  : Balanced bootstrap resampling strategy
+
+- [`balanced_mc()`](https://tkimhofer.github.io/metabom8/reference/balanced_mc.md)
+  : Balanced Monte-Carlo resampling strategy
+
+- [`binning()`](https://tkimhofer.github.io/metabom8/reference/binning.md)
+  : Spectral data binning
+
+- [`calibrate()`](https://tkimhofer.github.io/metabom8/reference/calibrate.md)
+  : Chemical Shift Calibration
+
+- [`cliffs_d()`](https://tkimhofer.github.io/metabom8/reference/cliffs_d.md)
+  [`es_cdelta()`](https://tkimhofer.github.io/metabom8/reference/cliffs_d.md)
+  : Cliff's Delta Effect Size
+
+- [`correct_baseline()`](https://tkimhofer.github.io/metabom8/reference/correct_baseline.md)
+  [`bline()`](https://tkimhofer.github.io/metabom8/reference/correct_baseline.md)
+  : Baseline Correction for Spectral Data
+
+- [`correct_lw()`](https://tkimhofer.github.io/metabom8/reference/correct_lw.md)
+  : Linewidth correction by scaling spectra to a reference linewidth
+
+- [`covid`](https://tkimhofer.github.io/metabom8/reference/covid.md) :
+  COVID-19 blood plasma proton NMR spectra (processed)
+
+- [`covid_raw`](https://tkimhofer.github.io/metabom8/reference/covid_raw.md)
+  : COVID-19 blood plasma proton NMR spectra (raw)
+
+- [`cv_anova()`](https://tkimhofer.github.io/metabom8/reference/cv_anova.md)
+  : Cross-validated ANOVA for O-PLS models
+
+- [`dmodx()`](https://tkimhofer.github.io/metabom8/reference/dmodx.md) :
+  Distance to the Model in X-Space (DModX)
+
+- [`.perm_test_from_table()`](https://tkimhofer.github.io/metabom8/reference/dot-perm_test_from_table.md)
+  : Permutation-test summary from an opls_perm out_df table
+
+- [`ellipse2d()`](https://tkimhofer.github.io/metabom8/reference/ellipse2d.md)
+  : Calculate 2D Hotelling T^2 Ellipse
+
+- [`excise()`](https://tkimhofer.github.io/metabom8/reference/excise.md)
+  : Excise Chemical Shift Regions from 1D NMR Spectra
+
+- [`fitted()`](https://tkimhofer.github.io/metabom8/reference/fitted.md)
+  : Extract fitted Y values
+
+- [`get_idx()`](https://tkimhofer.github.io/metabom8/reference/get_idx.md)
+  [`get.idx()`](https://tkimhofer.github.io/metabom8/reference/get_idx.md)
+  : Select Indices for a Chemical Shift Region
+
+- [`get_provenance()`](https://tkimhofer.github.io/metabom8/reference/get_provenance.md)
+  : Retrieve metabom8 provenance metadata
+
+- [`hiit_raw`](https://tkimhofer.github.io/metabom8/reference/hiit_raw.md)
+  : High-intensity interval training (HIIT) 1H NMR urine dataset
+
+- [`hotellingsT2()`](https://tkimhofer.github.io/metabom8/reference/hotellingsT2.md)
+  : Hotelling T^2 Statistic
+
+- [`kfold()`](https://tkimhofer.github.io/metabom8/reference/kfold.md) :
+  K-fold cross-validation strategy
+
+- [`list_preprocessing()`](https://tkimhofer.github.io/metabom8/reference/list_preprocessing.md)
+  : List available preprocessing steps
+
+- [`loadings(`*`<m8_model>`*`)`](https://tkimhofer.github.io/metabom8/reference/loadings-m8_model-method.md)
+  : Model loadings
+
+- [`lw()`](https://tkimhofer.github.io/metabom8/reference/lw.md) : Full
+  Width at Half Maximum (FWHM) Estimation
+
+- [`summary(`*`<m8_model>`*`)`](https://tkimhofer.github.io/metabom8/reference/m8_model-class.md)
+  [`show(`*`<m8_model>`*`)`](https://tkimhofer.github.io/metabom8/reference/m8_model-class.md)
+  :
+
+  m8_model class Model object returned by
+  [`pca()`](https://tkimhofer.github.io/metabom8/reference/pca.md),
+  [`pls()`](https://tkimhofer.github.io/metabom8/reference/pls.md), and
+  [`opls()`](https://tkimhofer.github.io/metabom8/reference/opls.md).
+
+- [`mc()`](https://tkimhofer.github.io/metabom8/reference/mc.md) :
+  Monte-Carlo cross-validation strategy
+
+- [`metabom8-package`](https://tkimhofer.github.io/metabom8/reference/metabom8.md)
+  [`metabom8`](https://tkimhofer.github.io/metabom8/reference/metabom8.md)
+  : metabom8: A High-Performance R Package for Metabolomics Modeling and
+  Analysis
+
+- [`minmax()`](https://tkimhofer.github.io/metabom8/reference/minmax.md)
+  : Min-Max Scaling to \\\[0,1\]\\
+
+- [`noise_sd()`](https://tkimhofer.github.io/metabom8/reference/noise_sd.md)
+  : Estimate Noise Standard Deviation in 1D NMR Spectra
+
+- [`norm_eretic()`](https://tkimhofer.github.io/metabom8/reference/norm_eretic.md)
+  : Normalise Spectra Using ERETIC Signal
+
+- [`opls()`](https://tkimhofer.github.io/metabom8/reference/opls.md) :
+  Fit an Orthogonal Partial Least Squares (O-PLS) model
+
+- [`opls_perm()`](https://tkimhofer.github.io/metabom8/reference/opls_perm.md)
+  : OPLS Model Validation via Y-Permutation
+
+- [`pareto_scaling()`](https://tkimhofer.github.io/metabom8/reference/pareto_scaling.md)
+  : Pareto Scaling Leaves variables unscaled. Optional centering.
+
+- [`pca()`](https://tkimhofer.github.io/metabom8/reference/pca.md) :
+  Principal Component Analysis (PCA)
+
+- [`plotStocsy()`](https://tkimhofer.github.io/metabom8/reference/plotStocsy.md)
+  : Plot STOCSY result
+
+- [`plot_spec()`](https://tkimhofer.github.io/metabom8/reference/plot_spec.md)
+  [`spec()`](https://tkimhofer.github.io/metabom8/reference/plot_spec.md)
+  [`matspec()`](https://tkimhofer.github.io/metabom8/reference/plot_spec.md)
+  : Plot 1D NMR Spectra
+
+- [`pls()`](https://tkimhofer.github.io/metabom8/reference/pls.md) : Fit
+  a Partial Least Squares (PLS) model
+
+- [`ppick()`](https://tkimhofer.github.io/metabom8/reference/ppick.md) :
+  Find Local Extrema in NMR Spectra (Peak Picking)
+
+- [`ppick2()`](https://tkimhofer.github.io/metabom8/reference/ppick2.md)
+  : Peak picking using Savitzky–Golay derivatives
+
+- [`pqn()`](https://tkimhofer.github.io/metabom8/reference/pqn.md) :
+  Probabilistic Quotient Normalisation (PQN)
+
+- [`prep_X()`](https://tkimhofer.github.io/metabom8/reference/prep_X.md)
+  : Applies a preprocessing strategy to a numeric matrix.
+
+- [`print_preprocessing()`](https://tkimhofer.github.io/metabom8/reference/print_preprocessing.md)
+  :
+
+  List available preprocessing functions Returns the preprocessing
+  utilities provided by metabom8.
+
+- [`print_provenance()`](https://tkimhofer.github.io/metabom8/reference/print_provenance.md)
+  : Print metabom8 preprocessing pipeline
+
+- [`read1d()`](https://tkimhofer.github.io/metabom8/reference/read1d.md)
+  [`read1d_proc()`](https://tkimhofer.github.io/metabom8/reference/read1d.md)
+  : Import 1D NMR spectra (TopSpin processed)
+
+- [`read1d_raw()`](https://tkimhofer.github.io/metabom8/reference/read1d_raw.md)
+  : Read raw FIDs and process to spectra
+
+- [`scRange()`](https://tkimhofer.github.io/metabom8/reference/scRange.md)
+  : Min-Max Scaling to Arbitrary Range
+
+- [`scores()`](https://tkimhofer.github.io/metabom8/reference/scores.md)
+  : PLS/OPLS model scores
+
+- [`stocsy()`](https://tkimhofer.github.io/metabom8/reference/stocsy.md)
+  : Statistical Total Correlation Spectroscopy (STOCSY)
+
+- [`storm()`](https://tkimhofer.github.io/metabom8/reference/storm.md) :
+  Subset Optimisation by Reference Matching (STORM)
+
+- [`stratified_kfold()`](https://tkimhofer.github.io/metabom8/reference/stratified_kfold.md)
+  : Y-stratified k-fold cross-validation strategy
+
+- [`unscaled()`](https://tkimhofer.github.io/metabom8/reference/unscaled.md)
+  :
+
+  No Scaling This function defines a preprocessing strategy that is
+  applied via `prep_X`.
+
+- [`uv_scaling()`](https://tkimhofer.github.io/metabom8/reference/uv_scaling.md)
+  :
+
+  Unit Variance Scaling This function defines a preprocessing strategy
+  that is applied via `prep_X`.
+
+- [`vip()`](https://tkimhofer.github.io/metabom8/reference/vip.md) :
+  Variable Importance in Projection (VIP)
+
+- [`weights()`](https://tkimhofer.github.io/metabom8/reference/weights.md)
+  : Extract model weights
+
+- [`xres()`](https://tkimhofer.github.io/metabom8/reference/xres.md) :
+  Compute X residual matrix Returns the residual matrix (E) of an OPLS
+  model.

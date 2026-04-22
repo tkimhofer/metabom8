@@ -1,0 +1,5 @@
+# Changelog
+
+## metabom8 0.99.0
+
+- Initial Bioconductor submission
