@@ -27,9 +27,15 @@
 ## 📦 Installation
 
 ```r
-# official release (to be added with bioconductor release)
+# Install from Bioconductor (once available in the release scheduled for end of April 2026)
 install.packages("BiocManager")
-BiocManager::install('metabom8')
+BiocManager::install("metabom8")
+
+# Install development version (until Bioconductor release)
+if (!requireNamespace("devtools", quietly = TRUE))
+    install.packages("devtools")
+
+devtools::install_github("tkimhofer/metabom8")
 ```
 
 ---
