@@ -1,0 +1,5 @@
+url: https://tkimhofer.github.io/metabom8/
+template:
+  bootstrap: 5
+repo:
+  branch: master
