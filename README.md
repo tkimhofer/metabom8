@@ -4,22 +4,31 @@
 
 # metabom8 
 
-**An R library for NMR-based metabolic profiling**  
+**An R library for NMR-based metabolic profiling**
 
-`metabom8` (pronounced *metabo-mate*) provides pipelines for 1D NMR data import, preprocessing, multivariate modeling (PCA, O-PLS), metabolite identification, and visualization — with core functions accelerated using C++ (`Rcpp`, `Armadillo`, `Eigen`) for improved computational performance.
+`metabom8` (*metabo-mate*) provides:
+
+- 1D NMR data import & preprocessing  
+- Multivariate modeling (PCA, PLS, O-PLS)  
+- Metabolite identification  
+
+Core functionality is accelerated using C++ (`Rcpp`, `Armadillo`, `Eigen`) for improved performance.
 
 ---
 
 ## 🛠️ Features
 
-- Preprocessing and analysis of 1D NMR spectra
-- Prinicpal Component Analysis (PCA) and backscaled model loadings
-- Orthogonal Partial Least Squares (OPLS) modeling via the NIPALS algorithm
-- OPLS with automatic selection of the optimal number of components based on R2, Q2 and cross-valdated AUC
-- Robust statistical validation for small to large sample sizes: stratified Monte Carlo CV and k-fold CV
-- Custom model visualisations using `ggplot2` and `plotly`
-- Model diagnostics & validation (DModX, Permutation Testing)
-- Metabolite identification via STOCSY and STORM
+- NMR data import and preprocessing, including: 
+  - calibration, baseline correction, alignment, normalisation
+  - provenance logging
+- Multivariate statistics:  
+  - Principal Components Analysis (PCA) 
+  - Partial Least Squares (PLS) 
+  - Orthogonal Partial Least Squares (OPLS)
+- Automatic selection of the optimal number of components for supervised models
+- Robust cross-validation framework, for large and small sample sizes (e.g., Monte Carlo CV)
+- OPLS model diagnostics & validation (DModX, permutation testing)
+- Tools supporting metabolite identification (STOCSY, STORM)
 - Native C++ acceleration via `RcppArmadillo` and `RcppEigen`
 
 ---
@@ -90,24 +99,25 @@ vip <- vip(opls_model)
 
 ## ⚡ Performance
 
-Benchmarked against the `ropls` package under identical conditions using the `bench` package:
+Benchmarking OPLS modelling against another widely used R implementations under comparable conditions:
 
 ```r
 bench::mark(
-  metabom8 = metabom8::opls(X, Y, ...),
-  ropls    = ropls::opls(X, Y, predI = 1, orthoI = 1, ...),
+  metabom8 = metabom8::opls(X, Y, scaling=uv, validation_strategy=kfold),
+  ropls    = ropls::opls(X, Y, predI = 1, orthoI = 1),
   check = FALSE
 )
 ```
 
 | Method     | Median Time | Iter/sec | Memory Use |
 |------------|-------------|----------|------------|
-| **metabom8** | 1.61 sec     | 0.621    | 2.81 GB     |
-| **ropls**    | 3.95 sec     | 0.253    | 1.61 GB     |
+| **metabom8** | 1.61 sec     | 0.617    | 247.33 MB  |
+| **ropls**    | 9.12 sec     | 0.110    | 2.09 GB    |
 
-> `metabom8` provides a ~2.5× speed-up using C++ linear algebra (Eigen, Armadillo) when compared to widely used implementations [^1].
+> `metabom8` is based on C++ accelerated linear algebra and provides a >5× speed-up over `ropls`*.  
 
-[^1]: Benchmark comparison uses the [`ropls`](https://bioconductor.org/packages/ropls) package (Bioconductor), a widely used OPLS implementation (parameters: uv scaling, 7-fold CV, 1 predictive + 1 orthogonal component).
+\**[`ropls`](https://bioconductor.org/packages/ropls) (uv scaling, 7-fold CV; 1 predictive and 1 orthogonal component).*
+
 ---
 
 ## 📘 Documentation
