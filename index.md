@@ -129,16 +129,6 @@ Comprehensive documentation and vignettes are available at:
 
 ------------------------------------------------------------------------
 
-## 🔗 Related Packages
-
-- [`nmrdata`](https://github.com/tkimhofer/nmrdata): Example dataset for
-  NMR spectral analysis (used for performance comparison)
-
-If you find `metabom8` useful, please consider giving it a ⭐ — it makes
-it easier for others to discover the project!
-
-------------------------------------------------------------------------
-
 ## 📝 License & Citation
 
 MIT License © Torben Kimhofer  
@@ -154,8 +144,6 @@ for citation details.
 - Found a bug? Open an
   [issue](https://github.com/tkimhofer/metabom8/issues)
 - Want to contribute? Fork the repo and submit a pull request
-- Code of Conduct: see
-  [`CODE_OF_CONDUCT.md`](https://github.com/tkimhofer/metabom8/blob/master/CODE_OF_CONDUCT.md)
 
 ------------------------------------------------------------------------
 

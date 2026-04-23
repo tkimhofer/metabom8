@@ -353,7 +353,7 @@ get_provenance(hiit_proc, step = 2)
 #> [1] "Specified chemical shift regions removed using get_idx()."
 #> 
 #> $time
-#> [1] "2026-04-23 10:06:12.354048"
+#> [1] "2026-04-23 10:33:27.54539"
 #> 
 #> $pkg
 #> [1] "metabom8"
@@ -431,7 +431,7 @@ get_provenance(hiit_proc , step = "user note")
 #> [1] "Excluding outlier sample XX - reason is ..."
 #> 
 #> $time
-#> [1] "2026-04-23 10:06:20.274435"
+#> [1] "2026-04-23 10:33:35.712004"
 #> 
 #> $pkg
 #> [1] "metabom8"
@@ -699,17 +699,16 @@ individual functions, see the corresponding help pages.
 
 To cite metabom8, please use:
 
-Kimhofer T (2025). metabom8: A High-Performance R Package for
-Metabolomics Modeling and Analysis (R package version 1.2.0).
-<doi:10.5281/zenodo.16794445>.
+Kimhofer T (2026). *metabom8: A High-Performance R Package for
+Metabolomics Modeling and Analysis*. R package version 0.99.10,
+<https://bioconductor.org/packages/metabom8>.
 
 A BibTeX entry for LaTeX users is
 
 @Manual{, title = {metabom8: A High-Performance R Package for
 Metabolomics Modeling and Analysis}, author = {Torben Kimhofer}, year =
-{2025}, note = {R package version 1.2.0}, doi =
-{10.5281/zenodo.16794445}, url =
-{<https://doi.org/10.5281/zenodo.16794445>}, }
+{2026}, note = {R package version 0.99.10}, url =
+{<https://bioconductor.org/packages/metabom8>}, }
 
 ## Session Info
 
