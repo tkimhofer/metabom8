@@ -1,6 +1,6 @@
 # metabom8
 
-**An R library for NMR-based metabolic profiling**
+**A High-Performance R Package for Metabolomics Modeling and Analysis**
 
 `metabom8` (*metabo-mate*) provides:
 
