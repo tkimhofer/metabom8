@@ -1,5 +1,46 @@
 # Changelog
 
+## metabom8 0.99.10
+
+- Corrected typo in vignette
+
+## metabom8 0.99.9
+
+- Internal version update
+
+## metabom8 0.99.8
+
+- Update Rcpp examples
+
+## metabom8 0.99.6
+
+- Simplified S4 class structure; retained only the core modelling class
+- Updated vignette “getting-started” (improve wordings, enable eval)
+- refactoring: replace `aes_string()`, improve fct signature &
+  docstrings
+- added effect size Cliff’s d
+
+## metabom8 0.99.5
+
+### New features
+
+- Added data provenance mechanism for processing (via attributes)
+- Added pipeline style usage for spectral processing functions
+- Implemented
+  [`vip()`](https://tkimhofer.github.io/metabom8/reference/vip.md)
+  method for PLS and OPLS models
+- Added cross-validation frameworks
+
+### Changes
+
+- Updated preprocessing handling with `m8_preprocess` class
+- Removed PCA/PLS model plotting functionality
+
+## metabom8 0.99.1
+
+- up R version dependency to ≥ 4.6
+- added S4 class m8
+
 ## metabom8 0.99.0
 
 - Initial Bioconductor submission

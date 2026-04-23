@@ -57,21 +57,37 @@
 <div class="page-header"><h1 id="metabom8">metabom8<a class="anchor" aria-label="anchor" href="#metabom8"></a>
 </h1></div>
 <p><strong>An R library for NMR-based metabolic profiling</strong></p>
-<p><code>metabom8</code> (pronounced <em>metabo-mate</em>) provides pipelines for 1D NMR data import, preprocessing, multivariate modeling (PCA, O-PLS), metabolite identification, and visualization — with core functions accelerated using C++ (<code>Rcpp</code>, <code>Armadillo</code>, <code>Eigen</code>) for improved computational performance.</p>
+<p><code>metabom8</code> (<em>metabo-mate</em>) provides:</p>
+<ul>
+<li>1D NMR data import &amp; preprocessing<br>
+</li>
+<li>Multivariate modeling (PCA, PLS, O-PLS)<br>
+</li>
+<li>Metabolite identification</li>
+</ul>
+<p>Core functionality is accelerated using C++ (<code>Rcpp</code>, <code>Armadillo</code>, <code>Eigen</code>) for improved performance.</p>
 <hr>
 <div class="section level2">
 <h2 id="id_️-features">🛠️ Features<a class="anchor" aria-label="anchor" href="#id_%EF%B8%8F-features"></a>
 </h2>
 <ul>
-<li>Preprocessing and analysis of 1D NMR spectra</li>
-<li>Prinicpal Component Analysis (PCA) and backscaled model loadings</li>
-<li>Orthogonal Partial Least Squares (OPLS) modeling via the NIPALS algorithm</li>
-<li>OPLS with automatic selection of the optimal number of components based on R2, Q2 and cross-valdated AUC</li>
-<li>Robust statistical validation for small to large sample sizes: stratified Monte Carlo CV and k-fold CV</li>
-<li>Custom model visualisations using <code>ggplot2</code> and <code>plotly</code>
+<li>NMR data import and preprocessing, including:
+<ul>
+<li>calibration, baseline correction, alignment, normalisation</li>
+<li>provenance logging</li>
+</ul>
 </li>
-<li>Model diagnostics &amp; validation (DModX, Permutation Testing)</li>
-<li>Metabolite identification via STOCSY and STORM</li>
+<li>Multivariate statistics:
+<ul>
+<li>Principal Components Analysis (PCA)</li>
+<li>Partial Least Squares (PLS)</li>
+<li>Orthogonal Partial Least Squares (OPLS)</li>
+</ul>
+</li>
+<li>Automatic selection of the optimal number of components for supervised models</li>
+<li>Robust cross-validation framework, for large and small sample sizes (e.g., Monte Carlo CV)</li>
+<li>OPLS model diagnostics &amp; validation (DModX, permutation testing)</li>
+<li>Tools supporting metabolite identification (STOCSY, STORM)</li>
 <li>Native C++ acceleration via <code>RcppArmadillo</code> and <code>RcppEigen</code>
 </li>
 </ul>
@@ -142,11 +158,11 @@
 <div class="section level2">
 <h2 id="id_-performance">⚡ Performance<a class="anchor" aria-label="anchor" href="#id_-performance"></a>
 </h2>
-<p>Benchmarked against the <code>ropls</code> package under identical conditions using the <code>bench</code> package:</p>
+<p>Benchmarking OPLS modelling against another widely used R implementations under comparable conditions:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span></span>
-<span>  metabom8 <span class="op">=</span> <span class="fu">metabom8</span><span class="fu">::</span><span class="fu"><a href="reference/opls.html">opls</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, <span class="va">...</span><span class="op">)</span>,</span>
-<span>  ropls    <span class="op">=</span> <span class="fu">ropls</span><span class="fu">::</span><span class="fu">opls</span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, predI <span class="op">=</span> <span class="fl">1</span>, orthoI <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span>,</span>
+<span>  metabom8 <span class="op">=</span> <span class="fu">metabom8</span><span class="fu">::</span><span class="fu"><a href="reference/opls.html">opls</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, scaling<span class="op">=</span><span class="va">uv</span>, validation_strategy<span class="op">=</span><span class="va">kfold</span><span class="op">)</span>,</span>
+<span>  ropls    <span class="op">=</span> <span class="fu">ropls</span><span class="fu">::</span><span class="fu">opls</span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, predI <span class="op">=</span> <span class="fl">1</span>, orthoI <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  check <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -160,24 +176,22 @@
 <tr class="odd">
 <td><strong>metabom8</strong></td>
 <td>1.61 sec</td>
-<td>0.621</td>
-<td>2.81 GB</td>
+<td>0.617</td>
+<td>247.33 MB</td>
 </tr>
 <tr class="even">
 <td><strong>ropls</strong></td>
-<td>3.95 sec</td>
-<td>0.253</td>
-<td>1.61 GB</td>
+<td>9.12 sec</td>
+<td>0.110</td>
+<td>2.09 GB</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p><code>metabom8</code> provides a ~2.5× speed-up using C++ linear algebra (Eigen, Armadillo) when compared to widely used implementations [^1].</p>
+<p><code>metabom8</code> is based on C++ accelerated linear algebra and provides a &gt;5× speed-up over <code>ropls</code>*.</p>
 </blockquote>
-</div>
-<div class="section level2">
-<h2 id="id_1-benchmark-comparison-uses-the-ropls-package-bioconductor-a-widely-used-opls-implementation-parameters-uv-scaling-7-fold-cv-1-predictive--1-orthogonal-component">[^1]: Benchmark comparison uses the <a href="https://bioconductor.org/packages/ropls" class="external-link"><code>ropls</code></a> package (Bioconductor), a widely used OPLS implementation (parameters: uv scaling, 7-fold CV, 1 predictive + 1 orthogonal component).<a class="anchor" aria-label="anchor" href="#id_1-benchmark-comparison-uses-the-ropls-package-bioconductor-a-widely-used-opls-implementation-parameters-uv-scaling-7-fold-cv-1-predictive--1-orthogonal-component"></a>
-</h2>
+<p>*<em><a href="https://bioconductor.org/packages/ropls" class="external-link"><code>ropls</code></a> (uv scaling, 7-fold CV; 1 predictive and 1 orthogonal component).</em></p>
+<hr>
 </div>
 <div class="section level2">
 <h2 id="id_-documentation">📘 Documentation<a class="anchor" aria-label="anchor" href="#id_-documentation"></a>
