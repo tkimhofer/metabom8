@@ -353,7 +353,7 @@ get_provenance(hiit_proc, step = 2)
 #> [1] "Specified chemical shift regions removed using get_idx()."
 #> 
 #> $time
-#> [1] "2026-04-24 07:16:18.589686"
+#> [1] "2026-04-28 05:49:52.300477"
 #> 
 #> $pkg
 #> [1] "metabom8"
@@ -431,7 +431,7 @@ get_provenance(hiit_proc , step = "user note")
 #> [1] "Excluding outlier sample XX - reason is ..."
 #> 
 #> $time
-#> [1] "2026-04-24 07:16:26.552617"
+#> [1] "2026-04-28 05:50:00.418262"
 #> 
 #> $pkg
 #> [1] "metabom8"
@@ -712,7 +712,7 @@ Metabolomics Modeling and Analysis}, author = {Torben Kimhofer}, year =
 
 ## Session Info
 
-    #> R version 4.5.3 (2026-03-11)
+    #> R version 4.6.0 (2026-04-24)
     #> Platform: x86_64-pc-linux-gnu
     #> Running under: Ubuntu 24.04.4 LTS
     #> 
@@ -733,13 +733,13 @@ Metabolomics Modeling and Analysis}, author = {Torben Kimhofer}, year =
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] metabom8_0.99.10 BiocStyle_2.38.0
+    #> [1] metabom8_0.99.10 BiocStyle_2.39.0
     #> 
     #> loaded via a namespace (and not attached):
     #>  [1] tidyr_1.3.2         plotly_4.12.0       sass_0.4.10        
     #>  [4] generics_0.1.4      stringi_1.8.7       hms_1.1.4          
     #>  [7] digest_0.6.39       magrittr_2.0.5      pROC_1.19.0.1      
-    #> [10] evaluate_1.0.5      grid_4.5.3          RColorBrewer_1.1-3 
+    #> [10] evaluate_1.0.5      grid_4.6.0          RColorBrewer_1.1-3 
     #> [13] bookdown_0.46       fastmap_1.2.0       plyr_1.8.9         
     #> [16] jsonlite_2.0.0      progress_1.2.3      BiocManager_1.30.27
     #> [19] httr_1.4.8          purrr_1.2.2         crosstalk_1.2.2    
@@ -748,16 +748,16 @@ Metabolomics Modeling and Analysis}, author = {Torben Kimhofer}, year =
     #> [28] cli_3.6.6           rlang_1.2.0         crayon_1.5.3       
     #> [31] ptw_1.9-17          withr_3.0.2         cachem_1.1.0       
     #> [34] yaml_2.3.12         ellipse_0.5.0       otel_0.2.0         
-    #> [37] colorRamps_2.3.4    tools_4.5.3         parallel_4.5.3     
+    #> [37] colorRamps_2.3.4    tools_4.6.0         parallel_4.6.0     
     #> [40] reshape2_1.4.5      dplyr_1.2.1         ggplot2_4.0.3      
     #> [43] RcppDE_0.1.9        vctrs_0.7.3         R6_2.6.1           
     #> [46] lifecycle_1.0.5     stringr_1.6.0       fs_2.1.0           
     #> [49] htmlwidgets_1.6.4   MASS_7.3-65         ragg_1.5.2         
     #> [52] pkgconfig_2.0.3     desc_1.4.3          pkgdown_2.2.0      
     #> [55] bslib_0.10.0        pillar_1.11.1       gtable_0.3.6       
-    #> [58] data.table_1.18.2.1 glue_1.8.1          Rcpp_1.1.1-1       
+    #> [58] data.table_1.18.2.1 glue_1.8.1          Rcpp_1.1.1-1.1     
     #> [61] systemfonts_1.3.2   xfun_0.57           tibble_3.3.1       
     #> [64] tidyselect_1.2.1    knitr_1.51          farver_2.1.2       
     #> [67] htmltools_0.5.9     labeling_0.4.3      rmarkdown_2.31     
-    #> [70] signal_1.8-1        compiler_4.5.3      prettyunits_1.2.0  
+    #> [70] signal_1.8-1        compiler_4.6.0      prettyunits_1.2.0  
     #> [73] S7_0.2.2
