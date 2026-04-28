@@ -37,15 +37,9 @@ Core functionality is accelerated using C++ (`Rcpp`, `Armadillo`, `Eigen`) for i
 ## 📦 Installation
 
 ```r
-# Install from Bioconductor (available in Bioc 3.23, release scheduled for 29/04/26)
+# Install from Bioconductor
 install.packages("BiocManager")
 BiocManager::install("metabom8")
-
-# Install development version (until Bioconductor release)
-if (!requireNamespace("devtools", quietly = TRUE))
-    install.packages("devtools")
-
-devtools::install_github("tkimhofer/metabom8")
 ```
 
 ---
