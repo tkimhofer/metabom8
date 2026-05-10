@@ -48,6 +48,7 @@ in ppm to distinguish the two peaks of the multiplet.
 
 For example:
 
+
     calibrate(
       X, ppm,
       list(

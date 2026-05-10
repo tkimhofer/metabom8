@@ -91,13 +91,13 @@ get_provenance(hiit_proc, step = 2)
 #> [1] "Specified chemical shift regions removed using get_idx()."
 #> 
 #> $time
-#> [1] "2026-04-28 05:49:20.706252"
+#> [1] "2026-05-10 11:59:38.29631"
 #> 
 #> $pkg
 #> [1] "metabom8"
 #> 
 #> $pkg_version
-#> [1] "0.99.10"
+#> [1] "1.1.2"
 #> 
 
 # Retrieve parameter from a named step

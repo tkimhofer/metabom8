@@ -35,6 +35,7 @@ Core functionality is accelerated using C++ (`Rcpp`, `Armadillo`,
 ## 📦 Installation
 
 ``` r
+
 # Install from Bioconductor
 install.packages("BiocManager")
 BiocManager::install("metabom8")
@@ -45,6 +46,7 @@ BiocManager::install("metabom8")
 ## 🚀 Quick Start
 
 ``` r
+
 library(metabom8)
 
 # Load example data
@@ -96,6 +98,7 @@ Benchmarking OPLS modelling against another widely used R
 implementations under comparable conditions:
 
 ``` r
+
 bench::mark(
   metabom8 = metabom8::opls(X, Y, scaling=uv, validation_strategy=kfold),
   ropls    = ropls::opls(X, Y, predI = 1, orthoI = 1),

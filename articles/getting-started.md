@@ -6,6 +6,7 @@ This vignette demonstrates data import and preprocessing workflow for
 NMR-based metabolomics with **metabom8**.
 
 ``` r
+
 library(metabom8)
 ```
 
@@ -41,6 +42,7 @@ Further details on supported filtering options are provided in
 [`?read1d_proc`](https://tkimhofer.github.io/metabom8/reference/read1d.md).
 
 ``` r
+
 ## Example: import 1D spectra
 exp_dir <- system.file("extdata", package = "metabom8")
 exp_type <- list(pulprog="noesygppr1d")
@@ -95,6 +97,7 @@ The function
 performs these operations:
 
 ``` r
+
 # import 1D NMR data
 nmr_raw <- read1d_raw(
   exp_dir,
@@ -113,6 +116,7 @@ The following examples illustrate several commonly used apodisation
 profiles implemented internally in `metabom8`.
 
 ``` r
+
 # selected FID apodisation functions
 f_apod <- c("sine","cosine","exponential","sem")
 
@@ -159,6 +163,7 @@ See
 for additional details.
 
 ``` r
+
 data("covid", package = "metabom8")
 
 ## plot directly from the dataset object
@@ -166,6 +171,7 @@ plot_spec(covid, shift = c(0.5, 2))
 ```
 
 ``` r
+
 
 ## alternatively extract data components: X, ppm
 X <- covid$X
@@ -180,12 +186,14 @@ plot_spec(X[1:3, ], ppm, shift = c(0.5, 2)) # backend='plotly' by default
 ```
 
 ``` r
+
 plot_spec(X[1:3, ], ppm, shift = c(0.5, 2), backend='base')
 ```
 
 ![](getting-started_files/figure-html/viz_covid-3.png)
 
 ``` r
+
 plot_spec(X[1:3, ], ppm, shift = c(0.5, 2), backend='ggplot2')
 ```
 
@@ -209,6 +217,7 @@ elements `X`, `ppm`, and `meta`. This allows steps to be chained using
 the base R pipe operator (`|>`):
 
 ``` r
+
 data("hiit_raw", package = "metabom8") # urine NMR (HIIT exercise experiment)
 
 names(hiit_raw) # X, ppm, meta
@@ -230,10 +239,12 @@ This API design enables clear, declarative workflows suitable for
 production analyses.
 
 ``` r
+
 plot_spec(hiit_raw, shift = c(4,4.1))
 ```
 
 ``` r
+
 plot_spec(hiit_proc, shift = c(4,4.1))
 ```
 
@@ -244,6 +255,7 @@ and ppm vector. This explicit alternative is useful for pipeline
 development, parameter tuning and visual inspection.
 
 ``` r
+
 X <- hiit_raw$X
 ppm <- hiit_raw$ppm
 
@@ -285,6 +297,7 @@ processing history is linked to the data matrix and can be inspected
 programmatically at any time.
 
 ``` r
+
 
 ## Inspect preprocessing steps
 print_provenance(hiit_proc)
@@ -353,13 +366,13 @@ get_provenance(hiit_proc, step = 2)
 #> [1] "Specified chemical shift regions removed using get_idx()."
 #> 
 #> $time
-#> [1] "2026-04-28 05:49:52.300477"
+#> [1] "2026-05-10 12:00:09.468305"
 #> 
 #> $pkg
 #> [1] "metabom8"
 #> 
 #> $pkg_version
-#> [1] "0.99.10"
+#> [1] "1.1.2"
 
 ## Retrieve the full provenance log
 log <- get_provenance(hiit_proc)
@@ -378,6 +391,7 @@ Individual parameter values can be retrieved as well, allowing the full
 transformation history of a dataset to be inspected programmatically.
 
 ``` r
+
 # Retrieve parameter from a named step
 get_provenance(hiit_proc, step = "calibrate", param = "target")
 #> $mode
@@ -395,6 +409,7 @@ particularly userful when data are processed in automated fashion, for
 example when using workflow managers:
 
 ``` r
+
 # collect env varaibles
 params <- list(
   agent    = paste0("snakemake/", Sys.getenv("SNAKEMAKE_VERSION", "v?")),
@@ -431,13 +446,13 @@ get_provenance(hiit_proc , step = "user note")
 #> [1] "Excluding outlier sample XX - reason is ..."
 #> 
 #> $time
-#> [1] "2026-04-28 05:50:00.418262"
+#> [1] "2026-05-10 12:00:17.604004"
 #> 
 #> $pkg
 #> [1] "metabom8"
 #> 
 #> $pkg_version
-#> [1] "0.99.10"
+#> [1] "1.1.2"
 ```
 
 > **Note on provenance**  
@@ -461,6 +476,7 @@ All modelling calls return an instance of class `m8_model`, which can be
 used for further processing and diagnostics.
 
 ``` r
+
 Y <- covid$an$type
 X <- covid$X
 ```
@@ -471,6 +487,7 @@ dominating statistical modelling, data are scaled prior to analysis. In
 function:
 
 ``` r
+
 # Define the scaling and centering strategy
 uv = uv_scaling(center = TRUE)
 ```
@@ -489,6 +506,7 @@ call.
 Here we compute two principal components using unit-variance scaling:
 
 ``` r
+
 pca_model <- pca(X, scaling = uv, ncomp=2)
 
 # show / summary methods 
@@ -527,6 +545,7 @@ and testing sets to ensure the model predictive power generalizes well
 to unseen data.
 
 ``` r
+
 mc_cv <- balanced_mc(k=15, split=2/3, type="DA")
 ```
 
@@ -535,6 +554,7 @@ See
 for further details and additional statistical validation strategies.
 
 ``` r
+
 pls_model <- pls(X, Y, validation_strategy=mc_cv, scaling = uv)
 #> Performing discriminant analysis.
 #> A PLS-DA model with 1 component was fitted.
@@ -580,13 +600,14 @@ OPLS can be though of as PLS with an integrated orthogonality filter,
 which has been reported to improve model interpretability. While
 standard PLS mixes predictive and non-predictive variation, OPLS
 partitions the variance into two parts: variation correlated to the
-response ($Y$) and variation “orthogonal” (unrelated) to it.
+response ($`Y`$) and variation “orthogonal” (unrelated) to it.
 
 Similar to PLS, the OPLS algorithm evaluates model performance using
 statistical re-sampling techniques to ensure the results are robust and
 not driven by noise.
 
 ``` r
+
 opls_model <- opls(X, Y, validation_strategy=mc_cv, scaling = uv)
 #> Performing discriminant analysis.
 #> An O-PLS-DA model with 1 predictive and 1 orthogonal components was fitted.
@@ -613,6 +634,7 @@ negligible (`stop reason`). Therefore, a third component was not fitted
 to the full spectral matrix.
 
 ``` r
+
 summary(opls_model)
 #> $perf
 #>   comp_total comp_pred comp_orth AUCt AUCv       R2X selected        fit
@@ -651,6 +673,7 @@ Importance in Projection
 which identifies the most influential variables in the model.
 
 ``` r
+
 # model scores, loadings & vip
 Tp <- scores(opls_model)
 To <- scores(opls_model, orth=TRUE)
@@ -667,13 +690,14 @@ diagnostic tools:
 - [`dmodx()`](https://tkimhofer.github.io/metabom8/reference/dmodx.md):
   Calculates the “Distance to the Model X” to identify spectral outliers
 - [`opls_perm()`](https://tkimhofer.github.io/metabom8/reference/opls_perm.md):
-  Executes Y-permutations to validate that the observed $Q^{2}$ is
+  Executes Y-permutations to validate that the observed $`Q^2`$ is
   significantly higher than what would be expected by chance.
 - [`cv_anova()`](https://tkimhofer.github.io/metabom8/reference/cv_anova.md):
   Performs a Cross-Validated ANOVA to test the significance of the
   model’s predictive ability (only for regression)
 
 ``` r
+
 # distance to the model in X space
 dex <- dmodx(opls_model)
 ```
@@ -681,6 +705,7 @@ dex <- dmodx(opls_model)
 ![](getting-started_files/figure-html/opls-dx-1.png)
 
 ``` r
+
 head(dex)
 #>   ID     DmodX passed outlier label Group
 #> 1  1 1.0456047   TRUE   FALSE     1     2
@@ -700,14 +725,14 @@ individual functions, see the corresponding help pages.
 To cite metabom8, please use:
 
 Kimhofer T (2026). *metabom8: A High-Performance R Package for
-Metabolomics Modeling and Analysis*. R package version 0.99.10,
+Metabolomics Modeling and Analysis*. R package version 1.1.2,
 <https://bioconductor.org/packages/metabom8>.
 
 A BibTeX entry for LaTeX users is
 
 @Manual{, title = {metabom8: A High-Performance R Package for
 Metabolomics Modeling and Analysis}, author = {Torben Kimhofer}, year =
-{2026}, note = {R package version 0.99.10}, url =
+{2026}, note = {R package version 1.1.2}, url =
 {<https://bioconductor.org/packages/metabom8>}, }
 
 ## Session Info
@@ -733,7 +758,7 @@ Metabolomics Modeling and Analysis}, author = {Torben Kimhofer}, year =
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] metabom8_0.99.10 BiocStyle_2.39.0
+    #> [1] metabom8_1.1.2   BiocStyle_2.40.0
     #> 
     #> loaded via a namespace (and not attached):
     #>  [1] tidyr_1.3.2         plotly_4.12.0       sass_0.4.10        
@@ -755,7 +780,7 @@ Metabolomics Modeling and Analysis}, author = {Torben Kimhofer}, year =
     #> [49] htmlwidgets_1.6.4   MASS_7.3-65         ragg_1.5.2         
     #> [52] pkgconfig_2.0.3     desc_1.4.3          pkgdown_2.2.0      
     #> [55] bslib_0.10.0        pillar_1.11.1       gtable_0.3.6       
-    #> [58] data.table_1.18.2.1 glue_1.8.1          Rcpp_1.1.1-1.1     
+    #> [58] data.table_1.18.4   glue_1.8.1          Rcpp_1.1.1-1.1     
     #> [61] systemfonts_1.3.2   xfun_0.57           tibble_3.3.1       
     #> [64] tidyselect_1.2.1    knitr_1.51          farver_2.1.2       
     #> [67] htmltools_0.5.9     labeling_0.4.3      rmarkdown_2.31     
