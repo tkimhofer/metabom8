@@ -1,15 +1,30 @@
 citHeader("To cite metabom8, please use:")
+meta <- packageDescription("metabom8")
+ver <- meta$Version
+
+year <- if (!is.null(meta$Date) && !is.na(meta$Date)) {
+  format(as.Date(meta$Date), "%Y")
+} else {
+  format(Sys.Date(), "%Y")
+}
 
 bibentry(
   bibtype = "Manual",
   title   = "metabom8: A High-Performance R Package for Metabolomics Modeling and Analysis",
-  author  = person(given = "Torben", family = "Kimhofer",
-                   email = "tkimhofer@gmail.com",
-                   role = c("aut", "cre"),
-                   comment = c(ORCID = "0000-0001-7158-9930")),
-  year    = 2025,
-  note    = "R package version 1.2.0",
-  doi     = "10.5281/zenodo.16794445",
-  url     = "https://doi.org/10.5281/zenodo.16794445",
-  textVersion = "Kimhofer T (2025). metabom8: A High-Performance R Package for Metabolomics Modeling and Analysis (R package version 1.2.0). doi:10.5281/zenodo.16794445."
+  author  = person(
+    given = "Torben",
+    family = "Kimhofer",
+    email = "tkimhofer@gmail.com",
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0001-7158-9930")
+  ),
+  year = year,
+  note = paste("R package version", ver),
+  doi  = "10.5281/zenodo.16794445",
+  url  = "https://doi.org/10.5281/zenodo.16794445",
+  textVersion = paste0(
+  "Kimhofer T (", year, "). metabom8: A High-Performance R Package for ",
+  "Metabolomics Modeling and Analysis (R package version ", ver, "). ",
+  "doi:10.5281/zenodo.16794445."
+  )
 )
