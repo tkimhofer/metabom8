@@ -366,7 +366,7 @@ get_provenance(hiit_proc, step = 2)
 #> [1] "Specified chemical shift regions removed using get_idx()."
 #> 
 #> $time
-#> [1] "2026-05-10 12:00:09.468305"
+#> [1] "2026-05-10 12:52:53.79669"
 #> 
 #> $pkg
 #> [1] "metabom8"
@@ -446,7 +446,7 @@ get_provenance(hiit_proc , step = "user note")
 #> [1] "Excluding outlier sample XX - reason is ..."
 #> 
 #> $time
-#> [1] "2026-05-10 12:00:17.604004"
+#> [1] "2026-05-10 12:53:02.115351"
 #> 
 #> $pkg
 #> [1] "metabom8"
