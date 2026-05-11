@@ -11,7 +11,7 @@
 #' @format A numeric matrix/data frame with 23 rows (samples) and 27,819 columns
 #'   (chemical shift variables in parts per million, ppm).
 #' @source Australian National Phenome Centre (ANPC), Murdoch University.
-#' @references Kimhofer et al. (2020) \doi{10.1021/acs.jproteome.0c00280}
+#' @references Kimhofer et al. (2020) \doi{10.1021/acs.jproteome.0c00519}
 #'
 #' @examples
 #' data(covid)
@@ -38,7 +38,7 @@ NULL
 #' }
 #'
 #' @source Australian National Phenome Centre (ANPC), Murdoch University.
-#' @references Kimhofer et al. (2020) \doi{10.1021/acs.jproteome.0c00280}
+#' @references Kimhofer et al. (2020) \doi{10.1021/acs.jproteome.0c00519}
 #'
 #' @examples
 #' data(covid_raw)

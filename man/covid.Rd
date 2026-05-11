@@ -25,6 +25,6 @@ with a double-resonance broadband (BBI) probe and a refrigerated autosampler.
 data(covid)
 }
 \references{
-Kimhofer et al. (2020) \doi{10.1021/acs.jproteome.0c00280}
+Kimhofer et al. (2020) \doi{10.1021/acs.jproteome.0c00519}
 }
 \keyword{datasets}
