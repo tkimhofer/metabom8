@@ -20,11 +20,11 @@ bibentry(
   ),
   year = year,
   note = paste("R package version", ver),
-  doi  = "10.5281/zenodo.20114205",
+  doi  = "10.18129/B9.bioc.metabom8",
   url  = "https://tkimhofer.github.io/metabom8/",
   textVersion = paste0(
   "Kimhofer T (", year, "). metabom8: A High-Performance R Package for ",
   "Metabolomics Modeling and Analysis (R package version ", ver, "). ",
-  "https://doi.org/10.5281/zenodo.20114205"
+  "https://doi.org/10.18129/B9.bioc.metabom8"
   )
 )

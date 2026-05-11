@@ -1,7 +1,7 @@
 <!-- badges: start -->
   [![Bioconductor build](https://bioconductor.org/shields/build/devel/bioc/metabom8.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/metabom8/)
   [![R-CMD-check-bioc](https://github.com/tkimhofer/metabom8/actions/workflows/check-bioc.yml/badge.svg)](https://github.com/tkimhofer/metabom8/actions/workflows/check-bioc.yml)
-  [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20114205-blue)](https://zenodo.org/records/20114205)
+  [![DOI](https://img.shields.io/badge/DOI-10.18129%2FB9.bioc.metabom8-blue)](https://doi.org/10.18129/B9.bioc.metabom8)
 <!-- badges: end --><!-- badges: end -->
 
 # metabom8 
