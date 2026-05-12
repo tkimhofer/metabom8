@@ -1,5 +1,5 @@
 citHeader("To cite metabom8, please use:")
-meta <- packageDescription("metabom8")
+
 ver <- meta$Version
 
 year <- if (!is.null(meta$Date) && !is.na(meta$Date)) {
